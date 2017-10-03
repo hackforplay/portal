@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "hackforplay-production"
+    "default": "hackforplay-production",
+    "dev": "hackforplay-development"
   }
 }
