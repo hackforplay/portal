@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import Auth from './Auth';
 import SignInButton from './SignInButton';
 import User from './User';
+import Products from './pages/Products';
 
 const styles = theme => ({
   flex: {
@@ -50,6 +51,7 @@ class App extends Component {
             </Toolbar>
           </AppBar>
           <Route path="/auth" component={Auth} />
+          <Route path="/products" component={Products} />
           <Route strict path="/users/:user" component={User} />
         </div>
       </Router>
