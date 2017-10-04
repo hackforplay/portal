@@ -4,7 +4,11 @@ import { withStyles } from 'material-ui/styles';
 
 import { firebase } from './firebase-utils';
 
-const style = {};
+const style = {
+  name: {
+    textAlign: 'center'
+  }
+};
 
 class User extends Component {
   static propTypes = {
@@ -32,7 +36,7 @@ class User extends Component {
     const { user } = this.state;
     if (!user) return null;
 
-    return <div>User page of {user.display_name}</div>;
+    return <div className={classes.name}>User page of {user.display_name}</div>;
   }
 }
 
