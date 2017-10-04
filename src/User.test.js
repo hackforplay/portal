@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Uesr from './Uesr';
+import User from './User';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<Uesr />, div);
+  const match = { params: { user: 'UID' } };
+  ReactDOM.render(<User match={match} />, div);
 });

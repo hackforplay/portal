@@ -9,7 +9,7 @@ const style = {};
 class User extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
+    match: PropTypes.object.isRequired
   };
 
   state = {
@@ -18,8 +18,8 @@ class User extends Component {
 
   async componentDidMount() {
     const { match: { params } } = this.props;
-    const db = firebase.database();
     try {
+      const db = firebase.database();
       const snapshot = await db.ref(`/users/${params.user}`).once('value');
       this.setState({ user: snapshot.val() });
     } catch (error) {
