@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import 'firebase/firestore';
 import firebaseui from 'firebaseui';
 import 'firebaseui/dist/firebaseui.css';
 
@@ -35,6 +36,11 @@ const ui = new firebaseui.auth.AuthUI(firebase.auth());
 export function renderWidget(id) {
   // The start method will wait until the DOM is loaded.
   ui.start(`#${id}`, uiConfig);
+}
+
+// To use offline
+if (process.env.NODE_ENV === 'production') {
+  firebase.firestore().enablePersistence();
 }
 
 export { firebase, firebaseui };
