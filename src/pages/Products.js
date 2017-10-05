@@ -21,9 +21,9 @@ class Products extends Component {
 
   async componentDidMount() {
     try {
-      const db = firebase.database();
-      const snapshot = await db.ref('/products').once('value');
-      this.setState({ products: snapshot.val() });
+      const db = firebase.firestore();
+      const querySnapshot = await db.collection('products').get();
+      this.setState({ products: querySnapshot.docs });
     } catch (error) {
       console.log('Error: ', error);
     }
@@ -34,8 +34,8 @@ class Products extends Component {
     const { products } = this.state;
 
     return products.map((product, i) => (
-      <div key={i} className={classes.item}>
-        {JSON.stringify(product)}
+      <div key={product.id} className={classes.item}>
+        {JSON.stringify(product.data())}
       </div>
     ));
   }

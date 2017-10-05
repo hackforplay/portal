@@ -23,9 +23,19 @@ class User extends Component {
   async componentDidMount() {
     const { match: { params } } = this.props;
     try {
-      const db = firebase.database();
-      const snapshot = await db.ref(`/users/${params.user}`).once('value');
-      this.setState({ user: snapshot.val() });
+      const db = firebase.firestore();
+      const usersRef = db.collection('users');
+      const userFromCustomId = await usersRef
+        .where('custom_id', '==', params.user)
+        .get();
+      if (!userFromCustomId.empty) {
+        this.setState({ user: userFromCustomId.docs[0] });
+        return;
+      }
+      const userFromUid = await usersRef.where('uid', '==', params.user).get();
+      if (!userFromUid.empty) {
+        this.setState({ user: userFromUid.docs[0] });
+      }
     } catch (error) {
       console.log('Error getting documents: ', error);
     }
@@ -36,7 +46,11 @@ class User extends Component {
     const { user } = this.state;
     if (!user) return null;
 
-    return <div className={classes.name}>User page of {user.display_name}</div>;
+    return (
+      <div className={classes.name}>
+        User page of {user.data().display_name}
+      </div>
+    );
   }
 }
 
