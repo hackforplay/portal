@@ -38,11 +38,12 @@ const receiveFailure = (query, error) => ({
 // https://firebase.google.com/docs/firestore/quickstart
 export const executeQuery = query => async dispatch => {
   dispatch(requestQuery(query));
-  let ref = firebase.firestore().collection(query.collectionPath);
-  if (query.where) {
-    ref = ref.where(...query.where);
-  }
+
   try {
+    let ref = firebase.firestore().collection(query.collectionPath);
+    if (query.where) {
+      ref = ref.where(...query.where);
+    }
     const collection = await ref.get();
     dispatch(receiveDocuments(query, collection.docs));
   } catch (error) {
@@ -65,8 +66,8 @@ const shouldQueryExecuted = (state, query) => {
   return queryState.didInvalidate;
 };
 
-export const requestDocuments = query => (dispatch, getState) => {
+export const requestDocuments = query => async (dispatch, getState) => {
   if (shouldQueryExecuted(getState(), query)) {
-    dispatch(executeQuery(query));
+    await dispatch(executeQuery(query));
   }
 };
