@@ -9,10 +9,10 @@ import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
 import PropTypes from 'prop-types';
 
-import Auth from './Auth';
-import SignInButton from './SignInButton';
-import User from './User';
-import Products from './pages/Products';
+import Auth from '../containers/Auth';
+import UserMenu from '../containers/UserMenu';
+import User from '../containers/User';
+import Products from '../containers/Products';
 
 const styles = theme => ({
   flex: {
@@ -26,8 +26,13 @@ const styles = theme => ({
 
 class App extends Component {
   static propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    handleLoad: PropTypes.func.isRequired
   };
+
+  componentDidMount() {
+    this.props.handleLoad();
+  }
 
   render() {
     const { classes } = this.props;
@@ -47,7 +52,7 @@ class App extends Component {
               <Typography type="title" color="inherit" className={classes.flex}>
                 Title
               </Typography>
-              <Route component={SignInButton} />
+              <Route component={UserMenu} />
             </Toolbar>
           </AppBar>
           <Route path="/auth" component={Auth} />
