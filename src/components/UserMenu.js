@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from 'material-ui/Button';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 class UserMenu extends Component {
   static propTypes = {
@@ -16,7 +17,6 @@ class UserMenu extends Component {
 
   render() {
     const { history, isFetching, user } = this.props;
-    console.log(user);
 
     if (isFetching) return null;
 
@@ -30,4 +30,4 @@ class UserMenu extends Component {
   }
 }
 
-export default UserMenu;
+export default withRouter(UserMenu);
