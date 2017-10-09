@@ -11,7 +11,7 @@ export const REQUEST_QUERY = 'REQUEST_QUERY';
 export const RECEIVE_DOCUMENTS = 'RECEIVE_DOCUMENTS';
 export const RECEIVE_FAILUER = 'RECEIVE_FAILUER';
 
-const invalidateQuery = query => ({
+export const invalidateQuery = query => ({
   type: INVALIDATE_QUERY,
   query
 });
