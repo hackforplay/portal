@@ -1,15 +1,17 @@
 import firebase from './firebase';
 import 'firebase/firestore';
 
+import {
+  INVALIDATE_QUERY,
+  REQUEST_QUERY,
+  RECEIVE_DOCUMENTS,
+  RECEIVE_FAILUER
+} from '../constants/actionTypes';
+
 // To use offline
 if (process.env.NODE_ENV === 'production') {
   firebase.firestore().enablePersistence();
 }
-
-export const INVALIDATE_QUERY = 'INVALIDATE_QUERY';
-export const REQUEST_QUERY = 'REQUEST_QUERY';
-export const RECEIVE_DOCUMENTS = 'RECEIVE_DOCUMENTS';
-export const RECEIVE_FAILUER = 'RECEIVE_FAILUER';
 
 export const invalidateQuery = query => ({
   type: INVALIDATE_QUERY,
@@ -40,7 +42,12 @@ export const executeQuery = query => async dispatch => {
   dispatch(requestQuery(query));
 
   try {
-    let ref = firebase.firestore().collection(query.collectionPath);
+    console.log(firebase.firestore().Query, firebase.firestore.Query);
+    let ref = await new firebase.firestore.Query(
+      query.collectionPath,
+      firebase.firestore()
+    );
+    // let ref = firebase.firestore().collection();
     if (query.where) {
       ref = ref.where(...query.where);
     }

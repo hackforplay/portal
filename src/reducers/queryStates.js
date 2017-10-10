@@ -3,7 +3,7 @@ import {
   REQUEST_QUERY,
   RECEIVE_DOCUMENTS,
   RECEIVE_FAILUER
-} from '../actions';
+} from '../constants/actionTypes';
 
 const queryState = (
   state = {

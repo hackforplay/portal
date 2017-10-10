@@ -2,6 +2,7 @@ import firebase from './firebase';
 import firebaseui from 'firebaseui';
 import 'firebaseui/dist/firebaseui.css';
 
+import { SIGN_IN, SIGN_OUT } from '../constants/actionTypes';
 import { fetchUser } from './users';
 
 // FirebaseUI config.
@@ -19,9 +20,6 @@ const uiConfig = {
   // Terms of service url.
   tosUrl: '<your-tos-url>'
 };
-
-export const SIGN_IN = 'SIGN_IN';
-export const SIGN_OUT = 'SIGN_OUT';
 
 const signedIn = user => {
   return {

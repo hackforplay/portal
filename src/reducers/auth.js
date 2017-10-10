@@ -1,4 +1,4 @@
-import { SIGN_IN, SIGN_OUT } from '../actions';
+import { SIGN_IN, SIGN_OUT } from '../constants/actionTypes';
 
 export const auth = (state = { initialized: false, user: null }, action) => {
   switch (action.type) {

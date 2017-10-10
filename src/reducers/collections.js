@@ -1,4 +1,4 @@
-import { RECEIVE_DOCUMENTS } from '../actions';
+import { RECEIVE_DOCUMENTS } from '../constants/actionTypes';
 
 const docToPlaneObject = doc => {
   return {
