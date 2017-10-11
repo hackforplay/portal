@@ -1,14 +1,14 @@
+import randomstring from 'randomstring';
+
 import { queryStates as reducer } from './queryStates';
 import {
   INVALIDATE_QUERY,
-  REQUEST_QUERY,
+  REQUEST_DOCUMENTS,
   RECEIVE_DOCUMENTS,
   RECEIVE_FAILUER
-} from '../actions';
+} from '../constants/actionTypes';
 
-const mockQuery = jest.fn().mockReturnValue({
-  where: ['custom_id', '==', 'hackforplay']
-});
+const mockCanonical = jest.fn(() => randomstring.generate('10'));
 
 describe('queryStates reducer', () => {
   it('should return the initial state', () => {
@@ -16,10 +16,11 @@ describe('queryStates reducer', () => {
   });
 
   it('should handle INVALIDATE_QUERY', () => {
+    const canonical = mockCanonical();
     expect(
       reducer(
         {
-          [JSON.stringify(mockQuery())]: {
+          [canonical]: {
             isFetching: false,
             didInvalidate: false,
             error: null
@@ -27,11 +28,11 @@ describe('queryStates reducer', () => {
         },
         {
           type: INVALIDATE_QUERY,
-          query: mockQuery()
+          canonical
         }
       )
     ).toEqual({
-      [JSON.stringify(mockQuery())]: {
+      [canonical]: {
         isFetching: false,
         didInvalidate: true,
         error: null
@@ -39,14 +40,15 @@ describe('queryStates reducer', () => {
     });
   });
 
-  it('should handle REQUEST_QUERY', () => {
+  it('should handle REQUEST_DOCUMENTS', () => {
+    const canonical = mockCanonical();
     expect(
       reducer(undefined, {
-        type: REQUEST_QUERY,
-        query: mockQuery()
+        type: REQUEST_DOCUMENTS,
+        canonical
       })
     ).toEqual({
-      [JSON.stringify(mockQuery())]: {
+      [canonical]: {
         isFetching: true,
         didInvalidate: false,
         error: null
@@ -55,10 +57,11 @@ describe('queryStates reducer', () => {
   });
 
   it('should handle RECEIVE_DOCUMENTS', () => {
+    const canonical = mockCanonical();
     expect(
       reducer(
         {
-          [JSON.stringify(mockQuery())]: {
+          [canonical]: {
             isFetching: true,
             didInvalidate: false,
             error: null
@@ -66,12 +69,11 @@ describe('queryStates reducer', () => {
         },
         {
           type: RECEIVE_DOCUMENTS,
-          query: mockQuery(),
-          docs: []
+          canonical
         }
       )
     ).toEqual({
-      [JSON.stringify(mockQuery())]: {
+      [canonical]: {
         isFetching: false,
         didInvalidate: false,
         error: null
@@ -80,11 +82,12 @@ describe('queryStates reducer', () => {
   });
 
   it('should handle RECEIVE_FAILUER', () => {
+    const canonical = mockCanonical();
     const error = new Error('Error');
     expect(
       reducer(
         {
-          [JSON.stringify(mockQuery())]: {
+          [canonical]: {
             isFetching: true,
             didInvalidate: false,
             error: null
@@ -92,15 +95,17 @@ describe('queryStates reducer', () => {
         },
         {
           type: RECEIVE_FAILUER,
-          query: mockQuery(),
+          canonical,
           error
         }
       )
     ).toEqual({
-      [JSON.stringify(mockQuery())]: {
+      [canonical]: {
         isFetching: false,
         didInvalidate: false,
-        error
+        error: {
+          message: error.message
+        }
       }
     });
   });

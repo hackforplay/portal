@@ -3,64 +3,60 @@ import 'firebase/firestore';
 
 import {
   INVALIDATE_QUERY,
-  REQUEST_QUERY,
+  REQUEST_DOCUMENTS,
   RECEIVE_DOCUMENTS,
   RECEIVE_FAILUER
 } from '../constants/actionTypes';
+
+// See also https://firebase.google.com/docs/firestore/quickstart
 
 // To use offline
 if (process.env.NODE_ENV === 'production') {
   firebase.firestore().enablePersistence();
 }
 
+export const collection = collectionPath =>
+  firebase.firestore().collection(collectionPath);
+
+export const getCanonical = query => query._query.canonicalId();
+
+export const getCollectionPath = query => query._query.path.segments.join('/');
+
 export const invalidateQuery = query => ({
   type: INVALIDATE_QUERY,
+  canonical: getCanonical(query),
+  path: getCollectionPath(query),
   query
 });
 
-const requestQuery = query => ({
-  type: REQUEST_QUERY,
+export const requestDocuments = query => ({
+  type: REQUEST_DOCUMENTS,
+  canonical: getCanonical(query),
+  path: getCollectionPath(query),
   query
 });
 
-const receiveDocuments = (query, docs) => ({
+export const receiveDocuments = (query, docs) => ({
   type: RECEIVE_DOCUMENTS,
+  canonical: getCanonical(query),
+  path: getCollectionPath(query),
   query,
   docs,
   receivedAt: Date.now()
 });
 
-const receiveFailure = (query, error) => ({
+export const receiveFailure = (query, error) => ({
   type: RECEIVE_FAILUER,
+  canonical: getCanonical(query),
+  path: getCollectionPath(query),
   query,
   error,
   receivedAt: Date.now()
 });
 
-// https://firebase.google.com/docs/firestore/quickstart
-export const executeQuery = query => async dispatch => {
-  dispatch(requestQuery(query));
-
-  try {
-    console.log(firebase.firestore().Query, firebase.firestore.Query);
-    let ref = await new firebase.firestore.Query(
-      query.collectionPath,
-      firebase.firestore()
-    );
-    // let ref = firebase.firestore().collection();
-    if (query.where) {
-      ref = ref.where(...query.where);
-    }
-    const collection = await ref.get();
-    dispatch(receiveDocuments(query, collection.docs));
-  } catch (error) {
-    dispatch(receiveFailure(query, error));
-  }
-};
-
 const shouldQueryExecuted = (state, query) => {
-  const queryJson = JSON.stringify(query);
-  const queryState = state.queryStates[queryJson];
+  const canonical = getCanonical(query);
+  const queryState = state.queryStates[canonical];
   if (!queryState) {
     // そのクエリはまだ store に存在しない => 処理すべき
     return true;
@@ -73,8 +69,33 @@ const shouldQueryExecuted = (state, query) => {
   return queryState.didInvalidate;
 };
 
-export const requestDocuments = query => async (dispatch, getState) => {
-  if (shouldQueryExecuted(getState(), query)) {
-    await dispatch(executeQuery(query));
+export const request = (...queries) => async (dispatch, getState) => {
+  for (const query of queries) {
+    if (shouldQueryExecuted(getState(), query)) {
+      try {
+        dispatch(requestDocuments(query));
+        const collection = await query.get();
+        dispatch(receiveDocuments(query, collection.docs));
+      } catch (error) {
+        dispatch(receiveFailure(query, error));
+      }
+    }
   }
+};
+
+export const isFetching = (state, ...queries) => {
+  for (const query of queries) {
+    const canonical = getCanonical(query);
+    const queryState = state.queryStates[canonical];
+    if (!queryState) {
+      // そのクエリはまだ store に存在しない => 処理中
+      return true;
+    }
+    if (queryState && queryState.isFetching) {
+      // そのクエリは処理中である => 処理中
+      return true;
+    }
+  }
+  // 処理中のクエリは存在しない
+  return false;
 };

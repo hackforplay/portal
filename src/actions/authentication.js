@@ -3,7 +3,7 @@ import firebaseui from 'firebaseui';
 import 'firebaseui/dist/firebaseui.css';
 
 import { SIGN_IN, SIGN_OUT } from '../constants/actionTypes';
-import { fetchUser } from './users';
+import { collection, request } from './';
 
 // FirebaseUI config.
 const uiConfig = {
@@ -21,14 +21,14 @@ const uiConfig = {
   tosUrl: '<your-tos-url>'
 };
 
-const signedIn = user => {
+export const signedIn = user => {
   return {
     type: SIGN_IN,
     user
   };
 };
 
-const signedOut = () => {
+export const signedOut = () => {
   return {
     type: SIGN_OUT
   };
@@ -41,7 +41,9 @@ export const init = () => (dispatch, getState) => {
       if (user) {
         // User is signed in.
         dispatch(signedIn(user));
-        dispatch(fetchUser(user.uid));
+        // Fetch user
+        const query = collection('users').where('uid', '==', user.uid);
+        dispatch(request(query));
       } else {
         // User is signed out.
         dispatch(signedOut());

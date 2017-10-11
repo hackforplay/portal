@@ -1,45 +1,42 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
-  REQUEST_QUERY,
-  RECEIVE_DOCUMENTS,
-  RECEIVE_FAILUER,
-  requestDocuments
+  collection,
+  request,
+  getCanonical,
+  requestDocuments,
+  receiveDocuments,
+  receiveFailure
 } from './firestore';
+import {
+  REQUEST_DOCUMENTS,
+  RECEIVE_DOCUMENTS,
+  RECEIVE_FAILUER
+} from '../constants/actionTypes';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
-const mockQuery = jest.fn().mockReturnValue({
-  collectionPath: 'users'
-});
+const query = collection('users').where('custom_id', '==', 'test_user');
 
 Date.now = jest.fn().mockReturnValue(1507451369889);
 
 describe('firestore', () => {
-  it('creates REQUEST_QUERY and RECEIVE_DOCUMENTS when requestDocuments is done', async () => {
+  it('creates REQUEST_DOCUMENTS and RECEIVE_DOCUMENTS when request is done', async () => {
     const store = mockStore({ queryStates: {}, collections: { users: {} } });
 
-    await store.dispatch(requestDocuments(mockQuery()));
+    await store.dispatch(request(query));
 
     expect(store.getActions()).toEqual([
-      {
-        type: REQUEST_QUERY,
-        query: mockQuery()
-      },
-      {
-        type: RECEIVE_DOCUMENTS,
-        query: mockQuery(),
-        docs: [],
-        receivedAt: Date.now()
-      }
+      requestDocuments(query),
+      receiveDocuments(query, [])
     ]);
   });
 
-  it('avoids REQUEST_QUERY when requestDocuments called but already exist', async () => {
+  it('avoids REQUEST_DOCUMENTS when request called but already exist', async () => {
     const store = mockStore({
       queryStates: {
-        [JSON.stringify(mockQuery())]: {
+        [getCanonical(query)]: {
           isFetching: false,
           didInvalidate: false,
           error: null
@@ -47,7 +44,7 @@ describe('firestore', () => {
       }
     });
 
-    await store.dispatch(requestDocuments(mockQuery()));
+    await store.dispatch(request(query));
 
     expect(store.getActions()).toEqual([]);
   });

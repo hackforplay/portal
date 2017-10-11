@@ -1,27 +1,21 @@
 import { connect } from 'react-redux';
 
-import { requestDocuments } from '../actions';
+import { collection, request, isFetching } from '../actions';
 import Products from '../components/Products';
 
-const query = {
-  collectionPath: 'products'
-};
-const queryJson = JSON.stringify(query);
+const query = collection('products');
 
 const mapStateToProps = state => {
-  const queryInfo = state.queryStates[queryJson] || {
-    isFetching: true
-  };
   return {
     products: state.collections.products,
-    isFetching: queryInfo.isFetching
+    isFetching: isFetching(state, query)
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     handleLoad: () => {
-      dispatch(requestDocuments(query));
+      dispatch(request(query));
     }
   };
 };

@@ -1,9 +1,13 @@
 import {
   INVALIDATE_QUERY,
-  REQUEST_QUERY,
+  REQUEST_DOCUMENTS,
   RECEIVE_DOCUMENTS,
   RECEIVE_FAILUER
 } from '../constants/actionTypes';
+
+const errorToPlaneObject = error => ({
+  message: error.message
+});
 
 const queryState = (
   state = {
@@ -19,7 +23,7 @@ const queryState = (
         ...state,
         didInvalidate: true
       };
-    case REQUEST_QUERY:
+    case REQUEST_DOCUMENTS:
       return {
         ...state,
         isFetching: true,
@@ -35,7 +39,7 @@ const queryState = (
       return {
         ...state,
         isFetching: false,
-        error: action.error
+        error: errorToPlaneObject(action.error)
       };
     default:
       return state;
@@ -45,13 +49,13 @@ const queryState = (
 export const queryStates = (state = {}, action) => {
   switch (action.type) {
     case INVALIDATE_QUERY:
-    case REQUEST_QUERY:
+    case REQUEST_DOCUMENTS:
     case RECEIVE_DOCUMENTS:
     case RECEIVE_FAILUER:
-      const queryJson = JSON.stringify(action.query);
+      const { canonical } = action;
       return {
         ...state,
-        [queryJson]: queryState(state[queryJson], action)
+        [canonical]: queryState(state[canonical], action)
       };
     default:
       return state;
