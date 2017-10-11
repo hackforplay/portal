@@ -7,11 +7,14 @@ const docToPlaneObject = doc => {
   };
 };
 
-// TODO: Exclude document having same id of other one.
 export const documents = (state = [], action) => {
   switch (action.type) {
     case RECEIVE_DOCUMENTS:
-      return state.concat(action.docs.map(docToPlaneObject));
+      const docs = action.docs.map(docToPlaneObject);
+      // Replace item which has same id to the docs
+      return state
+        .filter(item => docs.every(doc => doc.id !== item.id))
+        .concat(docs);
     default:
       return state;
   }

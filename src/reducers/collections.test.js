@@ -72,4 +72,18 @@ describe('collections reducer', () => {
       products: documents(undefined, action2)
     });
   });
+
+  it('replace document which has overlapped id', () => {
+    const action = {
+      type: RECEIVE_DOCUMENTS,
+      path: 'users',
+      docs: [mockDoc()]
+    };
+
+    // Do the same action twice
+    const state1 = documents(undefined, action);
+    const state2 = documents(state1, action);
+
+    expect(state1).toEqual(state2);
+  });
 });
