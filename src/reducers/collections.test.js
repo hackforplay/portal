@@ -18,8 +18,8 @@ const mockDoc = jest.fn(() => {
 describe('collections reducer', () => {
   it('should return the initial state', () => {
     expect(collections(undefined, {})).toEqual({
-      users: {},
-      products: {}
+      users: [],
+      products: []
     });
   });
 
@@ -32,18 +32,18 @@ describe('collections reducer', () => {
 
     const state = documents(undefined, action);
 
-    expect(state).toEqual({
-      [action.docs[0].id]: {
+    expect(state).toEqual([
+      {
         id: action.docs[0].id,
         field_1: action.docs[0].data().field_1,
         field_2: action.docs[0].data().field_2
       },
-      [action.docs[1].id]: {
+      {
         id: action.docs[1].id,
         field_1: action.docs[1].data().field_1,
         field_2: action.docs[1].data().field_2
       }
-    });
+    ]);
   });
 
   it('collections should contains documents', () => {
@@ -62,7 +62,7 @@ describe('collections reducer', () => {
 
     expect(state).toEqual({
       users: documents(undefined, action1),
-      products: {}
+      products: []
     });
 
     state = collections(state, action2);
