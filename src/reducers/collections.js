@@ -1,4 +1,4 @@
-import { RECEIVE_DOCUMENTS } from '../actions';
+import { RECEIVE_DOCUMENTS } from '../constants/actionTypes';
 
 const docToPlaneObject = doc => {
   return {
@@ -7,10 +7,14 @@ const docToPlaneObject = doc => {
   };
 };
 
-const documents = (state = [], action) => {
+export const documents = (state = [], action) => {
   switch (action.type) {
     case RECEIVE_DOCUMENTS:
-      return state.concat(action.docs.map(docToPlaneObject));
+      const docs = action.docs.map(docToPlaneObject);
+      // Replace item which has same id to the docs
+      return state
+        .filter(item => docs.every(doc => doc.id !== item.id))
+        .concat(docs);
     default:
       return state;
   }
@@ -25,10 +29,14 @@ export const collections = (
 ) => {
   switch (action.type) {
     case RECEIVE_DOCUMENTS:
-      const key = action.query.collectionPath;
+      const { path } = action;
+      if (!state[path]) {
+        // Invalid collection path
+        throw new Error(`Collection '${path}' is not found`);
+      }
       return {
         ...state,
-        [key]: documents(state[key], action)
+        [path]: documents(state[path], action)
       };
     default:
       return state;

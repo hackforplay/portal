@@ -1,15 +1,25 @@
 import { connect } from 'react-redux';
 
-import { fetchUser, isFetchingUser, findUser } from '../actions';
+import { collection, request, isFetching } from '../actions';
 import User from '../components/User';
+
+const query = id => [
+  collection('users').where('uid', '==', id),
+  collection('users').where('custom_id', '==', id)
+];
+
+const filter = (state, id) =>
+  state.collections.users.find(
+    item => item.uid === id || item.custom_id === id
+  );
 
 const mapStateToProps = (state, props) => {
   // /users/:user の :user にあたる文字列
   const userId = props.match.params.user;
 
   return {
-    user: findUser(state, userId),
-    isFetching: isFetchingUser(state, userId)
+    user: filter(state, userId),
+    isFetching: isFetching(state, ...query(userId))
   };
 };
 
@@ -19,7 +29,7 @@ const mapDispatchToProps = (dispatch, props) => {
 
   return {
     handleLoad() {
-      dispatch(fetchUser(userId));
+      dispatch(request(...query(userId)));
     }
   };
 };

@@ -1,5 +1,5 @@
 import { auth as reducer } from './auth';
-import { SIGN_IN, SIGN_OUT } from '../actions';
+import { SIGN_IN, SIGN_OUT } from '../constants/actionTypes';
 
 describe('auth reducer', () => {
   it('should return the initial state', () => {
