@@ -2,5 +2,6 @@
   "editor.formatOnSave": true,
   "prettier.singleQuote": true,
   "javascript.validate.enable": false,
-  "html.format.indentInnerHtml": true
+  "html.format.indentInnerHtml": true,
+  "prettier.eslintIntegration": true
 }
