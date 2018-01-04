@@ -8,3 +8,4 @@
 [lints]
 
 [options]
+module.name_mapper.extension='css' -> '<PROJECT_ROOT>/flow/CSSAsset.js.flow'
