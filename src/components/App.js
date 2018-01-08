@@ -18,18 +18,18 @@ import Topic from '../containers/Topic';
 
 const styles = theme => ({
   flex: {
-    flex: 1
+    flex: 1,
   },
   menuButton: {
     marginLeft: -12,
-    marginRight: 20
-  }
+    marginRight: 20,
+  },
 });
 
 class App extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    handleLoad: PropTypes.func.isRequired
+    handleLoad: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -37,8 +37,6 @@ class App extends Component {
   }
 
   render() {
-    const { classes } = this.props;
-
     return (
       <Router>
         <div>

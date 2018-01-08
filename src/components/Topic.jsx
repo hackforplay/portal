@@ -17,9 +17,17 @@ const styles = {};
 function Topic() {
   return (
     <div style={{ backgroundColor: '#e1e5f9' }}>
-      <Slider dots infinite lazyLoad>
-        <div style={{ position: 'relative', height: 480, width: '100%' }}>
-          <img src={topbackUrl} alt="" style={{ position: 'absolute', width: '100%' }} />
+      <Slider dots infinite lazyLoad arrows={false}>
+        <div
+          style={{
+            position: 'relative',
+            height: 480,
+            width: '100%',
+            backgroundImage: `url(${topbackUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
           <div
             style={{
               position: 'absolute',
@@ -43,7 +51,8 @@ function Topic() {
         <h1>2</h1>
         <h1>3</h1>
       </Slider>
-      <Grid container style={{ padding: 60 }}>
+      <div style={{ marginBottom: 32 }} />
+      <Grid container spacing={0}>
         <Grid item xs={12}>
           <Paper
             elevation={1}
