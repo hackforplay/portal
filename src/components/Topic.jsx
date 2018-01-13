@@ -25,7 +25,7 @@ function Topic() {
             width: '100%',
             backgroundImage: `url(${topbackUrl})`,
             backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundPosition: 'center'
           }}
         >
           <div
@@ -33,7 +33,7 @@ function Topic() {
               position: 'absolute',
               width: '100%',
               height: '100%',
-              textAlign: 'center',
+              textAlign: 'center'
             }}
           >
             <img
@@ -42,7 +42,7 @@ function Topic() {
               style={{
                 marginLeft: 'auto',
                 marginRight: 'auto',
-                paddingTop: 60,
+                paddingTop: 60
               }}
             />
           </div>
@@ -139,7 +139,7 @@ function Product({ title, playcount }: ProductProps) {
 
 type ParagraphProps = {
   children: React.Node,
-  md: Number,
+  md: number,
 };
 
 const Paragraph = ({ children, md }: ParagraphProps) => (
@@ -150,7 +150,7 @@ const Paragraph = ({ children, md }: ParagraphProps) => (
         flex: '0 1 100%',
         padding: 60,
         textAlign: 'center',
-        margin: 16,
+        margin: 16
       }}
     >
       {children}
@@ -159,7 +159,7 @@ const Paragraph = ({ children, md }: ParagraphProps) => (
 );
 
 Paragraph.defaultProps = {
-  md: 12,
+  md: 12
 };
 
 export default withStyles(styles)(Topic);
