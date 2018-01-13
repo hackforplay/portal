@@ -1,6 +1,11 @@
 import React from 'react';
 import { MuiThemeProvider, withStyles } from 'material-ui/styles';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect
+} from 'react-router-dom';
 
 import theme from '../settings/theme';
 import Header from '../containers/Header';
@@ -20,14 +25,18 @@ function App() {
           <Route
             path="/contents/:tab"
             exact
-            render={({ match }) => <div>Official contents of {match.params.tab}</div>}
+            render={({ match }) => (
+              <div>Official contents of {match.params.tab}</div>
+            )}
           />
           <Route path="/kits" exact render={() => <div>Kit List</div>} />
           <Switch>
             <Redirect exact from="/products" to="/lists" />
             <Route
               path="/lists/search/:query?"
-              render={({ match }) => <div>Search result of {match.params.query}</div>}
+              render={({ match }) => (
+                <div>Search result of {match.params.query}</div>
+              )}
             />
             <Route
               path="/lists/:more?"
@@ -45,7 +54,9 @@ function App() {
           <Route
             path="/users/:user/search/:query?"
             exact
-            render={({ match }) => <div>User info with search result of {match.params.query}</div>}
+            render={({ match }) => (
+              <div>User info with search result of {match.params.query}</div>
+            )}
           />
         </div>
       </Router>

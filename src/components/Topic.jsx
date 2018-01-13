@@ -122,7 +122,7 @@ function Topic() {
 
 type ProductProps = {
   title: string,
-  playcount: number,
+  playcount: number
 };
 
 function Product({ title, playcount }: ProductProps) {
@@ -139,7 +139,7 @@ function Product({ title, playcount }: ProductProps) {
 
 type ParagraphProps = {
   children: React.Node,
-  md: number,
+  md: number
 };
 
 const Paragraph = ({ children, md }: ParagraphProps) => (

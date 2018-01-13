@@ -7,15 +7,15 @@ const SIGN_IN = 'portal/auth/SIGN_IN';
 const SIGN_OUT = 'portal/auth/SIGN_OUT';
 
 type Action = {
-  type: string,
+  type: string
 };
 
 type State = {
-  isSignedIn: boolean,
+  isSignedIn: boolean
 };
 
 const initialState: State = {
-  isSignedIn: false,
+  isSignedIn: false
 };
 
 // Root Reducer
@@ -24,12 +24,12 @@ export default (state: State = initialState, action: Action): State => {
     case SIGN_IN:
       return {
         ...state,
-        isSignedIn: true,
+        isSignedIn: true
       };
     case SIGN_OUT:
       return {
         ...state,
-        isSignedIn: false,
+        isSignedIn: false
       };
     default:
       return state;
@@ -39,9 +39,9 @@ export default (state: State = initialState, action: Action): State => {
 // Action Creators
 
 export const signIn = (): Action => ({
-  type: SIGN_IN,
+  type: SIGN_IN
 });
 
 export const signOut = (): Action => ({
-  type: SIGN_OUT,
+  type: SIGN_OUT
 });
