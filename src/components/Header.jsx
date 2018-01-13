@@ -5,32 +5,39 @@ import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
-import Menu, { MenuItem } from 'material-ui/Menu';
-
+import { MenuItem } from 'material-ui/Menu';
+import Popover from 'material-ui/Popover';
 import Button from 'material-ui/Button/Button';
+
+import googleIcon from '../resources/google.svg';
 
 type Props = {
   classes: {
     blank: string,
-  },
+    icon: string
+  }
 };
 
 type State = {
-  anchorEl: ?HTMLElement,
+  anchorEl: ?HTMLElement
 };
 
 @withStyles({
   blank: {
-    flex: 1,
+    flex: 1
   },
+  icon: {
+    width: 18,
+    marginRight: 12
+  }
 })
 class Header extends React.Component<Props, State> {
   static propTyeps = {
-    classes: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired
   };
 
   state = {
-    anchorEl: null,
+    anchorEl: null
   };
 
   handleClick = (event: SyntheticEvent<HTMLButtonElement>) => {
@@ -65,10 +72,22 @@ class Header extends React.Component<Props, State> {
             aria-owns={anchorEl ? 'simple-menu' : null}
             aria-haspopup="true"
             onClick={this.handleClick}
-          />
-          <Menu>
-            <MenuItem onClick={this.handleClose}>Google</MenuItem>
-          </Menu>
+          >
+            ログイン
+          </Button>
+          <Popover
+            id="simple-menu"
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={this.handleClose}
+          >
+            <MenuItem onClick={this.handleClose}>
+              <img src={googleIcon} alt="G" className={classes.icon} />
+              <Typography type="button">Google でログイン</Typography>
+            </MenuItem>
+          </Popover>
         </Toolbar>
       </AppBar>
     );
