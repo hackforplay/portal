@@ -9,7 +9,7 @@ import 'normalize.css';
 import './index.css';
 import App from './containers/App';
 import registerServiceWorker from './registerServiceWorker';
-import reducer from './reducers';
+import reducer from './ducks';
 
 const middleware = [thunk];
 if (process.env.NODE_ENV !== 'production') {

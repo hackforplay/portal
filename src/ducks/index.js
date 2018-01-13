@@ -1,6 +1,10 @@
 /* Composer of duck(action/actionCreator/reducer)s */
-import { combineReducers, compose, applyMiddleware, createStore } from 'redux';
+import { combineReducers } from 'redux';
 
-const store = createStore(reducer, applyMiddleware(...middleware));
+import * as auth from './auth';
 
-// reducer と actionCreator をまとめて export する
+const reducer = combineReducers({
+  [auth.storeName]: auth.default,
+});
+
+export default reducer;

@@ -53,85 +53,68 @@ function Topic() {
       </Slider>
       <div style={{ marginBottom: 32 }} />
       <Grid container spacing={0}>
-        <Grid item xs={12}>
-          <Paper
-            elevation={1}
-            style={{
-              flex: '0 1 100%',
-              padding: 60,
-              textAlign: 'center',
-            }}
-          >
-            <Typography type="headline" align="center" gutterBottom>
-              初めての方はこちら
-            </Typography>
-            <Button color="primary" raised href="http://hack-rpg.hackforplay.xyz">
-              チュートリアル
+        <Paragraph>
+          <Typography type="headline" align="center" gutterBottom>
+            初めての方はこちら
+          </Typography>
+          <Button color="primary" raised href="http://hack-rpg.hackforplay.xyz">
+            チュートリアル
+          </Button>
+        </Paragraph>
+        <Paragraph>
+          <Typography type="headline" align="center" gutterBottom>
+            おすすめのゲーム
+          </Typography>
+          <Grid container justify="center" spacing={24}>
+            {Array.from({ length: 8 }).map((_, key) => (
+              <Grid item key={key}>
+                <Product title="タイトル" playcount={6} />
+              </Grid>
+            ))}
+          </Grid>
+          <div style={{ textAlign: 'center', marginTop: 16 }}>
+            <Button color="primary" raised>
+              もっと見る
             </Button>
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper elevation={1} style={{ flex: '0 1 100%', padding: 48 }}>
-            <Typography type="headline" align="center" gutterBottom>
-              おすすめのゲーム
-            </Typography>
-            <Grid container justify="center" spacing={24}>
-              {Array.from({ length: 8 }).map((_, key) => (
-                <Grid item key={key}>
-                  <Product title="タイトル" playcount={6} />
-                </Grid>
-              ))}
+          </div>
+        </Paragraph>
+        <Paragraph md={6}>
+          <Typography type="body2" gutterBottom>
+            タイトル
+          </Typography>
+          <Typography type="body1" gutterBottom>
+            {'テキスト'.repeat(20)}
+          </Typography>
+          <Button color="primary" raised>
+            もっと読む
+          </Button>
+        </Paragraph>
+        <Paragraph md={6}>
+          <Typography type="headline" gutterBottom>
+            ワークショップ情報
+          </Typography>
+          <Grid container>
+            <Grid item xs={6}>
+              <Typography type="body1">{'text '.repeat(20)}</Typography>
             </Grid>
-            <div style={{ textAlign: 'center', marginTop: 16 }}>
+            <Grid item xs={6}>
+              <img src={thumbnailUrl} alt="" style={{ width: '100%' }} />
+            </Grid>
+            <Grid item xs={12}>
               <Button color="primary" raised>
-                もっと見る
+                チュートリアル
               </Button>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper elevation={1} style={{ padding: 16 }}>
-            <Typography type="body2" gutterBottom>
-              タイトル
-            </Typography>
-            <Typography type="body1" gutterBottom>
-              {'テキスト'.repeat(20)}
-            </Typography>
-            <Button color="primary" raised>
-              もっと読む
-            </Button>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper elevation={1} style={{ padding: 16 }}>
-            <Typography type="headline" gutterBottom>
-              ワークショップ情報
-            </Typography>
-            <Grid container>
-              <Grid item xs={6}>
-                <Typography type="body1">{'text '.repeat(20)}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <img src={thumbnailUrl} alt="" style={{ width: '100%' }} />
-              </Grid>
-              <Grid item xs={12}>
-                <Button color="primary" raised>
-                  チュートリアル
-                </Button>
-              </Grid>
             </Grid>
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper elevation={1} style={{ padding: 16 }}>
-            <Typography type="headline" gutterBottom>
-              お問い合わせ
-            </Typography>
-            <Button color="primary" raised>
-              お問い合わせはこちら
-            </Button>
-          </Paper>
-        </Grid>
+          </Grid>
+        </Paragraph>
+        <Paragraph>
+          <Typography type="headline" gutterBottom>
+            お問い合わせ
+          </Typography>
+          <Button color="primary" raised>
+            お問い合わせはこちら
+          </Button>
+        </Paragraph>
       </Grid>
     </div>
   );
@@ -153,5 +136,30 @@ function Product({ title, playcount }: ProductProps) {
     </div>
   );
 }
+
+type ParagraphProps = {
+  children: React.Node,
+  md: Number,
+};
+
+const Paragraph = ({ children, md }: ParagraphProps) => (
+  <Grid item xs={12} md={md}>
+    <Paper
+      elevation={1}
+      style={{
+        flex: '0 1 100%',
+        padding: 60,
+        textAlign: 'center',
+        margin: 16,
+      }}
+    >
+      {children}
+    </Paper>
+  </Grid>
+);
+
+Paragraph.defaultProps = {
+  md: 12,
+};
 
 export default withStyles(styles)(Topic);

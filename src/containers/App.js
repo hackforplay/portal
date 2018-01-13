@@ -1,19 +1,10 @@
 import { connect } from 'react-redux';
 
-import { init } from '../actions';
 import App from '../components/App';
 
-const mapStateToProps = state => {
-  return {};
-};
+const mapStateToProps = state => ({});
 
-const mapDispatchToProps = (dispatch, props) => {
-  return {
-    handleLoad() {
-      dispatch(init());
-    }
-  };
-};
+const mapDispatchToProps = (dispatch, props) => ({});
 
 const RootApp = connect(mapStateToProps, mapDispatchToProps)(App);
 export default RootApp;
