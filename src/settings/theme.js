@@ -1,7 +1,6 @@
 // @flow
 import { createMuiTheme } from 'material-ui/styles';
 import orange from 'material-ui/colors/orange';
-import grey from 'material-ui/colors/grey';
 import { dark, light } from 'material-ui/styles/createPalette';
 import { getContrastRatio } from 'material-ui/styles/colorManipulator';
 
@@ -22,15 +21,9 @@ const theme = createMuiTheme({
           : light.text.primary;
 
       return contrastText;
-    },
+    }
   },
-  overrides: {
-    MuiToolbar: {
-      root: {
-        backgroundColor: grey[900],
-      },
-    },
-  },
+  overrides: {}
 });
 
 export default theme;

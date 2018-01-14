@@ -8,11 +8,13 @@ import Typography from 'material-ui/Typography';
 import { MenuItem } from 'material-ui/Menu';
 import Popover from 'material-ui/Popover';
 import Button from 'material-ui/Button/Button';
+import grey from 'material-ui/colors/grey';
 
 import googleIcon from '../resources/google.svg';
 
 type Props = {
   classes: {
+    toolbar: string,
     blank: string,
     icon: string
   }
@@ -23,6 +25,9 @@ type State = {
 };
 
 @withStyles({
+  toolbar: {
+    backgroundColor: grey[900]
+  },
   blank: {
     flex: 1
   },
@@ -53,19 +58,19 @@ class Header extends React.Component<Props, State> {
     const { anchorEl } = this.state;
     return (
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar className={classes.toolbar}>
           <Typography type="title" color="inherit" component={Link} to="/">
             HackforPlay
           </Typography>
           <div className={classes.blank} />
-          <Button color="contrast" component={Link} to="/contents/tutorials">
+          <Button color="contrast" component={Link} to="/contents/tutorial">
             チュートリアル
           </Button>
           <Button color="contrast" component={Link} to="/lists">
-            プレイする
+            ゲームプレイ
           </Button>
-          <Button color="contrast" component={Link} to="/contents/kits">
-            ゲームを作る
+          <Button color="contrast" component={Link} to="/contents/kit">
+            クリエイト
           </Button>
           <Button
             color="contrast"

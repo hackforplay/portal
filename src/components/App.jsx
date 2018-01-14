@@ -11,6 +11,7 @@ import theme from '../settings/theme';
 import Header from '../containers/Header';
 import User from '../containers/User';
 import Topic from '../containers/Topic';
+import SearchBar from '../containers/SearchBar';
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
         <div>
           {/* Commons */}
           <Route component={Header} />
-          <Route path="/:any" render={() => <div>Navigation Bar</div>} />
+          <Route component={SearchBar} />
           {/* Pages */}
           <Route path="/" exact component={Topic} />
           <Route
@@ -29,7 +30,6 @@ function App() {
               <div>Official contents of {match.params.tab}</div>
             )}
           />
-          <Route path="/kits" exact render={() => <div>Kit List</div>} />
           <Switch>
             <Redirect exact from="/products" to="/lists" />
             <Route
@@ -49,7 +49,6 @@ function App() {
             exact
             render={({ match }) => <div>Product {match.params.id}</div>}
           />
-          <Route path="/kits" exact render={() => <div>Kits</div>} />
           <Route path="/users/:user" exact component={User} />
           <Route
             path="/users/:user/search/:query?"

@@ -12,6 +12,7 @@
         "aspects": ["noHref", "invalidHref", "preferButton"]
       }
     ],
+    "jsx-a11y/href-no-hash": ["off"],
     "no-duplicate-imports": ["off"],
     "import/no-duplicates": ["off"],
     "import/no-unresolved": ["off"],
