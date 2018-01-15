@@ -1,10 +1,18 @@
 [ignore]
+.*/node_modules/protobufjs/.*
 
 [include]
 
 [libs]
+flow-typed/url-loader.js
 
 [lints]
 
 [options]
-module.name_mapper.extension='css' -> '<PROJECT_ROOT>/flow/CSSAsset.js.flow'
+module.system=haste
+module.name_mapper.extension='css' -> 'empty/object'
+module.name_mapper.extension='jpg' -> 'URLLoader'
+module.name_mapper.extension='jpeg' -> 'URLLoader'
+module.name_mapper.extension='gif' -> 'URLLoader'
+module.name_mapper.extension='png' -> 'URLLoader'
+module.name_mapper.extension='svg' -> 'URLLoader'
