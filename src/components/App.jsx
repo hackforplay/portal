@@ -12,6 +12,7 @@ import Header from '../containers/Header';
 import User from '../containers/User';
 import Topic from '../containers/Topic';
 import SearchBar from '../containers/SearchBar';
+import Contents from '../containers/Contents';
 
 function App() {
   return (
@@ -23,13 +24,7 @@ function App() {
           <Route component={SearchBar} />
           {/* Pages */}
           <Route path="/" exact component={Topic} />
-          <Route
-            path="/contents/:tab"
-            exact
-            render={({ match }) => (
-              <div>Official contents of {match.params.tab}</div>
-            )}
-          />
+          <Route path="/contents/:tab" exact component={Contents} />
           <Switch>
             <Redirect exact from="/products" to="/lists" />
             <Route
