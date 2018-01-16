@@ -10,7 +10,7 @@ type Action = {
   type: string
 };
 
-type State = {
+export type State = {
   isSignedIn: boolean
 };
 

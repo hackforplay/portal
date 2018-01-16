@@ -13,6 +13,7 @@ import User from '../containers/User';
 import Topic from '../containers/Topic';
 import SearchBar from '../containers/SearchBar';
 import Contents from '../containers/Contents';
+import WorkLists from '../containers/WorkLists';
 
 function App() {
   return (
@@ -26,21 +27,17 @@ function App() {
           <Route path="/" exact component={Topic} />
           <Route path="/contents/:tab" exact component={Contents} />
           <Switch>
-            <Redirect exact from="/products" to="/lists" />
+            <Redirect exact from="/works" to="/lists" />
             <Route
               path="/lists/search/:query?"
               render={({ match }) => (
                 <div>Search result of {match.params.query}</div>
               )}
             />
-            <Route
-              path="/lists/:more?"
-              exact
-              render={({ match }) => <div>List of {match.params.more}</div>}
-            />
+            <Route path="/lists/:more?" exact component={WorkLists} />
           </Switch>
           <Route
-            path="/products/:id"
+            path="/works/:id"
             exact
             render={({ match }) => <div>Product {match.params.id}</div>}
           />

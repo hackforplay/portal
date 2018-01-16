@@ -1,6 +1,5 @@
-// @flow
 import { createMuiTheme } from 'material-ui/styles';
-import orange from 'material-ui/colors/orange';
+import { orange } from 'material-ui/colors';
 import { dark, light } from 'material-ui/styles/createPalette';
 import { getContrastRatio } from 'material-ui/styles/colorManipulator';
 
@@ -23,7 +22,23 @@ const theme = createMuiTheme({
       return contrastText;
     }
   },
-  overrides: {}
+  overrides: {
+    MuiCardHeader: {
+      root: {
+        padding: 4
+      }
+    },
+    MuiCardMedia: {
+      root: {
+        borderRadius: 2
+      }
+    },
+    MuiCardContent: {
+      root: {
+        padding: 4
+      }
+    }
+  }
 });
 
 export default theme;
