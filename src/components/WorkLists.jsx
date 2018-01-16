@@ -1,4 +1,5 @@
 import * as React from 'react';
+import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
@@ -68,7 +69,8 @@ export type ListProps = {
   works: Array<Work>,
   title: string,
   more: boolean,
-  moreLink: string
+  moreLink: string,
+  className?: string
 };
 
 @withStyles({
@@ -79,7 +81,8 @@ export type ListProps = {
   card: {
     minWidth: 240,
     maxWidth: 240,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    textAlign: 'left'
   },
   media: {
     height: 160
@@ -110,7 +113,7 @@ export class WorkList extends React.Component<ListProps> {
     const maxHeight = more ? null : 284;
 
     return (
-      <Paper className={classes.root}>
+      <Paper className={classNames(classes.root, this.props.className)}>
         <Typography type="headline" className={classes.headline}>
           {title}
         </Typography>
