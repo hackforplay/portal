@@ -14,6 +14,7 @@ import Topic from '../containers/Topic';
 import SearchBar from '../containers/SearchBar';
 import Contents from '../containers/Contents';
 import WorkLists from '../containers/WorkLists';
+import Work from '../containers/Work';
 
 function App() {
   return (
@@ -36,11 +37,7 @@ function App() {
             />
             <Route path="/lists/:more?" exact component={WorkLists} />
           </Switch>
-          <Route
-            path="/works/:id"
-            exact
-            render={({ match }) => <div>Product {match.params.id}</div>}
-          />
+          <Route path="/works/:id" exact component={Work} />
           <Route path="/users/:user" exact component={User} />
           <Route
             path="/users/:user/search/:query?"

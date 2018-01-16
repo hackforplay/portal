@@ -1,6 +1,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
@@ -71,8 +72,9 @@ export type ListProps = {
   more: boolean,
   moreLink: string,
   className?: string
-};
+} & ContextRouter;
 
+@withRouter
 @withStyles({
   root: {
     padding: theme.spacing.unit * 6,
@@ -108,7 +110,7 @@ export type ListProps = {
 })
 export class WorkList extends React.Component<ListProps> {
   render() {
-    const { classes, works, title, more, moreLink } = this.props;
+    const { classes, history, works, title, more, moreLink } = this.props;
 
     const maxHeight = more ? null : 284;
 
@@ -125,7 +127,11 @@ export class WorkList extends React.Component<ListProps> {
           >
             {works.map(item => (
               <Grid item={true} key={item.id}>
-                <Card elevation={0} className={classes.card}>
+                <Card
+                  elevation={0}
+                  className={classes.card}
+                  onClick={() => history.push(`/works/${item.id}`)}
+                >
                   <CardMedia
                     className={classes.media}
                     image={item.thumbnail}
@@ -133,7 +139,7 @@ export class WorkList extends React.Component<ListProps> {
                   />
                   <CardHeader
                     action={
-                      <IconButton>
+                      <IconButton onClick={e => e.stopPropagation()}>
                         <MoreVertIcon />
                       </IconButton>
                     }
