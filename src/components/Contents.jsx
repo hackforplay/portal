@@ -60,13 +60,12 @@ class Contents extends React.Component<Props> {
   }
 }
 
-type ContentProps = {
+type StageContentProps = {
   classes: {
     item: string,
     alignMiddle: string,
     img: string,
-    button: string,
-    responsive: string
+    button: string
   }
 } & ContentType;
 
@@ -89,7 +88,7 @@ type ContentProps = {
     marginRight: theme.spacing.unit * 2
   }
 })
-class StageContent extends React.Component<ContentProps> {
+class StageContent extends React.Component<StageContentProps> {
   render() {
     const { classes } = this.props;
 
@@ -125,6 +124,15 @@ class StageContent extends React.Component<ContentProps> {
   }
 }
 
+type YouTubeContentProps = {
+  classes: {
+    item: string,
+    alignMiddle: string,
+    button: string,
+    responsive: string
+  }
+} & ContentType;
+
 @withStyles({
   item: {
     paddingTop: theme.spacing.unit * 4,
@@ -134,6 +142,9 @@ class StageContent extends React.Component<ContentProps> {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between'
+  },
+  button: {
+    marginRight: theme.spacing.unit * 2
   },
   responsive: {
     position: 'relative',
@@ -148,12 +159,9 @@ class StageContent extends React.Component<ContentProps> {
       width: '100%',
       height: '100%'
     }
-  },
-  button: {
-    marginRight: theme.spacing.unit * 2
   }
 })
-class YouTubeContent extends React.Component<ContentProps> {
+class YouTubeContent extends React.Component<YouTubeContentProps> {
   render() {
     const { classes } = this.props;
 

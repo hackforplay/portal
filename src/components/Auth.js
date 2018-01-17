@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 export const ContainerId = 'firebaseui-auth-container';
 
 class Auth extends Component {
-  static propTypes = {
-    handleLoad: PropTypes.func.isRequired,
-    handleSignOut: PropTypes.func.isRequired,
-    isSignedOut: PropTypes.bool.isRequired
-  };
-
   componentDidMount() {
     this.props.handleLoad();
   }

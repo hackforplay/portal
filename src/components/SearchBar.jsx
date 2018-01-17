@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import pathToRegexp from 'path-to-regexp';
@@ -37,13 +36,6 @@ type State = {};
   }
 })
 class SearchBar extends React.Component<Props, State> {
-  static propTyeps = {
-    classes: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
-  };
-
   handleChangeTab = (event, value: string) => {
     const { location, history } = this.props;
 

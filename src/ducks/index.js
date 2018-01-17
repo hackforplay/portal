@@ -3,7 +3,9 @@
 import { combineReducers } from 'redux';
 
 import * as auth from './auth';
+import type { State as AuthState } from './auth';
 import * as work from './work';
+import type { State as WorkState } from './work';
 
 const reducer = combineReducers({
   [auth.storeName]: auth.default,
@@ -12,8 +14,8 @@ const reducer = combineReducers({
 
 // TODO: auth, work などのキーワードを二度定義している. 型チェックすべき
 export type StoreState = {
-  auth: auth.State,
-  work: work.State
+  auth: AuthState,
+  work: WorkState
 };
 
 export default reducer;

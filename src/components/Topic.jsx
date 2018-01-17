@@ -82,7 +82,7 @@ class Topic extends React.Component<Props> {
             </Button>
           </Paragraph>
           <WorkList
-            works={this.props.recommended}
+            works={this.props.trending}
             title="人気の作品"
             moreLink="/lists/trending"
             className={classes.workList}

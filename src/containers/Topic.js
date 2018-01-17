@@ -5,7 +5,7 @@ import type { StoreState } from '../ducks';
 
 const mapStateToProps = (state: StoreState, ownProps: Props) => {
   return {
-    recommended: state.work.recommended
+    trending: state.work.trending
   };
 };
 

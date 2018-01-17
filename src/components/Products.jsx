@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 
 const style = {
@@ -9,12 +8,6 @@ const style = {
 };
 
 class Products extends Component {
-  static propTypes = {
-    classes: PropTypes.object.isRequired,
-    products: PropTypes.array.isRequired,
-    handleLoad: PropTypes.func.isRequired
-  };
-
   state = {
     products: []
   };

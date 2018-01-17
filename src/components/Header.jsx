@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
@@ -37,10 +36,6 @@ type State = {
   }
 })
 class Header extends React.Component<Props, State> {
-  static propTyeps = {
-    classes: PropTypes.object.isRequired
-  };
-
   state = {
     anchorEl: null
   };

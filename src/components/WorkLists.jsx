@@ -109,6 +109,10 @@ export type ListProps = {
   }
 })
 export class WorkList extends React.Component<ListProps> {
+  static defaultProps = {
+    more: false
+  };
+
   pushInnerLink(to: string) {
     const { history } = this.props;
     return (event: SyntheticMouseEvent<HTMLButtonElement>) => {

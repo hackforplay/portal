@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { ContextRouter } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import { withStyles } from 'material-ui/styles';
@@ -28,11 +27,6 @@ export type Props = {
   }
 })
 class User extends React.Component<Props> {
-  static propTypes = {
-    classes: PropTypes.object.isRequired,
-    user: PropTypes.object
-  };
-
   render() {
     const { classes, match, lists } = this.props;
 
