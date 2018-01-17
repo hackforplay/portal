@@ -22,11 +22,9 @@ function App() {
     <MuiThemeProvider theme={theme}>
       <Router>
         <div>
-          {/* Commons */}
           <Route component={Header} />
           <Route path="/users/:id/:tab?" component={Profile} />
           <Route component={SearchBar} />
-          {/* Pages */}
           <Route path="/" exact component={Topic} />
           <Route path="/contents/:tab" exact component={Contents} />
           <Switch>
