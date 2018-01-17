@@ -1,6 +1,5 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import pathToRegexp from 'path-to-regexp';
@@ -10,7 +9,6 @@ import Toolbar from 'material-ui/Toolbar';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
-import grey from 'material-ui/colors/grey';
 import SearchIcon from 'material-ui-icons/Search';
 
 import { searchBarInfo } from '../settings/siteMap';
@@ -46,6 +44,28 @@ class SearchBar extends React.Component<Props, State> {
     history: PropTypes.object.isRequired
   };
 
+  handleChangeTab = (event, value: string) => {
+    const { location, history } = this.props;
+
+    // 現在表示している URL にふさわしいタブの状態を取得する
+    const info = searchBarInfo.find(item => {
+      const re = pathToRegexp(item.path);
+      return re.exec(location.pathname);
+    });
+
+    const keys = [];
+    const re = pathToRegexp(info.path, keys);
+    const params = re.exec(location.pathname);
+
+    const data = keys.reduce((p, c, i) => {
+      return { ...p, [`${c.name}`]: params[i + 1] };
+    }, {});
+    const toPath = pathToRegexp.compile(value);
+    const url = toPath(data);
+
+    history.push(url);
+  };
+
   render() {
     const { classes, location } = this.props;
 
@@ -61,20 +81,21 @@ class SearchBar extends React.Component<Props, State> {
     }
 
     // 現在のタブの位置を取得する
-    const tabIndex = info.tabs.findIndex(item => item.to === location.pathname);
+    const selected = info.tabs.find(item =>
+      pathToRegexp(item.to).exec(location.pathname)
+    );
 
     return (
-      <AppBar position="static" color="default">
+      <AppBar position="static" color="default" elevation={0}>
         <Toolbar className={classes.toolbar}>
           {info.text && <Typography type="title">{info.text}</Typography>}
-          <Tabs value={tabIndex} indicatorColor="primary">
+          <Tabs
+            value={selected && selected.to}
+            indicatorColor="primary"
+            onChange={this.handleChangeTab}
+          >
             {info.tabs.map(tab => (
-              <Tab
-                key={tab.text}
-                label={tab.text}
-                component={Link}
-                to={tab.to}
-              />
+              <Tab key={tab.to} label={tab.text} value={tab.to} />
             ))}
           </Tabs>
           <div className={classes.blank} />

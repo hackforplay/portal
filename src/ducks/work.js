@@ -15,6 +15,7 @@ export type Work = {
   title: string,
   thumbnail: string,
   author: {
+    id: string,
     name: string
   },
   date: string,
@@ -33,6 +34,7 @@ const initialState: State = {
       title: 'ゲームのタイトル',
       thumbnail,
       author: {
+        id: 'hoge',
         name: 'Hoge'
       },
       date: '3ヶ月前',
@@ -43,6 +45,7 @@ const initialState: State = {
       title: 'ゲームのタイトル',
       thumbnail,
       author: {
+        id: 'fuga',
         name: 'Fuga'
       },
       date: '3ヶ月前',
@@ -53,6 +56,7 @@ const initialState: State = {
       title: 'ゲームのタイトルゲームのタイトルゲームのタイトルゲームのタイトル',
       thumbnail,
       author: {
+        id: 'bura',
         name: 'buraburaburaburaburaburaburaburaburaburaburaburaburabura'
       },
       date: '3ヶ月前',
@@ -63,6 +67,7 @@ const initialState: State = {
       title: 'ゲームのタイトル',
       thumbnail,
       author: {
+        id: 'muga',
         name: 'Muga'
       },
       date: '3ヶ月前',
@@ -75,6 +80,7 @@ const initialState: State = {
       title: 'ダミーステージゲームのタイトル',
       thumbnail,
       author: {
+        id: 'hoge',
         name: 'Hoge'
       },
       date: 'ついさっき',
@@ -85,6 +91,7 @@ const initialState: State = {
       title: 'ダミーステージゲームのタイトル',
       thumbnail,
       author: {
+        id: 'fuga',
         name: 'Fuga'
       },
       date: 'ついさっき',
@@ -96,6 +103,7 @@ const initialState: State = {
         'ダミーステージゲームのタイトルゲームのタイトルゲームのタイトルゲームのタイトル',
       thumbnail,
       author: {
+        id: 'bura',
         name: 'buraburaburaburaburaburaburaburaburaburaburaburaburabura'
       },
       date: '１日前',
@@ -106,6 +114,7 @@ const initialState: State = {
       title: 'ダミーステージゲームのタイトル',
       thumbnail,
       author: {
+        id: 'muga',
         name: 'Muga'
       },
       date: '１日前',

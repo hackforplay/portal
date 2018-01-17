@@ -1,37 +1,28 @@
 import { connect } from 'react-redux';
 
-import { collection, request, isFetching } from '../actions';
 import User from '../components/User';
+import type { Props } from '../components/User';
+import type { StoreState } from '../ducks';
 
-const query = id => [
-  collection('users').where('uid', '==', id),
-  collection('users').where('custom_id', '==', id)
-];
-
-const filter = (state, id) =>
-  state.collections.users.find(
-    item => item.uid === id || item.custom_id === id
-  );
-
-const mapStateToProps = (state, props) => {
-  // /users/:user の :user にあたる文字列
-  const userId = props.match.params.user;
+const mapStateToProps = (state: StoreState, props: Props) => {
+  // /users/:id の :id にあたる文字列
+  const { id } = props.match.params;
 
   return {
-    user: filter(state, userId),
-    isFetching: isFetching(state, ...query(userId))
+    user: {
+      id,
+      displayName: `User-${id}`
+    },
+    lists: {
+      public: state.work.recommended,
+      private: state.work.recommended,
+      likes: state.work.recommended
+    }
   };
 };
 
 const mapDispatchToProps = (dispatch, props) => {
-  // /users/:user の :user にあたる文字列
-  const userId = props.match.params.user;
-
-  return {
-    handleLoad() {
-      dispatch(request(...query(userId)));
-    }
-  };
+  return {};
 };
 
 const SpecificUser = connect(mapStateToProps, mapDispatchToProps)(User);

@@ -109,10 +109,18 @@ export type ListProps = {
   }
 })
 export class WorkList extends React.Component<ListProps> {
-  render() {
-    const { classes, history, works, title, more, moreLink } = this.props;
+  pushInnerLink(to: string) {
+    const { history } = this.props;
+    return (event: SyntheticMouseEvent<HTMLButtonElement>) => {
+      // 外側の Link を無視する
+      event.stopPropagation();
+      // to へ移動する
+      history.push(to);
+    };
+  }
 
-    const maxHeight = more ? null : 284;
+  render() {
+    const { classes, works, title, more, moreLink } = this.props;
 
     return (
       <Paper className={classNames(classes.root, this.props.className)}>
@@ -120,17 +128,13 @@ export class WorkList extends React.Component<ListProps> {
           {title}
         </Typography>
         <Collapse collapsedHeight="284px" in={more}>
-          <Grid
-            container
-            justify="center"
-            style={{ maxHeight, overflow: 'hidden' }}
-          >
+          <Grid container justify="center">
             {works.map(item => (
               <Grid item={true} key={item.id}>
                 <Card
                   elevation={0}
                   className={classes.card}
-                  onClick={() => history.push(`/works/${item.id}`)}
+                  onClick={this.pushInnerLink(`/works/${item.id}`)}
                 >
                   <CardMedia
                     className={classes.media}
@@ -145,9 +149,12 @@ export class WorkList extends React.Component<ListProps> {
                     }
                     title={<Typography type="body2">{item.title}</Typography>}
                     subheader={
-                      <Link to="" className={classes.authorName}>
+                      <span
+                        className={classes.authorName}
+                        onClick={this.pushInnerLink(`/users/${item.author.id}`)}
+                      >
                         {item.author.name}
-                      </Link>
+                      </span>
                     }
                     classes={{
                       title: classes.title,

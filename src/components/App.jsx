@@ -15,6 +15,7 @@ import SearchBar from '../containers/SearchBar';
 import Contents from '../containers/Contents';
 import WorkLists from '../containers/WorkLists';
 import Work from '../containers/Work';
+import Profile from '../containers/Profile';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <div>
           {/* Commons */}
           <Route component={Header} />
+          <Route path="/users/:id/:tab?" component={Profile} />
           <Route component={SearchBar} />
           {/* Pages */}
           <Route path="/" exact component={Topic} />
@@ -38,14 +40,7 @@ function App() {
             <Route path="/lists/:more?" exact component={WorkLists} />
           </Switch>
           <Route path="/works/:id" exact component={Work} />
-          <Route path="/users/:user" exact component={User} />
-          <Route
-            path="/users/:user/search/:query?"
-            exact
-            render={({ match }) => (
-              <div>User info with search result of {match.params.query}</div>
-            )}
-          />
+          <Route path="/users/:id/:tab?/:query?" component={User} />
         </div>
       </Router>
     </MuiThemeProvider>
