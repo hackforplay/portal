@@ -63,9 +63,6 @@ class Topic extends React.Component<Props> {
               />
             </div>
           </div>
-          <h1>1</h1>
-          <h1>2</h1>
-          <h1>3</h1>
         </Slider>
         <div style={{ marginBottom: 32 }} />
         <Grid container spacing={0}>
@@ -76,6 +73,7 @@ class Topic extends React.Component<Props> {
             <Button
               color="primary"
               raised
+              target="_blank"
               href="http://hack-rpg.hackforplay.xyz"
             >
               チュートリアル

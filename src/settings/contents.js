@@ -37,6 +37,7 @@ export const tutorial: Array<ContentType> = [
         raised: true,
         color: 'primary',
         children: 'ゲームスタート',
+        target: '_blank',
         href: 'https://hack-rpg.hackforplay.xyz'
       }
     ]
