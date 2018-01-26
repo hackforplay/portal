@@ -68,7 +68,8 @@ class Header extends React.Component<Props, State> {
             クリエイト
           </Button>
           <Button
-            color="contrast"
+            raised
+            color="primary"
             aria-owns={anchorEl ? 'simple-menu' : null}
             aria-haspopup="true"
             onClick={this.handleClick}

@@ -9,6 +9,7 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import SearchIcon from 'material-ui-icons/Search';
+import { grey } from 'material-ui/colors';
 
 import { searchBarInfo } from '../settings/siteMap';
 
@@ -25,7 +26,8 @@ type State = {};
 @withRouter
 @withStyles({
   toolbar: {
-    minHeight: 48 // 上下のマージンをなくす
+    minHeight: 48, // 上下のマージンをなくす
+    backgroundColor: grey[50]
   },
   blank: {
     flex: 1
