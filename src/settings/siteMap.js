@@ -50,3 +50,28 @@ export const searchBarInfo = [
     ]
   }
 ];
+
+export const optionalHeaderInfo = [
+  {
+    path: '/contents/tutorial',
+    headline: 'チュートリアルをプレイして使い方を学ぼう',
+    caption:
+      'まずは下の「ゲームスタート」をクリックしてチュートリアルをやってみよう'
+  },
+  {
+    path: '/contents/youtube',
+    headline: 'HackforPlay の使い方を動画で学ぼう',
+    caption: 'チュートリアルのプレイ動画を見て、基本的な使い方をマスターしよう'
+  },
+  {
+    path: '/contents/kit',
+    headline: 'ゲームを作ってみよう',
+    caption: 'きみもオリジナルゲームを作ってクリエイターになろう！'
+  },
+  {
+    path: '/lists',
+    headline: 'みんなの作品をプレイしてみよう',
+    caption:
+      'ここにあるのはすべてユーザーの作品。たくさん遊んで好きなゲームをさがしてみよう'
+  }
+];

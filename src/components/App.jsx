@@ -16,6 +16,7 @@ import Contents from '../containers/Contents';
 import WorkLists from '../containers/WorkLists';
 import Work from '../containers/Work';
 import Profile from '../containers/Profile';
+import OptionalHeader from '../containers/OptionalHeader';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route component={Header} />
           <Route path="/users/:id/:tab?" component={Profile} />
           <Route component={SearchBar} />
+          <Route component={OptionalHeader} />
           <Route path="/" exact component={Topic} />
           <Route path="/contents/:tab" exact component={Contents} />
           <Switch>
