@@ -89,6 +89,10 @@ type StageContentProps = {
   }
 })
 class StageContent extends React.Component<StageContentProps> {
+  stopPropagation(event: SyntheticEvent<HTMLButtonElement>) {
+    event.stopPropagation();
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -115,7 +119,12 @@ class StageContent extends React.Component<StageContentProps> {
           </div>
           <div>
             {this.props.buttons.map((item, i) => (
-              <Button {...item} key={i} className={classes.button} />
+              <Button
+                {...item}
+                key={i}
+                className={classes.button}
+                onClick={this.stopPropagation}
+              />
             ))}
           </div>
         </Grid>
@@ -162,6 +171,10 @@ type YouTubeContentProps = {
   }
 })
 class YouTubeContent extends React.Component<YouTubeContentProps> {
+  stopPropagation(event: SyntheticMouseEvent<HTMLButtonElement>) {
+    event.stopPropagation();
+  }
+
   render() {
     const { classes } = this.props;
 
