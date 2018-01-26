@@ -58,7 +58,7 @@ class Profile extends React.Component<Props> {
             <Typography
               type="caption"
               align="left"
-            >{`フォロー ${12}・フォロワー ${65}・投稿数 ${56}`}</Typography>
+            >{`投稿数 ${56}`}</Typography>
           </Grid>
         </Grid>
       </div>

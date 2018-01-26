@@ -34,7 +34,7 @@ export const searchBarInfo = [
       {
         text: '保存済み',
         to: '/users/:id/private'
-      },
+      } /*,
       {
         text: 'お気に入り',
         to: '/users/:id/likes'
@@ -46,7 +46,7 @@ export const searchBarInfo = [
       {
         text: 'フォロワー',
         to: '/users/:id/followers'
-      }
+      }*/
     ]
   }
 ];
