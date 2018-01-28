@@ -12,7 +12,7 @@ type Props = {
   classes: {
     root: string
   },
-  user: UserType
+  user?: UserType
 };
 
 @withStyles({
@@ -34,6 +34,15 @@ type Props = {
 class Profile extends React.Component<Props> {
   render() {
     const { classes, user } = this.props;
+
+    if (!user) {
+      return (
+        <div className={classes.root}>
+          <Typography type="headline">ユーザーが見つかりません</Typography>
+        </div>
+      );
+    }
+
     return (
       <div className={classes.root}>
         <Grid container spacing={16} alignItems="center">
