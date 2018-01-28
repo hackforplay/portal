@@ -6,7 +6,7 @@ import Profile from '../components/Profile';
 const mapStateToProps = (state: StoreState, ownProps) => {
   // /users/:id の :id にあたる文字列
   const { id } = ownProps.match.params;
-  const user = state.user.users[id];
+  const user = state.user.byUserId[id];
 
   return {
     user

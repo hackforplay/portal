@@ -24,7 +24,11 @@ export type Work = {
 
 export type State = {
   recommended: Array<Work>,
-  trending: Array<Work>
+  trending: Array<Work>,
+  byUserId: {
+    [string]: Array<Work>
+  },
+  privates: Array<Work>
 };
 
 const initialState: State = {
@@ -120,7 +124,23 @@ const initialState: State = {
       date: '１日前',
       playcount: 100
     }
-  ]
+  ],
+  byUserId: {
+    xxxxxxxx: [
+      {
+        id: 'byuserid',
+        title: 'ダミーステージゲームのタイトル',
+        thumbnail,
+        author: {
+          id: 'xxxxxxxx',
+          name: 'ユーザー名'
+        },
+        date: '１日前',
+        playcount: 100
+      }
+    ]
+  },
+  privates: []
 };
 
 // Root Reducer

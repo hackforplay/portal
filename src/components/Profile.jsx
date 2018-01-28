@@ -25,7 +25,8 @@ type Props = {
   avatar: {
     width: 80,
     height: 80,
-    fontSize: '2.5rem'
+    fontSize: '2.5rem',
+    marginRight: theme.spacing.unit * 2
   },
   button: {
     marginBottom: theme.spacing.unit
@@ -45,22 +46,22 @@ class Profile extends React.Component<Props> {
 
     return (
       <div className={classes.root}>
-        <Grid container spacing={16} alignItems="center">
+        <Grid container spacing={0} alignItems="center">
           <Grid item>
             <Avatar className={classes.avatar}>
               {user.displayName.substr(0, 1)}
             </Avatar>
           </Grid>
           <Grid item>
-            <Grid container>
+            <Grid container spacing={0}>
               <Grid item>
                 <Typography type="headline">{user.displayName}</Typography>
               </Grid>
-              <Grid item>
+              {/* <Grid item>
                 <Button raised color="primary" className={classes.button}>
                   編集する
                 </Button>
-              </Grid>
+              </Grid> */}
             </Grid>
             <Typography
               type="caption"

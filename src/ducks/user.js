@@ -21,7 +21,7 @@ type ActionType = {
 };
 
 export type State = {
-  users: {
+  byUserId: {
     [string]: UserType
   }
 };
@@ -33,7 +33,7 @@ const mockUser: UserType = {
 };
 
 const initialState: State = {
-  users: {
+  byUserId: {
     [mockUser.id]: mockUser
   }
 };
