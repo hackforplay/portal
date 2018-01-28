@@ -6,15 +6,13 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button/Button';
 
 import theme from '../settings/theme';
+import type { UserType } from '../ducks/auth';
 
 type Props = {
   classes: {
     root: string
   },
-  user: {
-    id: string,
-    displayName: string
-  }
+  user: UserType
 };
 
 @withStyles({

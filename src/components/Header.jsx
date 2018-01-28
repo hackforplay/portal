@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
+import Avatar from 'material-ui/Avatar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import { MenuItem } from 'material-ui/Menu';
@@ -9,14 +10,19 @@ import Popover from 'material-ui/Popover';
 import Button from 'material-ui/Button/Button';
 import grey from 'material-ui/colors/grey';
 
+import theme from '../settings/theme';
 import googleIcon from '../resources/google.svg';
+import type { State as AuthType } from '../ducks/auth';
 
 type Props = {
   classes: {
     toolbar: string,
     blank: string,
-    icon: string
-  }
+    icon: string,
+    avatar: string
+  },
+  auth: AuthType,
+  signIn: () => {}
 };
 
 type State = {
@@ -33,6 +39,11 @@ type State = {
   icon: {
     width: 18,
     marginRight: 12
+  },
+  avatar: {
+    cursor: 'pointer',
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit
   }
 })
 class Header extends React.Component<Props, State> {
@@ -46,10 +57,12 @@ class Header extends React.Component<Props, State> {
 
   handleClose = () => {
     this.setState({ anchorEl: null });
+    // ダミーログイン
+    this.props.signIn();
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, auth } = this.props;
     const { anchorEl } = this.state;
     return (
       <AppBar position="static">
@@ -67,15 +80,26 @@ class Header extends React.Component<Props, State> {
           <Button color="contrast" component={Link} to="/contents/kit">
             クリエイト
           </Button>
-          <Button
-            raised
-            color="primary"
-            aria-owns={anchorEl ? 'simple-menu' : null}
-            aria-haspopup="true"
-            onClick={this.handleClick}
-          >
-            ログイン
-          </Button>
+          {auth.user ? (
+            <Avatar
+              aria-owns={anchorEl ? 'simple-menu' : null}
+              aria-haspopup="true"
+              className={classes.avatar}
+              onClick={this.handleClick}
+            >
+              {auth.user.displayName.substr(0, 1)}
+            </Avatar>
+          ) : (
+            <Button
+              raised
+              color="primary"
+              aria-owns={anchorEl ? 'simple-menu' : null}
+              aria-haspopup="true"
+              onClick={this.handleClick}
+            >
+              ログイン
+            </Button>
+          )}
           <Popover
             id="simple-menu"
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -84,10 +108,23 @@ class Header extends React.Component<Props, State> {
             open={Boolean(anchorEl)}
             onClose={this.handleClose}
           >
-            <MenuItem onClick={this.handleClose}>
-              <img src={googleIcon} alt="G" className={classes.icon} />
-              <Typography type="button">Google でログイン</Typography>
-            </MenuItem>
+            {auth.user ? null : (
+              <MenuItem onClick={this.handleClose}>
+                <img src={googleIcon} alt="Google" className={classes.icon} />
+                <Typography type="button">Google でログイン</Typography>
+              </MenuItem>
+            )}
+            {auth.user ? (
+              <MenuItem onClick={this.handleClose}>
+                <Typography
+                  type="button"
+                  component={Link}
+                  to={`/users/${auth.user.id}`}
+                >
+                  マイページ
+                </Typography>
+              </MenuItem>
+            ) : null}
           </Popover>
         </Toolbar>
       </AppBar>
