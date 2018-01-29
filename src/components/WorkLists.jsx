@@ -1,5 +1,7 @@
+// @flow
 import * as React from 'react';
 import classNames from 'classnames';
+import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
@@ -14,16 +16,30 @@ import { withStyles } from 'material-ui/styles';
 import { grey } from 'material-ui/colors';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 
-import type { Work } from '../ducks/work';
 import theme from '../settings/theme';
+import noImage from '../resources/no-image.png';
+
+type WorkType = {
+  id: number,
+  title: string,
+  description?: string,
+  image?: string,
+  asset_url: ?string,
+  search: string,
+  url: string,
+  author?: string,
+  created_at: string,
+  views: number,
+  favs: number
+};
 
 export type Props = {
   classes: {
     root: string
   },
   lists: {
-    recommended: Array<Work>,
-    trending: Array<Work>
+    recommended: Array<WorkType>,
+    trending: Array<WorkType>
   }
 } & ContextRouter;
 
@@ -58,7 +74,7 @@ class WorkLists extends React.Component<Props> {
 }
 
 export type ListProps = {
-  classes: {
+  classes?: {
     root: string,
     card: string,
     media: string,
@@ -67,7 +83,7 @@ export type ListProps = {
     subheader: string,
     authorName: string
   },
-  works: Array<Work>,
+  works: Array<WorkType>,
   title: string,
   more: boolean,
   moreLink: string,
@@ -123,6 +139,12 @@ export class WorkList extends React.Component<ListProps> {
     };
   }
 
+  fromNow(created_at: string) {
+    return moment(created_at, 'YYYY-MM-DD hh:mm:ss')
+      .add(moment().utcOffset(), 'm')
+      .fromNow();
+  }
+
   render() {
     const { classes, works, title, more, moreLink } = this.props;
 
@@ -134,15 +156,16 @@ export class WorkList extends React.Component<ListProps> {
         <Collapse collapsedHeight="284px" in={more}>
           <Grid container justify="center">
             {works.map(item => (
-              <Grid item={true} key={item.id}>
+              <Grid item key={item.id}>
                 <Card
                   elevation={0}
                   className={classes.card}
-                  onClick={this.pushInnerLink(`/works/${item.id}`)}
+                  onClick={() => window.open(item.url, item.url)}
+                  // onClick={  this.pushInnerLink(`/works/${item.search}`)}
                 >
                   <CardMedia
                     className={classes.media}
-                    image={item.thumbnail}
+                    image={item.image || noImage}
                     title={item.title}
                   />
                   <CardHeader
@@ -155,9 +178,9 @@ export class WorkList extends React.Component<ListProps> {
                     subheader={
                       <span
                         className={classes.authorName}
-                        onClick={this.pushInnerLink(`/users/${item.author.id}`)}
+                        // onClick={this.pushInnerLink(`/users/${item.author.id}`)}
                       >
-                        {item.author.name}
+                        {item.author}
                       </span>
                     }
                     classes={{
@@ -167,7 +190,9 @@ export class WorkList extends React.Component<ListProps> {
                   />
                   <CardContent>
                     <Typography type="caption">
-                      {`プレイ回数 ${item.playcount} 回・${item.date}`}
+                      {`プレイ回数 ${item.views} 回・${this.fromNow(
+                        item.created_at
+                      )}`}
                     </Typography>
                   </CardContent>
                 </Card>
