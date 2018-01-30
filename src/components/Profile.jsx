@@ -3,7 +3,7 @@ import { withStyles } from 'material-ui/styles';
 import Avatar from 'material-ui/Avatar';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button/Button';
+// import Button from 'material-ui/Button/Button';
 
 import theme from '../settings/theme';
 import type { UserType } from '../ducks/auth';

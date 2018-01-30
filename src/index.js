@@ -12,6 +12,7 @@ import './index.css';
 import App from './containers/App';
 import registerServiceWorker from './registerServiceWorker';
 import reducer from './ducks';
+import './settings/firebase';
 
 moment.locale(navigator.language);
 

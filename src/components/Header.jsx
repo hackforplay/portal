@@ -22,7 +22,8 @@ type Props = {
     avatar: string
   },
   auth: AuthType,
-  signIn: () => {}
+  signInWithGoogle: () => {},
+  signOut: () => {}
 };
 
 type State = {
@@ -55,10 +56,18 @@ class Header extends React.Component<Props, State> {
     this.setState({ anchorEl: event.currentTarget });
   };
 
+  signInWithGoogle = () => {
+    this.props.signInWithGoogle();
+    this.handleClose();
+  };
+
+  signOut = () => {
+    this.props.signOut();
+    this.handleClose();
+  };
+
   handleClose = () => {
     this.setState({ anchorEl: null });
-    // ダミーログイン
-    this.props.signIn();
   };
 
   render() {
@@ -109,7 +118,7 @@ class Header extends React.Component<Props, State> {
             onClose={this.handleClose}
           >
             {auth.user ? null : (
-              <MenuItem onClick={this.handleClose}>
+              <MenuItem onClick={this.signInWithGoogle}>
                 <img src={googleIcon} alt="Google" className={classes.icon} />
                 <Typography type="button">Google でログイン</Typography>
               </MenuItem>
@@ -119,10 +128,15 @@ class Header extends React.Component<Props, State> {
                 <Typography
                   type="button"
                   component={Link}
-                  to={`/users/${auth.user.id}`}
+                  to={`/users/${auth.user.uid}`}
                 >
                   マイページ
                 </Typography>
+              </MenuItem>
+            ) : null}
+            {auth.user ? (
+              <MenuItem onClick={this.signOut}>
+                <Typography type="button">ログアウト</Typography>
               </MenuItem>
             ) : null}
           </Popover>
