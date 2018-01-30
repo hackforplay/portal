@@ -9,6 +9,7 @@ flow-typed/url-loader.js
 [lints]
 
 [options]
+esproposal.decorators=ignore
 module.system=haste
 module.name_mapper.extension='css' -> 'empty/object'
 module.name_mapper.extension='jpg' -> 'URLLoader'
