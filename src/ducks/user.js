@@ -3,6 +3,8 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
 
+import type { Statefull } from './helpers';
+
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'user';
 
@@ -19,26 +21,7 @@ type UserData = {
   createdAt: string
 };
 
-export type UserType =
-  | {
-      isAvailable: false,
-      isProcessing: false
-    }
-  | {
-      isAvailable: false,
-      isProcessing: true
-    }
-  | {
-      isAvailable: false,
-      isProcessing: false,
-      isEmpty: true
-    }
-  | {
-      isAvailable: true,
-      isProcessing: false,
-      isEmpty: false,
-      data: UserData
-    };
+export type UserType = Statefull<UserData>;
 
 type ActionType =
   | {
@@ -157,7 +140,6 @@ export const fetchUserIfNeeded = (uid: string) => (
 // Helpers
 
 export function getUserByUid(state: { user: State }, uid: string): UserType {
-  // デフォルトは isProcessing (処理中)
   return (
     state.user.byUid[uid] || {
       isAvailable: false,
