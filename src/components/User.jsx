@@ -11,13 +11,10 @@ export type Props = {
   classes: {
     root: string
   },
-  user: {
-    displayName: string
-  },
   lists: {
     public: Array<Work>,
-    private: Array<Work>,
-    likes: Array<Work>
+    private: Array<Work> //,
+    // likes: Array<Work>
   }
 } & ContextRouter;
 

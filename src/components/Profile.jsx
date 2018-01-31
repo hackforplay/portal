@@ -1,3 +1,4 @@
+// @flow
 import * as React from 'react';
 import { withStyles } from 'material-ui/styles';
 import Avatar from 'material-ui/Avatar';
@@ -6,13 +7,15 @@ import Typography from 'material-ui/Typography';
 // import Button from 'material-ui/Button/Button';
 
 import theme from '../settings/theme';
-import type { UserType } from '../ducks/auth';
+import type { UserType } from '../ducks/user';
 
 type Props = {
   classes: {
-    root: string
+    root: string,
+    avatar: string,
+    button: string
   },
-  user?: UserType
+  user: UserType
 };
 
 @withStyles({
@@ -36,10 +39,18 @@ class Profile extends React.Component<Props> {
   render() {
     const { classes, user } = this.props;
 
-    if (!user) {
+    if (user.isEmpty) {
       return (
         <div className={classes.root}>
           <Typography type="headline">ユーザーが見つかりません</Typography>
+        </div>
+      );
+    }
+
+    if (!user.isAvailable) {
+      return (
+        <div className={classes.root}>
+          <Typography type="headline">ロード中です</Typography>
         </div>
       );
     }
@@ -48,14 +59,20 @@ class Profile extends React.Component<Props> {
       <div className={classes.root}>
         <Grid container spacing={0} alignItems="center">
           <Grid item>
-            <Avatar className={classes.avatar}>
-              {user.displayName.substr(0, 1)}
-            </Avatar>
+            {user.data.photoURL ? (
+              // アイコンアバター
+              <Avatar className={classes.avatar} src={user.data.photoURL} />
+            ) : (
+              // 文字アバター
+              <Avatar className={classes.avatar}>
+                {user.data.displayName.substr(0, 1)}
+              </Avatar>
+            )}
           </Grid>
           <Grid item>
             <Grid container spacing={0}>
               <Grid item>
-                <Typography type="headline">{user.displayName}</Typography>
+                <Typography type="headline">{user.data.displayName}</Typography>
               </Grid>
               {/* <Grid item>
                 <Button raised color="primary" className={classes.button}>
@@ -63,10 +80,9 @@ class Profile extends React.Component<Props> {
                 </Button>
               </Grid> */}
             </Grid>
-            <Typography
-              type="caption"
-              align="left"
-            >{`投稿数 ${56}`}</Typography>
+            <Typography type="caption" align="left">{`投稿数 ${
+              user.data.worksNum
+            }`}</Typography>
           </Grid>
         </Grid>
       </div>

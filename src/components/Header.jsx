@@ -1,3 +1,4 @@
+// @flow
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
@@ -12,7 +13,7 @@ import grey from 'material-ui/colors/grey';
 
 import theme from '../settings/theme';
 import googleIcon from '../resources/google.svg';
-import type { State as AuthType } from '../ducks/auth';
+import type { UserType } from '../ducks/user';
 
 type Props = {
   classes: {
@@ -21,7 +22,7 @@ type Props = {
     icon: string,
     avatar: string
   },
-  auth: AuthType,
+  user: UserType,
   signInWithGoogle: () => {},
   signOut: () => {}
 };
@@ -71,7 +72,7 @@ class Header extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, auth } = this.props;
+    const { classes, user } = this.props;
     const { anchorEl } = this.state;
     return (
       <AppBar position="static">
@@ -89,15 +90,27 @@ class Header extends React.Component<Props, State> {
           <Button color="contrast" component={Link} to="/contents/kit">
             クリエイト
           </Button>
-          {auth.user ? (
-            <Avatar
-              aria-owns={anchorEl ? 'simple-menu' : null}
-              aria-haspopup="true"
-              className={classes.avatar}
-              onClick={this.handleClick}
-            >
-              {auth.user.displayName.substr(0, 1)}
-            </Avatar>
+          {user.isAvailable ? (
+            user.data.photoURL ? (
+              // アイコンアバター
+              <Avatar
+                aria-owns={anchorEl ? 'simple-menu' : null}
+                aria-haspopup="true"
+                className={classes.avatar}
+                src={user.data.photoURL}
+                onClick={this.handleClick}
+              />
+            ) : (
+              // 文字アバター
+              <Avatar
+                aria-owns={anchorEl ? 'simple-menu' : null}
+                aria-haspopup="true"
+                className={classes.avatar}
+                onClick={this.handleClick}
+              >
+                {user.data.displayName.substr(0, 1)}
+              </Avatar>
+            )
           ) : (
             <Button
               raised
@@ -117,28 +130,27 @@ class Header extends React.Component<Props, State> {
             open={Boolean(anchorEl)}
             onClose={this.handleClose}
           >
-            {auth.user ? null : (
-              <MenuItem onClick={this.signInWithGoogle}>
-                <img src={googleIcon} alt="Google" className={classes.icon} />
-                <Typography type="button">Google でログイン</Typography>
-              </MenuItem>
-            )}
-            {auth.user ? (
+            {user.isAvailable ? (
               <MenuItem onClick={this.handleClose}>
                 <Typography
                   type="button"
                   component={Link}
-                  to={`/users/${auth.user.uid}`}
+                  to={`/users/${user.data.uid}`}
                 >
                   マイページ
                 </Typography>
               </MenuItem>
             ) : null}
-            {auth.user ? (
+            {user.isAvailable || user.isProcessing ? (
               <MenuItem onClick={this.signOut}>
                 <Typography type="button">ログアウト</Typography>
               </MenuItem>
-            ) : null}
+            ) : (
+              <MenuItem onClick={this.signInWithGoogle}>
+                <img src={googleIcon} alt="Google" className={classes.icon} />
+                <Typography type="button">Google でログイン</Typography>
+              </MenuItem>
+            )}
           </Popover>
         </Toolbar>
       </AppBar>

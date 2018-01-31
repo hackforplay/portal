@@ -7,21 +7,19 @@ export const storeName: string = 'auth';
 const SIGN_IN = 'portal/auth/SIGN_IN';
 const SIGN_OUT = 'portal/auth/SIGN_OUT';
 
-type UserType = {
-  uid: string,
-  displayName: ?string,
-  email: ?string,
-  photoURL: ?string,
-  worksNum: number
-};
+type User = $npm$firebase$auth$User;
 
-type ActionType = {
-  type: string,
-  user?: UserType
-};
+type ActionType =
+  | {
+      type: typeof SIGN_IN,
+      user: User
+    }
+  | {
+      type: typeof SIGN_OUT
+    };
 
 export type State = {
-  user?: UserType
+  user?: User
 };
 
 const initialState: State = {};
@@ -35,6 +33,7 @@ export default (state: State = initialState, action: ActionType): State => {
         user: action.user
       };
     case SIGN_OUT:
+      // delete state.user
       const { user, ...next } = state;
       return next;
     default:
@@ -44,7 +43,7 @@ export default (state: State = initialState, action: ActionType): State => {
 
 // Action Creators
 
-export const signIn = (user: UserType): ActionType => ({
+export const signIn = (user: User): ActionType => ({
   type: SIGN_IN,
   user
 });
@@ -58,11 +57,9 @@ export const initializeAuth = () => (dispatch, getState: () => State) => {
   firebase.auth().getRedirectResult();
 
   // ユーザーの情報を監視
-  firebase.auth().onAuthStateChanged(authUser => {
-    if (authUser) {
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
       // User is signed in.
-      const { displayName, email, uid, photoURL } = authUser;
-      const user = { displayName, email, uid, photoURL, worksNum: 0 };
       dispatch(signIn(user));
     } else if (getState().user) {
       // No use is signed in.

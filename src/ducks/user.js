@@ -1,40 +1,90 @@
 // @flow
 
+import firebase from 'firebase';
+import 'firebase/firestore';
+
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'user';
 
 // TODO: 実際にはページングやクエリに対応する ActionType が必要
 const LOAD = 'portal/user/LOAD';
-const CREATE = 'portal/user/CREATE';
-const UPDATE = 'portal/user/UPDATE';
-const REMOVE = 'portal/user/REMOVE';
+const SET = 'portal/user/SET';
 
-type UserType = {
-  id: string,
+type UserData = {
+  uid: string,
   displayName: string,
-  worksNum: number
+  email: string,
+  photoURL: string,
+  worksNum: number,
+  createdAt: string
 };
 
-type ActionType = {
-  type: string,
-  user?: UserType
-};
+export type UserType =
+  | {
+      isAvailable: false,
+      isProcessing: false
+    }
+  | {
+      isAvailable: false,
+      isProcessing: true
+    }
+  | {
+      isAvailable: false,
+      isProcessing: false,
+      isEmpty: true
+    }
+  | {
+      isAvailable: true,
+      isProcessing: false,
+      isEmpty: false,
+      data: UserData
+    };
+
+type ActionType =
+  | {
+      type: typeof LOAD,
+      uid: string
+    }
+  | {
+      type: typeof SET,
+      uid: string,
+      user?: UserData
+    };
 
 export type State = {
-  byUserId: {
-    [string]: UserType
+  byUid: {
+    [string]: ?UserType
   }
 };
 
-const mockUser: UserType = {
-  id: 'xxxxxxxx',
-  displayName: 'ユーザー名',
-  worksNum: 56
+const initialState: State = {
+  byUid: {}
 };
 
-const initialState: State = {
-  byUserId: {
-    [mockUser.id]: mockUser
+// Reducers
+
+const userReducer = (user: ?UserType, action: ActionType): ?UserType => {
+  switch (action.type) {
+    case LOAD:
+      return {
+        isAvailable: false,
+        isProcessing: true
+      };
+    case SET:
+      return action.user
+        ? {
+            isAvailable: true,
+            isProcessing: false,
+            isEmpty: false,
+            data: action.user
+          }
+        : {
+            isAvailable: false,
+            isProcessing: false,
+            isEmpty: true
+          };
+    default:
+      return user;
   }
 };
 
@@ -42,20 +92,15 @@ const initialState: State = {
 export default (state: State = initialState, action: ActionType): State => {
   switch (action.type) {
     case LOAD:
-      return {
-        ...state
+    case SET:
+      const currentUser = state.byUid[action.uid];
+      const byUid = {
+        ...state.byUid,
+        [action.uid]: userReducer(currentUser, action)
       };
-    case CREATE:
       return {
-        ...state
-      };
-    case UPDATE:
-      return {
-        ...state
-      };
-    case REMOVE:
-      return {
-        ...state
+        ...state,
+        byUid
       };
     default:
       return state;
@@ -64,21 +109,59 @@ export default (state: State = initialState, action: ActionType): State => {
 
 // Action Creators
 
-export const loadUsers = () => ({
-  type: LOAD
+export const loadUser = (uid: string): ActionType => ({
+  type: LOAD,
+  uid
 });
 
-export const createUser = (user: UserType) => ({
-  type: CREATE,
+export const setUser = (user: UserData): ActionType => ({
+  type: SET,
+  uid: user.uid,
   user
 });
 
-export const updateUser = (user: UserType) => ({
-  type: UPDATE,
-  user
+export const setUserNotFound = (uid: string): ActionType => ({
+  type: SET,
+  uid
 });
 
-export const removeUser = (user: UserType) => ({
-  type: REMOVE,
-  user
-});
+export const fetchUserIfNeeded = (uid: string) => (
+  dispatch,
+  getState: () => { user: State }
+) => {
+  // その UID が Store にあるか確認
+  const currentUser = getUserByUid(getState(), uid);
+  if (currentUser && (currentUser.isProcessing || currentUser.isAvailable)) {
+    // すでにリクエストが送られているか、取得済み
+    return;
+  }
+  // リクエストを送る
+  dispatch(loadUser(uid));
+  firebase
+    .firestore()
+    .collection('users')
+    .doc(uid)
+    .onSnapshot(snapshot => {
+      console.log('onSnapShot');
+      if (snapshot && snapshot.exists) {
+        // ユーザー情報をストアに格納
+        const user = { ...snapshot.data(), uid: snapshot.id };
+        dispatch(setUser(user));
+      } else {
+        // 存在しない UID
+        dispatch(setUserNotFound(uid));
+      }
+    });
+};
+
+// Helpers
+
+export function getUserByUid(state: { user: State }, uid: string): UserType {
+  // デフォルトは isProcessing (処理中)
+  return (
+    state.user.byUid[uid] || {
+      isAvailable: false,
+      isProcessing: false
+    }
+  );
+}

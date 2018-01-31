@@ -1,3 +1,4 @@
+// @flow
 import { connect } from 'react-redux';
 
 import User from '../components/User';
@@ -7,12 +8,10 @@ import type { StoreState } from '../ducks';
 const mapStateToProps = (state: StoreState, props: Props) => {
   // /users/:id の :id にあたる文字列
   const { id } = props.match.params;
-  const user = state.user.byUserId[id];
-  const publicWorks = state.work.byUserId[id];
+  const publicWorks = state.work.byUserId[id] || [];
   const { privates } = state.work;
 
   return {
-    user,
     lists: {
       public: publicWorks,
       private: privates

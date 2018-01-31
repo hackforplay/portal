@@ -13,6 +13,7 @@ type Props = {
   classes: {}
 } & ContextRouter;
 
+@withRouter
 @withStyles({
   root: {
     paddingTop: theme.spacing.unit * 6,
