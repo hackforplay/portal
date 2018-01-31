@@ -23,7 +23,7 @@ export type Props = {
     padding: theme.spacing.unit * 4
   }
 })
-class User extends React.Component<Props> {
+class UserWorks extends React.Component<Props> {
   render() {
     const { classes, match, lists } = this.props;
 
@@ -59,4 +59,4 @@ class User extends React.Component<Props> {
   }
 }
 
-export default User;
+export default UserWorks;

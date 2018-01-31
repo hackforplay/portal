@@ -1,8 +1,8 @@
 // @flow
 import { connect } from 'react-redux';
 
-import User from '../components/User';
-import type { Props } from '../components/User';
+import UserWorks from '../components/UserWorks';
+import type { Props } from '../components/UserWorks';
 import type { StoreState } from '../ducks';
 
 const mapStateToProps = (state: StoreState, props: Props) => {
@@ -10,6 +10,8 @@ const mapStateToProps = (state: StoreState, props: Props) => {
   const { id } = props.match.params;
   const publicWorks = state.work.byUserId[id] || [];
   const { privates } = state.work;
+
+  // この辺のタイプをヘルパーでいい感じにする
 
   return {
     lists: {
@@ -23,5 +25,4 @@ const mapDispatchToProps = (dispatch, props) => {
   return {};
 };
 
-const SpecificUser = connect(mapStateToProps, mapDispatchToProps)(User);
-export default SpecificUser;
+export default connect(mapStateToProps, mapDispatchToProps)(UserWorks);

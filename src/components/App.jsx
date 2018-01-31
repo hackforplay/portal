@@ -9,7 +9,7 @@ import {
 
 import theme from '../settings/theme';
 import Header from '../containers/Header';
-import User from '../containers/User';
+import UserWorks from '../containers/UserWorks';
 import Topic from '../containers/Topic';
 import SearchBar from '../containers/SearchBar';
 import Contents from '../containers/Contents';
@@ -40,7 +40,7 @@ function App() {
             <Route path="/lists/:more?" exact component={WorkLists} />
           </Switch>
           <Route path="/works/:id" exact component={Work} />
-          <Route path="/users/:id/:tab?/:query?" component={User} />
+          <Route path="/users/:id/:tab?/:query?" component={UserWorks} />
         </div>
       </Router>
     </MuiThemeProvider>
