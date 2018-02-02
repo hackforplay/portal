@@ -158,6 +158,16 @@ const request = (query: {
     .then(text => JSON.parse(text));
 };
 
+export const loadRecommended = (): Action => ({
+  type: LOAD_LIST,
+  listType: 'recommended'
+});
+
+export const loadTrending = (): Action => ({
+  type: LOAD_LIST,
+  listType: 'trending'
+});
+
 export const addRecommended = (payload: Array<WorkData>): Action => ({
   type: SET_LIST,
   listType: 'recommended',
@@ -195,7 +205,7 @@ export const fetchRecommendedWorks = () => async (
   }
 
   try {
-    dispatch({ type: LOAD_LIST });
+    dispatch(loadRecommended());
     // TODO: 手動ピックアップ
     const result = await request({
       sort: 'created_at',
@@ -219,7 +229,7 @@ export const fetchTrendingWorks = () => async (
   }
 
   try {
-    dispatch({ type: LOAD_LIST });
+    dispatch(loadTrending());
     const result = await request({
       sort: 'favs',
       direction: 'desc',

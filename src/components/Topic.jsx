@@ -26,7 +26,8 @@ type Props = {
 @withStyles({
   workList: {
     margin: theme.spacing.unit * 2,
-    textAlign: 'center'
+    textAlign: 'center',
+    flexGrow: 1
   }
 })
 class Topic extends React.Component<Props> {
@@ -86,7 +87,7 @@ class Topic extends React.Component<Props> {
             moreLink="/lists/trending"
             className={classes.workList}
           />
-          <Paragraph md={6}>
+          {/* <Paragraph md={6}>
             <Typography type="body2" gutterBottom>
               タイトル
             </Typography>
@@ -114,12 +115,17 @@ class Topic extends React.Component<Props> {
                 </Button>
               </Grid>
             </Grid>
-          </Paragraph>
+          </Paragraph> */}
           <Paragraph>
             <Typography type="headline" gutterBottom>
               お問い合わせ
             </Typography>
-            <Button color="primary" raised>
+            <Button
+              color="primary"
+              raised
+              href="https://goo.gl/forms/S655BeMUpNHjmAtg1"
+              target="_blank"
+            >
               お問い合わせはこちら
             </Button>
           </Paragraph>
