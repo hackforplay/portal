@@ -31,16 +31,16 @@ export default class FeatureLists extends React.Component<Props> {
     return (
       <div className={classes.root}>
         <WorkList
-          works={lists.recommended}
-          title="おすすめの作品"
-          more={more === 'recommended'}
-          moreLink="/lists/recommended"
-        />
-        <WorkList
           works={lists.trending}
           title="人気の作品"
           more={more === 'trending'}
           moreLink="/lists/trending"
+        />
+        <WorkList
+          works={lists.recommended}
+          title="おすすめの作品"
+          more={more === 'recommended'}
+          moreLink="/lists/recommended"
         />
       </div>
     );
