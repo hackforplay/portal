@@ -61,6 +61,10 @@ export const initializeAuth = () => (dispatch, getState: () => State) => {
     if (user) {
       // User is signed in.
       dispatch(signIn(user));
+
+      if (process.env.NODE_ENV === 'production') {
+        connectExternalService(user);
+      }
     } else if (getState().user) {
       // No use is signed in.
       dispatch(signOut());
@@ -80,3 +84,18 @@ export const signInWithGoogle = () => async dispatch => {
     firebase.auth().signInWithRedirect(provider);
   }
 };
+
+function connectExternalService(user: User) {
+  ((...args) => {
+    for (const func of args) {
+      try {
+        func();
+      } catch (error) {
+        console.info(error);
+      }
+    }
+  })(
+    () => window.gtag('set', { user_id: user.uid }), // ログインしている user_id を使用してUser-ID を設定します
+    () => window.ga('set', 'userId', user.uid) // ログインしている user_id を使用してUser-ID を設定します。
+  );
+}
