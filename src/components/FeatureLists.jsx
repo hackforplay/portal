@@ -38,7 +38,7 @@ export default class FeatureLists extends React.Component<Props> {
         />
         <WorkList
           works={lists.recommended}
-          title="おすすめの作品"
+          title=/*"おすすめの作品"*/"あたらしい作品"
           more={more === 'recommended'}
           moreLink="/lists/recommended"
         />
