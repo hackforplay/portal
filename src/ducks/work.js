@@ -230,11 +230,7 @@ export const fetchTrendingWorks = () => async (
 
   try {
     dispatch(loadTrending());
-    const result = await request({
-      sort: 'favs',
-      direction: 'desc',
-      kit_identifier: 'com.feeles.make-rpg'
-    });
+    const result = await import('./trending.js');
     dispatch(addTrending(result.data));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
