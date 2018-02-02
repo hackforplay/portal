@@ -5,28 +5,15 @@ import { withStyles } from 'material-ui/styles';
 
 import theme from '../settings/theme';
 import WorkList from '../containers/WorkList';
-
-type WorkType = {
-  id: number,
-  title: string,
-  description?: string,
-  image?: string,
-  asset_url: ?string,
-  search: string,
-  url: string,
-  author?: string,
-  created_at: string,
-  views: number,
-  favs: number
-};
+import type { WorkCollectionType } from '../ducks/work';
 
 export type Props = {
   classes: {
     root: string
   },
   lists: {
-    recommended: Array<WorkType>,
-    trending: Array<WorkType>
+    recommended: WorkCollectionType,
+    trending: WorkCollectionType
   }
 } & ContextRouter;
 

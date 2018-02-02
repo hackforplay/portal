@@ -13,7 +13,7 @@ import UserWorks from '../containers/UserWorks';
 import Topic from '../containers/Topic';
 import SearchBar from '../containers/SearchBar';
 import Contents from '../containers/Contents';
-import WorkLists from '../containers/WorkLists';
+import FeatureLists from '../containers/FeatureLists';
 import Work from '../containers/Work';
 import Profile from '../containers/Profile';
 import OptionalHeader from '../containers/OptionalHeader';
@@ -37,7 +37,7 @@ function App() {
                 <div>Search result of {match.params.query}</div>
               )}
             />
-            <Route path="/lists/:more?" exact component={WorkLists} />
+            <Route path="/lists/:more?" exact component={FeatureLists} />
           </Switch>
           <Route path="/works/:id" exact component={Work} />
           <Route path="/users/:id/:tab?/:query?" component={UserWorks} />

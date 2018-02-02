@@ -1,10 +1,11 @@
+// @flow
 import * as React from 'react';
-import { ContextRouter } from 'react-router-dom';
+import type { ContextRouter } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import { withStyles } from 'material-ui/styles';
 
-import { WorkList } from '../components/WorkLists';
-import type { Work } from '../ducks/work';
+import WorkList from '../containers/WorkList';
+import type { WorkCollectionType } from '../ducks/work';
 import theme from '../settings/theme';
 
 export type Props = {
@@ -12,9 +13,9 @@ export type Props = {
     root: string
   },
   lists: {
-    public: Array<Work>,
-    private: Array<Work> //,
-    // likes: Array<Work>
+    public: WorkCollectionType //,
+    // private: WorkCollectionType,
+    // likes: WorkCollectionType
   }
 } & ContextRouter;
 
@@ -35,12 +36,14 @@ class UserWorks extends React.Component<Props> {
           <WorkList
             works={lists.public}
             title="公開済み"
+            more
             moreLink={`/users/${id}`}
           />
         ) : tab === 'private' ? (
           <WorkList
             works={lists.private}
             title="保存済み"
+            more
             moreLink={`/users/${id}/private`}
           />
         ) : tab === 'likes' ? (

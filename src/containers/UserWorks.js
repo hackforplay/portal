@@ -1,28 +1,48 @@
 // @flow
+import * as React from 'react';
 import { connect } from 'react-redux';
 
-import UserWorks from '../components/UserWorks';
+import WrappedUserWorks from '../components/UserWorks';
 import type { Props } from '../components/UserWorks';
 import type { StoreState } from '../ducks';
+import { getWorksByUserId, fetchWorksByUser } from '../ducks/work';
+import { getUserByUid } from '../ducks/user';
+import type { UserType } from '../ducks/user';
 
 const mapStateToProps = (state: StoreState, props: Props) => {
   // /users/:id の :id にあたる文字列
   const { id } = props.match.params;
-  const publicWorks = state.work.byUserId[id] || [];
-  const { privates } = state.work;
-
-  // この辺のタイプをヘルパーでいい感じにする
 
   return {
+    user: getUserByUid(state, id),
     lists: {
-      public: publicWorks,
-      private: privates
+      public: getWorksByUserId(state, id),
+      private: []
     }
   };
 };
 
-const mapDispatchToProps = (dispatch, props) => {
-  return {};
+const mapDispatchToProps = {
+  fetchWorksByUser
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserWorks);
+type PropsType = typeof mapDispatchToProps & {
+  user: UserType
+};
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class UserWorks extends React.Component<PropsType> {
+  componentDidMount() {
+    this.props.fetchWorksByUser(this.props.user);
+  }
+
+  componentDidUpdate(prevProps: PropsType) {
+    if (prevProps.user !== this.props.user) {
+      this.props.fetchWorksByUser(this.props.user);
+    }
+  }
+
+  render() {
+    return <WrappedUserWorks {...this.props} />;
+  }
+}

@@ -10,7 +10,6 @@ export type ContentType = {
   buttons: Array<{
     color?: string,
     children?: string,
-    dense?: boolean,
     disabled?: boolean,
     disableFocusRipple?: boolean,
     disableRipple?: boolean,

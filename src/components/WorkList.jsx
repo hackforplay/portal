@@ -12,6 +12,7 @@ import { CardHeader, CardContent, CardMedia } from 'material-ui/Card';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import IconButton from 'material-ui/IconButton';
+import { CircularProgress } from 'material-ui/Progress';
 import Collapse from 'material-ui/transitions/Collapse';
 import { withStyles } from 'material-ui/styles';
 import { grey } from 'material-ui/colors';
@@ -103,6 +104,7 @@ export default class WorkList extends React.Component<Props> {
         </Typography>
         <Collapse collapsedHeight="284px" in={more}>
           <Grid container justify="center">
+            {works.isProcessing ? <CircularProgress /> : null}
             {works.isAvailable &&
               works.data.map(item => (
                 <Grid item key={item.id}>

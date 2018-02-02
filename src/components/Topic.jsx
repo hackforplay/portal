@@ -1,3 +1,4 @@
+// @flow
 import * as React from 'react';
 import { withStyles } from 'material-ui/styles';
 import Slider from 'react-slick';
@@ -9,17 +10,17 @@ import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 
 import theme from '../settings/theme';
-import { WorkList } from '../components/WorkLists';
-import type { Work } from '../ducks/work';
+import WorkList from '../containers/WorkList';
 import topbackUrl from '../resources/topback.jpg';
 import toplogoUrl from '../resources/toplogo_ja.png';
 import thumbnailUrl from '../resources/thumbnail.jpg';
+import type { WorkCollectionType } from '../ducks/work';
 
 type Props = {
   classes: {
     workList: string
   },
-  trending: Array<Work>
+  trending: WorkCollectionType
 };
 
 @withStyles({
