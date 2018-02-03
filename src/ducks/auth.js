@@ -4,18 +4,18 @@ import firebase from 'firebase';
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'auth';
 
-const SIGN_IN = 'portal/auth/SIGN_IN';
-const SIGN_OUT = 'portal/auth/SIGN_OUT';
+const SIGNED_IN = 'portal/auth/SIGNED_IN';
+const SIGNED_OUT = 'portal/auth/SIGNED_OUT';
 
 type User = $npm$firebase$auth$User;
 
 type ActionType =
   | {
-      type: typeof SIGN_IN,
+      type: typeof SIGNED_IN,
       user: User
     }
   | {
-      type: typeof SIGN_OUT
+      type: typeof SIGNED_OUT
     };
 
 export type State = {
@@ -27,12 +27,12 @@ const initialState: State = {};
 // Root Reducer
 export default (state: State = initialState, action: ActionType): State => {
   switch (action.type) {
-    case SIGN_IN:
+    case SIGNED_IN:
       return {
         ...state,
         user: action.user
       };
-    case SIGN_OUT:
+    case SIGNED_OUT:
       // delete state.user
       const { user, ...next } = state;
       return next;
@@ -43,13 +43,13 @@ export default (state: State = initialState, action: ActionType): State => {
 
 // Action Creators
 
-export const signIn = (user: User): ActionType => ({
-  type: SIGN_IN,
+export const signedIn = (user: User): ActionType => ({
+  type: SIGNED_IN,
   user
 });
 
-export const signOut = (): ActionType => ({
-  type: SIGN_OUT
+export const signedOut = (): ActionType => ({
+  type: SIGNED_OUT
 });
 
 export const initializeAuth = () => (dispatch, getState: () => State) => {
@@ -60,19 +60,19 @@ export const initializeAuth = () => (dispatch, getState: () => State) => {
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
       // User is signed in.
-      dispatch(signIn(user));
+      dispatch(signedIn(user));
 
       if (process.env.NODE_ENV === 'production') {
         connectExternalService(user);
       }
     } else if (getState().user) {
       // No use is signed in.
-      dispatch(signOut());
+      dispatch(signedOut());
     }
   });
 };
 
-export const signInWithGoogle = () => async dispatch => {
+export const signInWithGoogle = () => async () => {
   const provider = new firebase.auth.GoogleAuthProvider();
   firebase.auth().useDeviceLanguage();
 
@@ -83,6 +83,10 @@ export const signInWithGoogle = () => async dispatch => {
     // 画面が小さければリダイレクト
     firebase.auth().signInWithRedirect(provider);
   }
+};
+
+export const signOut = () => () => {
+  return firebase.auth().signOut();
 };
 
 function connectExternalService(user: User) {
