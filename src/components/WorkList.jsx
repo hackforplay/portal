@@ -33,7 +33,7 @@ export type Props = {
     authorName: string
   },
   works: WorkCollectionType,
-  title: string,
+  title: React.Node,
   more: boolean,
   moreLink: string,
   className?: string
@@ -99,9 +99,13 @@ export default class WorkList extends React.Component<Props> {
 
     return (
       <Paper className={classNames(classes.root, this.props.className)}>
-        <Typography type="headline" className={classes.headline}>
-          {title}
-        </Typography>
+        {typeof title === 'string' ? (
+          <Typography type="headline" className={classes.headline}>
+            {title}
+          </Typography>
+        ) : (
+          title
+        )}
         <Collapse collapsedHeight="284px" in={more}>
           <Grid container justify="center">
             {works.isProcessing ? <CircularProgress /> : null}

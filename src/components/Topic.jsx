@@ -13,12 +13,20 @@ import theme from '../settings/theme';
 import WorkList from '../containers/WorkList';
 import topbackUrl from '../resources/topback.jpg';
 import toplogoUrl from '../resources/toplogo_ja.png';
+import beginner from '../resources/beginner.png';
+import diamond_pink from '../resources/diamond_pink.png';
+import mail from '../resources/mail.png';
+import facebook from '../resources/facebook.png';
+import twitter from '../resources/twitter.png';
 // import thumbnailUrl from '../resources/thumbnail.jpg';
 import type { WorkCollectionType } from '../ducks/work';
 
 type Props = {
   classes: {
-    workList: string
+    workList: string,
+    button: string,
+    paper: string,
+    title: string
   },
   trending: WorkCollectionType
 };
@@ -28,6 +36,26 @@ type Props = {
     margin: theme.spacing.unit * 2,
     textAlign: 'center',
     flexGrow: 1
+  },
+  button: {
+    fontSize: 'large',
+    paddingTop: theme.spacing.unit * 2,
+    paddingRight: theme.spacing.unit * 4,
+    paddingBottom: theme.spacing.unit * 2,
+    paddingLeft: theme.spacing.unit * 4
+  },
+  paper: {
+    flex: '0 1 100%',
+    padding: 60,
+    textAlign: 'center',
+    margin: 16,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  title: {
+    display: 'inline-flex',
+    alignItems: 'center'
   }
 })
 class Topic extends React.Component<Props> {
@@ -68,22 +96,45 @@ class Topic extends React.Component<Props> {
         </Slider>
         <div style={{ marginBottom: 32 }} />
         <Grid container spacing={0}>
-          <Paragraph>
-            <Typography type="headline" align="center" gutterBottom>
-              初めての方はこちら
-            </Typography>
-            <Button
-              color="primary"
-              raised
-              target="_blank"
-              href="http://hack-rpg.hackforplay.xyz"
-            >
-              チュートリアル
-            </Button>
-          </Paragraph>
+          <Grid item xs={12}>
+            <Paper elevation={1} className={classes.paper}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <img src={beginner} alt="" />
+                <div style={{ marginLeft: 16 }}>
+                  <Typography type="subheading" align="left" gutterBottom>
+                    HackforPlayとは？
+                  </Typography>
+                  <Typography type="title" align="left" gutterBottom>
+                    はじめてプレイする方はこちら
+                  </Typography>
+                </div>
+              </div>
+              <Button
+                color="primary"
+                raised
+                target="_blank"
+                href="http://hack-rpg.hackforplay.xyz"
+                className={classes.button}
+                style={{ marginTop: 16 }}
+              >
+                チュートリアル
+              </Button>
+            </Paper>
+          </Grid>
+
           <WorkList
             works={this.props.trending}
-            title="人気の作品"
+            title={
+              <Typography
+                type="title"
+                align="center"
+                gutterBottom
+                className={classes.title}
+              >
+                <img src={diamond_pink} alt="" />
+                はじめてプレイする方はこちら
+              </Typography>
+            }
             moreLink="/lists/trending"
             className={classes.workList}
           />
@@ -116,48 +167,42 @@ class Topic extends React.Component<Props> {
               </Grid>
             </Grid>
           </Paragraph> */}
-          <Paragraph>
-            <Typography type="headline" gutterBottom>
-              お問い合わせ
-            </Typography>
-            <Button
-              color="primary"
-              raised
-              href="https://goo.gl/forms/S655BeMUpNHjmAtg1"
-              target="_blank"
+          <Grid item xs={12}>
+            <Paper
+              elevation={1}
+              style={{
+                flex: '0 1 100%',
+                padding: 60,
+                textAlign: 'center',
+                margin: 16
+              }}
             >
-              お問い合わせはこちら
-            </Button>
-          </Paragraph>
+              <div>
+                <Typography
+                  type="title"
+                  align="center"
+                  gutterBottom
+                  className={classes.title}
+                >
+                  <img src={mail} alt="" />
+                  お問い合わせ
+                </Typography>
+              </div>
+              <Button
+                color="primary"
+                raised
+                href="https://goo.gl/forms/S655BeMUpNHjmAtg1"
+                target="_blank"
+                className={classes.button}
+              >
+                お問い合わせはこちら
+              </Button>
+            </Paper>
+          </Grid>
         </Grid>
       </div>
     );
   }
 }
-
-type ParagraphProps = {
-  children: React.Node,
-  md: number
-};
-
-const Paragraph = ({ children, md }: ParagraphProps) => (
-  <Grid item xs={12} md={md}>
-    <Paper
-      elevation={1}
-      style={{
-        flex: '0 1 100%',
-        padding: 60,
-        textAlign: 'center',
-        margin: 16
-      }}
-    >
-      {children}
-    </Paper>
-  </Grid>
-);
-
-Paragraph.defaultProps = {
-  md: 12
-};
 
 export default Topic;
