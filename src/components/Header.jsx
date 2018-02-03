@@ -118,6 +118,7 @@ class Header extends React.Component<Props, State> {
               aria-owns={anchorEl ? 'simple-menu' : null}
               aria-haspopup="true"
               onClick={this.handleClick}
+              disabled={user.isProcessing}
             >
               ログイン
             </Button>
