@@ -30,11 +30,11 @@ export type WorkCollectionType = Statefull<Array<WorkData>>;
 type Action =
   | {
       type: typeof LOAD_LIST,
-      listType: 'recommended' | 'trending'
+      listType: 'recommended' | 'trending' | 'pickup'
     }
   | {
       type: typeof SET_LIST,
-      listType: 'recommended' | 'trending',
+      listType: 'recommended' | 'trending' | 'pickup',
       payload: Array<WorkData>
     }
   | {
@@ -50,6 +50,7 @@ type Action =
 export type State = {
   recommended: WorkCollectionType,
   trending: WorkCollectionType,
+  pickup: WorkCollectionType,
   byUserId: {
     [string]: WorkCollectionType
   },
@@ -58,19 +59,20 @@ export type State = {
 
 const initialState: State = {
   recommended: {
-    data: [],
     isAvailable: false,
     isProcessing: false
   },
   trending: {
-    data: [],
+    isAvailable: false,
+    isProcessing: false
+  },
+  pickup: {
     isAvailable: false,
     isProcessing: false
   },
   byUserId: {},
   byEmail: {},
   privates: {
-    data: [],
     isAvailable: false,
     isProcessing: false
   }
@@ -168,6 +170,11 @@ export const loadTrending = (): Action => ({
   listType: 'trending'
 });
 
+export const loadPickup = (): Action => ({
+  type: LOAD_LIST,
+  listType: 'pickup'
+});
+
 export const addRecommended = (payload: Array<WorkData>): Action => ({
   type: SET_LIST,
   listType: 'recommended',
@@ -177,6 +184,12 @@ export const addRecommended = (payload: Array<WorkData>): Action => ({
 export const addTrending = (payload: Array<WorkData>): Action => ({
   type: SET_LIST,
   listType: 'trending',
+  payload
+});
+
+export const addPickup = (payload: Array<WorkData>): Action => ({
+  type: SET_LIST,
+  listType: 'pickup',
   payload
 });
 
@@ -232,6 +245,25 @@ export const fetchTrendingWorks = () => async (
     dispatch(loadTrending());
     const result = await import('./trending.js');
     dispatch(addTrending(result.data));
+  } catch (error) {
+    // dispatch({ type: LOAD_FAILUAR, payload: error });
+  }
+};
+
+export const fetchPickupWorks = () => async (
+  dispatch,
+  getState: () => { work: State }
+) => {
+  const state = getState().work;
+  if (state.pickup.isProcessing || state.pickup.isAvailable) {
+    // すでにリクエストを送信しているか、取得済み
+    return;
+  }
+
+  try {
+    dispatch(loadPickup());
+    const result = await import('./pickup.js');
+    dispatch(addPickup(result.data));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
   }

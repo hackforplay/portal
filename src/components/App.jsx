@@ -17,6 +17,7 @@ import FeatureLists from '../containers/FeatureLists';
 import Work from '../containers/Work';
 import Profile from '../containers/Profile';
 import OptionalHeader from '../containers/OptionalHeader';
+import Pickup from '../containers/Pickup';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             />
             <Route path="/lists/:more?" exact component={FeatureLists} />
           </Switch>
+          <Route path="/pickup" exact component={Pickup} />
           <Route path="/works/:id" exact component={Work} />
           <Route path="/users/:id/:tab?/:query?" component={UserWorks} />
         </div>
