@@ -125,7 +125,6 @@ export const fetchUserIfNeeded = (uid: string) => (
     .collection('users')
     .doc(uid)
     .onSnapshot(snapshot => {
-      console.log('onSnapShot');
       if (snapshot && snapshot.exists) {
         // ユーザー情報をストアに格納
         const user = { ...snapshot.data(), uid: snapshot.id };

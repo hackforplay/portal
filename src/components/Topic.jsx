@@ -13,7 +13,7 @@ import theme from '../settings/theme';
 import WorkList from '../containers/WorkList';
 import topbackUrl from '../resources/topback.jpg';
 import toplogoUrl from '../resources/toplogo_ja.png';
-import thumbnailUrl from '../resources/thumbnail.jpg';
+// import thumbnailUrl from '../resources/thumbnail.jpg';
 import type { WorkCollectionType } from '../ducks/work';
 
 type Props = {
