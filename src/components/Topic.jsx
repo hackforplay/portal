@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import { withStyles } from 'material-ui/styles';
+import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -18,6 +19,7 @@ import diamond_pink from '../resources/diamond_pink.png';
 import mail from '../resources/mail.png';
 import facebook from '../resources/facebook.png';
 import twitter from '../resources/twitter.png';
+import logo from '../resources/logo.png';
 // import thumbnailUrl from '../resources/thumbnail.jpg';
 import type { WorkCollectionType } from '../ducks/work';
 
@@ -26,7 +28,8 @@ type Props = {
     workList: string,
     button: string,
     paper: string,
-    title: string
+    title: string,
+    icon: string
   },
   trending: WorkCollectionType
 };
@@ -56,6 +59,12 @@ type Props = {
   title: {
     display: 'inline-flex',
     alignItems: 'center'
+  },
+  icon: {
+    marginTop: theme.spacing.unit * 4,
+    marginBottom: theme.spacing.unit * 4,
+    marginLeft: theme.spacing.unit * 2,
+    marginRight: theme.spacing.unit * 2
   }
 })
 class Topic extends React.Component<Props> {
@@ -187,6 +196,17 @@ class Topic extends React.Component<Props> {
                   <img src={mail} alt="" />
                   お問い合わせ
                 </Typography>
+              </div>
+              <div>
+                <img src={logo} height={60} alt="ハックフォープレイ株式会社" />
+              </div>
+              <div>
+                <a href="https://twitter.com/teramotodaiki">
+                  <img src={twitter} className={classes.icon} alt="Twitter" />
+                </a>
+                <a href="https://www.facebook.com/hackforplay">
+                  <img src={facebook} className={classes.icon} alt="Facebook" />
+                </a>
               </div>
               <Button
                 color="primary"
