@@ -9,6 +9,8 @@ const LOAD_LIST = 'portal/work/LOAD_LIST';
 const SET_LIST = 'portal/work/SET_LIST';
 const LOAD_USERS = 'portal/work/LOAD_USERS';
 const SET_USERS = 'portal/work/SET_USERS';
+const SEARCH_START = 'portal/work/SEARCH_START';
+const SEARCH_RESULT = 'portal/work/SEARCH_RESULT';
 
 type WorkData = {
   id: number,
@@ -45,6 +47,15 @@ type Action =
       type: typeof SET_USERS,
       userId: string,
       payload: Array<WorkData>
+    }
+  | {
+      type: typeof SEARCH_START,
+      query: string
+    }
+  | {
+      type: typeof SEARCH_RESULT,
+      query: string,
+      payload: Array<WorkData>
     };
 
 export type State = {
@@ -53,6 +64,10 @@ export type State = {
   pickup: WorkCollectionType,
   byUserId: {
     [string]: WorkCollectionType
+  },
+  search: {
+    query: string,
+    result: WorkCollectionType
   },
   privates: WorkCollectionType
 };
@@ -71,7 +86,13 @@ const initialState: State = {
     isProcessing: false
   },
   byUserId: {},
-  byEmail: {},
+  search: {
+    query: '',
+    result: {
+      isAvailable: false,
+      isProcessing: false
+    }
+  },
   privates: {
     isAvailable: false,
     isProcessing: false
@@ -85,6 +106,7 @@ const listReducer = (
   switch (action.type) {
     case LOAD_LIST:
     case LOAD_USERS:
+    case SEARCH_START:
       return {
         isAvailable: false,
         isProcessing: true,
@@ -92,6 +114,7 @@ const listReducer = (
       };
     case SET_LIST:
     case SET_USERS:
+    case SEARCH_RESULT:
       return action.payload.length > 0
         ? {
             isAvailable: true,
@@ -128,6 +151,25 @@ export default (state: State = initialState, action: Action): State => {
           [action.userId]: listReducer(state.byUserId[action.userId], action)
         }
       };
+    case SEARCH_START:
+      return {
+        ...state,
+        search: {
+          query: action.query,
+          result: listReducer(state.search.result, action)
+        }
+      };
+    case SEARCH_RESULT:
+      // まだそのクエリが残っているか？
+      return state.search.query === action.query
+        ? {
+            ...state,
+            search: {
+              query: action.query,
+              result: listReducer(state.search.result, action)
+            }
+          }
+        : state; // すでに違うクエリで検索を始めている
     default:
       return state;
   }
@@ -204,6 +246,20 @@ export const setWorksByUser = (
 ): Action => ({
   type: SET_USERS,
   userId,
+  payload
+});
+
+export const searchStart = (query: string): Action => ({
+  type: SEARCH_START,
+  query
+});
+
+export const searchResult = (
+  query: string,
+  payload: Array<WorkData>
+): Action => ({
+  type: SEARCH_RESULT,
+  query,
   payload
 });
 
@@ -292,6 +348,32 @@ export const fetchWorksByUser = (user: UserType) => async (
     const text = await response.text();
     const result = JSON.parse(text);
     dispatch(setWorksByUser(user.data.uid, result));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const searchWorks = (query: string) => async (
+  dispatch,
+  getState: () => { work: State }
+) => {
+  if (!query) {
+    // クエリが空
+    return;
+  }
+  // 今の状態
+  const { search } = getState().work;
+  if (search.query === query) {
+    // すでに同じクエリでリクエストを送信しているか、取得済みか、検索結果が空
+    return;
+  }
+  // リクエスト
+  try {
+    dispatch(searchStart(query));
+    const result = await request({
+      q: query
+    });
+    dispatch(searchResult(query, result.data));
   } catch (error) {
     console.error(error);
   }

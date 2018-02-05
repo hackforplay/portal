@@ -19,7 +19,14 @@ export const searchBarInfo = [
     ]
   },
   {
-    path: '/lists/:tab?/:query?',
+    path: '/lists/search/:query?',
+    text: '検索',
+    tabs: [],
+    backTo: '/lists'
+  },
+  {
+    path: '/lists/:tab?',
+    searchTo: '/lists/search',
     text: 'ゲームプレイ',
     tabs: []
   },
