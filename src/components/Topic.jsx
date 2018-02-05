@@ -17,10 +17,12 @@ import toplogoUrl from '../resources/toplogo_ja.png';
 import beginner from '../resources/beginner.png';
 import diamond_pink from '../resources/diamond_pink.png';
 import mail from '../resources/mail.png';
+import info from '../resources/info.png';
 import facebook from '../resources/facebook.png';
 import twitter from '../resources/twitter.png';
 import logo from '../resources/logo.png';
-// import thumbnailUrl from '../resources/thumbnail.jpg';
+import fest1 from '../resources/fest1.jpg';
+import fest2 from '../resources/fest2.jpg';
 import type { WorkCollectionType } from '../ducks/work';
 
 type Props = {
@@ -29,7 +31,8 @@ type Props = {
     button: string,
     paper: string,
     title: string,
-    icon: string
+    icon: string,
+    body: string
   },
   trending: WorkCollectionType
 };
@@ -54,7 +57,8 @@ type Props = {
     margin: 16,
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+    boxSizing: 'border-box'
   },
   title: {
     display: 'inline-flex',
@@ -65,6 +69,11 @@ type Props = {
     marginBottom: theme.spacing.unit * 4,
     marginLeft: theme.spacing.unit * 2,
     marginRight: theme.spacing.unit * 2
+  },
+  body: {
+    alignSelf: 'left',
+    marginTop: theme.spacing.unit,
+    marginBottom: theme.spacing.unit * 4
   }
 })
 class Topic extends React.Component<Props> {
@@ -147,35 +156,58 @@ class Topic extends React.Component<Props> {
             moreLink="/lists/trending"
             className={classes.workList}
           />
-          {/* <Paragraph md={6}>
-            <Typography type="body2" gutterBottom>
-              タイトル
-            </Typography>
-            <Typography type="body1" gutterBottom>
-              {'テキスト'.repeat(20)}
-            </Typography>
-            <Button color="primary" raised>
-              もっと読む
-            </Button>
-          </Paragraph>
-          <Paragraph md={6}>
-            <Typography type="headline" gutterBottom>
-              ワークショップ情報
-            </Typography>
-            <Grid container>
-              <Grid item xs={6}>
-                <Typography type="body1">{'text '.repeat(20)}</Typography>
+
+          <Grid item xs={12} md={6}>
+            <Paper elevation={1} className={classes.paper}>
+              <Typography type="body2" gutterBottom>
+                タイトル
+              </Typography>
+              <Typography type="body1" gutterBottom>
+                {'テキスト'.repeat(20)}
+              </Typography>
+              <Button color="primary" raised>
+                もっと読む
+              </Button>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Paper elevation={1} className={classes.paper}>
+              <Typography
+                type="title"
+                align="center"
+                gutterBottom
+                className={classes.title}
+              >
+                <img src={info} alt="" />
+                ワークショップ情報
+              </Typography>
+              <img src={fest1} alt="" style={{ width: '100%' }} />
+              <img src={fest2} alt="" style={{ width: '100%' }} />
+              <Typography
+                type="subheading"
+                className={classes.body}
+                gutterBottom
+              >
+                第６回金沢市キッズプログラミング教室
+              </Typography>
+              <Button
+                color="primary"
+                raised
+                href="http://www4.city.kanazawa.lg.jp/17009/kidspg.html"
+                className={classes.button}
+              >
+                詳細はこちら
+              </Button>
+
+              <Grid container>
+                <Grid item xs={6} />
+                <Grid item xs={6} />
+                <Grid item xs={12} />
               </Grid>
-              <Grid item xs={6}>
-                <img src={thumbnailUrl} alt="" style={{ width: '100%' }} />
-              </Grid>
-              <Grid item xs={12}>
-                <Button color="primary" raised>
-                  チュートリアル
-                </Button>
-              </Grid>
-            </Grid>
-          </Paragraph> */}
+            </Paper>
+          </Grid>
+
           <Grid item xs={12}>
             <Paper
               elevation={1}
