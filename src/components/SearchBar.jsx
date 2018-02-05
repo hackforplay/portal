@@ -162,7 +162,11 @@ class SearchBar extends React.Component<Props, State> {
           <div className={classes.blank} />
           <div className={classes.wrapper}>
             <div className={classes.search}>
-              {result.isProcessing ? <CircularProgress /> : <SearchIcon />}
+              {result.isProcessing ? (
+                <CircularProgress color="inherit" size={24} />
+              ) : (
+                <SearchIcon />
+              )}
             </div>
             <input
               id="docsearch-input"
