@@ -13,6 +13,7 @@ import grey from 'material-ui/colors/grey';
 
 import theme from '../settings/theme';
 import googleIcon from '../resources/google.svg';
+import logo from '../resources/logo.png';
 import type { UserType } from '../ducks/user';
 
 type Props = {
@@ -20,7 +21,8 @@ type Props = {
     toolbar: string,
     blank: string,
     icon: string,
-    avatar: string
+    avatar: string,
+    title: string
   },
   user: UserType,
   signInWithGoogle: () => {},
@@ -46,6 +48,10 @@ type State = {
     cursor: 'pointer',
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit
+  },
+  title: {
+    color: 'black',
+    filter: 'invert()'
   }
 })
 class Header extends React.Component<Props, State> {
@@ -77,8 +83,14 @@ class Header extends React.Component<Props, State> {
     return (
       <AppBar position="static">
         <Toolbar className={classes.toolbar}>
-          <Typography type="title" color="inherit" component={Link} to="/">
-            HackforPlay
+          <Typography
+            type="title"
+            style={{ color: 'black' }}
+            component={Link}
+            to="/"
+            className={classes.title}
+          >
+            <img src={logo} height={36} alt="HackforPlay" />
           </Typography>
           <div className={classes.blank} />
           <Button color="contrast" component={Link} to="/contents/tutorial">
