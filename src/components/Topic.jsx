@@ -1,7 +1,6 @@
 // @flow
 import * as React from 'react';
 import { withStyles } from 'material-ui/styles';
-import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -182,8 +181,16 @@ class Topic extends React.Component<Props> {
                 <img src={info} alt="" />
                 ワークショップ情報
               </Typography>
-              <img src={fest1} alt="" style={{ width: '100%' }} />
-              <img src={fest2} alt="" style={{ width: '100%' }} />
+              <img
+                src={fest1}
+                alt=""
+                style={{ width: '100%', maxWidth: 500 }}
+              />
+              <img
+                src={fest2}
+                alt=""
+                style={{ width: '100%', maxWidth: 500 }}
+              />
               <Typography
                 type="subheading"
                 className={classes.body}
