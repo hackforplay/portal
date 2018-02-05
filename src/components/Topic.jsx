@@ -17,11 +17,13 @@ import beginner from '../resources/beginner.png';
 import diamond_pink from '../resources/diamond_pink.png';
 import mail from '../resources/mail.png';
 import info from '../resources/info.png';
+import news from '../resources/news.png';
 import facebook from '../resources/facebook.png';
 import twitter from '../resources/twitter.png';
 import logo from '../resources/logo.png';
 import fest1 from '../resources/fest1.jpg';
 import fest2 from '../resources/fest2.jpg';
+import news1 from '../resources/news1.jpg';
 import type { WorkCollectionType } from '../ducks/work';
 
 type Props = {
@@ -158,13 +160,33 @@ class Topic extends React.Component<Props> {
 
           <Grid item xs={12} md={6}>
             <Paper elevation={1} className={classes.paper}>
-              <Typography type="body2" gutterBottom>
-                タイトル
+              <Typography
+                type="title"
+                align="center"
+                gutterBottom
+                className={classes.title}
+              >
+                <img src={news} alt="" />
+                NEWS
               </Typography>
-              <Typography type="body1" gutterBottom>
-                {'テキスト'.repeat(20)}
+              <img src={news1} alt="" style={{ width: '100%' }} />
+              <Typography
+                type="body1"
+                align="left"
+                className={classes.body}
+                gutterBottom
+              >
+                千葉テレビとフジテレビKIDSが製作する５分番組「GPリーグ
+                プログラミングコロシアム」で、子供たちがバトルする競技の最終対決に
+                HackforPlay を使っていただきました！
               </Typography>
-              <Button color="primary" raised>
+              <Button
+                color="primary"
+                raised
+                className={classes.button}
+                href="https://note.mu/teramotodaiki/n/nee2f10fc6742"
+                target="_blank"
+              >
                 もっと読む
               </Button>
             </Paper>
@@ -196,7 +218,7 @@ class Topic extends React.Component<Props> {
                 className={classes.body}
                 gutterBottom
               >
-                第６回金沢市キッズプログラミング教室
+                第６回金沢市キッズプログラミング教室が開催されます
               </Typography>
               <Button
                 color="primary"
@@ -206,25 +228,11 @@ class Topic extends React.Component<Props> {
               >
                 詳細はこちら
               </Button>
-
-              <Grid container>
-                <Grid item xs={6} />
-                <Grid item xs={6} />
-                <Grid item xs={12} />
-              </Grid>
             </Paper>
           </Grid>
 
           <Grid item xs={12}>
-            <Paper
-              elevation={1}
-              style={{
-                flex: '0 1 100%',
-                padding: 60,
-                textAlign: 'center',
-                margin: 16
-              }}
-            >
+            <Paper elevation={1} className={classes.paper}>
               <div>
                 <Typography
                   type="title"
