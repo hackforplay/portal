@@ -30,7 +30,9 @@ export type Props = {
     headline: string,
     title: string,
     subheader: string,
-    authorName: string
+    authorName: string,
+    button: string,
+    more: string
   },
   works: WorkCollectionType,
   title: React.Node,
@@ -71,6 +73,29 @@ export type Props = {
     '&:hover': {
       color: grey[900]
     }
+  },
+  more: {
+    width: '100%',
+    position: 'relative',
+    textAlign: 'center',
+    '&:before': {
+      display: 'block',
+      whiteSpace: 'pre',
+      content: '""',
+      position: 'relative',
+      marginTop: -16,
+      width: '100%',
+      height: 16,
+      background: 'linear-gradient(to bottom, transparent, white)'
+    }
+  },
+  button: {
+    fontSize: 'large',
+    marginTop: theme.spacing.unit * 2,
+    paddingTop: theme.spacing.unit * 2,
+    paddingRight: theme.spacing.unit * 4,
+    paddingBottom: theme.spacing.unit * 2,
+    paddingLeft: theme.spacing.unit * 4
   }
 })
 export default class WorkList extends React.Component<Props> {
@@ -156,9 +181,17 @@ export default class WorkList extends React.Component<Props> {
           </Grid>
         </Collapse>
         {more ? null : (
-          <Button raised color="primary" component={Link} to={moreLink}>
-            もっと見る
-          </Button>
+          <div className={classes.more}>
+            <Button
+              raised
+              color="primary"
+              className={classes.button}
+              component={Link}
+              to={moreLink}
+            >
+              もっと見る
+            </Button>
+          </div>
         )}
       </Paper>
     );
