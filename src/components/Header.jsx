@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import type { ContextRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Avatar from 'material-ui/Avatar';
@@ -27,12 +28,13 @@ type Props = {
   user: UserType,
   signInWithGoogle: () => {},
   signOut: () => {}
-};
+} & ContextRouter;
 
 type State = {
   anchorEl: ?HTMLElement
 };
 
+@withRouter
 @withStyles({
   toolbar: {
     backgroundColor: grey[900]
@@ -75,6 +77,12 @@ class Header extends React.Component<Props, State> {
 
   handleClose = () => {
     this.setState({ anchorEl: null });
+  };
+
+  goTo = (path: string) => () => {
+    const { history } = this.props;
+    history.push(path);
+    this.handleClose();
   };
 
   render() {
@@ -144,14 +152,8 @@ class Header extends React.Component<Props, State> {
             onClose={this.handleClose}
           >
             {user.isAvailable ? (
-              <MenuItem onClick={this.handleClose}>
-                <Typography
-                  type="button"
-                  component={Link}
-                  to={`/users/${user.data.uid}`}
-                >
-                  マイページ
-                </Typography>
+              <MenuItem onClick={this.goTo(`/users/${user.data.uid}`)}>
+                <Typography type="button">マイページ</Typography>
               </MenuItem>
             ) : null}
             {user.isAvailable || user.isProcessing ? (
