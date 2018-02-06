@@ -151,14 +151,14 @@ class Topic extends React.Component<Props> {
                 className={classes.title}
               >
                 <img src={diamond_pink} alt="" />
-                はじめてプレイする方はこちら
+                人気のステージ
               </Typography>
             }
             moreLink="/lists/trending"
             className={classes.workList}
           />
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} sm={6}>
             <Paper elevation={1} className={classes.paper}>
               <Typography
                 type="title"
@@ -192,7 +192,7 @@ class Topic extends React.Component<Props> {
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} sm={6}>
             <Paper elevation={1} className={classes.paper}>
               <Typography
                 type="title"
