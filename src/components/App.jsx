@@ -20,6 +20,7 @@ import Profile from '../containers/Profile';
 import OptionalHeader from '../containers/OptionalHeader';
 import SearchList from '../containers/SearchList';
 import Pickup from '../containers/Pickup';
+import Sp1 from '../containers/ProgrammingColosseum';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
           <Route path="/pickup" exact component={Pickup} />
           <Route path="/works/:id" exact component={Work} />
           <Route path="/users/:id/:tab?/:query?" component={UserWorks} />
+          <Route path="/specials/プログラミングコロシアム" component={Sp1} />
         </div>
       </Router>
     </MuiThemeProvider>
