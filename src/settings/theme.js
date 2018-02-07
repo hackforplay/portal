@@ -5,6 +5,11 @@ const theme = createMuiTheme({
   palette: {
     primary: deepOrange
   },
+
+  typography: {
+    fontWeightMedium: 600
+  },
+
   overrides: {
     MuiCardHeader: {
       root: {
