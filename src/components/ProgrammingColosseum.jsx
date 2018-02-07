@@ -13,6 +13,8 @@ import no02 from '../resources/no02.png';
 import no03 from '../resources/no03.png';
 import { programminColosseum as contents } from '../settings/contents';
 
+const reference = `https://firebasestorage.googleapis.com/v0/b/hackforplay-production.appspot.com/o/specials%2Freference.pdf?alt=media&token=22b71ece-3b6b-4d35-bb62-59e5223b3dad`;
+
 type Props = {
   classes: {
     root: string,
@@ -75,8 +77,14 @@ export default class ProgrammingColosseum extends React.Component<Props> {
               <Typography type="body1" align="left" gutterBottom>
                 このゲームで使える全ての機能が書かれたリファレンスです。ゲームを始める前に、必ずダウンロードしてください。
               </Typography>
-              <Button raised color="primary">
-                ダウンロード
+              <Button
+                raised
+                color="primary"
+                component="a"
+                download
+                href={reference}
+              >
+                ダウンロードする
               </Button>
             </div>
           </div>
@@ -89,7 +97,11 @@ export default class ProgrammingColosseum extends React.Component<Props> {
               <Typography type="body1" align="left" gutterBottom>
                 ステージをクリアするとランキングに参加できます。
               </Typography>
-              <Button raised color="primary">
+              <Button
+                raised
+                color="primary"
+                onClick={() => alert('実装中です')}
+              >
                 ランキングを見る
               </Button>
             </div>
