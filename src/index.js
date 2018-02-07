@@ -10,7 +10,7 @@ import 'normalize.css';
 
 import './index.css';
 import App from './containers/App';
-import registerServiceWorker from './registerServiceWorker';
+// import registerServiceWorker from './registerServiceWorker';
 import reducer from './ducks';
 import './settings/firebase';
 
@@ -29,4 +29,4 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('app')
 );
-registerServiceWorker();
+// registerServiceWorker();
