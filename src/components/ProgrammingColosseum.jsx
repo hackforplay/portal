@@ -6,10 +6,12 @@ import Button from 'material-ui/Button';
 import { withStyles } from 'material-ui/styles';
 
 import theme from '../settings/theme';
+import { StageContent } from './Contents';
 import attention from '../resources/attention.png';
 import no01 from '../resources/no01.png';
 import no02 from '../resources/no02.png';
 import no03 from '../resources/no03.png';
+import { programminColosseum as contents } from '../settings/contents';
 
 type Props = {
   classes: {
@@ -22,7 +24,7 @@ type Props = {
 
 @withStyles({
   root: {
-    maxWidth: 800,
+    maxWidth: 840,
     padding: theme.spacing.unit * 4,
     boxSizing: 'border-box',
     marginLeft: 'auto',
@@ -34,6 +36,7 @@ type Props = {
     width: '100%',
     boxSizing: 'border-box',
     padding: theme.spacing.unit * 6,
+    marginBottom: theme.spacing.unit * 4,
     '&:after': {
       content: '" "',
       display: 'block',
@@ -102,6 +105,9 @@ export default class ProgrammingColosseum extends React.Component<Props> {
               </Typography>
             </div>
           </div>
+        </Paper>
+        <Paper elevation={1} className={classes.paper}>
+          {contents.map(item => <StageContent key={item.title} {...item} />)}
         </Paper>
       </div>
     );

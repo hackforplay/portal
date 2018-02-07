@@ -231,3 +231,76 @@ export const kit: Array<ContentType> = [
   //   docs: ''
   // }
 ];
+
+export const programminColosseum: Array<ContentType> = [
+  {
+    title: 'チュートリアル',
+    image:
+      'https://assets.feeles.com/thumbnail/6641e6ff291706f48f83a7b6a3acab9d.jpg',
+    author: null,
+    description: '制限時間のない練習用のステージです',
+    url: 'https://pg-colosseum.hackforplay.xyz/#/training/index.html',
+    buttons: [
+      {
+        raised: true,
+        color: 'primary',
+        children: 'スタート',
+        href: 'https://pg-colosseum.hackforplay.xyz/#/training/index.html',
+        target: '_blank'
+      }
+    ]
+  },
+  {
+    title: '準決勝戦',
+    image:
+      'https://assets.feeles.com/thumbnail/658428ea0da32c66008d4067793fda09.jpg',
+    author: null,
+    description: '準決勝戦に使われたステージです',
+    url: 'https://pg-colosseum.hackforplay.xyz/#/stages/semi/index.html',
+    buttons: [
+      {
+        raised: true,
+        color: 'primary',
+        children: 'スタート',
+        href: 'https://pg-colosseum.hackforplay.xyz/#/stages/semi/index.html',
+        target: '_blank'
+      }
+    ]
+  },
+
+  {
+    title: '決勝',
+    image:
+      'https://assets.feeles.com/thumbnail/b67621fc40f25635649510377d632cb8.jpg',
+    author: null,
+    description: '決勝戦に使われたステージです',
+    url: 'https://pg-colosseum.hackforplay.xyz/#/stages/final/index.html',
+    buttons: [
+      {
+        raised: true,
+        color: 'primary',
+        children: 'スタート',
+        href: 'https://pg-colosseum.hackforplay.xyz/#/stages/final/index.html',
+        target: '_blank'
+      }
+    ]
+  },
+  {
+    title: 'グランドチャンピオン決定戦',
+    image:
+      'https://assets.feeles.com/thumbnail/f7c34971cda6bd0df9dc8713ed51ce55.jpg',
+    author: null,
+    description: '最終決戦に使われたステージです',
+    url: 'https://pg-colosseum.hackforplay.xyz/#/stages/champion/index.html',
+    buttons: [
+      {
+        raised: true,
+        color: 'primary',
+        children: 'スタート',
+        href:
+          'https://pg-colosseum.hackforplay.xyz/#/stages/champion/index.html',
+        target: '_blank'
+      }
+    ]
+  }
+];

@@ -66,7 +66,11 @@ type StageContentProps = {
     alignMiddle: string,
     img: string,
     button: string
-  }
+  },
+  image: string,
+  title: string,
+  description: string,
+  buttons: Array<{}>
 } & ContentType;
 
 @withStyles({
@@ -88,7 +92,7 @@ type StageContentProps = {
     marginRight: theme.spacing.unit * 2
   }
 })
-class StageContent extends React.Component<StageContentProps> {
+export class StageContent extends React.Component<StageContentProps> {
   stopPropagation(event: SyntheticEvent<HTMLButtonElement>) {
     event.stopPropagation();
   }
@@ -107,10 +111,15 @@ class StageContent extends React.Component<StageContentProps> {
         <Grid item xs={6}>
           <img src={this.props.image} alt="" className={classes.img} />
         </Grid>
-        <Grid item xs={6} className={classes.alignMiddle}>
+        <Grid
+          item
+          xs={6}
+          className={classes.alignMiddle}
+          style={{ padding: 32 }}
+        >
           <div />
           <div>
-            <Typography type="title" align="left">
+            <Typography type="title" align="left" gutterBottom>
               {this.props.title}
             </Typography>
             <Typography type="caption" align="left">
