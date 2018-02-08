@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
@@ -100,7 +101,8 @@ export default class ProgrammingColosseum extends React.Component<Props> {
               <Button
                 raised
                 color="primary"
-                onClick={() => alert('実装中です')}
+                component={Link}
+                to="/specials/プログラミングコロシアム/ranking/semi1"
               >
                 ランキングを見る
               </Button>

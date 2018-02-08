@@ -55,6 +55,48 @@ export const searchBarInfo = [
         to: '/users/:id/followers'
       }*/
     ]
+  },
+  {
+    path: '/specials/プログラミングコロシアム/ranking/:stage',
+    text: '',
+    tabs: [
+      {
+        text: '準決勝１',
+        to: '/specials/プログラミングコロシアム/ranking/semi1'
+      },
+      {
+        text: '準決勝２',
+        to: '/specials/プログラミングコロシアム/ranking/semi2'
+      },
+      {
+        text: '準決勝３',
+        to: '/specials/プログラミングコロシアム/ranking/semi3'
+      },
+      {
+        text: '決勝１',
+        to: '/specials/プログラミングコロシアム/ranking/final1'
+      },
+      {
+        text: '決勝２',
+        to: '/specials/プログラミングコロシアム/ranking/final2'
+      },
+      {
+        text: '決勝３',
+        to: '/specials/プログラミングコロシアム/ranking/final3'
+      },
+      {
+        text: 'グラチャン１',
+        to: '/specials/プログラミングコロシアム/ranking/grand1'
+      },
+      {
+        text: 'グラチャン２',
+        to: '/specials/プログラミングコロシアム/ranking/grand2'
+      },
+      {
+        text: 'グラチャン３',
+        to: '/specials/プログラミングコロシアム/ranking/grand3'
+      }
+    ]
   }
 ];
 
