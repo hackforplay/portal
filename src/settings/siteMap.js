@@ -58,6 +58,7 @@ export const searchBarInfo = [
   },
   {
     path: '/specials/プログラミングコロシアム/ranking/:stage',
+    backTo: '/specials/プログラミングコロシアム',
     text: '',
     tabs: [
       {
