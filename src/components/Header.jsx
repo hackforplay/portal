@@ -89,7 +89,7 @@ class Header extends React.Component<Props, State> {
     const { classes, user } = this.props;
     const { anchorEl } = this.state;
     return (
-      <AppBar position="static">
+      <AppBar position="static" elevation={0}>
         <Toolbar className={classes.toolbar}>
           <Typography
             type="title"
