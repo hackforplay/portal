@@ -56,6 +56,18 @@ type Props = {
   }
 })
 export default class ProgrammingColosseum extends React.Component<Props> {
+  componentDidMount() {
+    // async のテスト
+    try {
+      eval(`(async () => { await 1; })();`); // eslint-disable-line
+    } catch (error) {
+      alert(
+        '申し訳ありませんが、このコンテンツはお使いのブラウザに対応していません。パソコン版 Google Chrome をインストールしてお使いください'
+      );
+      window.open('https://www.google.co.jp/chrome/index.html', '_blank');
+    }
+  }
+
   render() {
     const { classes } = this.props;
     return (
