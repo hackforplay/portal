@@ -26,7 +26,8 @@ type Props = {
     marginBottom: theme.spacing.unit * 4,
     marginLeft: 'auto',
     marginRight: 'auto',
-    padding: theme.spacing.unit * 4
+    paddingLeft: theme.spacing.unit * 4,
+    paddingRight: theme.spacing.unit * 4
   }
 })
 class Contents extends React.Component<Props> {
