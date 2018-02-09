@@ -120,6 +120,31 @@ export const youtube: Array<ContentType> = [
         target: '_blank'
       }
     ]
+  }
+];
+
+export const kit: Array<ContentType> = [
+  {
+    type: 'stage',
+    title: 'ゲームが作れる！RPGキット',
+    author: null,
+    description: 'ハックフォープレイのステージを自分で作れるキットです⚔',
+    image: 'https://assets.feeles.com/www/kit/screenshot-makerpg.png',
+    url: 'https://make-rpg.hackforplay.xyz',
+    buttons: [
+      {
+        raised: true,
+        color: 'primary',
+        children: 'ゲームをつくる',
+        href: 'https://make-rpg.hackforplay.xyz'
+      },
+      {
+        raised: true,
+        children: 'ドキュメント',
+        href: 'https://github.com/Feeles/RPG/wiki',
+        target: '_blank'
+      }
+    ]
   },
   {
     type: 'youtube',
@@ -195,31 +220,6 @@ export const youtube: Array<ContentType> = [
       {
         children: 'YouTube で見る',
         href: 'https://youtu.be/UvTzW4OmOko',
-        target: '_blank'
-      }
-    ]
-  }
-];
-
-export const kit: Array<ContentType> = [
-  {
-    type: 'stage',
-    title: 'ゲームが作れる！RPGキット',
-    author: null,
-    description: 'ハックフォープレイのステージを自分で作れるキットです⚔',
-    image: 'https://assets.feeles.com/www/kit/screenshot-makerpg.png',
-    url: 'https://make-rpg.hackforplay.xyz',
-    buttons: [
-      {
-        raised: true,
-        color: 'primary',
-        children: 'ゲームをつくる',
-        href: 'https://make-rpg.hackforplay.xyz'
-      },
-      {
-        raised: true,
-        children: 'ドキュメント',
-        href: 'https://github.com/Feeles/RPG/wiki',
         target: '_blank'
       }
     ]
