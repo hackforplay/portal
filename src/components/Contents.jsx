@@ -1,4 +1,5 @@
 import * as React from 'react';
+import pathToRegexp from 'path-to-regexp';
 import type { ContextRouter } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
@@ -8,7 +9,7 @@ import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 
 import theme from '../settings/theme';
-import * as contents from '../settings/contents';
+import contents from '../settings/contents';
 import type { ContentType } from '../settings/contents';
 
 type Props = {
@@ -19,7 +20,8 @@ type Props = {
 
 @withStyles({
   root: {
-    maxWidth: 800,
+    maxWidth: 840,
+    boxSizing: 'border-box',
     marginTop: theme.spacing.unit * 4,
     marginBottom: theme.spacing.unit * 4,
     marginLeft: 'auto',
@@ -29,18 +31,21 @@ type Props = {
 })
 class Contents extends React.Component<Props> {
   render() {
-    const { classes, match } = this.props;
+    const { classes, location } = this.props;
 
-    // データソースを取得する
-    const source: ?Array<ContentType> = contents[match.params.tab];
+    // 現在表示している URL にふさわしいデータソースを取得する
+    const source = contents.find(item => {
+      const re = pathToRegexp(item.path);
+      return re.exec(location.pathname);
+    });
+
     if (!source) {
-      console.error(`${match.params.tab} is no found`);
       return null;
     }
 
     const children = [];
 
-    for (const item of source) {
+    for (const item of source.items) {
       children.push(
         item.type === 'youtube' ? (
           <YouTubeContent key={item.url} {...item} />

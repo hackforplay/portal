@@ -7,12 +7,10 @@ import Button from 'material-ui/Button';
 import { withStyles } from 'material-ui/styles';
 
 import theme from '../settings/theme';
-import { StageContent } from './Contents';
 import attention from '../resources/attention.png';
 import no01 from '../resources/no01.png';
 import no02 from '../resources/no02.png';
 import no03 from '../resources/no03.png';
-import { programminColosseum as contents } from '../settings/contents';
 
 const reference = `https://firebasestorage.googleapis.com/v0/b/hackforplay-production.appspot.com/o/specials%2Freference.pdf?alt=media&token=22b71ece-3b6b-4d35-bb62-59e5223b3dad`;
 
@@ -28,7 +26,7 @@ type Props = {
 @withStyles({
   root: {
     maxWidth: 840,
-    padding: theme.spacing.unit * 4,
+    paddingTop: theme.spacing.unit * 4,
     boxSizing: 'border-box',
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -119,9 +117,6 @@ export default class ProgrammingColosseum extends React.Component<Props> {
               </Typography>
             </div>
           </div>
-        </Paper>
-        <Paper elevation={1} className={classes.paper}>
-          {contents.map(item => <StageContent key={item.title} {...item} />)}
         </Paper>
       </div>
     );

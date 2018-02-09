@@ -38,7 +38,6 @@ function App() {
           </Switch>
           <Route component={OptionalHeader} />
           <Route path="/" exact component={Topic} />
-          <Route path="/contents/:tab" exact component={Contents} />
           <Switch>
             <Redirect exact from="/works" to="/lists" />
             <Route path="/lists/search/:query?" component={SearchList} />
@@ -49,6 +48,7 @@ function App() {
           <Route path="/users/:id/:tab?/:query?" component={UserWorks} />
           <Route path={sp1} exact component={Sp1} />
           <Route path={`${sp1}/ranking/:stage`} component={PCRanking} />
+          <Route component={Contents} />
         </div>
       </Router>
     </MuiThemeProvider>

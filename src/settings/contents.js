@@ -24,300 +24,316 @@ export type ContentType = {
   }>
 };
 
-export const tutorial: Array<ContentType> = [
+const contents: Array<{ path: string, items: Array<ContentType> }> = [
   {
-    type: 'stage',
-    title: 'はじまりのダンジョン',
-    author: null,
-    description:
-      '体力9999のスライムに、ふれたら即GAMEOVERのブレス……クリアするには、プログラムを書きかえるしかない!!',
-    image: thumbnail,
-    url: 'https://hack-rpg.hackforplay.xyz',
-    buttons: [
+    path: '/contents/tutorial',
+    items: [
       {
-        raised: true,
-        color: 'primary',
-        children: 'ゲームスタート',
-        target: '_blank',
-        href: 'https://hack-rpg.hackforplay.xyz'
-      }
-    ]
-  }
-];
-
-export const youtube: Array<ContentType> = [
-  {
-    type: 'youtube',
-    title: 'ステージ１ はじまりの森',
-    author: null,
-    description: 'まずはプレイヤーを動かしてみよう',
-    image: '',
-    url: 'https://www.youtube.com/embed/VDPRV91o984',
-    buttons: [
-      {
-        children: 'YouTube で見る',
-        href: 'https://youtu.be/VDPRV91o984',
-        target: '_blank'
+        type: 'stage',
+        title: 'はじまりのダンジョン',
+        author: null,
+        description:
+          '体力9999のスライムに、ふれたら即GAMEOVERのブレス……クリアするには、プログラムを書きかえるしかない!!',
+        image: thumbnail,
+        url: 'https://hack-rpg.hackforplay.xyz',
+        buttons: [
+          {
+            raised: true,
+            color: 'primary',
+            children: 'ゲームスタート',
+            target: '_blank',
+            href: 'https://hack-rpg.hackforplay.xyz'
+          }
+        ]
       }
     ]
   },
   {
-    type: 'youtube',
-    title: 'ステージ２ コードの魔法',
-    author: null,
-    description: '本のコードを書きかえてみよう',
-    image: '',
-    url: 'https://www.youtube.com/embed/Xvnw8kE-EXw',
-    buttons: [
+    path: '/contents/youtube',
+    items: [
       {
-        children: 'YouTube で見る',
-        href: 'https://youtu.be/Xvnw8kE-EXw',
-        target: '_blank'
-      }
-    ]
-  },
-  {
-    type: 'youtube',
-    title: 'ステージ３ 閉じられた群青の輝き',
-    author: null,
-    description: 'スライムの大群をやっつけるどうすればいいだろう？',
-    image: '',
-    url: 'https://www.youtube.com/embed/laR6MY6IiJQ',
-    buttons: [
-      {
-        children: 'YouTube で見る',
-        href: 'https://youtu.be/laR6MY6IiJQ',
-        target: '_blank'
-      }
-    ]
-  },
-  {
-    type: 'youtube',
-    title: 'ステージ４ 大グモ荒野',
-    author: null,
-    description: 'どうすればダイヤモンドの所まで行けるだろう？',
-    image: '',
-    url: 'https://www.youtube.com/embed/sHlxu5U94U0',
-    buttons: [
-      {
-        children: 'YouTube で見る',
-        href: 'https://youtu.be/sHlxu5U94U0',
-        target: '_blank'
-      }
-    ]
-  },
-  {
-    type: 'youtube',
-    title: 'ステージ５ 守りし者',
-    author: null,
-    description: 'これまで使ったスキルを全て使ってドラゴンを倒そう！',
-    image: '',
-    url: 'https://www.youtube.com/embed/yfwUHmf0DYA',
-    buttons: [
-      {
-        children: 'YouTube で見る',
-        href: 'https://youtu.be/yfwUHmf0DYA',
-        target: '_blank'
-      }
-    ]
-  }
-];
-
-export const kit: Array<ContentType> = [
-  {
-    type: 'stage',
-    title: 'ゲームが作れる！RPGキット',
-    author: null,
-    description: 'ハックフォープレイのステージを自分で作れるキットです⚔',
-    image: 'https://assets.feeles.com/www/kit/screenshot-makerpg.png',
-    url: 'https://make-rpg.hackforplay.xyz',
-    buttons: [
-      {
-        raised: true,
-        color: 'primary',
-        children: 'ゲームをつくる',
-        href: 'https://make-rpg.hackforplay.xyz'
+        type: 'youtube',
+        title: 'ステージ１ はじまりの森',
+        author: null,
+        description: 'まずはプレイヤーを動かしてみよう',
+        image: '',
+        url: 'https://www.youtube.com/embed/VDPRV91o984',
+        buttons: [
+          {
+            children: 'YouTube で見る',
+            href: 'https://youtu.be/VDPRV91o984',
+            target: '_blank'
+          }
+        ]
       },
       {
-        raised: true,
-        children: 'ドキュメント',
-        href: 'https://github.com/Feeles/RPG/wiki',
-        target: '_blank'
+        type: 'youtube',
+        title: 'ステージ２ コードの魔法',
+        author: null,
+        description: '本のコードを書きかえてみよう',
+        image: '',
+        url: 'https://www.youtube.com/embed/Xvnw8kE-EXw',
+        buttons: [
+          {
+            children: 'YouTube で見る',
+            href: 'https://youtu.be/Xvnw8kE-EXw',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'youtube',
+        title: 'ステージ３ 閉じられた群青の輝き',
+        author: null,
+        description: 'スライムの大群をやっつけるどうすればいいだろう？',
+        image: '',
+        url: 'https://www.youtube.com/embed/laR6MY6IiJQ',
+        buttons: [
+          {
+            children: 'YouTube で見る',
+            href: 'https://youtu.be/laR6MY6IiJQ',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'youtube',
+        title: 'ステージ４ 大グモ荒野',
+        author: null,
+        description: 'どうすればダイヤモンドの所まで行けるだろう？',
+        image: '',
+        url: 'https://www.youtube.com/embed/sHlxu5U94U0',
+        buttons: [
+          {
+            children: 'YouTube で見る',
+            href: 'https://youtu.be/sHlxu5U94U0',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'youtube',
+        title: 'ステージ５ 守りし者',
+        author: null,
+        description: 'これまで使ったスキルを全て使ってドラゴンを倒そう！',
+        image: '',
+        url: 'https://www.youtube.com/embed/yfwUHmf0DYA',
+        buttons: [
+          {
+            children: 'YouTube で見る',
+            href: 'https://youtu.be/yfwUHmf0DYA',
+            target: '_blank'
+          }
+        ]
       }
     ]
   },
   {
-    type: 'youtube',
-    title: 'オリジナルゲームをつくろう！',
-    author: null,
-    description:
-      'オリジナルゲームを作って投稿することができます。まずは始め方を解説します',
-    image: '',
-    url: 'https://www.youtube.com/embed/q4QgA2G63h0',
-    buttons: [
+    path: '/contents/kit',
+    items: [
       {
-        children: 'YouTube で見る',
-        href: 'https://youtu.be/q4QgA2G63h0',
-        target: '_blank'
+        type: 'stage',
+        title: 'ゲームが作れる！RPGキット',
+        author: null,
+        description: 'ハックフォープレイのステージを自分で作れるキットです⚔',
+        image: 'https://assets.feeles.com/www/kit/screenshot-makerpg.png',
+        url: 'https://make-rpg.hackforplay.xyz',
+        buttons: [
+          {
+            raised: true,
+            color: 'primary',
+            children: 'ゲームをつくる',
+            href: 'https://make-rpg.hackforplay.xyz'
+          },
+          {
+            raised: true,
+            children: 'ドキュメント',
+            href: 'https://github.com/Feeles/RPG/wiki',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'youtube',
+        title: 'オリジナルゲームをつくろう！',
+        author: null,
+        description:
+          'オリジナルゲームを作って投稿することができます。まずは始め方を解説します',
+        image: '',
+        url: 'https://www.youtube.com/embed/q4QgA2G63h0',
+        buttons: [
+          {
+            children: 'YouTube で見る',
+            href: 'https://youtu.be/q4QgA2G63h0',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'youtube',
+        title: 'スキンをかえてみよう！',
+        author: null,
+        description: 'スキンを使うとキャラクターの見た目を変えられます',
+        image: '',
+        url: 'https://www.youtube.com/embed/CJ0FSvQ_oTs',
+        buttons: [
+          {
+            children: 'YouTube で見る',
+            href: 'https://youtu.be/CJ0FSvQ_oTs',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'youtube',
+        title: 'スキルをつかってみよう！',
+        author: null,
+        description:
+          'スキルを使うとキャラクターが技を使えるようになったり能力を上げることができます',
+        image: '',
+        url: 'https://www.youtube.com/embed/r3yvl19rnS0',
+        buttons: [
+          {
+            children: 'YouTube で見る',
+            href: 'https://youtu.be/r3yvl19rnS0',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'youtube',
+        title: 'モンスターをだそう！',
+        author: null,
+        description: 'モンスターやアイテムなども自由に出すことができます',
+        image: '',
+        url: 'https://www.youtube.com/embed/Oin5IV3Ldww',
+        buttons: [
+          {
+            children: 'YouTube で見る',
+            href: 'https://youtu.be/Oin5IV3Ldww',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'youtube',
+        title: 'ゲームを公開してみよう！',
+        author: null,
+        description:
+          'ゲームを公開すれば世界中の人がそのゲームを遊べるようになります',
+        image: '',
+        url: 'https://www.youtube.com/embed/UvTzW4OmOko',
+        buttons: [
+          {
+            children: 'YouTube で見る',
+            href: 'https://youtu.be/UvTzW4OmOko',
+            target: '_blank'
+          }
+        ]
       }
+      // {
+      //   title: 'モノの動きシミュレータ',
+      //   author: null,
+      //   description:
+      //     'MatterJS（マタージェーエス）を使って色んな動きをプログラミングできます💨',
+      //   image:
+      //     'https://assets.feeles.com/thumbnail/7c36c597ca8ae2e5cf13f738508bf9b5.jpg',
+      //   url: 'http://kits.feeles.com/matterjs.html',
+      //   docs: 'http://brm.io/matter-js/docs/'
+      // },
+      // {
+      //   title: '会話作り',
+      //   author: null,
+      //   description:
+      //     'どなたか、私と会話してくれませんか？　もしも会話をプログラミングできたら… 💭 (Google Chrome推奨)',
+      //   image: 'https://i.gyazo.com/5f23eb2635a69a3c4b0c4b9ee1a9ae37.png',
+      //   url: 'http://kits.feeles.com/ask.html',
+      //   docs: ''
+      // }
     ]
   },
   {
-    type: 'youtube',
-    title: 'スキンをかえてみよう！',
-    author: null,
-    description: 'スキンを使うとキャラクターの見た目を変えられます',
-    image: '',
-    url: 'https://www.youtube.com/embed/CJ0FSvQ_oTs',
-    buttons: [
+    path: '/specials/プログラミングコロシアム',
+    items: [
       {
-        children: 'YouTube で見る',
-        href: 'https://youtu.be/CJ0FSvQ_oTs',
-        target: '_blank'
-      }
-    ]
-  },
-  {
-    type: 'youtube',
-    title: 'スキルをつかってみよう！',
-    author: null,
-    description:
-      'スキルを使うとキャラクターが技を使えるようになったり能力を上げることができます',
-    image: '',
-    url: 'https://www.youtube.com/embed/r3yvl19rnS0',
-    buttons: [
+        type: 'stage',
+        title: 'チュートリアル',
+        image:
+          'https://assets.feeles.com/thumbnail/6641e6ff291706f48f83a7b6a3acab9d.jpg',
+        author: null,
+        description: '制限時間のない練習用のステージです',
+        url: 'https://pg-colosseum.hackforplay.xyz/#/training/index.html',
+        buttons: [
+          {
+            raised: true,
+            color: 'primary',
+            children: 'スタート',
+            href: 'https://pg-colosseum.hackforplay.xyz/#/training/index.html',
+            target: '_blank'
+          }
+        ]
+      },
       {
-        children: 'YouTube で見る',
-        href: 'https://youtu.be/r3yvl19rnS0',
-        target: '_blank'
-      }
-    ]
-  },
-  {
-    type: 'youtube',
-    title: 'モンスターをだそう！',
-    author: null,
-    description: 'モンスターやアイテムなども自由に出すことができます',
-    image: '',
-    url: 'https://www.youtube.com/embed/Oin5IV3Ldww',
-    buttons: [
-      {
-        children: 'YouTube で見る',
-        href: 'https://youtu.be/Oin5IV3Ldww',
-        target: '_blank'
-      }
-    ]
-  },
-  {
-    type: 'youtube',
-    title: 'ゲームを公開してみよう！',
-    author: null,
-    description:
-      'ゲームを公開すれば世界中の人がそのゲームを遊べるようになります',
-    image: '',
-    url: 'https://www.youtube.com/embed/UvTzW4OmOko',
-    buttons: [
-      {
-        children: 'YouTube で見る',
-        href: 'https://youtu.be/UvTzW4OmOko',
-        target: '_blank'
-      }
-    ]
-  }
-  // {
-  //   title: 'モノの動きシミュレータ',
-  //   author: null,
-  //   description:
-  //     'MatterJS（マタージェーエス）を使って色んな動きをプログラミングできます💨',
-  //   image:
-  //     'https://assets.feeles.com/thumbnail/7c36c597ca8ae2e5cf13f738508bf9b5.jpg',
-  //   url: 'http://kits.feeles.com/matterjs.html',
-  //   docs: 'http://brm.io/matter-js/docs/'
-  // },
-  // {
-  //   title: '会話作り',
-  //   author: null,
-  //   description:
-  //     'どなたか、私と会話してくれませんか？　もしも会話をプログラミングできたら… 💭 (Google Chrome推奨)',
-  //   image: 'https://i.gyazo.com/5f23eb2635a69a3c4b0c4b9ee1a9ae37.png',
-  //   url: 'http://kits.feeles.com/ask.html',
-  //   docs: ''
-  // }
-];
+        type: 'stage',
+        title: '準決勝戦',
+        image:
+          'https://assets.feeles.com/thumbnail/658428ea0da32c66008d4067793fda09.jpg',
+        author: null,
+        description: '準決勝戦に使われたステージです',
+        url: 'https://pg-colosseum.hackforplay.xyz/#/stages/semi/index.html',
+        buttons: [
+          {
+            raised: true,
+            color: 'primary',
+            children: 'スタート',
+            href:
+              'https://pg-colosseum.hackforplay.xyz/#/stages/semi/index.html',
+            target: '_blank'
+          }
+        ]
+      },
 
-export const programminColosseum: Array<ContentType> = [
-  {
-    type: 'stage',
-    title: 'チュートリアル',
-    image:
-      'https://assets.feeles.com/thumbnail/6641e6ff291706f48f83a7b6a3acab9d.jpg',
-    author: null,
-    description: '制限時間のない練習用のステージです',
-    url: 'https://pg-colosseum.hackforplay.xyz/#/training/index.html',
-    buttons: [
       {
-        raised: true,
-        color: 'primary',
-        children: 'スタート',
-        href: 'https://pg-colosseum.hackforplay.xyz/#/training/index.html',
-        target: '_blank'
-      }
-    ]
-  },
-  {
-    type: 'stage',
-    title: '準決勝戦',
-    image:
-      'https://assets.feeles.com/thumbnail/658428ea0da32c66008d4067793fda09.jpg',
-    author: null,
-    description: '準決勝戦に使われたステージです',
-    url: 'https://pg-colosseum.hackforplay.xyz/#/stages/semi/index.html',
-    buttons: [
+        type: 'stage',
+        title: '決勝',
+        image:
+          'https://assets.feeles.com/thumbnail/b67621fc40f25635649510377d632cb8.jpg',
+        author: null,
+        description: '決勝戦に使われたステージです',
+        url: 'https://pg-colosseum.hackforplay.xyz/#/stages/final/index.html',
+        buttons: [
+          {
+            raised: true,
+            color: 'primary',
+            children: 'スタート',
+            href:
+              'https://pg-colosseum.hackforplay.xyz/#/stages/final/index.html',
+            target: '_blank'
+          }
+        ]
+      },
       {
-        raised: true,
-        color: 'primary',
-        children: 'スタート',
-        href: 'https://pg-colosseum.hackforplay.xyz/#/stages/semi/index.html',
-        target: '_blank'
-      }
-    ]
-  },
-
-  {
-    type: 'stage',
-    title: '決勝',
-    image:
-      'https://assets.feeles.com/thumbnail/b67621fc40f25635649510377d632cb8.jpg',
-    author: null,
-    description: '決勝戦に使われたステージです',
-    url: 'https://pg-colosseum.hackforplay.xyz/#/stages/final/index.html',
-    buttons: [
-      {
-        raised: true,
-        color: 'primary',
-        children: 'スタート',
-        href: 'https://pg-colosseum.hackforplay.xyz/#/stages/final/index.html',
-        target: '_blank'
-      }
-    ]
-  },
-  {
-    type: 'stage',
-    title: 'グランドチャンピオン決定戦',
-    image:
-      'https://assets.feeles.com/thumbnail/f7c34971cda6bd0df9dc8713ed51ce55.jpg',
-    author: null,
-    description: '最終決戦に使われたステージです',
-    url: 'https://pg-colosseum.hackforplay.xyz/#/stages/champion/index.html',
-    buttons: [
-      {
-        raised: true,
-        color: 'primary',
-        children: 'スタート',
-        href:
+        type: 'stage',
+        title: 'グランドチャンピオン決定戦',
+        image:
+          'https://assets.feeles.com/thumbnail/f7c34971cda6bd0df9dc8713ed51ce55.jpg',
+        author: null,
+        description: '最終決戦に使われたステージです',
+        url:
           'https://pg-colosseum.hackforplay.xyz/#/stages/champion/index.html',
-        target: '_blank'
+        buttons: [
+          {
+            raised: true,
+            color: 'primary',
+            children: 'スタート',
+            href:
+              'https://pg-colosseum.hackforplay.xyz/#/stages/champion/index.html',
+            target: '_blank'
+          }
+        ]
       }
     ]
   }
 ];
+
+export default contents;
