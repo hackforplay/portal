@@ -32,7 +32,7 @@ class Contents extends React.Component<Props> {
     const { classes, match } = this.props;
 
     // データソースを取得する
-    const source = contents[match.params.tab];
+    const source: ?Array<ContentType> = contents[match.params.tab];
     if (!source) {
       console.error(`${match.params.tab} is no found`);
       return null;
@@ -42,11 +42,11 @@ class Contents extends React.Component<Props> {
 
     for (const item of source) {
       children.push(
-        match.params.tab === 'youtube' ? (
+        item.type === 'youtube' ? (
           <YouTubeContent key={item.url} {...item} />
-        ) : (
+        ) : item.type === 'stage' ? (
           <StageContent key={item.url} {...item} />
-        ),
+        ) : null,
         <Divider key={item.url + '-divider'} />
       );
     }

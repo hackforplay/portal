@@ -2,6 +2,7 @@
 import thumbnail from '../resources/stage6.jpeg';
 
 export type ContentType = {
+  type: 'youtube' | 'stage',
   title: string,
   author: null,
   description: string,
@@ -25,6 +26,7 @@ export type ContentType = {
 
 export const tutorial: Array<ContentType> = [
   {
+    type: 'stage',
     title: 'はじまりのダンジョン',
     author: null,
     description:
@@ -45,6 +47,7 @@ export const tutorial: Array<ContentType> = [
 
 export const youtube: Array<ContentType> = [
   {
+    type: 'youtube',
     title: 'ステージ１ はじまりの森',
     author: null,
     description: 'まずはプレイヤーを動かしてみよう',
@@ -59,6 +62,7 @@ export const youtube: Array<ContentType> = [
     ]
   },
   {
+    type: 'youtube',
     title: 'ステージ２ コードの魔法',
     author: null,
     description: '本のコードを書きかえてみよう',
@@ -73,6 +77,7 @@ export const youtube: Array<ContentType> = [
     ]
   },
   {
+    type: 'youtube',
     title: 'ステージ３ 閉じられた群青の輝き',
     author: null,
     description: 'スライムの大群をやっつけるどうすればいいだろう？',
@@ -87,6 +92,7 @@ export const youtube: Array<ContentType> = [
     ]
   },
   {
+    type: 'youtube',
     title: 'ステージ４ 大グモ荒野',
     author: null,
     description: 'どうすればダイヤモンドの所まで行けるだろう？',
@@ -101,6 +107,7 @@ export const youtube: Array<ContentType> = [
     ]
   },
   {
+    type: 'youtube',
     title: 'ステージ５ 守りし者',
     author: null,
     description: 'これまで使ったスキルを全て使ってドラゴンを倒そう！',
@@ -115,6 +122,7 @@ export const youtube: Array<ContentType> = [
     ]
   },
   {
+    type: 'youtube',
     title: 'オリジナルゲームをつくろう！',
     author: null,
     description:
@@ -130,6 +138,7 @@ export const youtube: Array<ContentType> = [
     ]
   },
   {
+    type: 'youtube',
     title: 'スキンをかえてみよう！',
     author: null,
     description: 'スキンを使うとキャラクターの見た目を変えられます',
@@ -144,6 +153,7 @@ export const youtube: Array<ContentType> = [
     ]
   },
   {
+    type: 'youtube',
     title: 'スキルをつかってみよう！',
     author: null,
     description:
@@ -159,6 +169,7 @@ export const youtube: Array<ContentType> = [
     ]
   },
   {
+    type: 'youtube',
     title: 'モンスターをだそう！',
     author: null,
     description: 'モンスターやアイテムなども自由に出すことができます',
@@ -173,6 +184,7 @@ export const youtube: Array<ContentType> = [
     ]
   },
   {
+    type: 'youtube',
     title: 'ゲームを公開してみよう！',
     author: null,
     description:
@@ -191,6 +203,7 @@ export const youtube: Array<ContentType> = [
 
 export const kit: Array<ContentType> = [
   {
+    type: 'stage',
     title: 'ゲームが作れる！RPGキット',
     author: null,
     description: 'ハックフォープレイのステージを自分で作れるキットです⚔',
@@ -234,6 +247,7 @@ export const kit: Array<ContentType> = [
 
 export const programminColosseum: Array<ContentType> = [
   {
+    type: 'stage',
     title: 'チュートリアル',
     image:
       'https://assets.feeles.com/thumbnail/6641e6ff291706f48f83a7b6a3acab9d.jpg',
@@ -251,6 +265,7 @@ export const programminColosseum: Array<ContentType> = [
     ]
   },
   {
+    type: 'stage',
     title: '準決勝戦',
     image:
       'https://assets.feeles.com/thumbnail/658428ea0da32c66008d4067793fda09.jpg',
@@ -269,6 +284,7 @@ export const programminColosseum: Array<ContentType> = [
   },
 
   {
+    type: 'stage',
     title: '決勝',
     image:
       'https://assets.feeles.com/thumbnail/b67621fc40f25635649510377d632cb8.jpg',
@@ -286,6 +302,7 @@ export const programminColosseum: Array<ContentType> = [
     ]
   },
   {
+    type: 'stage',
     title: 'グランドチャンピオン決定戦',
     image:
       'https://assets.feeles.com/thumbnail/f7c34971cda6bd0df9dc8713ed51ce55.jpg',
