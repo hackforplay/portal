@@ -133,7 +133,7 @@ export const fetchRecordsByStage = (stage: string) => async (
   try {
     dispatch(load(stage));
 
-    const result = await app
+    await app
       .firestore()
       .collection('records')
       .where('stage', '==', stage)
