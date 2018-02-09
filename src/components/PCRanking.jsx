@@ -7,9 +7,11 @@ import Table, {
   TableRow
 } from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
+import Button from 'material-ui/Button';
 import { CircularProgress } from 'material-ui/Progress';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
+import type { ContextRouter } from 'react-router-dom';
 
 import theme from '../settings/theme';
 import type { RecordCollectionType } from '../ducks/pcRanking';
@@ -17,9 +19,24 @@ import type { RecordCollectionType } from '../ducks/pcRanking';
 type Props = {
   classes: {
     root: string,
-    progress: string
+    progress: string,
+    button: string
   },
   records: RecordCollectionType
+} & ContextRouter;
+
+const playLinks = {
+  semi1: 'https://pg-colosseum.hackforplay.xyz/#/stages/semi1/index.html',
+  semi2: 'https://pg-colosseum.hackforplay.xyz/#/stages/semi2/index.html',
+  semi3: 'https://pg-colosseum.hackforplay.xyz/#/stages/semi3/index.html',
+
+  final1: 'https://pg-colosseum.hackforplay.xyz/#/stages/final1/index.html',
+  final2: 'https://pg-colosseum.hackforplay.xyz/#/stages/final2/index.html',
+  final3: 'https://pg-colosseum.hackforplay.xyz/#/stages/final3/index.html',
+
+  grand1: 'https://pg-colosseum.hackforplay.xyz/#/stages/mogura2/index.html',
+  grand2: 'https://pg-colosseum.hackforplay.xyz/#/stages/slot2/index.html',
+  grand3: 'https://pg-colosseum.hackforplay.xyz/#/stages/danmaku3/index.html'
 };
 
 @withStyles({
@@ -33,11 +50,15 @@ type Props = {
     marginLeft: 'auto',
     marginRight: 'auto',
     padding: theme.spacing.unit * 6
+  },
+  button: {
+    marginTop: theme.spacing.unit * 3
   }
 })
 export default class PCRanking extends React.Component<Props> {
   render() {
-    const { classes, records } = this.props;
+    const { classes, records, match } = this.props;
+    const { stage } = match.params;
 
     return (
       <div className={classes.root}>
@@ -72,6 +93,16 @@ export default class PCRanking extends React.Component<Props> {
         ) : (
           <CircularProgress className={classes.progress} />
         )}
+        <Button
+          raised
+          color="primary"
+          component="a"
+          href={playLinks[stage]}
+          target="_blank"
+          className={classes.button}
+        >
+          このステージをプレイする
+        </Button>
       </div>
     );
   }
