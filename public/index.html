@@ -20,6 +20,18 @@
       <script>
         _slaask.init('93cda018cfef4817b1b6a94694c246db');
       </script>
+      <!-- Rollbar -->
+      <script>
+        var _rollbarConfig = {
+          accessToken: "204c8b56c78248e387a457c6e6cf31d6",
+          captureUncaught: true,
+          captureUnhandledRejections: true,
+          payload: {
+            environment: "production"
+          }
+        };
+      </script>
+      <script src="./rollbar.js"></script>
       <% } %>
 
         <meta charset="utf-8">
