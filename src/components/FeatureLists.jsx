@@ -2,15 +2,19 @@
 import * as React from 'react';
 import type { ContextRouter } from 'react-router-dom';
 import Grid from 'material-ui/Grid';
+import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 
 import theme from '../settings/theme';
 import WorkList from '../containers/WorkList';
 import type { WorkCollectionType } from '../ducks/work';
+import diamond_blue from '../resources/diamond_blue.png';
+import diamond_green from '../resources/diamond_green.png';
 
 export type Props = {
   classes: {
-    root: string
+    root: string,
+    title: string
   },
   lists: {
     recommended: WorkCollectionType,
@@ -21,6 +25,10 @@ export type Props = {
 @withStyles({
   root: {
     padding: theme.spacing.unit * 3
+  },
+  title: {
+    display: 'inline-flex',
+    alignItems: 'center'
   }
 })
 export default class FeatureLists extends React.Component<Props> {
@@ -34,7 +42,12 @@ export default class FeatureLists extends React.Component<Props> {
         <Grid item xs={12}>
           <WorkList
             works={lists.trending}
-            title="人気の作品"
+            title={
+              <Typography type="title" gutterBottom className={classes.title}>
+                <img src={diamond_blue} alt="" />
+                人気の作品
+              </Typography>
+            }
             more={more === 'trending'}
             moreLink="/lists/trending"
           />
@@ -42,7 +55,12 @@ export default class FeatureLists extends React.Component<Props> {
         <Grid item xs={12}>
           <WorkList
             works={lists.recommended}
-            title={/*"おすすめの作品"*/ 'あたらしい作品'}
+            title={
+              <Typography type="title" gutterBottom className={classes.title}>
+                <img src={diamond_green} alt="" />
+                {/*"おすすめの作品"*/}あたらしい作品
+              </Typography>
+            }
             more={more === 'recommended'}
             moreLink="/lists/recommended"
           />
