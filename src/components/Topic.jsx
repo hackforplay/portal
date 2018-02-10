@@ -48,9 +48,7 @@ type Props = {
     marginTop: 32
   },
   workList: {
-    margin: theme.spacing.unit * 2,
-    textAlign: 'center',
-    flexGrow: 1
+    textAlign: 'center'
   },
   button: {
     fontSize: 'large',
@@ -63,7 +61,6 @@ type Props = {
     flex: '0 1 100%',
     padding: 60,
     textAlign: 'center',
-    margin: 16,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -122,7 +119,7 @@ class Topic extends React.Component<Props> {
           </div>
         </Slider>
         <div className={classes.root}>
-          <Grid container spacing={0}>
+          <Grid container spacing={24}>
             <Grid item xs={12}>
               <Paper elevation={1} className={classes.paper}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -149,22 +146,24 @@ class Topic extends React.Component<Props> {
               </Paper>
             </Grid>
 
-            <WorkList
-              works={this.props.trending}
-              title={
-                <Typography
-                  type="title"
-                  align="center"
-                  gutterBottom
-                  className={classes.title}
-                >
-                  <img src={diamond_pink} alt="" />
-                  人気のステージ
-                </Typography>
-              }
-              moreLink="/lists/trending"
-              className={classes.workList}
-            />
+            <Grid item xs={12}>
+              <WorkList
+                works={this.props.trending}
+                title={
+                  <Typography
+                    type="title"
+                    align="center"
+                    gutterBottom
+                    className={classes.title}
+                  >
+                    <img src={diamond_pink} alt="" />
+                    人気のステージ
+                  </Typography>
+                }
+                moreLink="/lists/trending"
+                className={classes.workList}
+              />
+            </Grid>
 
             <Grid item xs={12} sm={6}>
               <Paper elevation={1} className={classes.paper}>

@@ -44,8 +44,7 @@ export type Props = {
 @withRouter
 @withStyles({
   root: {
-    padding: theme.spacing.unit * 6,
-    marginBottom: theme.spacing.unit * 5
+    padding: theme.spacing.unit * 6
   },
   card: {
     minWidth: 240,

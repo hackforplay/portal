@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import type { ContextRouter } from 'react-router-dom';
+import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
 
 import theme from '../settings/theme';
@@ -19,7 +20,7 @@ export type Props = {
 
 @withStyles({
   root: {
-    padding: theme.spacing.unit * 4
+    padding: theme.spacing.unit * 3
   }
 })
 export default class FeatureLists extends React.Component<Props> {
@@ -29,20 +30,24 @@ export default class FeatureLists extends React.Component<Props> {
     // 現在の URL に対して適切なデータを表示
     const more = match.params.more;
     return (
-      <div className={classes.root}>
-        <WorkList
-          works={lists.trending}
-          title="人気の作品"
-          more={more === 'trending'}
-          moreLink="/lists/trending"
-        />
-        <WorkList
-          works={lists.recommended}
-          title=/*"おすすめの作品"*/"あたらしい作品"
-          more={more === 'recommended'}
-          moreLink="/lists/recommended"
-        />
-      </div>
+      <Grid container spacing={24} className={classes.root}>
+        <Grid item xs={12}>
+          <WorkList
+            works={lists.trending}
+            title="人気の作品"
+            more={more === 'trending'}
+            moreLink="/lists/trending"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <WorkList
+            works={lists.recommended}
+            title={/*"おすすめの作品"*/ 'あたらしい作品'}
+            more={more === 'recommended'}
+            moreLink="/lists/recommended"
+          />
+        </Grid>
+      </Grid>
     );
   }
 }
