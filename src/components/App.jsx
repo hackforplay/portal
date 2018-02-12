@@ -44,7 +44,7 @@ function App() {
             <Route path="/lists/:more?" exact component={FeatureLists} />
           </Switch>
           <Route path="/pickup" exact component={Pickup} />
-          <Route path="/works/:id" exact component={Work} />
+          <Route path="/products/:search" exact component={Work} />
           <Route path="/users/:id/:tab?/:query?" component={UserWorks} />
           <Route path={sp1} exact component={Sp1} />
           <Route path={`${sp1}/ranking/:stage`} component={PCRanking} />

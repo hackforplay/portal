@@ -5,6 +5,8 @@ import type { UserType } from './user';
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'work';
 
+const LOAD_ITEM = 'portal/work/LOAD_ITEM';
+const SET_ITEM = 'portal/work/SET_ITEM';
 const LOAD_LIST = 'portal/work/LOAD_LIST';
 const SET_LIST = 'portal/work/SET_LIST';
 const LOAD_USERS = 'portal/work/LOAD_USERS';
@@ -12,7 +14,7 @@ const SET_USERS = 'portal/work/SET_USERS';
 const SEARCH_START = 'portal/work/SEARCH_START';
 const SEARCH_RESULT = 'portal/work/SEARCH_RESULT';
 
-type WorkData = {
+export type WorkData = {
   id: number,
   title: string,
   description?: string,
@@ -26,10 +28,18 @@ type WorkData = {
   favs: number
 };
 
-export type WorkType = Statefull<WorkData>;
+export type WorkItemType = Statefull<WorkData>;
 export type WorkCollectionType = Statefull<Array<WorkData>>;
 
 type Action =
+  | {
+      type: typeof LOAD_ITEM,
+      search: string
+    }
+  | {
+      type: typeof SET_ITEM,
+      payload: WorkData
+    }
   | {
       type: typeof LOAD_LIST,
       listType: 'recommended' | 'trending' | 'pickup'
@@ -65,6 +75,9 @@ export type State = {
   byUserId: {
     [string]: WorkCollectionType
   },
+  bySearch: {
+    [string]: WorkItemType
+  },
   search: {
     query: string,
     result: WorkCollectionType
@@ -86,6 +99,7 @@ const initialState: State = {
     isProcessing: false
   },
   byUserId: {},
+  bySearch: {},
   search: {
     query: '',
     result: {
@@ -99,10 +113,12 @@ const initialState: State = {
   }
 };
 
-const listReducer = (
+type ListReducer = (
   state: WorkCollectionType,
   action: Action
-): WorkCollectionType => {
+) => WorkCollectionType;
+
+const listReducer: ListReducer = (state, action) => {
   switch (action.type) {
     case LOAD_LIST:
     case LOAD_USERS:
@@ -135,13 +151,36 @@ const listReducer = (
 // Root Reducer
 export default (state: State = initialState, action: Action): State => {
   switch (action.type) {
+    case LOAD_ITEM:
+      return {
+        ...state,
+        bySearch: {
+          ...state.bySearch,
+          [action.search]: {
+            isAvailable: false,
+            isProcessing: false
+          }
+        }
+      };
+    case SET_ITEM:
+      return {
+        ...state,
+        bySearch: {
+          ...state.bySearch,
+          [action.payload.search]: {
+            isAvailable: true,
+            isProcessing: false,
+            isEmpty: false,
+            data: action.payload
+          }
+        }
+      };
     case LOAD_LIST:
     case SET_LIST:
       return {
         ...state,
         [action.listType]: listReducer(state[action.listType], action)
       };
-
     case LOAD_USERS:
     case SET_USERS:
       return {
@@ -202,6 +241,16 @@ const request = (query: {
     .then(text => JSON.parse(text));
 };
 
+export const loadItem = (search: string): Action => ({
+  type: LOAD_ITEM,
+  search
+});
+
+export const setItem = (payload: WorkData): Action => ({
+  type: SET_ITEM,
+  payload
+});
+
 export const loadRecommended = (): Action => ({
   type: LOAD_LIST,
   listType: 'recommended'
@@ -239,6 +288,12 @@ export const loadWorksByUser = (userId: string): Action => ({
   type: LOAD_USERS,
   userId
 });
+
+export const setItems = (payload: Array<WorkData>) => dispatch => {
+  for (const item of payload) {
+    dispatch(setItem(item));
+  }
+};
 
 export const setWorksByUser = (
   userId: string,
@@ -282,6 +337,7 @@ export const fetchRecommendedWorks = () => async (
       kit_identifier: 'com.feeles.make-rpg'
     });
     dispatch(addRecommended(result.data));
+    dispatch(setItems(result.data));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
   }
@@ -301,6 +357,7 @@ export const fetchTrendingWorks = () => async (
     dispatch(loadTrending());
     const result = await import('./trending.js');
     dispatch(addTrending(result.data));
+    dispatch(setItems(result.data));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
   }
@@ -320,6 +377,7 @@ export const fetchPickupWorks = () => async (
     dispatch(loadPickup());
     const result = await import('./pickup.js');
     dispatch(addPickup(result.data));
+    dispatch(setItems(result.data));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
   }
@@ -348,6 +406,31 @@ export const fetchWorksByUser = (user: UserType) => async (
     const text = await response.text();
     const result = JSON.parse(text);
     dispatch(setWorksByUser(user.data.uid, result));
+    dispatch(setItems(result));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const fetchItemBySearch = (search: string) => async (
+  dispatch,
+  getState: () => { work: State }
+) => {
+  // 今の状態
+  const work = getWorkBySearch(getState(), search);
+  if (work.isProcessing || work.isAvailable) {
+    // すでにリクエストを送信しているか、取得済み
+    return;
+  }
+  // リクエスト
+  try {
+    dispatch(loadItem(search));
+    const response = await fetch(
+      `${endpoint}/products/${encodeURIComponent(search)}`
+    );
+    const text = await response.text();
+    const result = JSON.parse(text);
+    dispatch(setItem(result));
   } catch (error) {
     console.error(error);
   }
@@ -374,6 +457,7 @@ export const searchWorks = (query: string) => async (
       q: query
     });
     dispatch(searchResult(query, result.data));
+    dispatch(setItems(result.data));
   } catch (error) {
     console.error(error);
   }
@@ -385,6 +469,18 @@ export function getWorksByUserId(
 ): WorkCollectionType {
   return (
     state.work.byUserId[uid] || {
+      isAvailable: false,
+      isProcessing: false
+    }
+  );
+}
+
+export function getWorkBySearch(
+  state: { work: State },
+  search: string
+): WorkItemType {
+  return (
+    state.work.bySearch[search] || {
       isAvailable: false,
       isProcessing: false
     }
