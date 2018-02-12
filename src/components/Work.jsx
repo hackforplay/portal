@@ -1,11 +1,12 @@
+// @flow
 import * as React from 'react';
 import type { ContextRouter } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
-import Popover from 'material-ui/Popover';
-import { MenuItem } from 'material-ui/Menu';
+// import Popover from 'material-ui/Popover';
+// import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
 
 import type { WorkItemType } from '../ducks/work';
@@ -20,7 +21,8 @@ type Props = {
 
 type State = {
   anchorEl: ?HTMLElement,
-  rootEl: ?HTMLElement
+  rootEl: ?HTMLElement,
+  loading: boolean
 };
 
 // <script async defer src="/h4p.js"></script> が挿入するグローバル変数を受け取る
@@ -58,7 +60,7 @@ class Work extends React.Component<Props, State> {
     this.handleLoad();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     this.handleLoad();
   }
 
@@ -67,7 +69,6 @@ class Work extends React.Component<Props, State> {
     if (this.state.loading && this.state.rootEl && work.isAvailable) {
       h4pPromise.then(h4p => {
         this.setState({ loading: false }, () => {
-          console.log('jsonURL', work.data.asset_url);
           h4p({
             rootElement: this.state.rootEl,
             jsonURL: work.data.asset_url,
@@ -88,17 +89,27 @@ class Work extends React.Component<Props, State> {
 
   render() {
     const { classes, work } = this.props;
-    const { anchorEl } = this.state;
+    // const { anchorEl } = this.state;
 
     return (
       <div>
         <AppBar position="static" color="default" elevation={0}>
           <Toolbar>
-            <Typography type="headline">{work.title}</Typography>
+            <Typography type="headline">
+              {work.isAvailable ? work.data.title : '読み込み中...'}
+            </Typography>
             <div className={classes.blank} />
-            <Button>セーブ</Button>
-            <Button>シェア</Button>
             <Button
+              disabled={work.isAvailable}
+              href={
+                work.isAvailable
+                  ? `https://www.feeles.com/p/${work.data.search}`
+                  : ''
+              }
+            >
+              改造する
+            </Button>
+            {/* <Button 
               aria-owns={anchorEl ? 'simple-menu' : null}
               aria-haspopup="true"
               onClick={this.handleClick}
@@ -114,7 +125,7 @@ class Work extends React.Component<Props, State> {
               onClose={this.handleClose}
             >
               <MenuItem onClick={this.handleClose}>なにかする</MenuItem>
-            </Popover>
+            </Popover> */}
           </Toolbar>
         </AppBar>
         <div
