@@ -30,6 +30,7 @@ import type { WorkCollectionType } from '../ducks/work';
 
 type Props = {
   classes: {
+    root: string,
     workList: string,
     button: string,
     paper: string,
@@ -41,10 +42,15 @@ type Props = {
 };
 
 @withStyles({
+  root: {
+    maxWidth: 840,
+    boxSizing: 'border-box',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 32
+  },
   workList: {
-    margin: theme.spacing.unit * 2,
-    textAlign: 'center',
-    flexGrow: 1
+    textAlign: 'center'
   },
   button: {
     fontSize: 'large',
@@ -57,7 +63,6 @@ type Props = {
     flex: '0 1 100%',
     padding: 60,
     textAlign: 'center',
-    margin: 16,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -83,7 +88,7 @@ class Topic extends React.Component<Props> {
   render() {
     const { classes } = this.props;
     return (
-      <div style={{ backgroundColor: '#e1e5f9' }}>
+      <div>
         <Slider dots infinite lazyLoad arrows={false}>
           <div
             style={{
@@ -115,218 +120,231 @@ class Topic extends React.Component<Props> {
             </div>
           </div>
         </Slider>
-        <div style={{ marginBottom: 32 }} />
-        <Grid container spacing={0}>
-          <Grid item xs={12}>
-            <Paper elevation={1} className={classes.paper}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src={beginner} alt="" />
-                <div style={{ marginLeft: 16 }}>
-                  <Typography type="subheading" align="left" gutterBottom>
-                    HackforPlayとは？
-                  </Typography>
-                  <Typography type="title" align="left" gutterBottom>
-                    はじめてプレイする方はこちら
-                  </Typography>
+        <div className={classes.root}>
+          <Grid container spacing={24}>
+            <Grid item xs={12}>
+              <Paper elevation={1} className={classes.paper}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img src={beginner} alt="" />
+                  <div style={{ marginLeft: 16 }}>
+                    <Typography type="subheading" align="left" gutterBottom>
+                      HackforPlayとは？
+                    </Typography>
+                    <Typography type="title" align="left" gutterBottom>
+                      はじめてプレイする方はこちら
+                    </Typography>
+                  </div>
                 </div>
-              </div>
-              <Button
-                color="primary"
-                raised
-                target="_blank"
-                href="http://hack-rpg.hackforplay.xyz"
-                className={classes.button}
-                style={{ marginTop: 16 }}
-              >
-                チュートリアル
-              </Button>
-            </Paper>
-          </Grid>
 
-          {/* プログラミングコロシアム */}
-          <Grid item xs={12}>
-            <Paper elevation={1} className={classes.paper}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src={dragon} alt="" />
-                <div style={{ marginLeft: 16 }}>
-                  <Typography type="title" align="left" gutterBottom>
-                    プログラミングバトルに参加
-                  </Typography>
+                <Button
+                  color="primary"
+                  raised
+                  component={Link}
+                  to="/officials/hack-rpg"
+                  className={classes.button}
+                  style={{ marginTop: 16 }}
+                >
+                  チュートリアル
+                </Button>
+              </Paper>
+            </Grid>
+            
+            
+            {/* プログラミングコロシアム */}
+            <Grid item xs={12}>
+              <Paper elevation={1} className={classes.paper}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img src={dragon} alt="" />
+                  <div style={{ marginLeft: 16 }}>
+                    <Typography type="title" align="left" gutterBottom>
+                      プログラミングバトルに参加
+                    </Typography>
+                  </div>
                 </div>
-              </div>
-              <Grid
-                container
-                justify="center"
-                spacing={16}
-                style={{ marginTop: 24, marginBottom: 24 }}
-              >
-                <Grid item>
-                  <iframe
-                    title="procolo-1"
-                    width="560"
-                    height="315"
-                    src="https://www.youtube.com/embed/3fZl56ybaRk"
-                    frameborder="0"
-                    allow="autoplay; encrypted-media"
-                    allowFullscreen
-                  />
+                <Grid
+                  container
+                  justify="center"
+                  spacing={16}
+                  style={{ marginTop: 24, marginBottom: 24 }}
+                >
+                  <Grid item>
+                    <iframe
+                      title="procolo-1"
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/3fZl56ybaRk"
+                      frameborder="0"
+                      allow="autoplay; encrypted-media"
+                      allowFullscreen
+                    />
+                  </Grid>
+                  <Grid item>
+                    <iframe
+                      title="procolo-2"
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/28X2Y3k3NMk"
+                      frameborder="0"
+                      allow="autoplay; encrypted-media"
+                      allowFullscreen
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <iframe
-                    title="procolo-2"
-                    width="560"
-                    height="315"
-                    src="https://www.youtube.com/embed/28X2Y3k3NMk"
-                    frameborder="0"
-                    allow="autoplay; encrypted-media"
-                    allowFullscreen
-                  />
-                </Grid>
-              </Grid>
 
-              <Typography type="body1" align="left" gutterBottom>
-                プログラミングコロシアムは、Scratch や HackforPlay
-                などを使って行うプログラミングバトルだ。君もプログラミングバトルを体験してみない？まずはくわしい説明を読んでね。
-              </Typography>
-              <Button
-                color="primary"
-                raised
-                component={Link}
-                to="/specials/プログラミングコロシアム"
-                className={classes.button}
-                style={{ marginTop: 16 }}
-              >
-                詳しい説明を読む
-              </Button>
-            </Paper>
-          </Grid>
+                <Typography type="body1" align="left" gutterBottom>
+                  プログラミングコロシアムは、Scratch や HackforPlay
+                  などを使って行うプログラミングバトルだ。君もプログラミングバトルを体験してみない？まずはくわしい説明を読んでね。
+                </Typography>
+                <Button
+                  color="primary"
+                  raised
+                  component={Link}
+                  to="/specials/プログラミングコロシアム"
+                  className={classes.button}
+                  style={{ marginTop: 16 }}
+                >
+                  詳しい説明を読む
+                </Button>
+              </Paper>
+            </Grid>
 
-          <WorkList
-            works={this.props.trending}
-            title={
-              <Typography
-                type="title"
-                align="center"
-                gutterBottom
-                className={classes.title}
-              >
-                <img src={diamond_pink} alt="" />
-                人気のステージ
-              </Typography>
-            }
-            moreLink="/lists/trending"
-            className={classes.workList}
-          />
-
-          <Grid item xs={12} sm={6}>
-            <Paper elevation={1} className={classes.paper}>
-              <Typography
-                type="title"
-                align="center"
-                gutterBottom
-                className={classes.title}
-              >
-                <img src={news} alt="" />
-                NEWS
-              </Typography>
-              <img src={news1} alt="" style={{ width: '100%' }} />
-              <Typography
-                type="body1"
-                align="left"
-                className={classes.body}
-                gutterBottom
-              >
-                千葉テレビとフジテレビKIDSが製作する５分番組「GPリーグ
-                プログラミングコロシアム」で、子供たちがバトルする競技の最終対決に
-                HackforPlay を使っていただきました！
-              </Typography>
-              <Button
-                color="primary"
-                raised
-                className={classes.button}
-                href="https://note.mu/teramotodaiki/n/nee2f10fc6742"
-                target="_blank"
-              >
-                もっと読む
-              </Button>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <Paper elevation={1} className={classes.paper}>
-              <Typography
-                type="title"
-                align="center"
-                gutterBottom
-                className={classes.title}
-              >
-                <img src={info} alt="" />
-                ワークショップ情報
-              </Typography>
-              <img
-                src={fest1}
-                alt=""
-                style={{ width: '100%', maxWidth: 500 }}
+            <Grid item xs={12}>
+              <WorkList
+                works={this.props.trending}
+                title={
+                  <Typography
+                    type="title"
+                    align="center"
+                    gutterBottom
+                    className={classes.title}
+                  >
+                    <img src={diamond_pink} alt="" />
+                    人気のステージ
+                  </Typography>
+                }
+                moreLink="/lists/trending"
+                className={classes.workList}
               />
-              <img
-                src={fest2}
-                alt=""
-                style={{ width: '100%', maxWidth: 500 }}
-              />
-              <Typography
-                type="subheading"
-                className={classes.body}
-                gutterBottom
-              >
-                第６回金沢市キッズプログラミング教室が開催されます
-              </Typography>
-              <Button
-                color="primary"
-                raised
-                href="http://www4.city.kanazawa.lg.jp/17009/kidspg.html"
-                className={classes.button}
-              >
-                詳細はこちら
-              </Button>
-            </Paper>
-          </Grid>
+            </Grid>
 
-          <Grid item xs={12}>
-            <Paper elevation={1} className={classes.paper}>
-              <div>
+            <Grid item xs={12} sm={6}>
+              <Paper elevation={1} className={classes.paper}>
                 <Typography
                   type="title"
                   align="center"
                   gutterBottom
                   className={classes.title}
                 >
-                  <img src={mail} alt="" />
-                  お問い合わせ
+                  <img src={news} alt="" />
+                  NEWS
                 </Typography>
-              </div>
-              <div>
-                <img src={logo} height={60} alt="ハックフォープレイ株式会社" />
-              </div>
-              <div>
-                <a href="https://twitter.com/teramotodaiki">
-                  <img src={twitter} className={classes.icon} alt="Twitter" />
-                </a>
-                <a href="https://www.facebook.com/hackforplay">
-                  <img src={facebook} className={classes.icon} alt="Facebook" />
-                </a>
-              </div>
-              <Button
-                color="primary"
-                raised
-                href="https://goo.gl/forms/S655BeMUpNHjmAtg1"
-                target="_blank"
-                className={classes.button}
-              >
-                お問い合わせはこちら
-              </Button>
-            </Paper>
+                <img src={news1} alt="" style={{ width: '100%' }} />
+                <Typography
+                  type="body1"
+                  align="left"
+                  className={classes.body}
+                  gutterBottom
+                >
+                  千葉テレビとフジテレビKIDSが製作する５分番組「GPリーグ
+                  プログラミングコロシアム」で、子供たちがバトルする競技の最終対決に
+                  HackforPlay を使っていただきました！
+                </Typography>
+                <Button
+                  color="primary"
+                  raised
+                  className={classes.button}
+                  href="https://note.mu/teramotodaiki/n/nee2f10fc6742"
+                  target="_blank"
+                >
+                  もっと読む
+                </Button>
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <Paper elevation={1} className={classes.paper}>
+                <Typography
+                  type="title"
+                  align="center"
+                  gutterBottom
+                  className={classes.title}
+                >
+                  <img src={info} alt="" />
+                  ワークショップ情報
+                </Typography>
+                <img
+                  src={fest1}
+                  alt=""
+                  style={{ width: '100%', maxWidth: 500 }}
+                />
+                <img
+                  src={fest2}
+                  alt=""
+                  style={{ width: '100%', maxWidth: 500 }}
+                />
+                <Typography
+                  type="subheading"
+                  className={classes.body}
+                  gutterBottom
+                >
+                  第６回金沢市キッズプログラミング教室が開催されます
+                </Typography>
+                <Button
+                  color="primary"
+                  raised
+                  href="http://www4.city.kanazawa.lg.jp/17009/kidspg.html"
+                  className={classes.button}
+                >
+                  詳細はこちら
+                </Button>
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Paper elevation={1} className={classes.paper}>
+                <div>
+                  <Typography
+                    type="title"
+                    align="center"
+                    gutterBottom
+                    className={classes.title}
+                  >
+                    <img src={mail} alt="" />
+                    お問い合わせ
+                  </Typography>
+                </div>
+                <div>
+                  <img
+                    src={logo}
+                    height={60}
+                    alt="ハックフォープレイ株式会社"
+                  />
+                </div>
+                <div>
+                  <a href="https://twitter.com/teramotodaiki">
+                    <img src={twitter} className={classes.icon} alt="Twitter" />
+                  </a>
+                  <a href="https://www.facebook.com/hackforplay">
+                    <img
+                      src={facebook}
+                      className={classes.icon}
+                      alt="Facebook"
+                    />
+                  </a>
+                </div>
+                <Button
+                  color="primary"
+                  raised
+                  href="https://goo.gl/forms/S655BeMUpNHjmAtg1"
+                  target="_blank"
+                  className={classes.button}
+                >
+                  お問い合わせはこちら
+                </Button>
+              </Paper>
+            </Grid>
           </Grid>
-        </Grid>
+        </div>
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import pathToRegexp from 'path-to-regexp';
 import type { ContextRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import Grid from 'material-ui/Grid';
@@ -112,7 +113,8 @@ export class StageContent extends React.Component<StageContentProps> {
         container
         spacing={16}
         className={classes.item}
-        onClick={() => (window.location.href = this.props.url)}
+        component={Link}
+        to={this.props.url}
       >
         <Grid item xs={6}>
           <img src={this.props.image} alt="" className={classes.img} />

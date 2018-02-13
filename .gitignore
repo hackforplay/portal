@@ -22,3 +22,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 firebase-debug.log
+
+# temporary
+/public/h4p.js
+/public/h4p.js.map
