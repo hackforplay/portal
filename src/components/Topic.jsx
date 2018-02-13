@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -136,8 +137,8 @@ class Topic extends React.Component<Props> {
                 <Button
                   color="primary"
                   raised
-                  target="_blank"
-                  href="http://hack-rpg.hackforplay.xyz"
+                  component={Link}
+                  to="/officials/hack-rpg"
                   className={classes.button}
                   style={{ marginTop: 16 }}
                 >

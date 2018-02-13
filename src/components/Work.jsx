@@ -1,10 +1,10 @@
 // @flow
 import * as React from 'react';
 import type { ContextRouter } from 'react-router-dom';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
+// import AppBar from 'material-ui/AppBar';
+// import Toolbar from 'material-ui/Toolbar';
+// import Typography from 'material-ui/Typography';
+// import Button from 'material-ui/Button';
 // import Popover from 'material-ui/Popover';
 // import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
@@ -41,12 +41,12 @@ const h4pPromise = new Promise((resolve, reject) => {
   },
   root: {
     '@media (min-width:0px) and (orientation: landscape)': {
-      height: `calc(100vh - ${48 * 2}px)`
+      height: `calc(100vh - ${48}px)`
     },
     '@media (min-width:600px)': {
-      height: `calc(100vh - ${64 * 2}px)`
+      height: `calc(100vh - ${64}px)`
     },
-    height: `calc(100vh - ${56 * 2}px)`
+    height: `calc(100vh - ${56}px)`
   }
 })
 class Work extends React.Component<Props, State> {
@@ -88,19 +88,20 @@ class Work extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, work } = this.props;
+    const { classes /*, work*/ } = this.props;
     // const { anchorEl } = this.state;
 
     return (
       <div>
-        <AppBar position="static" color="default" elevation={0}>
+        {/* <AppBar position="static" color="default" elevation={0}>
           <Toolbar>
             <Typography type="headline">
               {work.isAvailable ? work.data.title : '読み込み中...'}
             </Typography>
             <div className={classes.blank} />
             <Button
-              disabled={work.isAvailable}
+              disabled={!work.isAvailable}
+              target="_blank"
               href={
                 work.isAvailable
                   ? `https://www.feeles.com/p/${work.data.search}`
@@ -109,7 +110,7 @@ class Work extends React.Component<Props, State> {
             >
               改造する
             </Button>
-            {/* <Button 
+            {<Button 
               aria-owns={anchorEl ? 'simple-menu' : null}
               aria-haspopup="true"
               onClick={this.handleClick}
@@ -125,9 +126,9 @@ class Work extends React.Component<Props, State> {
               onClose={this.handleClose}
             >
               <MenuItem onClick={this.handleClose}>なにかする</MenuItem>
-            </Popover> */}
+            </Popover>}
           </Toolbar>
-        </AppBar>
+        </AppBar> */}
         <div
           className={classes.root}
           ref={rootEl => this.state.rootEl || this.setState({ rootEl })}

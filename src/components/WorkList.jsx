@@ -139,8 +139,7 @@ export default class WorkList extends React.Component<Props> {
                   <Card
                     elevation={0}
                     className={classes.card}
-                    onClick={() => window.open(item.url, item.url)}
-                    // onClick={  this.pushInnerLink(`/works/${item.search}`)}
+                    onClick={this.pushInnerLink(`/products/${item.search}`)}
                   >
                     <CardMedia
                       className={classes.media}

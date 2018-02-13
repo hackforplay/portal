@@ -1,4 +1,6 @@
 // @flow
+import { Link } from 'react-router-dom';
+
 import thumbnail from '../resources/stage6.jpeg';
 
 export type ContentType = {
@@ -41,8 +43,8 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
             raised: true,
             color: 'primary',
             children: 'ゲームスタート',
-            target: '_blank',
-            href: 'https://hack-rpg.hackforplay.xyz'
+            component: Link,
+            to: '/officials/hack-rpg'
           }
         ]
       }
@@ -137,13 +139,14 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         author: null,
         description: 'ハックフォープレイのステージを自分で作れるキットです⚔',
         image: 'https://assets.feeles.com/www/kit/screenshot-makerpg.png',
-        url: 'https://make-rpg.hackforplay.xyz',
+        url: '/officials/make-rpg',
         buttons: [
           {
             raised: true,
             color: 'primary',
             children: 'ゲームをつくる',
-            href: 'https://make-rpg.hackforplay.xyz'
+            component: Link,
+            to: '/officials/make-rpg'
           },
           {
             raised: true,
@@ -262,14 +265,14 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
           'https://assets.feeles.com/thumbnail/6641e6ff291706f48f83a7b6a3acab9d.jpg',
         author: null,
         description: '制限時間のない練習用のステージです',
-        url: 'https://pg-colosseum.hackforplay.xyz/#/training/index.html',
+        url: '/officials/pg-colosseum/#/training/index.html',
         buttons: [
           {
             raised: true,
             color: 'primary',
             children: 'スタート',
-            href: 'https://pg-colosseum.hackforplay.xyz/#/training/index.html',
-            target: '_blank'
+            component: Link,
+            to: '/officials/pg-colosseum/#/training/index.html'
           }
         ]
       },
@@ -280,15 +283,14 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
           'https://assets.feeles.com/thumbnail/658428ea0da32c66008d4067793fda09.jpg',
         author: null,
         description: '準決勝戦に使われたステージです',
-        url: 'https://pg-colosseum.hackforplay.xyz/#/stages/semi/index.html',
+        url: '/officials/pg-colosseum/#/stages/semi/index.html',
         buttons: [
           {
             raised: true,
             color: 'primary',
             children: 'スタート',
-            href:
-              'https://pg-colosseum.hackforplay.xyz/#/stages/semi/index.html',
-            target: '_blank'
+            component: Link,
+            to: '/officials/pg-colosseum/#/stages/semi/index.html'
           }
         ]
       },
@@ -300,15 +302,14 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
           'https://assets.feeles.com/thumbnail/b67621fc40f25635649510377d632cb8.jpg',
         author: null,
         description: '決勝戦に使われたステージです',
-        url: 'https://pg-colosseum.hackforplay.xyz/#/stages/final/index.html',
+        url: '/officials/pg-colosseum/#/stages/final/index.html',
         buttons: [
           {
             raised: true,
             color: 'primary',
             children: 'スタート',
-            href:
-              'https://pg-colosseum.hackforplay.xyz/#/stages/final/index.html',
-            target: '_blank'
+            component: Link,
+            to: '/officials/pg-colosseum/#/stages/final/index.html'
           }
         ]
       },
@@ -319,16 +320,14 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
           'https://assets.feeles.com/thumbnail/f7c34971cda6bd0df9dc8713ed51ce55.jpg',
         author: null,
         description: '最終決戦に使われたステージです',
-        url:
-          'https://pg-colosseum.hackforplay.xyz/#/stages/champion/index.html',
+        url: '/officials/pg-colosseum/#/stages/champion/index.html',
         buttons: [
           {
             raised: true,
             color: 'primary',
             children: 'スタート',
-            href:
-              'https://pg-colosseum.hackforplay.xyz/#/stages/champion/index.html',
-            target: '_blank'
+            component: Link,
+            to: '/officials/pg-colosseum/#/stages/champion/index.html'
           }
         ]
       }
