@@ -19,6 +19,7 @@ import diamond_pink from '../resources/diamond_pink.png';
 import mail from '../resources/mail.png';
 import info from '../resources/info.png';
 import news from '../resources/news.png';
+import dragon from '../resources/dragon.png';
 import facebook from '../resources/facebook.png';
 import twitter from '../resources/twitter.png';
 import logo from '../resources/logo.png';
@@ -134,6 +135,7 @@ class Topic extends React.Component<Props> {
                     </Typography>
                   </div>
                 </div>
+
                 <Button
                   color="primary"
                   raised
@@ -143,6 +145,65 @@ class Topic extends React.Component<Props> {
                   style={{ marginTop: 16 }}
                 >
                   チュートリアル
+                </Button>
+              </Paper>
+            </Grid>
+            
+            
+            {/* プログラミングコロシアム */}
+            <Grid item xs={12}>
+              <Paper elevation={1} className={classes.paper}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img src={dragon} alt="" />
+                  <div style={{ marginLeft: 16 }}>
+                    <Typography type="title" align="left" gutterBottom>
+                      プログラミングバトルに参加
+                    </Typography>
+                  </div>
+                </div>
+                <Grid
+                  container
+                  justify="center"
+                  spacing={16}
+                  style={{ marginTop: 24, marginBottom: 24 }}
+                >
+                  <Grid item>
+                    <iframe
+                      title="procolo-1"
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/3fZl56ybaRk"
+                      frameborder="0"
+                      allow="autoplay; encrypted-media"
+                      allowFullscreen
+                    />
+                  </Grid>
+                  <Grid item>
+                    <iframe
+                      title="procolo-2"
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/28X2Y3k3NMk"
+                      frameborder="0"
+                      allow="autoplay; encrypted-media"
+                      allowFullscreen
+                    />
+                  </Grid>
+                </Grid>
+
+                <Typography type="body1" align="left" gutterBottom>
+                  プログラミングコロシアムは、Scratch や HackforPlay
+                  などを使って行うプログラミングバトルだ。君もプログラミングバトルを体験してみない？まずはくわしい説明を読んでね。
+                </Typography>
+                <Button
+                  color="primary"
+                  raised
+                  component={Link}
+                  to="/specials/プログラミングコロシアム"
+                  className={classes.button}
+                  style={{ marginTop: 16 }}
+                >
+                  詳しい説明を読む
                 </Button>
               </Paper>
             </Grid>
