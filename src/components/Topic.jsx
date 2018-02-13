@@ -19,7 +19,7 @@ import diamond_pink from '../resources/diamond_pink.png';
 import mail from '../resources/mail.png';
 import info from '../resources/info.png';
 import news from '../resources/news.png';
-import dragon from '../resources/dragon.png';
+// import dragon from '../resources/dragon.png';
 import facebook from '../resources/facebook.png';
 import twitter from '../resources/twitter.png';
 import logo from '../resources/logo.png';
@@ -36,7 +36,8 @@ type Props = {
     paper: string,
     title: string,
     icon: string,
-    body: string
+    body: string,
+    iframe: string
   },
   trending: WorkCollectionType
 };
@@ -82,6 +83,10 @@ type Props = {
     alignSelf: 'left',
     marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit * 4
+  },
+  iframe: {
+    width: '100%',
+    height: '100%'
   }
 })
 class Topic extends React.Component<Props> {
@@ -148,10 +153,9 @@ class Topic extends React.Component<Props> {
                 </Button>
               </Paper>
             </Grid>
-            
-            
+
             {/* プログラミングコロシアム */}
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Paper elevation={1} className={classes.paper}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <img src={dragon} alt="" />
@@ -165,28 +169,26 @@ class Topic extends React.Component<Props> {
                   container
                   justify="center"
                   spacing={16}
-                  style={{ marginTop: 24, marginBottom: 24 }}
+                  style={{ marginTop: 8, marginBottom: 8, height: 212 }}
                 >
-                  <Grid item>
+                  <Grid item sm={6} xs={12}>
                     <iframe
                       title="procolo-1"
-                      width="560"
-                      height="315"
                       src="https://www.youtube.com/embed/3fZl56ybaRk"
                       frameborder="0"
                       allow="autoplay; encrypted-media"
                       allowFullscreen
+                      className={classes.iframe}
                     />
                   </Grid>
-                  <Grid item>
+                  <Grid item sm={6} xs={12}>
                     <iframe
                       title="procolo-2"
-                      width="560"
-                      height="315"
                       src="https://www.youtube.com/embed/28X2Y3k3NMk"
                       frameborder="0"
                       allow="autoplay; encrypted-media"
                       allowFullscreen
+                      className={classes.iframe}
                     />
                   </Grid>
                 </Grid>
@@ -206,7 +208,7 @@ class Topic extends React.Component<Props> {
                   詳しい説明を読む
                 </Button>
               </Paper>
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <WorkList
