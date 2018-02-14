@@ -4,6 +4,8 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 
 import type { Statefull } from './helpers';
+import * as helpers from './helpers';
+import * as auth from './auth';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'user';
@@ -11,6 +13,9 @@ export const storeName: string = 'user';
 // TODO: 実際にはページングやクエリに対応する ActionType が必要
 const LOAD = 'portal/user/LOAD';
 const SET = 'portal/user/SET';
+const EDIT = 'portal/user/EDIT';
+const EDIT_CANCEL = 'portal/user/EDIT_CANCEL';
+const UPDATE = 'portal/user/UPDATE';
 
 type UserData = {
   uid: string,
@@ -20,6 +25,11 @@ type UserData = {
   worksNum: number,
   createdAt: string
 };
+
+export type EditingUserData = {|
+  displayName?: string,
+  photoURL?: string
+|};
 
 export type UserType = Statefull<UserData>;
 
@@ -32,16 +42,29 @@ type ActionType =
       type: typeof SET,
       uid: string,
       user?: UserData
+    }
+  | {
+      type: typeof EDIT,
+      uid: string,
+      payload: EditingUserData
+    }
+  | {
+      type: typeof UPDATE,
+      uid: string
     };
 
 export type State = {
   byUid: {
-    [string]: ?UserType
+    [string]: UserType
+  },
+  editingByUid: {
+    [string]: EditingUserData
   }
 };
 
 const initialState: State = {
-  byUid: {}
+  byUid: {},
+  editingByUid: {}
 };
 
 // Reducers
@@ -49,25 +72,36 @@ const initialState: State = {
 const userReducer = (user: ?UserType, action: ActionType): ?UserType => {
   switch (action.type) {
     case LOAD:
-      return {
-        isAvailable: false,
-        isProcessing: true
-      };
+      return helpers.processing();
     case SET:
-      return action.user
-        ? {
-            isAvailable: true,
-            isProcessing: false,
-            isEmpty: false,
-            data: action.user
-          }
-        : {
-            isAvailable: false,
-            isProcessing: false,
-            isEmpty: true
-          };
+      return action.user ? helpers.has(action.user) : helpers.empty();
     default:
       return user;
+  }
+};
+
+type editingReducerType = (
+  editingByUid: $PropertyType<State, 'editingByUid'>,
+  action: ActionType
+) => $PropertyType<State, 'editingByUid'>;
+
+const editingReducer: editingReducerType = (editingByUid, action) => {
+  switch (action.type) {
+    case EDIT:
+      // 編集中のデータに書き加える
+      const editing = editingByUid[action.uid] || {};
+      return {
+        ...editingByUid,
+        [action.uid]: { ...editing, ...action.payload }
+      };
+    case EDIT_CANCEL:
+    case UPDATE:
+      // 編集中のデータを消去する
+      const shallow = { ...editingByUid };
+      delete shallow[action.uid];
+      return shallow;
+    default:
+      return editingByUid;
   }
 };
 
@@ -84,6 +118,23 @@ export default (state: State = initialState, action: ActionType): State => {
       return {
         ...state,
         byUid
+      };
+    case EDIT:
+    case EDIT_CANCEL:
+      // 編集中のデータを書き換えまたは消去する
+      return {
+        ...state,
+        editingByUid: editingReducer(state.editingByUid, action)
+      };
+    case UPDATE:
+      // 編集中のデータを消去し、状態をロード中にする
+      return {
+        ...state,
+        byUid: {
+          ...state.byUid,
+          [action.uid]: helpers.processing()
+        },
+        editingByUid: editingReducer(state.editingByUid, action)
       };
     default:
       return state;
@@ -105,6 +156,24 @@ export const setUser = (user: UserData): ActionType => ({
 
 export const setUserNotFound = (uid: string): ActionType => ({
   type: SET,
+  uid
+});
+
+type editUserType = (uid: string, editing: EditingUserData) => ActionType;
+
+export const editUser: editUserType = (uid, editing) => ({
+  type: EDIT,
+  uid,
+  payload: editing
+});
+
+export const editCancel = (uid: string): ActionType => ({
+  type: EDIT_CANCEL,
+  uid
+});
+
+export const updateUser = (uid: string): ActionType => ({
+  type: UPDATE,
   uid
 });
 
@@ -136,13 +205,63 @@ export const fetchUserIfNeeded = (uid: string) => (
     });
 };
 
+export type editAuthUserType = (
+  editing: EditingUserData
+) => (dispatch, getState: () => { auth: auth.State }) => void;
+
+export const editAuthUser: editAuthUserType = editing => (
+  dispatch,
+  getState
+) => {
+  // ログインユーザーを確認
+  const { user } = getState().auth;
+  if (!user) {
+    // ログインしていない
+    return;
+  }
+  dispatch(editUser(user.uid, editing));
+};
+
+export const cancelAuthUserEditing = () => (
+  dispatch,
+  getState: () => { auth: auth.State }
+) => {
+  // ログインユーザーを確認
+  const { user } = getState().auth;
+  if (!user) {
+    // ログインしていない
+    return;
+  }
+  dispatch(editCancel(user.uid));
+};
+
+export const confirmAuthUserEditing = () => async (
+  dispatch,
+  getState: () => { auth: auth.State, user: State }
+) => {
+  const state = getState();
+  // ログインユーザーを確認
+  const { user } = state.auth;
+  if (!user) {
+    // ログインしていない
+    return;
+  }
+  // 編集中のデータを取得
+  const editing = state.user.editingByUid[user.uid];
+  if (!editing) {
+    // 編集中のデータがない
+  }
+  // アップデートを開始
+  dispatch(updateUser(user.uid));
+  await firebase
+    .firestore()
+    .collection('users')
+    .doc(user.uid)
+    .update(editing);
+};
+
 // Helpers
 
 export function getUserByUid(state: { user: State }, uid: string): UserType {
-  return (
-    state.user.byUid[uid] || {
-      isAvailable: false,
-      isProcessing: false
-    }
-  );
+  return state.user.byUid[uid] || helpers.initialized();
 }

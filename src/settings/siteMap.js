@@ -31,6 +31,11 @@ export const searchBarInfo = [
     tabs: []
   },
   {
+    path: '/users/:id/edit',
+    text: 'プロフィールを編集',
+    tabs: []
+  },
+  {
     path: '/users/:id/:tab?/:query?',
     text: '',
     tabs: [

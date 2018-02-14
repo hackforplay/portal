@@ -18,6 +18,7 @@ import Contents from '../containers/Contents';
 import FeatureLists from '../containers/FeatureLists';
 import PublishedWork from '../containers/PublishedWork';
 import Profile from '../containers/Profile';
+import ProfileEdit from '../containers/ProfileEdit';
 import OptionalHeader from '../containers/OptionalHeader';
 import SearchList from '../containers/SearchList';
 import Pickup from '../containers/Pickup';
@@ -33,7 +34,11 @@ function App() {
       <Router>
         <div>
           <Route component={Header} />
-          <Route path="/users/:id/:tab?" component={Profile} />
+          <Switch>
+            <Route path="/users/:id/edit" component={ProfileEdit} />
+            <Route path="/users/:id/:tab?" component={Profile} />
+          </Switch>
+
           <Switch>
             <Route path="/lists/search/:query?" component={SearchBar} />
             <Route component={NavigationBar} />
