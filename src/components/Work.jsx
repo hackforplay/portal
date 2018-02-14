@@ -88,8 +88,17 @@ class Work extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes /*, work*/ } = this.props;
+    const { classes, work } = this.props;
     // const { anchorEl } = this.state;
+
+    if (!work.isAvailable) {
+      if (work.isProcessing) {
+        return <div>ロード中...</div>;
+      }
+      if (work.isEmpty) {
+        return <div>作品が見つかりませんでした</div>;
+      }
+    }
 
     return (
       <div>

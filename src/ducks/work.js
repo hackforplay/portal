@@ -7,6 +7,7 @@ export const storeName: string = 'work';
 
 const LOAD_ITEM = 'portal/work/LOAD_ITEM';
 const SET_ITEM = 'portal/work/SET_ITEM';
+const SET_ITEM_EMPTY = 'portal/work/SET_ITEM_EMPTY';
 const LOAD_LIST = 'portal/work/LOAD_LIST';
 const SET_LIST = 'portal/work/SET_LIST';
 const LOAD_USERS = 'portal/work/LOAD_USERS';
@@ -39,6 +40,10 @@ type Action =
   | {
       type: typeof SET_ITEM,
       payload: WorkData
+    }
+  | {
+      type: typeof SET_ITEM_EMPTY,
+      search: string
     }
   | {
       type: typeof LOAD_LIST,
@@ -175,6 +180,18 @@ export default (state: State = initialState, action: Action): State => {
           }
         }
       };
+    case SET_ITEM_EMPTY:
+      return {
+        ...state,
+        bySearch: {
+          ...state.bySearch,
+          [action.search]: {
+            isAvailable: false,
+            isProcessing: false,
+            isEmpty: true
+          }
+        }
+      };
     case LOAD_LIST:
     case SET_LIST:
       return {
@@ -249,6 +266,11 @@ export const loadItem = (search: string): Action => ({
 export const setItem = (payload: WorkData): Action => ({
   type: SET_ITEM,
   payload
+});
+
+export const setItemEmpty = (search: string): Action => ({
+  type: SET_ITEM_EMPTY,
+  search
 });
 
 export const loadRecommended = (): Action => ({
@@ -428,6 +450,11 @@ export const fetchItemBySearch = (search: string) => async (
     const response = await fetch(
       `${endpoint}/products/${encodeURIComponent(search)}`
     );
+    if (!response.ok) {
+      // エラーレスポンス
+      dispatch(setItemEmpty(search));
+      return;
+    }
     const text = await response.text();
     const result = JSON.parse(text);
     dispatch(setItem(result));
