@@ -19,3 +19,34 @@ export type Statefull<T> =
       isEmpty: false,
       data: T
     };
+
+export function initialized(): Statefull<*> {
+  return {
+    isAvailable: false,
+    isProcessing: false
+  };
+}
+
+export function processing(): Statefull<*> {
+  return {
+    isAvailable: false,
+    isProcessing: true
+  };
+}
+
+export function empty(): Statefull<*> {
+  return {
+    isAvailable: false,
+    isProcessing: false,
+    isEmpty: true
+  };
+}
+
+export function has<T>(data: T): Statefull<T> {
+  return {
+    isAvailable: true,
+    isProcessing: false,
+    isEmpty: false,
+    data
+  };
+}
