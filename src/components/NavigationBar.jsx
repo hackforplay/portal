@@ -90,18 +90,20 @@ class NavigationBar extends React.Component<Props, State> {
           ) : null}
 
           {info.text && <Typography type="headline">{info.text}</Typography>}
-          <Tabs
-            value={selected && selected.to}
-            indicatorColor="primary"
-            onChange={this.handleChangeTab}
-            scrollable
-            scrollButtons="auto"
-            style={{ flexGrow: 999 }}
-          >
-            {info.tabs.map(tab => (
-              <Tab key={tab.to} label={tab.text} value={tab.to} />
-            ))}
-          </Tabs>
+          {selected && (
+            <Tabs
+              value={selected.to}
+              indicatorColor="primary"
+              onChange={this.handleChangeTab}
+              scrollable
+              scrollButtons="auto"
+              style={{ flexGrow: 999 }}
+            >
+              {info.tabs.map(tab => (
+                <Tab key={tab.to} label={tab.text} value={tab.to} />
+              ))}
+            </Tabs>
+          )}
           <div className={classes.blank} />
           {info.searchTo ? (
             <IconButton aria-label="Search" component={Link} to={info.searchTo}>
