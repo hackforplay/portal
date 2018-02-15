@@ -4,7 +4,6 @@ import { Link, withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
-import Avatar from 'material-ui/Avatar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import { MenuItem } from 'material-ui/Menu';
@@ -12,6 +11,7 @@ import Popover from 'material-ui/Popover';
 import Button from 'material-ui/Button/Button';
 import grey from 'material-ui/colors/grey';
 
+import Avatar from '../containers/Avatar';
 import theme from '../settings/theme';
 import googleIcon from '../resources/google.svg';
 import logo from '../resources/logo.png';
@@ -118,6 +118,7 @@ class Header extends React.Component<Props, State> {
                 aria-haspopup="true"
                 className={classes.avatar}
                 src={user.data.photoURL}
+                storagePath={user.data.profileImagePath}
                 onClick={this.handleClick}
               />
             ) : (

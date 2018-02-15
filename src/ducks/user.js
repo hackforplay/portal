@@ -22,13 +22,14 @@ type UserData = {
   displayName: string,
   email: string,
   photoURL: string,
+  profileImagePath?: string,
   worksNum: number,
   createdAt: string
 };
 
 export type EditingUserData = {|
   displayName?: string,
-  photoURL?: string
+  profileImagePath?: string
 |};
 
 export type UserType = Statefull<UserData>;

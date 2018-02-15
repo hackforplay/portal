@@ -11,6 +11,7 @@ import {
   cancelAuthUserEditing,
   confirmAuthUserEditing
 } from '../ducks/user';
+import { uploadBlob } from '../ducks/storage';
 import Profile from '../components/Profile';
 import * as helpers from '../ducks/helpers';
 
@@ -32,7 +33,8 @@ const mapDispatchToProps = {
   fetchUserIfNeeded,
   editAuthUser,
   cancelAuthUserEditing,
-  confirmAuthUserEditing
+  confirmAuthUserEditing,
+  uploadBlob
 };
 
 type PropsType = typeof mapDispatchToProps & ContextRouter;

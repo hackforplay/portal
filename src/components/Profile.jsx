@@ -1,8 +1,9 @@
 // @flow
 import * as React from 'react';
+import md5 from 'md5';
+import mime from 'mime-types';
 import { Link } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
-import Avatar from 'material-ui/Avatar';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
@@ -10,6 +11,7 @@ import IconButton from 'material-ui/IconButton';
 import Input from 'material-ui/Input/Input';
 import Photo from 'material-ui-icons/Photo';
 
+import Avatar from '../containers/Avatar';
 import theme from '../settings/theme';
 import type { UserType, EditingUserData } from '../ducks/user';
 
@@ -21,14 +23,16 @@ type Props = {
     button: string,
     iconButton: string,
     textFieldRoot: string,
-    textFieldInput: string
+    textFieldInput: string,
+    fileInput: string
   },
   edit: boolean | void,
   user: UserType,
   editing?: EditingUserData,
-  editAuthUser?: (editing: EditingUserData) => void,
-  cancelAuthUserEditing?: () => {},
-  confirmAuthUserEditing?: () => {}
+  editAuthUser: (editing: EditingUserData) => void,
+  cancelAuthUserEditing: () => {},
+  confirmAuthUserEditing: () => {},
+  uploadBlob: (path: string, file: Blob) => void
 };
 
 @withStyles({
@@ -42,21 +46,9 @@ type Props = {
     maxWidth: 600
   },
   avatar: {
-    width: '100%',
-    height: '100%',
+    width: 80,
+    height: 80,
     fontSize: '2.5rem'
-  },
-  avatarEdit: {
-    position: 'absolute',
-    zIndex: 1,
-    opacity: 0.7,
-    width: '100%',
-    height: '100%',
-    backgroundColor: theme.palette.primary[500],
-    '&:hover': {
-      cursor: 'pointer',
-      opacity: 1
-    }
   },
   button: {
     marginBottom: theme.spacing.unit
@@ -82,16 +74,58 @@ type Props = {
       borderColor: '#80bdff',
       boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)'
     }
+  },
+  fileInput: {
+    display: 'none'
   }
 })
 export default class Profile extends React.Component<Props> {
   static defaultProps = {
-    edit: false
+    edit: false,
+    editAuthUser: () => {},
+    cancelAuthUserEditing: () => {},
+    confirmAuthUserEditing: () => {},
+    uploadBlob: () => {}
   };
 
-  editDisplayName = (displayName: string) => {
-    if (this.props.editAuthUser) {
-      this.props.editAuthUser({ displayName });
+  input: ?HTMLInputElement = null;
+
+  handleClickPhotoIcon = () => {
+    const { user } = this.props;
+
+    if (this.input && user.isAvailable) {
+      this.input.onchange = (event: SyntheticInputEvent<HTMLInputElement>) => {
+        const [file] = event.target.files;
+        if (!file) return;
+        // 拡張子を取得
+        const ext = mime.extension(file.type);
+        if (!ext) return;
+
+        // バイナリの MD5 ハッシュを計算するために ArrayBuffer でロード
+        const fileReader = new FileReader();
+        fileReader.onload = event => {
+          const { result } = fileReader;
+          if (typeof result === 'string') {
+            const mes = `readAsArrayBuffer expects type of ArrayBuffer but String given: ${result}`;
+            throw new TypeError(mes);
+          }
+          // md5 がアクセスできるよう TypedArray のビューを作成
+          const len = (result.byteLength / 4) >> 0; // bytes => 32bit Array
+          const buffer = new Int32Array(result, 0, len);
+          // ハッシュを計算
+          const hash = md5(buffer);
+
+          // 格納場所
+          const path = `images/public/users/${user.data.uid}/${hash}.${ext}`;
+          // アップロード！
+          this.props.uploadBlob(path, file);
+          // パスを設定
+          this.props.editAuthUser({ profileImagePath: path });
+        };
+        fileReader.readAsArrayBuffer(file);
+      };
+
+      this.input.click();
     }
   };
 
@@ -133,16 +167,26 @@ export default class Profile extends React.Component<Props> {
             <Avatar
               className={classes.avatar}
               src={userData.photoURL}
+              storagePath={userData.profileImagePath}
               alt={userData.displayName.substr(0, 1)}
             />
             {edit ? (
-              <IconButton
-                color="primary"
-                className={classes.iconButton}
-                aria-label="Edit profile image"
-              >
-                <Photo />
-              </IconButton>
+              <div>
+                <IconButton
+                  color="primary"
+                  className={classes.iconButton}
+                  aria-label="Edit profile image"
+                  onClick={this.handleClickPhotoIcon}
+                >
+                  <Photo />
+                </IconButton>
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/gif"
+                  className={classes.fileInput}
+                  ref={input => (this.input = input)}
+                />
+              </div>
             ) : null}
           </Grid>
           <Grid item xs={5}>
@@ -156,7 +200,9 @@ export default class Profile extends React.Component<Props> {
                 }}
                 autoFocus
                 value={userData.displayName}
-                onChange={event => this.editDisplayName(event.target.value)}
+                onChange={event =>
+                  this.props.editAuthUser({ displayName: event.target.value })
+                }
               />
             ) : (
               <Typography type="headline">{userData.displayName}</Typography>
