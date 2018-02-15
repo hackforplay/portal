@@ -251,6 +251,7 @@ export const confirmAuthUserEditing = () => async (
   const editing = state.user.editingByUid[user.uid];
   if (!editing) {
     // 編集中のデータがない
+    return;
   }
   // アップデートを開始
   dispatch(updateUser(user.uid));
