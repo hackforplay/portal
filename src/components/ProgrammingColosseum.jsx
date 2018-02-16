@@ -19,7 +19,8 @@ type Props = {
     root: string,
     paper: string,
     paragraph: string,
-    img: string
+    img: string,
+    button: string
   }
 };
 
@@ -53,16 +54,19 @@ type Props = {
   img: {
     alignSelf: 'flex-start',
     marginRight: theme.spacing.unit * 5
+  },
+  button: {
+    marginRight: theme.spacing.unit * 2
   }
 })
 export default class ProgrammingColosseum extends React.Component<Props> {
   componentDidMount() {
     // async のテスト
     try {
-      eval(`(async () => { await 1; })();`); // eslint-disable-line
+      eval(`(async () => { await 1; })(); Object.entries({})`); // eslint-disable-line
     } catch (error) {
       alert(
-        '申し訳ありませんが、このコンテンツはお使いのブラウザに対応していません。パソコン版 Google Chrome をインストールしてお使いください'
+        '申し訳ありませんが、このコンテンツはお使いのブラウザに対応していません。最新版のパソコン版 Google Chrome をインストールしてお使いください'
       );
       window.open('https://www.google.co.jp/chrome/index.html', '_blank');
     }
@@ -94,8 +98,18 @@ export default class ProgrammingColosseum extends React.Component<Props> {
                 component="a"
                 download
                 href={reference}
+                className={classes.button}
               >
                 ダウンロードする
+              </Button>
+              <Button
+                raised
+                color="default"
+                target="_blank"
+                href={reference}
+                className={classes.button}
+              >
+                新しいタブで開く
               </Button>
             </div>
           </div>
