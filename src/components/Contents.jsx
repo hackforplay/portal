@@ -50,11 +50,11 @@ class Contents extends React.Component<Props> {
     for (const item of source.items) {
       children.push(
         item.type === 'youtube' ? (
-          <YouTubeContent key={item.url} {...item} />
+          <YouTubeContent key={item.title} {...item} />
         ) : item.type === 'stage' ? (
-          <StageContent key={item.url} {...item} />
+          <StageContent key={item.title} {...item} />
         ) : null,
-        <Divider key={item.url + '-divider'} />
+        <Divider key={item.title + '-divider'} />
       );
     }
     children.pop(); // Remove <Devidier /> at last
@@ -83,8 +83,7 @@ type StageContentProps = {
 @withStyles({
   item: {
     paddingTop: theme.spacing.unit * 4,
-    paddingBottom: theme.spacing.unit * 4,
-    cursor: 'pointer'
+    paddingBottom: theme.spacing.unit * 4
   },
   alignMiddle: {
     display: 'flex',
@@ -96,7 +95,8 @@ type StageContentProps = {
     paddingRight: theme.spacing.unit * 2
   },
   button: {
-    marginRight: theme.spacing.unit * 2
+    marginRight: theme.spacing.unit * 2,
+    marginBottom: theme.spacing.unit * 2
   }
 })
 export class StageContent extends React.Component<StageContentProps> {
@@ -107,14 +107,20 @@ export class StageContent extends React.Component<StageContentProps> {
   render() {
     const { classes } = this.props;
 
+    const linkProps = this.props.url
+      ? {
+          component: Link,
+          to: this.props.url
+        }
+      : {};
+
     return (
       <Grid
-        key={this.props.url}
+        key={this.props.title}
         container
         spacing={16}
         className={classes.item}
-        component={Link}
-        to={this.props.url}
+        {...linkProps}
       >
         <Grid item xs={6}>
           <img src={this.props.image} alt="" className={classes.img} />
@@ -197,7 +203,7 @@ class YouTubeContent extends React.Component<YouTubeContentProps> {
 
     return (
       <Grid
-        key={this.props.url}
+        key={this.props.title}
         container
         spacing={16}
         className={classes.item}

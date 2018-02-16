@@ -9,7 +9,7 @@ export type ContentType = {
   author: null,
   description: string,
   image: string,
-  url: string,
+  url?: string,
   buttons: Array<{
     color?: string,
     children?: string,
@@ -274,6 +274,36 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         ]
       },
       {
+        type: 'youtube',
+        title: 'コードを書いて魔法使いを動かす方法',
+        author: null,
+        description: 'チュートリアルのプレイ方法を紹介します',
+        image: '',
+        url: 'https://www.youtube.com/embed/KKHgSGIt2-4',
+        buttons: [
+          {
+            children: 'YouTube で見る',
+            href: 'https://youtu.be/KKHgSGIt2-4',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'youtube',
+        title: '繰り返しのコードを使ってスコア1000点を出す方法',
+        author: null,
+        description: 'チュートリアルのクリア方法を紹介します',
+        image: '',
+        url: 'https://www.youtube.com/embed/QJZOTBkTAE0',
+        buttons: [
+          {
+            children: 'YouTube で見る',
+            href: 'https://youtu.be/QJZOTBkTAE0',
+            target: '_blank'
+          }
+        ]
+      },
+      {
         type: 'stage',
         title: 'チュートリアル',
         image:
@@ -303,9 +333,21 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
           {
             raised: true,
             color: 'primary',
-            children: 'スタート',
+            children: 'はじめから',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/semi/index.html'
+          },
+          {
+            raised: true,
+            children: 'ステージ２',
+            component: Link,
+            to: '/officials/pg-colosseum/#/stages/semi2/index.html'
+          },
+          {
+            raised: true,
+            children: 'ステージ３',
+            component: Link,
+            to: '/officials/pg-colosseum/#/stages/semi3/index.html'
           }
         ]
       },
@@ -317,14 +359,25 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
           'https://assets.feeles.com/thumbnail/b67621fc40f25635649510377d632cb8.jpg',
         author: null,
         description: '決勝戦に使われたステージです',
-        url: '/officials/pg-colosseum/#/stages/final/index.html',
         buttons: [
           {
             raised: true,
             color: 'primary',
-            children: 'スタート',
+            children: 'はじめから',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/final/index.html'
+          },
+          {
+            raised: true,
+            children: 'ステージ２',
+            component: Link,
+            to: '/officials/pg-colosseum/#/stages/final2/index.html'
+          },
+          {
+            raised: true,
+            children: 'ステージ３',
+            component: Link,
+            to: '/officials/pg-colosseum/#/stages/final3/index.html'
           }
         ]
       },
@@ -335,14 +388,25 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
           'https://assets.feeles.com/thumbnail/f7c34971cda6bd0df9dc8713ed51ce55.jpg',
         author: null,
         description: '最終決戦に使われたステージです',
-        url: '/officials/pg-colosseum/#/stages/champion/index.html',
         buttons: [
           {
             raised: true,
             color: 'primary',
-            children: 'スタート',
+            children: 'はじめから',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/champion/index.html'
+          },
+          {
+            raised: true,
+            children: 'ステージ２',
+            component: Link,
+            to: '/officials/pg-colosseum/#/stages/slot2/index.html'
+          },
+          {
+            raised: true,
+            children: 'ステージ３',
+            component: Link,
+            to: '/officials/pg-colosseum/#/stages/danmaku3/index.html'
           }
         ]
       }
