@@ -259,6 +259,21 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
     path: '/specials/プログラミングコロシアム',
     items: [
       {
+        type: 'youtube',
+        title: 'まずはこの動画を見よう！',
+        author: null,
+        description: 'プログラミングコロシアム特設ステージの遊び方を紹介します',
+        image: '',
+        url: 'https://www.youtube.com/embed/0KtAuJKdI8c',
+        buttons: [
+          {
+            children: 'YouTube で見る',
+            href: 'https://youtu.be/0KtAuJKdI8c',
+            target: '_blank'
+          }
+        ]
+      },
+      {
         type: 'stage',
         title: 'チュートリアル',
         image:
