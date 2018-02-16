@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import Table, {
   TableBody,
   TableCell,
@@ -26,17 +27,17 @@ type Props = {
 } & ContextRouter;
 
 const playLinks = {
-  semi1: 'https://pg-colosseum.hackforplay.xyz/#/stages/semi1/index.html',
-  semi2: 'https://pg-colosseum.hackforplay.xyz/#/stages/semi2/index.html',
-  semi3: 'https://pg-colosseum.hackforplay.xyz/#/stages/semi3/index.html',
+  semi1: '/officials/pg-colosseum/#/stages/semi1/index.html',
+  semi2: '/officials/pg-colosseum/#/stages/semi2/index.html',
+  semi3: '/officials/pg-colosseum/#/stages/semi3/index.html',
 
-  final1: 'https://pg-colosseum.hackforplay.xyz/#/stages/final1/index.html',
-  final2: 'https://pg-colosseum.hackforplay.xyz/#/stages/final2/index.html',
-  final3: 'https://pg-colosseum.hackforplay.xyz/#/stages/final3/index.html',
+  final1: '/officials/pg-colosseum/#/stages/final1/index.html',
+  final2: '/officials/pg-colosseum/#/stages/final2/index.html',
+  final3: '/officials/pg-colosseum/#/stages/final3/index.html',
 
-  grand1: 'https://pg-colosseum.hackforplay.xyz/#/stages/mogura2/index.html',
-  grand2: 'https://pg-colosseum.hackforplay.xyz/#/stages/slot2/index.html',
-  grand3: 'https://pg-colosseum.hackforplay.xyz/#/stages/danmaku3/index.html'
+  grand1: '/officials/pg-colosseum/#/stages/mogura2/index.html',
+  grand2: '/officials/pg-colosseum/#/stages/slot2/index.html',
+  grand3: '/officials/pg-colosseum/#/stages/danmaku3/index.html'
 };
 
 @withStyles({
@@ -52,7 +53,8 @@ const playLinks = {
     padding: theme.spacing.unit * 6
   },
   button: {
-    marginTop: theme.spacing.unit * 3
+    marginTop: theme.spacing.unit * 3,
+    marginBottom: theme.spacing.unit * 3
   }
 })
 export default class PCRanking extends React.Component<Props> {
@@ -96,9 +98,8 @@ export default class PCRanking extends React.Component<Props> {
         <Button
           raised
           color="primary"
-          component="a"
-          href={playLinks[stage]}
-          target="_blank"
+          component={Link}
+          to={playLinks[stage]}
           className={classes.button}
         >
           このステージをプレイする
