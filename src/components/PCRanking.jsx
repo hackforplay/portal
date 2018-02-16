@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import moment from 'moment';
 import { Link } from 'react-router-dom';
 import Table, {
   TableBody,
@@ -62,6 +63,10 @@ export default class PCRanking extends React.Component<Props> {
     const { classes, records, match } = this.props;
     const { stage } = match.params;
 
+    const fromNow = (createdAt: string) => {
+      return moment(createdAt, 'ddd MMM DD YYYY hh:mm:ss GMTZ').fromNow();
+    };
+
     return (
       <div className={classes.root}>
         <h1>ランキング</h1>
@@ -74,6 +79,7 @@ export default class PCRanking extends React.Component<Props> {
                   <TableCell>名前</TableCell>
                   <TableCell>スコア</TableCell>
                   <TableCell>残り時間</TableCell>
+                  <TableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -83,6 +89,7 @@ export default class PCRanking extends React.Component<Props> {
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{item.score}</TableCell>
                     <TableCell>{`${item.lastTime}秒`}</TableCell>
+                    <TableCell>{fromNow(item.createdAt)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
