@@ -1,7 +1,0 @@
-export const SIGN_IN = 'SIGN_IN';
-export const SIGN_OUT = 'SIGN_OUT';
-
-export const INVALIDATE_QUERY = 'INVALIDATE_QUERY';
-export const REQUEST_DOCUMENTS = 'REQUEST_DOCUMENTS';
-export const RECEIVE_DOCUMENTS = 'RECEIVE_DOCUMENTS';
-export const RECEIVE_FAILUER = 'RECEIVE_FAILUER';
