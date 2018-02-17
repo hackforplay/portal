@@ -99,7 +99,7 @@ function connectExternalService(user: User) {
       }
     }
   })(
-    () => window.gtag('set', { user_id: user.uid }), // ログインしている user_id を使用してUser-ID を設定します
+    // () => window.gtag('set', { user_id: user.uid }), // ログインしている user_id を使用してUser-ID を設定します
     () => window.ga('set', 'userId', user.uid) // ログインしている user_id を使用してUser-ID を設定します。
   );
 }

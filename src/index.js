@@ -30,3 +30,8 @@ ReactDOM.render(
   document.getElementById('app')
 );
 // registerServiceWorker();
+
+if (process.env.NODE_ENV === 'production') {
+  // https://github.com/googleanalytics/autotrack
+  import('autotrack/autotrack');
+}
