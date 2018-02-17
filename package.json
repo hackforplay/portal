@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/polyfill": "^7.0.0-beta.40",
     "autoprefixer": "7.1.2",
     "autotrack": "^2.4.1",
     "babel-core": "6.25.0",
