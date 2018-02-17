@@ -321,6 +321,12 @@ module.exports = {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    // Rollbar error tracker integration
+    new webpack.DefinePlugin({
+      'process.env.REACT_APP_VERSION': JSON.stringify(
+        process.env.GIT_COMMIT_HASH
+      )
+    })
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

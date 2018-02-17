@@ -35,4 +35,7 @@ ReactDOM.render(
 if (process.env.NODE_ENV === 'production') {
   // https://github.com/googleanalytics/autotrack
   import('autotrack/autotrack');
+
+  // https://github.com/rollbar/rollbar.js
+  import('./Rollbar');
 }
