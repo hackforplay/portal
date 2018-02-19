@@ -38,7 +38,12 @@ export default class Avatar extends React.Component {
 
   render() {
     // 余分な props を削除する
-    const { storagePath, downloadUrl, ...props } = this.props;
-    return <MuiAvatar {...props} />;
+    const { storagePath, downloadUrl, src, ...props } = this.props;
+    if (src) {
+      // イメージアバター
+      return <MuiAvatar {...props} src={src} />;
+    }
+    // alt を表示
+    return <MuiAvatar {...props}>{props.alt}</MuiAvatar>;
   }
 }
