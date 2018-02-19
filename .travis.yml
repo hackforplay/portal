@@ -9,6 +9,9 @@ cache:
 script:
 - npm run build
 - npm test
+before_deploy:
+- "echo 'ready?'"
+- "npm —-prefix ./functions install ./functions"
 deploy:
   provider: firebase
   token:
