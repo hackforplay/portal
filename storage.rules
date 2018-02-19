@@ -1,0 +1,11 @@
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /images/public/users/{uid}/{allPaths=**} {
+      allow read;
+      allow write: if request.auth.uid == uid;
+    }
+    match /specials/{allPaths=**} {
+      allow read;
+    }
+  }
+}
