@@ -17,8 +17,8 @@ const SEARCH_RESULT = 'portal/work/SEARCH_RESULT';
 
 export type WorkData = {
   id?: number,
-  title?: string,
-  description?: string,
+  title: string,
+  description: string,
   image?: string,
   asset_url?: string | null,
   search: string,
@@ -34,6 +34,20 @@ export type WorkData = {
   createdAt?: string,
   updatedAt?: string
 };
+
+type migrateType = (old: WorkData) => WorkData;
+const migrate: migrateType = old => ({
+  title: old.title,
+  description: old.description,
+  author: old.author,
+  views: old.views,
+  favs: old.favs,
+  createdAt: old.created_at,
+  image: old.image, // Backword compatibility
+  asset_url: old.asset_url, // Backword compatibility
+  search: old.search, // Backword compatibility
+  url: old.url // Backword compatibility
+});
 
 export type WorkItemType = Statefull<WorkData>;
 export type WorkCollectionType = Statefull<Array<WorkData>>;
@@ -364,8 +378,8 @@ export const fetchRecommendedWorks = () => async (
       direction: 'desc',
       kit_identifier: 'com.feeles.make-rpg'
     });
-    dispatch(addRecommended(result.data));
-    dispatch(setItems(result.data));
+    dispatch(addRecommended(result.data.map(migrate)));
+    dispatch(setItems(result.data.map(migrate)));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
   }
@@ -384,8 +398,8 @@ export const fetchTrendingWorks = () => async (
   try {
     dispatch(loadTrending());
     const result = await import('./trending.js');
-    dispatch(addTrending(result.data));
-    dispatch(setItems(result.data));
+    dispatch(addTrending(result.data.map(migrate)));
+    dispatch(setItems(result.data.map(migrate)));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
   }
@@ -404,8 +418,8 @@ export const fetchPickupWorks = () => async (
   try {
     dispatch(loadPickup());
     const result = await import('./pickup.js');
-    dispatch(addPickup(result.data));
-    dispatch(setItems(result.data));
+    dispatch(addPickup(result.data.map(migrate)));
+    dispatch(setItems(result.data.map(migrate)));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
   }
@@ -433,8 +447,8 @@ export const fetchWorksByUser = (user: UserType) => async (
     );
     const text = await response.text();
     const result = JSON.parse(text);
-    dispatch(setWorksByUser(user.data.uid, result));
-    dispatch(setItems(result));
+    dispatch(setWorksByUser(user.data.uid, result.map(migrate)));
+    dispatch(setItems(result.map(migrate)));
   } catch (error) {
     console.error(error);
   }
@@ -463,7 +477,7 @@ export const fetchItemBySearch = (search: string) => async (
     }
     const text = await response.text();
     const result = JSON.parse(text);
-    dispatch(setItem(result));
+    dispatch(setItem(migrate(result) ));
   } catch (error) {
     console.error(error);
   }
@@ -489,8 +503,8 @@ export const searchWorks = (query: string) => async (
     const result = await request({
       q: query
     });
-    dispatch(searchResult(query, result.data));
-    dispatch(setItems(result.data));
+    dispatch(searchResult(query, result.data.map(migrate)));
+    dispatch(setItems(result.data.map(migrate)));
   } catch (error) {
     console.error(error);
   }

@@ -112,8 +112,8 @@ export default class WorkList extends React.Component<Props> {
     };
   }
 
-  fromNow(created_at: string) {
-    return moment(created_at, 'YYYY-MM-DD hh:mm:ss')
+  fromNow(createdAt: string) {
+    return moment(createdAt, 'YYYY-MM-DD hh:mm:ss')
       .add(moment().utcOffset(), 'm')
       .fromNow();
   }
@@ -169,7 +169,7 @@ export default class WorkList extends React.Component<Props> {
                     <CardContent>
                       <Typography type="caption">
                         {`プレイ回数 ${item.views} 回・${this.fromNow(
-                          item.created_at
+                          item.createdAt
                         )}`}
                       </Typography>
                     </CardContent>
