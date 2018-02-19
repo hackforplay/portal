@@ -19,12 +19,13 @@ const mapStateToProps = (state: StoreState, ownProps) => {
   // /users/:id の :id にあたる文字列
   const { id } = ownProps.match.params;
   // ログインユーザーと同じか検証
-  const isAuthUser = state.auth.user && state.auth.user.uid === id;
+  const owner = state.auth.user && state.auth.user.uid === id;
   // 編集中のデータを取得
   const editing = state.user.editingByUid[id];
 
   return {
-    user: isAuthUser ? getUserByUid(state, id) : helpers.empty(),
+    owner,
+    user: owner ? getUserByUid(state, id) : helpers.empty(),
     editing
   };
 };

@@ -26,6 +26,7 @@ type Props = {
     textFieldInput: string,
     fileInput: string
   },
+  owner: boolean,
   edit: boolean | void,
   user: UserType,
   editing?: EditingUserData,
@@ -130,7 +131,7 @@ export default class Profile extends React.Component<Props> {
   };
 
   render() {
-    const { classes, user, edit, editing } = this.props;
+    const { classes, user, edit, editing, owner } = this.props;
 
     if (user.isEmpty) {
       return (
@@ -207,9 +208,11 @@ export default class Profile extends React.Component<Props> {
             ) : (
               <Typography type="headline">{userData.displayName}</Typography>
             )}
-            <Typography type="caption" align="left">{`投稿数 ${
-              userData.worksNum
-            }`}</Typography>
+            {userData.worksNum ? (
+              <Typography type="caption" align="left">{`投稿数 ${
+                userData.worksNum
+              }`}</Typography>
+            ) : null}
           </Grid>
           <Grid item xs={5}>
             {edit ? (
@@ -223,7 +226,8 @@ export default class Profile extends React.Component<Props> {
               >
                 変更を保存する
               </Button>
-            ) : (
+            ) : null}
+            {owner ? (
               <Button
                 raised
                 color="primary"
@@ -233,7 +237,7 @@ export default class Profile extends React.Component<Props> {
               >
                 プロフィールを編集する
               </Button>
-            )}
+            ) : null}
           </Grid>
         </Grid>
       </div>

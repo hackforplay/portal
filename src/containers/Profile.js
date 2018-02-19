@@ -10,8 +10,11 @@ import WrappedProfile from '../components/Profile';
 const mapStateToProps = (state: StoreState, ownProps) => {
   // /users/:id の :id にあたる文字列
   const { id } = ownProps.match.params;
+  // 自分かどうか
+  const owner = state.auth.user && state.auth.user.uid === id;
 
   return {
+    owner,
     user: getUserByUid(state, id)
   };
 };

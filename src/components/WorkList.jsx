@@ -102,7 +102,7 @@ export default class WorkList extends React.Component<Props> {
     more: false
   };
 
-  pushInnerLink(to: string) {
+  link(to: string) {
     const { history } = this.props;
     return (event: SyntheticMouseEvent<HTMLButtonElement>) => {
       // 外側の Link を無視する
@@ -139,7 +139,7 @@ export default class WorkList extends React.Component<Props> {
                   <Card
                     elevation={0}
                     className={classes.card}
-                    onClick={this.pushInnerLink(`/products/${item.search}`)}
+                    onClick={this.link(`/products/${item.search}`)}
                   >
                     <CardMedia
                       className={classes.media}
@@ -155,8 +155,8 @@ export default class WorkList extends React.Component<Props> {
                       title={<Typography type="body2">{item.title}</Typography>}
                       subheader={
                         <span
+                          onClick={this.link(`/anonymous/${item.author}`)}
                           className={classes.authorName}
-                          // onClick={this.pushInnerLink(`/users/${item.author.id}`)}
                         >
                           {item.author}
                         </span>

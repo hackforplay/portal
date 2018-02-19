@@ -18,6 +18,7 @@ import Contents from '../containers/Contents';
 import FeatureLists from '../containers/FeatureLists';
 import PublishedWork from '../containers/PublishedWork';
 import Profile from '../containers/Profile';
+import AnonymousProfile from '../containers/AnonymousProfile';
 import ProfileEdit from '../containers/ProfileEdit';
 import OptionalHeader from '../containers/OptionalHeader';
 import SearchList from '../containers/SearchList';
@@ -38,7 +39,8 @@ function App() {
             <Route path="/users/:id/edit" component={ProfileEdit} />
             <Route path="/users/:id/:tab?" component={Profile} />
           </Switch>
-
+          <Route path="/anonymous/:nickname" component={AnonymousProfile} />
+          <Route path="/anonymous/:query?" component={SearchList} />
           <Switch>
             <Route path="/lists/search/:query?" component={SearchBar} />
             <Route component={NavigationBar} />
