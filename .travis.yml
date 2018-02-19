@@ -10,8 +10,7 @@ script:
 - npm run build
 - npm test
 before_deploy:
-- "echo 'ready?'"
-- "npm —-prefix ./functions install ./functions"
+- "cd functions && npm install && cd ../"
 deploy:
   provider: firebase
   token:
