@@ -135,7 +135,7 @@ export default class WorkList extends React.Component<Props> {
             {works.isProcessing ? <CircularProgress /> : null}
             {works.isAvailable &&
               works.data.map(item => (
-                <Grid item key={item.id}>
+                <Grid item key={item.search}>
                   <Card
                     elevation={0}
                     className={classes.card}

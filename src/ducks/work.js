@@ -16,17 +16,23 @@ const SEARCH_START = 'portal/work/SEARCH_START';
 const SEARCH_RESULT = 'portal/work/SEARCH_RESULT';
 
 export type WorkData = {
-  id: number,
-  title: string,
+  id?: number,
+  title?: string,
   description?: string,
   image?: string,
-  asset_url: ?string,
+  asset_url?: string | null,
   search: string,
-  url: string,
+  url?: string,
   author?: string,
-  created_at: string,
-  views: number,
-  favs: number
+  created_at?: string,
+  views?: number,
+  favs?: number,
+  // additional structure
+  ownerId?: string,
+  thumbnailStoragePath?: string,
+  assetStoragePath?: string,
+  createdAt?: string,
+  updatedAt?: string
 };
 
 export type WorkItemType = Statefull<WorkData>;
