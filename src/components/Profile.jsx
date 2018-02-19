@@ -214,31 +214,32 @@ export default class Profile extends React.Component<Props> {
               }`}</Typography>
             ) : null}
           </Grid>
-          <Grid item xs={5}>
-            {edit ? (
-              <Button
-                raised
-                color="primary"
-                className={classes.button}
-                component={Link}
-                to={`/users/${userData.uid}`}
-                onClick={this.props.confirmAuthUserEditing}
-              >
-                変更を保存する
-              </Button>
-            ) : null}
-            {owner ? (
-              <Button
-                raised
-                color="primary"
-                className={classes.button}
-                component={Link}
-                to={`/users/${userData.uid}/edit`}
-              >
-                プロフィールを編集する
-              </Button>
-            ) : null}
-          </Grid>
+          {owner ? (
+            <Grid item xs={5}>
+              {edit ? (
+                <Button
+                  raised
+                  color="primary"
+                  className={classes.button}
+                  component={Link}
+                  to={`/users/${userData.uid}`}
+                  onClick={this.props.confirmAuthUserEditing}
+                >
+                  変更を保存する
+                </Button>
+              ) : (
+                <Button
+                  raised
+                  color="primary"
+                  className={classes.button}
+                  component={Link}
+                  to={`/users/${userData.uid}/edit`}
+                >
+                  プロフィールを編集する
+                </Button>
+              )}
+            </Grid>
+          ) : null}
         </Grid>
       </div>
     );
