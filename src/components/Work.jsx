@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import type { ContextRouter } from 'react-router-dom';
 // import AppBar from 'material-ui/AppBar';
 // import Toolbar from 'material-ui/Toolbar';
@@ -62,6 +63,14 @@ class Work extends React.Component<Props, State> {
 
   componentDidUpdate() {
     this.handleLoad();
+  }
+
+  componentWillUnmount() {
+    h4pPromise.then(h4p => {
+      if (this.state.rootEl) {
+        h4p.unmount(this.state.rootEl);
+      }
+    });
   }
 
   handleLoad() {
