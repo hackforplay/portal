@@ -1,7 +1,7 @@
 import * as React from 'react';
 import pathToRegexp from 'path-to-regexp';
 import type { ContextRouter } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import Grid from 'material-ui/Grid';
@@ -80,6 +80,7 @@ type StageContentProps = {
   buttons: Array<{}>
 } & ContentType;
 
+@withRouter
 @withStyles({
   item: {
     paddingTop: theme.spacing.unit * 4,
@@ -104,23 +105,21 @@ export class StageContent extends React.Component<StageContentProps> {
     event.stopPropagation();
   }
 
+  handleClick = () => {
+    if (this.props.url) {
+      this.props.history.push(this.props.url);
+    }
+  };
+
   render() {
     const { classes } = this.props;
 
-    const linkProps = this.props.url
-      ? {
-          component: Link,
-          to: this.props.url
-        }
-      : {};
-
     return (
       <Grid
-        key={this.props.title}
         container
         spacing={16}
         className={classes.item}
-        {...linkProps}
+        onClick={this.handleClick}
       >
         <Grid item xs={6}>
           <img src={this.props.image} alt="" className={classes.img} />
@@ -202,12 +201,7 @@ class YouTubeContent extends React.Component<YouTubeContentProps> {
     const { classes } = this.props;
 
     return (
-      <Grid
-        key={this.props.title}
-        container
-        spacing={16}
-        className={classes.item}
-      >
+      <Grid container spacing={16} className={classes.item}>
         <Grid item xs={6}>
           <div className={classes.responsive}>
             <iframe
