@@ -19,6 +19,7 @@ import type { UserType } from '../ducks/user';
 
 type Props = {
   classes: {
+    root: string,
     toolbar: string,
     blank: string,
     icon: string,
@@ -36,6 +37,15 @@ type State = {
 
 @withRouter
 @withStyles({
+  root: {
+    '@media (min-width:0px) and (orientation: landscape)': {
+      height: 48
+    },
+    '@media (min-width:600px)': {
+      height: 64
+    },
+    height: 56
+  },
   toolbar: {
     backgroundColor: grey[900]
   },
@@ -89,87 +99,89 @@ class Header extends React.Component<Props, State> {
     const { classes, user } = this.props;
     const { anchorEl } = this.state;
     return (
-      <AppBar position="static" elevation={0}>
-        <Toolbar className={classes.toolbar}>
-          <Typography
-            type="title"
-            style={{ color: 'black' }}
-            component={Link}
-            to="/"
-            className={classes.title}
-          >
-            <img src={logo} height={36} alt="HackforPlay" />
-          </Typography>
-          <div className={classes.blank} />
-          <Button color="contrast" component={Link} to="/contents/tutorial">
-            チュートリアル
-          </Button>
-          <Button color="contrast" component={Link} to="/lists">
-            ゲームを探す
-          </Button>
-          <Button color="contrast" component={Link} to="/contents/kit">
-            ゲームを作る
-          </Button>
-          {user.isAvailable ? (
-            user.data.photoURL ? (
-              // アイコンアバター
-              <Avatar
-                aria-owns={anchorEl ? 'simple-menu' : null}
-                aria-haspopup="true"
-                className={classes.avatar}
-                src={user.data.photoURL}
-                storagePath={user.data.profileImagePath}
-                onClick={this.handleClick}
-              />
-            ) : (
-              // 文字アバター
-              <Avatar
-                aria-owns={anchorEl ? 'simple-menu' : null}
-                aria-haspopup="true"
-                className={classes.avatar}
-                onClick={this.handleClick}
-              >
-                {user.data.displayName.substr(0, 1)}
-              </Avatar>
-            )
-          ) : (
-            <Button
-              raised
-              color="primary"
-              aria-owns={anchorEl ? 'simple-menu' : null}
-              aria-haspopup="true"
-              onClick={this.handleClick}
-              disabled={user.isProcessing}
+      <div className={classes.root}>
+        <AppBar position="fixed" elevation={0}>
+          <Toolbar className={classes.toolbar}>
+            <Typography
+              type="title"
+              style={{ color: 'black' }}
+              component={Link}
+              to="/"
+              className={classes.title}
             >
-              ログイン
+              <img src={logo} height={36} alt="HackforPlay" />
+            </Typography>
+            <div className={classes.blank} />
+            <Button color="contrast" component={Link} to="/contents/tutorial">
+              チュートリアル
             </Button>
-          )}
-          <Popover
-            id="simple-menu"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={this.handleClose}
-          >
+            <Button color="contrast" component={Link} to="/lists">
+              ゲームを探す
+            </Button>
+            <Button color="contrast" component={Link} to="/contents/kit">
+              ゲームを作る
+            </Button>
             {user.isAvailable ? (
-              <MenuItem onClick={this.goTo(`/users/${user.data.uid}`)}>
-                <Typography type="button">マイページ</Typography>
-              </MenuItem>
-            ) : null}
-            {user.isAvailable || user.isProcessing ? (
-              <MenuItem onClick={this.signOut}>
-                <Typography type="button">ログアウト</Typography>
-              </MenuItem>
+              user.data.photoURL ? (
+                // アイコンアバター
+                <Avatar
+                  aria-owns={anchorEl ? 'simple-menu' : null}
+                  aria-haspopup="true"
+                  className={classes.avatar}
+                  src={user.data.photoURL}
+                  storagePath={user.data.profileImagePath}
+                  onClick={this.handleClick}
+                />
+              ) : (
+                // 文字アバター
+                <Avatar
+                  aria-owns={anchorEl ? 'simple-menu' : null}
+                  aria-haspopup="true"
+                  className={classes.avatar}
+                  onClick={this.handleClick}
+                >
+                  {user.data.displayName.substr(0, 1)}
+                </Avatar>
+              )
             ) : (
-              <MenuItem onClick={this.signInWithGoogle}>
-                <img src={googleIcon} alt="Google" className={classes.icon} />
-                <Typography type="button">Google でログイン</Typography>
-              </MenuItem>
+              <Button
+                raised
+                color="primary"
+                aria-owns={anchorEl ? 'simple-menu' : null}
+                aria-haspopup="true"
+                onClick={this.handleClick}
+                disabled={user.isProcessing}
+              >
+                ログイン
+              </Button>
             )}
-          </Popover>
-        </Toolbar>
-      </AppBar>
+            <Popover
+              id="simple-menu"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={this.handleClose}
+            >
+              {user.isAvailable ? (
+                <MenuItem onClick={this.goTo(`/users/${user.data.uid}`)}>
+                  <Typography type="button">マイページ</Typography>
+                </MenuItem>
+              ) : null}
+              {user.isAvailable || user.isProcessing ? (
+                <MenuItem onClick={this.signOut}>
+                  <Typography type="button">ログアウト</Typography>
+                </MenuItem>
+              ) : (
+                <MenuItem onClick={this.signInWithGoogle}>
+                  <img src={googleIcon} alt="Google" className={classes.icon} />
+                  <Typography type="button">Google でログイン</Typography>
+                </MenuItem>
+              )}
+            </Popover>
+          </Toolbar>
+        </AppBar>
+      </div>
     );
   }
 }
