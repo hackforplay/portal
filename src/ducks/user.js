@@ -184,7 +184,7 @@ export const fetchUserIfNeeded = (uid: string) => (
 ) => {
   // その UID が Store にあるか確認
   const currentUser = getUserByUid(getState(), uid);
-  if (currentUser && (currentUser.isProcessing || currentUser.isAvailable)) {
+  if (currentUser.isProcessing || currentUser.isAvailable) {
     // すでにリクエストが送られているか、取得済み
     return;
   }
