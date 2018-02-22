@@ -135,11 +135,11 @@ export default class WorkList extends React.Component<Props> {
             {works.isProcessing ? <CircularProgress /> : null}
             {works.isAvailable &&
               works.data.map(item => (
-                <Grid item key={item.search}>
+                <Grid item key={item.path}>
                   <Card
                     elevation={0}
                     className={classes.card}
-                    onClick={this.link(`/products/${item.search}`)}
+                    onClick={this.link(item.path)}
                   >
                     <CardMedia
                       className={classes.media}

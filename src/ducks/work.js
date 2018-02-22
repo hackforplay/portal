@@ -1,10 +1,18 @@
 // @flow
+import firebase from 'firebase';
+import 'firebase/firestore';
+
 import type { Statefull } from './helpers';
 import type { UserType } from './user';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'work';
 
+// Firestore にあるデータ
+const LOAD = 'portal/work/LOAD';
+const SET = 'portal/work/SET';
+const EMPTY = 'portal/work/EMPTY';
+// Heroku にあるデータ
 const LOAD_ITEM = 'portal/work/LOAD_ITEM';
 const SET_ITEM = 'portal/work/SET_ITEM';
 const SET_ITEM_EMPTY = 'portal/work/SET_ITEM_EMPTY';
@@ -16,33 +24,41 @@ const SEARCH_START = 'portal/work/SEARCH_START';
 const SEARCH_RESULT = 'portal/work/SEARCH_RESULT';
 
 export type WorkData = {
-  id?: number,
+  id: string, // Document ID
+  path: string, // Page path
   title: string,
   description: string,
   image?: string,
   asset_url?: string | null,
-  search: string,
+  search?: string,
   url?: string,
   author?: string,
   created_at?: string,
   views?: number,
   favs?: number,
   // additional structure
+  privacy: 'public' | 'limited' | 'private',
   ownerId?: string,
   thumbnailStoragePath?: string,
   assetStoragePath?: string,
-  createdAt?: string,
-  updatedAt?: string
+  viewsNum: number,
+  favsNum: number,
+  createdAt: string,
+  updatedAt: string | null
 };
 
 type migrateType = (old: WorkData) => WorkData;
 const migrate: migrateType = old => ({
+  id: `${old.id}`,
+  path: `/products/${old.search || ''}`,
   title: old.title,
   description: old.description,
   author: old.author,
-  views: old.views,
-  favs: old.favs,
-  createdAt: old.created_at,
+  viewsNum: old.views || 0,
+  favsNum: old.favs || 0,
+  privacy: 'public',
+  createdAt: old.created_at || '',
+  updatedAt: null,
   image: old.image, // Backword compatibility
   asset_url: old.asset_url, // Backword compatibility
   search: old.search, // Backword compatibility
@@ -53,6 +69,18 @@ export type WorkItemType = Statefull<WorkData>;
 export type WorkCollectionType = Statefull<Array<WorkData>>;
 
 type Action =
+  | {
+      type: typeof LOAD,
+      id: string
+    }
+  | {
+      type: typeof SET,
+      payload: WorkData
+    }
+  | {
+      type: typeof EMPTY,
+      id: string
+    }
   | {
       type: typeof LOAD_ITEM,
       search: string
@@ -97,6 +125,9 @@ export type State = {
   recommended: WorkCollectionType,
   trending: WorkCollectionType,
   pickup: WorkCollectionType,
+  byId: {
+    [string]: WorkItemType
+  },
   byUserId: {
     [string]: WorkCollectionType
   },
@@ -123,6 +154,7 @@ const initialState: State = {
     isAvailable: false,
     isProcessing: false
   },
+  byId: {},
   byUserId: {},
   bySearch: {},
   search: {
@@ -176,6 +208,42 @@ const listReducer: ListReducer = (state, action) => {
 // Root Reducer
 export default (state: State = initialState, action: Action): State => {
   switch (action.type) {
+    case LOAD:
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.id]: {
+            isAvailable: false,
+            isProcessing: false
+          }
+        }
+      };
+    case SET:
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.payload.id]: {
+            isAvailable: true,
+            isProcessing: false,
+            isEmpty: false,
+            data: action.payload
+          }
+        }
+      };
+    case EMPTY:
+      return {
+        ...state,
+        bySearch: {
+          ...state.bySearch,
+          [action.id]: {
+            isAvailable: false,
+            isProcessing: false,
+            isEmpty: true
+          }
+        }
+      };
     case LOAD_ITEM:
       return {
         ...state,
@@ -192,7 +260,7 @@ export default (state: State = initialState, action: Action): State => {
         ...state,
         bySearch: {
           ...state.bySearch,
-          [action.payload.search]: {
+          [action.payload.search || '']: {
             isAvailable: true,
             isProcessing: false,
             isEmpty: false,
@@ -277,6 +345,21 @@ const request = (query: {
     .then(response => response.text())
     .then(text => JSON.parse(text));
 };
+
+export const load = (id: string): Action => ({
+  type: LOAD,
+  id
+});
+
+export const set = (payload: WorkData): Action => ({
+  type: SET,
+  payload
+});
+
+export const empty = (id: string): Action => ({
+  type: EMPTY,
+  id
+});
 
 export const loadItem = (search: string): Action => ({
   type: LOAD_ITEM,
@@ -454,6 +537,41 @@ export const fetchWorksByUser = (user: UserType) => async (
   }
 };
 
+export const fetchWorkById = (id: string) => async (
+  dispatch,
+  getState: () => { work: State }
+) => {
+  // 今の状態
+  const work = getWorkById(getState(), id);
+  if (work.isProcessing || work.isAvailable) {
+    // すでにリクエストを送信しているか、取得済み
+    return;
+  }
+  // リクエスト
+  try {
+    dispatch(load(id));
+    const snapshot = await firebase
+      .firestore()
+      .collection('works')
+      .doc(id)
+      .get();
+
+    if (snapshot.exists) {
+      dispatch(
+        set({
+          ...snapshot.data(),
+          id: snapshot.id,
+          path: `/works/${snapshot.id}`
+        })
+      );
+    } else {
+      dispatch(empty(id));
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const fetchItemBySearch = (search: string) => async (
   dispatch,
   getState: () => { work: State }
@@ -477,7 +595,7 @@ export const fetchItemBySearch = (search: string) => async (
     }
     const text = await response.text();
     const result = JSON.parse(text);
-    dispatch(setItem(migrate(result) ));
+    dispatch(setItem(migrate(result)));
   } catch (error) {
     console.error(error);
   }
@@ -516,6 +634,15 @@ export function getWorksByUserId(
 ): WorkCollectionType {
   return (
     state.work.byUserId[uid] || {
+      isAvailable: false,
+      isProcessing: false
+    }
+  );
+}
+
+export function getWorkById(state: { work: State }, id: string): WorkItemType {
+  return (
+    state.work.byId[id] || {
       isAvailable: false,
       isProcessing: false
     }
