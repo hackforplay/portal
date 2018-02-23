@@ -2,6 +2,7 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
 
+import * as helpers from './helpers';
 import type { Statefull } from './helpers';
 import type { UserType } from './user';
 
@@ -83,6 +84,11 @@ type Action =
       id: string
     }
   | {
+      type: typeof INVALID,
+      id: string,
+      code: string
+    }
+  | {
       type: typeof LOAD_ITEM,
       search: string
     }
@@ -143,32 +149,17 @@ export type State = {
 };
 
 const initialState: State = {
-  recommended: {
-    isAvailable: false,
-    isProcessing: false
-  },
-  trending: {
-    isAvailable: false,
-    isProcessing: false
-  },
-  pickup: {
-    isAvailable: false,
-    isProcessing: false
-  },
+  recommended: helpers.initialized(),
+  trending: helpers.initialized(),
+  pickup: helpers.initialized(),
   byId: {},
   byUserId: {},
   bySearch: {},
   search: {
     query: '',
-    result: {
-      isAvailable: false,
-      isProcessing: false
-    }
+    result: helpers.initialized()
   },
-  privates: {
-    isAvailable: false,
-    isProcessing: false
-  }
+  privates: helpers.initialized()
 };
 
 type ListReducer = (
@@ -181,26 +172,13 @@ const listReducer: ListReducer = (state, action) => {
     case LOAD_LIST:
     case LOAD_USERS:
     case SEARCH_START:
-      return {
-        isAvailable: false,
-        isProcessing: true,
-        data: []
-      };
+      return helpers.processing();
     case SET_LIST:
     case SET_USERS:
     case SEARCH_RESULT:
       return action.payload.length > 0
-        ? {
-            isAvailable: true,
-            isProcessing: false,
-            isEmpty: false,
-            data: action.payload
-          }
-        : {
-            isAvailable: false,
-            isProcessing: false,
-            isEmpty: true
-          };
+        ? helpers.has(action.payload)
+        : helpers.empty();
     default:
       return state;
   }
@@ -214,10 +192,7 @@ export default (state: State = initialState, action: Action): State => {
         ...state,
         byId: {
           ...state.byId,
-          [action.id]: {
-            isAvailable: false,
-            isProcessing: true
-          }
+          [action.id]: helpers.processing()
         }
       };
     case SET:
@@ -225,12 +200,7 @@ export default (state: State = initialState, action: Action): State => {
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.id]: {
-            isAvailable: true,
-            isProcessing: false,
-            isEmpty: false,
-            data: action.payload
-          }
+          [action.payload.id]: helpers.has(action.payload)
         }
       };
     case EMPTY:
@@ -238,11 +208,7 @@ export default (state: State = initialState, action: Action): State => {
         ...state,
         byId: {
           ...state.byId,
-          [action.id]: {
-            isAvailable: false,
-            isProcessing: false,
-            isEmpty: true
-          }
+          [action.id]: helpers.empty()
         }
       };
     case INVALID:
@@ -250,12 +216,7 @@ export default (state: State = initialState, action: Action): State => {
         ...state,
         byId: {
           ...state.byId,
-          [action.id]: {
-            isAvailable: false,
-            isProcessing: false,
-            isInvalid: true,
-            isEmpty: false
-          }
+          [action.id]: helpers.invalid(action.code)
         }
       };
     case LOAD_ITEM:
@@ -263,10 +224,7 @@ export default (state: State = initialState, action: Action): State => {
         ...state,
         bySearch: {
           ...state.bySearch,
-          [action.search]: {
-            isAvailable: false,
-            isProcessing: false
-          }
+          [action.search]: helpers.processing()
         }
       };
     case SET_ITEM:
@@ -274,12 +232,7 @@ export default (state: State = initialState, action: Action): State => {
         ...state,
         bySearch: {
           ...state.bySearch,
-          [action.payload.search || '']: {
-            isAvailable: true,
-            isProcessing: false,
-            isEmpty: false,
-            data: action.payload
-          }
+          [action.payload.search || '']: helpers.has(action.payload)
         }
       };
     case SET_ITEM_EMPTY:
@@ -287,11 +240,7 @@ export default (state: State = initialState, action: Action): State => {
         ...state,
         bySearch: {
           ...state.bySearch,
-          [action.search]: {
-            isAvailable: false,
-            isProcessing: false,
-            isEmpty: true
-          }
+          [action.search]: helpers.empty()
         }
       };
     case LOAD_LIST:
@@ -656,31 +605,16 @@ export function getWorksByUserId(
   state: { work: State },
   uid: string
 ): WorkCollectionType {
-  return (
-    state.work.byUserId[uid] || {
-      isAvailable: false,
-      isProcessing: false
-    }
-  );
+  return state.work.byUserId[uid] || helpers.initialized();
 }
 
 export function getWorkById(state: { work: State }, id: string): WorkItemType {
-  return (
-    state.work.byId[id] || {
-      isAvailable: false,
-      isProcessing: false
-    }
-  );
+  return state.work.byId[id] || helpers.initialized();
 }
 
 export function getWorkBySearch(
   state: { work: State },
   search: string
 ): WorkItemType {
-  return (
-    state.work.bySearch[search] || {
-      isAvailable: false,
-      isProcessing: false
-    }
-  );
+  return state.work.bySearch[search] || helpers.initialized();
 }
