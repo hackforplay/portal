@@ -37,7 +37,7 @@ export type WorkData = {
   favs?: number,
   // additional structure
   privacy: 'public' | 'limited' | 'private',
-  ownerId?: string,
+  uid?: string,
   thumbnailStoragePath?: string,
   assetStoragePath?: string,
   viewsNum: number,
@@ -348,7 +348,7 @@ export const addPickup = (payload: Array<WorkData>): Action => ({
   payload
 });
 
-export const loadWorksByUser = (uid: string): Action => ({
+export const loadUsers = (uid: string): Action => ({
   type: LOAD_USERS,
   uid
 });
@@ -444,21 +444,39 @@ export const fetchWorksByUser = (user: UserType) => async (
     // ユーザーのデータがない
     return;
   }
+  const { uid, email } = user.data;
   // 今の状態
-  const works = getWorksByUserId(getState(), user.data.uid);
+  const works = getWorksByUserId(getState(), uid);
   if (works.isProcessing || works.isAvailable) {
     // すでにリクエストを送信しているか、取得済み
     return;
   }
   // リクエスト
+  dispatch(loadUsers(uid));
   try {
-    dispatch(loadWorksByUser(user.data.uid));
+    const works = [];
+    // Firestore から取得
+    const querySnapshot = await firebase
+      .firestore()
+      .collection('works')
+      .where('uid', '==', uid)
+      .get();
+    for (const snapshot of querySnapshot.docs) {
+      works.push({
+        ...snapshot.data(),
+        id: snapshot.id,
+        path: `/works/${snapshot.id}`
+      });
+    }
+    // Heroku から取得
     const response = await fetch(
-      `${endpoint}/productsByEmail?email=${encodeURIComponent(user.data.email)}`
+      `${endpoint}/productsByEmail?email=${encodeURIComponent(email)}`
     );
-    const text = await response.text();
-    const result = JSON.parse(text);
-    dispatch(setUsers(user.data.uid, result.map(migrate)));
+    const json = await response.text();
+    const results = JSON.parse(json);
+    works.push(...results.map(migrate));
+    // マージしてセット
+    dispatch(setUsers(uid, works));
   } catch (error) {
     console.error(error);
   }
