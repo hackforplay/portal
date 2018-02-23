@@ -19,7 +19,7 @@ const mapStateToProps = (state: StoreState, ownProps) => {
   // /users/:id の :id にあたる文字列
   const { id } = ownProps.match.params;
   // ログインユーザーと同じか検証
-  const owner = state.auth.user && state.auth.user.uid === id;
+  const owner = state.auth.user ? state.auth.user.uid === id : false;
   // 編集中のデータを取得
   const editing = state.user.editingByUid[id];
 
