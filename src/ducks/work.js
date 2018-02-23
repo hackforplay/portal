@@ -36,7 +36,7 @@ export type WorkData = {
   views?: number,
   favs?: number,
   // additional structure
-  privacy: 'public' | 'limited' | 'private',
+  visibility: 'public' | 'limited' | 'private',
   uid?: string,
   thumbnailStoragePath?: string,
   assetStoragePath?: string,
@@ -55,7 +55,7 @@ const migrate: migrateType = old => ({
   author: old.author,
   viewsNum: old.views || 0,
   favsNum: old.favs || 0,
-  privacy: 'public',
+  visibility: 'public',
   createdAt: old.created_at || '',
   updatedAt: null,
   image: old.image, // Backword compatibility
