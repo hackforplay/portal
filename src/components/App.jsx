@@ -17,7 +17,6 @@ import SearchBar from '../containers/SearchBar';
 import Contents from '../containers/Contents';
 import FeatureLists from '../containers/FeatureLists';
 import Work from '../containers/Work';
-import PublishedWork from '../containers/PublishedWork';
 import Profile from '../containers/Profile';
 import AnonymousProfile from '../containers/AnonymousProfile';
 import ProfileEdit from '../containers/ProfileEdit';
@@ -55,7 +54,7 @@ function App() {
           </Switch>
           <Route path="/pickup" exact component={Pickup} />
           <Route path="/works/:id" exact component={Work} />
-          <Route path="/products/:search" exact component={PublishedWork} />
+          <Route path="/products/:search" exact component={Work} />
           <Route path="/officials" component={OfficialWork} />
           <Route path="/users/:id/:tab?/:query?" component={UserWorks} />
           <Route path={sp1} exact component={Sp1} />

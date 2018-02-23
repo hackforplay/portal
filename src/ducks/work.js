@@ -15,9 +15,6 @@ const SET = 'portal/work/SET';
 const EMPTY = 'portal/work/EMPTY';
 const INVALID = 'portal/work/INVALID';
 // Heroku にあるデータ
-const LOAD_ITEM = 'portal/work/LOAD_ITEM';
-const SET_ITEM = 'portal/work/SET_ITEM';
-const SET_ITEM_EMPTY = 'portal/work/SET_ITEM_EMPTY';
 const LOAD_LIST = 'portal/work/LOAD_LIST';
 const SET_LIST = 'portal/work/SET_LIST';
 const LOAD_USERS = 'portal/work/LOAD_USERS';
@@ -73,7 +70,7 @@ export type WorkCollectionType = Statefull<Array<WorkData>>;
 type Action =
   | {
       type: typeof LOAD,
-      id: string
+      path: string
     }
   | {
       type: typeof SET,
@@ -81,24 +78,12 @@ type Action =
     }
   | {
       type: typeof EMPTY,
-      id: string
+      path: string
     }
   | {
       type: typeof INVALID,
-      id: string,
+      path: string,
       code: string
-    }
-  | {
-      type: typeof LOAD_ITEM,
-      search: string
-    }
-  | {
-      type: typeof SET_ITEM,
-      payload: WorkData
-    }
-  | {
-      type: typeof SET_ITEM_EMPTY,
-      search: string
     }
   | {
       type: typeof LOAD_LIST,
@@ -111,11 +96,11 @@ type Action =
     }
   | {
       type: typeof LOAD_USERS,
-      userId: string
+      uid: string
     }
   | {
       type: typeof SET_USERS,
-      userId: string,
+      uid: string,
       payload: Array<WorkData>
     }
   | {
@@ -132,14 +117,11 @@ export type State = {
   recommended: WorkCollectionType,
   trending: WorkCollectionType,
   pickup: WorkCollectionType,
-  byId: {
+  byPath: {
     [string]: WorkItemType
   },
   byUserId: {
     [string]: WorkCollectionType
-  },
-  bySearch: {
-    [string]: WorkItemType
   },
   search: {
     query: string,
@@ -152,9 +134,8 @@ const initialState: State = {
   recommended: helpers.initialized(),
   trending: helpers.initialized(),
   pickup: helpers.initialized(),
-  byId: {},
+  byPath: {},
   byUserId: {},
-  bySearch: {},
   search: {
     query: '',
     result: helpers.initialized()
@@ -184,78 +165,79 @@ const listReducer: ListReducer = (state, action) => {
   }
 };
 
+type byPathReducerType = (
+  state: { [string]: WorkItemType },
+  action: Action
+) => { [string]: WorkItemType };
+
+const byPathReducer: byPathReducerType = (state, action) => {
+  switch (action.type) {
+    case SET_LIST:
+    case SET_USERS:
+    case SEARCH_RESULT:
+      if (action.payload.length < 1) {
+        return state;
+      }
+      const byPath = { ...state };
+      for (const data of action.payload) {
+        byPath[data.path] = helpers.has(data);
+      }
+      return byPath;
+    default:
+      return state;
+  }
+};
+
 // Root Reducer
 export default (state: State = initialState, action: Action): State => {
   switch (action.type) {
     case LOAD:
       return {
         ...state,
-        byId: {
-          ...state.byId,
-          [action.id]: helpers.processing()
+        byPath: {
+          ...state.byPath,
+          [action.path]: helpers.processing()
         }
       };
     case SET:
       return {
         ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: helpers.has(action.payload)
+        byPath: {
+          ...state.byPath,
+          [action.payload.path]: helpers.has(action.payload)
         }
       };
     case EMPTY:
       return {
         ...state,
-        byId: {
-          ...state.byId,
-          [action.id]: helpers.empty()
+        byPath: {
+          ...state.byPath,
+          [action.path]: helpers.empty()
         }
       };
     case INVALID:
       return {
         ...state,
-        byId: {
-          ...state.byId,
-          [action.id]: helpers.invalid(action.code)
-        }
-      };
-    case LOAD_ITEM:
-      return {
-        ...state,
-        bySearch: {
-          ...state.bySearch,
-          [action.search]: helpers.processing()
-        }
-      };
-    case SET_ITEM:
-      return {
-        ...state,
-        bySearch: {
-          ...state.bySearch,
-          [action.payload.search || '']: helpers.has(action.payload)
-        }
-      };
-    case SET_ITEM_EMPTY:
-      return {
-        ...state,
-        bySearch: {
-          ...state.bySearch,
-          [action.search]: helpers.empty()
+        byPath: {
+          ...state.byPath,
+          [action.path]: helpers.invalid(action.code)
         }
       };
     case LOAD_LIST:
     case SET_LIST:
       return {
         ...state,
+        byPath: byPathReducer(state.byPath, action),
         [action.listType]: listReducer(state[action.listType], action)
       };
     case LOAD_USERS:
     case SET_USERS:
       return {
         ...state,
+        byPath: byPathReducer(state.byPath, action),
         byUserId: {
           ...state.byUserId,
-          [action.userId]: listReducer(state.byUserId[action.userId], action)
+          [action.uid]: listReducer(state.byUserId[action.uid], action)
         }
       };
     case SEARCH_START:
@@ -268,15 +250,18 @@ export default (state: State = initialState, action: Action): State => {
       };
     case SEARCH_RESULT:
       // まだそのクエリが残っているか？
-      return state.search.query === action.query
-        ? {
-            ...state,
-            search: {
+      const search =
+        state.search.query === action.query
+          ? {
               query: action.query,
               result: listReducer(state.search.result, action)
             }
-          }
-        : state; // すでに違うクエリで検索を始めている
+          : state.search; // すでに違うクエリで検索を始めている
+      return {
+        ...state,
+        byPath: byPathReducer(state.byPath, action),
+        search
+      };
     default:
       return state;
   }
@@ -309,9 +294,9 @@ const request = (query: {
     .then(text => JSON.parse(text));
 };
 
-export const load = (id: string): Action => ({
+export const load = (path: string): Action => ({
   type: LOAD,
-  id
+  path
 });
 
 export const set = (payload: WorkData): Action => ({
@@ -319,30 +304,15 @@ export const set = (payload: WorkData): Action => ({
   payload
 });
 
-export const empty = (id: string): Action => ({
+export const empty = (path: string): Action => ({
   type: EMPTY,
-  id
+  path
 });
 
-export const invalid = (id: string, code: string): Action => ({
+export const invalid = (path: string, code: string): Action => ({
   type: INVALID,
-  id,
+  path,
   code
-});
-
-export const loadItem = (search: string): Action => ({
-  type: LOAD_ITEM,
-  search
-});
-
-export const setItem = (payload: WorkData): Action => ({
-  type: SET_ITEM,
-  payload
-});
-
-export const setItemEmpty = (search: string): Action => ({
-  type: SET_ITEM_EMPTY,
-  search
 });
 
 export const loadRecommended = (): Action => ({
@@ -378,23 +348,15 @@ export const addPickup = (payload: Array<WorkData>): Action => ({
   payload
 });
 
-export const loadWorksByUser = (userId: string): Action => ({
+export const loadWorksByUser = (uid: string): Action => ({
   type: LOAD_USERS,
-  userId
+  uid
 });
 
-export const setItems = (payload: Array<WorkData>) => dispatch => {
-  for (const item of payload) {
-    dispatch(setItem(item));
-  }
-};
-
-export const setWorksByUser = (
-  userId: string,
-  payload: Array<WorkData>
-): Action => ({
+type setUsersType = (uid: string, payload: Array<WorkData>) => Action;
+export const setUsers: setUsersType = (uid, payload) => ({
   type: SET_USERS,
-  userId,
+  uid,
   payload
 });
 
@@ -431,7 +393,6 @@ export const fetchRecommendedWorks = () => async (
       kit_identifier: 'com.feeles.make-rpg'
     });
     dispatch(addRecommended(result.data.map(migrate)));
-    dispatch(setItems(result.data.map(migrate)));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
   }
@@ -451,7 +412,6 @@ export const fetchTrendingWorks = () => async (
     dispatch(loadTrending());
     const result = await import('./trending.js');
     dispatch(addTrending(result.data.map(migrate)));
-    dispatch(setItems(result.data.map(migrate)));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
   }
@@ -471,7 +431,6 @@ export const fetchPickupWorks = () => async (
     dispatch(loadPickup());
     const result = await import('./pickup.js');
     dispatch(addPickup(result.data.map(migrate)));
-    dispatch(setItems(result.data.map(migrate)));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
   }
@@ -499,78 +458,76 @@ export const fetchWorksByUser = (user: UserType) => async (
     );
     const text = await response.text();
     const result = JSON.parse(text);
-    dispatch(setWorksByUser(user.data.uid, result.map(migrate)));
-    dispatch(setItems(result.map(migrate)));
+    dispatch(setUsers(user.data.uid, result.map(migrate)));
   } catch (error) {
     console.error(error);
   }
 };
 
-export const fetchWorkById = (id: string) => async (
+export const fetchWorkByPath = (path: string) => async (
   dispatch,
   getState: () => { work: State }
 ) => {
   // 今の状態
-  const work = getWorkById(getState(), id);
+  const work = getWorkByPath(getState(), path);
   if (work.isProcessing || work.isAvailable) {
     // すでにリクエストを送信しているか、取得済み
     return;
   }
   // リクエスト
+  dispatch(load(path));
+
+  const [, collection, id] = path.split('/');
+
   try {
-    dispatch(load(id));
-
-    const snapshot = await firebase
-      .firestore()
-      .collection('works')
-      .doc(id)
-      .get();
-
-    if (snapshot.exists) {
-      dispatch(
-        set({
-          ...snapshot.data(),
-          id: snapshot.id,
-          path: `/works/${snapshot.id}`
-        })
-      );
-    } else {
-      dispatch(empty(id));
+    switch (collection) {
+      case 'works':
+        const snapshot = await firebase
+          .firestore()
+          .collection(collection)
+          .doc(id)
+          .get();
+        if (snapshot.exists) {
+          dispatch(
+            set({
+              ...snapshot.data(),
+              id,
+              path
+            })
+          );
+        } else {
+          dispatch(empty(path));
+        }
+        break;
+      case 'products':
+        const response = await fetch(`${endpoint}/products/${id}`);
+        if (response.ok) {
+          const json = await response.text();
+          const result = JSON.parse(json);
+          dispatch(set(migrate(result)));
+        } else {
+          // エラーレスポンス
+          if (response.status === 404) {
+            dispatch(empty(path));
+          } else {
+            dispatch(invalid(path, response.statusText));
+          }
+        }
+        break;
+      default:
+        const error = new Error(`Unexpected work path ${path}`);
+        error.name = 'invalid-path';
+        throw error;
     }
   } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error(error);
+    }
     if (error.name === 'FirebaseError') {
-      dispatch(invalid(id, error.code));
+      dispatch(invalid(path, error.code));
+    } else {
+      dispatch(invalid(path, error.name));
     }
-    console.error(error);
-  }
-};
-
-export const fetchItemBySearch = (search: string) => async (
-  dispatch,
-  getState: () => { work: State }
-) => {
-  // 今の状態
-  const work = getWorkBySearch(getState(), search);
-  if (work.isProcessing || work.isAvailable) {
-    // すでにリクエストを送信しているか、取得済み
-    return;
-  }
-  // リクエスト
-  try {
-    dispatch(loadItem(search));
-    const response = await fetch(
-      `${endpoint}/products/${encodeURIComponent(search)}`
-    );
-    if (!response.ok) {
-      // エラーレスポンス
-      dispatch(setItemEmpty(search));
-      return;
-    }
-    const text = await response.text();
-    const result = JSON.parse(text);
-    dispatch(setItem(migrate(result)));
-  } catch (error) {
-    console.error(error);
   }
 };
 
@@ -595,7 +552,6 @@ export const searchWorks = (query: string) => async (
       q: query
     });
     dispatch(searchResult(query, result.data.map(migrate)));
-    dispatch(setItems(result.data.map(migrate)));
   } catch (error) {
     console.error(error);
   }
@@ -608,13 +564,9 @@ export function getWorksByUserId(
   return state.work.byUserId[uid] || helpers.initialized();
 }
 
-export function getWorkById(state: { work: State }, id: string): WorkItemType {
-  return state.work.byId[id] || helpers.initialized();
-}
-
-export function getWorkBySearch(
+export function getWorkByPath(
   state: { work: State },
-  search: string
+  path: string
 ): WorkItemType {
-  return state.work.bySearch[search] || helpers.initialized();
+  return state.work.byPath[path] || helpers.initialized();
 }
