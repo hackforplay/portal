@@ -106,6 +106,9 @@ class Work extends React.Component<Props, State> {
       if (work.isEmpty) {
         return <div>作品が見つかりませんでした</div>;
       }
+      if (work.isInvalid) {
+        return <div>権限がありません</div>;
+      }
     }
 
     return (

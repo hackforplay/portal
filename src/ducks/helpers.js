@@ -14,6 +14,13 @@ export type Statefull<T> =
       isEmpty: true
     }
   | {
+      isAvailable: false,
+      isProcessing: false,
+      isEmpty: false,
+      isInvalid: true,
+      code: string
+    }
+  | {
       isAvailable: true,
       isProcessing: false,
       isEmpty: false,
@@ -39,6 +46,16 @@ export function empty(): Statefull<*> {
     isAvailable: false,
     isProcessing: false,
     isEmpty: true
+  };
+}
+
+export function invalid(code: string): Statefull<*> {
+  return {
+    isAvailable: false,
+    isProcessing: false,
+    isEmpty: false,
+    isInvalid: true,
+    code
   };
 }
 

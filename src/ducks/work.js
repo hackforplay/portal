@@ -12,6 +12,7 @@ export const storeName: string = 'work';
 const LOAD = 'portal/work/LOAD';
 const SET = 'portal/work/SET';
 const EMPTY = 'portal/work/EMPTY';
+const INVALID = 'portal/work/INVALID';
 // Heroku にあるデータ
 const LOAD_ITEM = 'portal/work/LOAD_ITEM';
 const SET_ITEM = 'portal/work/SET_ITEM';
@@ -215,7 +216,7 @@ export default (state: State = initialState, action: Action): State => {
           ...state.byId,
           [action.id]: {
             isAvailable: false,
-            isProcessing: false
+            isProcessing: true
           }
         }
       };
@@ -235,12 +236,25 @@ export default (state: State = initialState, action: Action): State => {
     case EMPTY:
       return {
         ...state,
-        bySearch: {
-          ...state.bySearch,
+        byId: {
+          ...state.byId,
           [action.id]: {
             isAvailable: false,
             isProcessing: false,
             isEmpty: true
+          }
+        }
+      };
+    case INVALID:
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.id]: {
+            isAvailable: false,
+            isProcessing: false,
+            isInvalid: true,
+            isEmpty: false
           }
         }
       };
@@ -359,6 +373,12 @@ export const set = (payload: WorkData): Action => ({
 export const empty = (id: string): Action => ({
   type: EMPTY,
   id
+});
+
+export const invalid = (id: string, code: string): Action => ({
+  type: INVALID,
+  id,
+  code
 });
 
 export const loadItem = (search: string): Action => ({
@@ -550,6 +570,7 @@ export const fetchWorkById = (id: string) => async (
   // リクエスト
   try {
     dispatch(load(id));
+
     const snapshot = await firebase
       .firestore()
       .collection('works')
@@ -568,6 +589,9 @@ export const fetchWorkById = (id: string) => async (
       dispatch(empty(id));
     }
   } catch (error) {
+    if (error.name === 'FirebaseError') {
+      dispatch(invalid(id, error.code));
+    }
     console.error(error);
   }
 };
