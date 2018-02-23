@@ -109,6 +109,7 @@ class Work extends React.Component<Props, State> {
       if (work.isInvalid) {
         return <div>権限がありません</div>;
       }
+      return null;
     }
 
     return (
