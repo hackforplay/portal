@@ -17,6 +17,7 @@ const INVALID = 'portal/work/INVALID';
 // Heroku にあるデータ
 const LOAD_LIST = 'portal/work/LOAD_LIST';
 const SET_LIST = 'portal/work/SET_LIST';
+const INVALID_LIST = 'portal/work/INVALID_LIST';
 const LOAD_USERS = 'portal/work/LOAD_USERS';
 const SET_USERS = 'portal/work/SET_USERS';
 const SEARCH_START = 'portal/work/SEARCH_START';
@@ -66,7 +67,7 @@ const migrate: migrateType = old => ({
 
 export type WorkItemType = Statefull<WorkData>;
 export type WorkCollectionType = Statefull<Array<WorkData>>;
-type listType =  'recommended' | 'trending' | 'pickup';
+type listType = 'recommended' | 'trending' | 'pickup';
 
 type Action =
   | {
@@ -94,6 +95,12 @@ type Action =
       type: typeof SET_LIST,
       list: listType,
       payload: Array<WorkData>
+    }
+  | {
+      type: typeof INVALID_LIST,
+      list: listType,
+      path: string,
+      code: string
     }
   | {
       type: typeof LOAD_USERS,
@@ -161,6 +168,8 @@ const listReducer: ListReducer = (state, action) => {
       return action.payload.length > 0
         ? helpers.has(action.payload)
         : helpers.empty();
+    case INVALID_LIST:
+      return helpers.invalid(action.code);
     default:
       return state;
   }
@@ -226,6 +235,7 @@ export default (state: State = initialState, action: Action): State => {
       };
     case LOAD_LIST:
     case SET_LIST:
+    case INVALID_LIST:
       return {
         ...state,
         byPath: byPathReducer(state.byPath, action),
@@ -331,6 +341,14 @@ export const setList: setListType = (list, payload) => ({
   payload
 });
 
+type invalidListType = (list: listType, code: string) => Action;
+
+export const invalidList: invalidListType = (list, code) => ({
+  type: INVALID_LIST,
+  list,
+  code
+});
+
 export const loadUsers = (uid: string): Action => ({
   type: LOAD_USERS,
   uid
@@ -368,17 +386,40 @@ export const fetchRecommendedWorks = () => async (
     return;
   }
 
+  dispatch(loadList('recommended'));
   try {
-    dispatch(loadList('recommended'));
-    // TODO: 手動ピックアップ
+    const works = [];
+    // Firestore から取得
+    const querySnapshot = await firebase
+      .firestore()
+      .collection('works')
+      .where('visibility', '==', 'public')
+      .orderBy('createdAt', 'desc')
+      .limit(15)
+      .get();
+    for (const snapshot of querySnapshot.docs) {
+      works.push({
+        ...snapshot.data(),
+        id: snapshot.id,
+        path: `/works/${snapshot.id}`
+      });
+    }
+    // Heroku から取得
     const result = await request({
       sort: 'created_at',
       direction: 'desc',
       kit_identifier: 'com.feeles.make-rpg'
     });
-    dispatch(setList('recommended', result.data.map(migrate)));
+    works.push(...result.data.map(migrate));
+
+    dispatch(setList('recommended', works));
   } catch (error) {
-    // dispatch({ type: LOAD_FAILUAR, payload: error });
+    if (error.name === 'FirebaseError') {
+      dispatch(invalidList('recommended', error.code));
+    } else {
+      dispatch(invalidList('recommended', error.name));
+    }
+    throw error;
   }
 };
 
