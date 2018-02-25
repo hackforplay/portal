@@ -66,6 +66,7 @@ const migrate: migrateType = old => ({
 
 export type WorkItemType = Statefull<WorkData>;
 export type WorkCollectionType = Statefull<Array<WorkData>>;
+type listType =  'recommended' | 'trending' | 'pickup';
 
 type Action =
   | {
@@ -87,11 +88,11 @@ type Action =
     }
   | {
       type: typeof LOAD_LIST,
-      listType: 'recommended' | 'trending' | 'pickup'
+      list: listType
     }
   | {
       type: typeof SET_LIST,
-      listType: 'recommended' | 'trending' | 'pickup',
+      list: listType,
       payload: Array<WorkData>
     }
   | {
@@ -228,7 +229,7 @@ export default (state: State = initialState, action: Action): State => {
       return {
         ...state,
         byPath: byPathReducer(state.byPath, action),
-        [action.listType]: listReducer(state[action.listType], action)
+        [action.list]: listReducer(state[action.list], action)
       };
     case LOAD_USERS:
     case SET_USERS:
@@ -315,36 +316,18 @@ export const invalid = (path: string, code: string): Action => ({
   code
 });
 
-export const loadRecommended = (): Action => ({
+type loadListType = (list: listType) => Action;
+
+export const loadList: loadListType = list => ({
   type: LOAD_LIST,
-  listType: 'recommended'
+  list
 });
 
-export const loadTrending = (): Action => ({
-  type: LOAD_LIST,
-  listType: 'trending'
-});
+type setListType = (list: listType, payload: Array<WorkData>) => Action;
 
-export const loadPickup = (): Action => ({
-  type: LOAD_LIST,
-  listType: 'pickup'
-});
-
-export const addRecommended = (payload: Array<WorkData>): Action => ({
+export const setList: setListType = (list, payload) => ({
   type: SET_LIST,
-  listType: 'recommended',
-  payload
-});
-
-export const addTrending = (payload: Array<WorkData>): Action => ({
-  type: SET_LIST,
-  listType: 'trending',
-  payload
-});
-
-export const addPickup = (payload: Array<WorkData>): Action => ({
-  type: SET_LIST,
-  listType: 'pickup',
+  list,
   payload
 });
 
@@ -354,6 +337,7 @@ export const loadUsers = (uid: string): Action => ({
 });
 
 type setUsersType = (uid: string, payload: Array<WorkData>) => Action;
+
 export const setUsers: setUsersType = (uid, payload) => ({
   type: SET_USERS,
   uid,
@@ -385,14 +369,14 @@ export const fetchRecommendedWorks = () => async (
   }
 
   try {
-    dispatch(loadRecommended());
+    dispatch(loadList('recommended'));
     // TODO: 手動ピックアップ
     const result = await request({
       sort: 'created_at',
       direction: 'desc',
       kit_identifier: 'com.feeles.make-rpg'
     });
-    dispatch(addRecommended(result.data.map(migrate)));
+    dispatch(setList('recommended', result.data.map(migrate)));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
   }
@@ -409,9 +393,9 @@ export const fetchTrendingWorks = () => async (
   }
 
   try {
-    dispatch(loadTrending());
+    dispatch(loadList('trending'));
     const result = await import('./trending.js');
-    dispatch(addTrending(result.data.map(migrate)));
+    dispatch(setList('trending', result.data.map(migrate)));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
   }
@@ -428,9 +412,9 @@ export const fetchPickupWorks = () => async (
   }
 
   try {
-    dispatch(loadPickup());
+    dispatch(loadList('pickup'));
     const result = await import('./pickup.js');
-    dispatch(addPickup(result.data.map(migrate)));
+    dispatch(setList('pickup', result.data.map(migrate)));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
   }
