@@ -8,7 +8,7 @@ import type { ContextRouter } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Card from 'material-ui/Card/Card';
-import { CardHeader, CardContent, CardMedia } from 'material-ui/Card';
+import { CardHeader, CardContent } from 'material-ui/Card';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import IconButton from 'material-ui/IconButton';
@@ -18,6 +18,7 @@ import { withStyles } from 'material-ui/styles';
 import { grey } from 'material-ui/colors';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 
+import CardMedia from '../containers/CardMedia';
 import theme from '../settings/theme';
 import noImage from '../resources/no-image.png';
 import type { WorkCollectionType } from '../ducks/work';
@@ -143,8 +144,10 @@ export default class WorkList extends React.Component<Props> {
                   >
                     <CardMedia
                       className={classes.media}
-                      image={item.image || noImage}
+                      component="img"
+                      src={item.image || noImage}
                       title={item.title}
+                      storagePath={item.thumbnailStoragePath}
                     />
                     <CardHeader
                       action={
