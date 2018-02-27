@@ -6,11 +6,11 @@ node_js:
 cache:
   directories:
   - node_modules
-script:
-- npm run build
-- npm test
-before_deploy:
-- "cd functions && npm install && cd ../"
+# script:
+# - npm run build
+# - npm test
+# before_deploy:
+# - "cd functions && npm install && cd ../"
 deploy:
   provider: firebase
   token:
