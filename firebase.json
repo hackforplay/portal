@@ -14,7 +14,8 @@
     "indexes": "firestore.indexes.json"
   },
   "functions": {
-    "predeploy": "npm --prefix functions run build",
+    "predeploy":
+      "pwd && cd ./functions && npm install && npm install --only=dev && npm run build && cd ../",
     "source": "functions"
   },
   "storage": {
