@@ -10,7 +10,7 @@ script:
 - npm run build
 - npm test
 before_deploy:
-- "cd functions && npm install --dev && cd ../"
+- "cd functions && npm install --only=prod && npm install --only=dev && cd ../ && ls ./functions/node_modules/.bin"
 deploy:
   provider: firebase
   token:
