@@ -2,7 +2,7 @@
   "name": "functions",
   "scripts": {
     "build":
-      "pwd && npm install --only=dev && ls ./node_modules/ -a && ls ./node_modules/tslint -a && ./node_modules/tslint/bin/tslint -p tslint.json && ./node_modules/.bin/tsc",
+      "pwd && npm install && npm install --only=dev && ls ./node_modules/.bin -a && ./node_modules/.bin/tslint -p tslint.json && ./node_modules/.bin/tsc",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase experimental:functions:shell",
     "start": "npm run shell",
