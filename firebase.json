@@ -15,7 +15,7 @@
   },
   "functions": {
     "predeploy":
-      "pwd && cd ./functions && npm install && npm install --only=dev && npm run build && cd ../",
+      "npm --prefix functions install && npm --prefix functions install --only=dev && pwd && ls -a && npm --prefix functions run build",
     "source": "functions"
   },
   "storage": {
