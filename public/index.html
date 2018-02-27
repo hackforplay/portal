@@ -5,23 +5,31 @@
     <% if (process.env.NODE_ENV === 'production') { %>
       <!-- Google Analytics -->
       <script>
-        window.ga = window.ga || function () {
-          (ga.q = ga.q || []).push(arguments)
-        };
-        ga.l = +new Date;
+        (function (i, s, o, g, r, a, m) {
+          i['GoogleAnalyticsObject'] = r;
+          i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+          }, i[r].l = 1 * new Date();
+          a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+          a.async = 1;
+          a.src = g;
+          m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
         ga('create', 'UA-113487422-1', 'auto');
         ga('require', 'autotrack');
         ga('send', 'pageview');
       </script>
-      <script async src='https://www.google-analytics.com/analytics.js'></script>
+      <!-- End Google Analytics -->
       <!-- Slaask widget -->
       <script src='https://cdn.slaask.com/chat.js'></script>
       <script>
         _slaask.init('93cda018cfef4817b1b6a94694c246db');
       </script>
       <!-- Begin SessionStack code -->
-      <script type="text/javascript">
-        ! function (a, b) {
+      <script>
+        (function (a, b) {
           var c = window;
           c.SessionStack = a, c[a] = c[a] || function () {
             c[a].q = c[a].q || [], c[a].q.push(arguments)
@@ -30,7 +38,7 @@
           d.async = 1, d.src = "https://cdn.sessionstack.com/sessionstack.js";
           var e = document.getElementsByTagName("script")[0];
           e.parentNode.insertBefore(d, e);
-        }("sessionstack", "064f502d843941078d98dabe5cef3c8c");
+        })("sessionstack", "064f502d843941078d98dabe5cef3c8c");
       </script>
       <!-- End SessionStack Code -->
       <% } %>
