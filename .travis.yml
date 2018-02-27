@@ -10,10 +10,11 @@ script:
 - npm run build
 - npm run test
 - ls -a
+- npm --prefix functions install
+- npm --prefix functions install --only=dev
 - ls -a functions
 - ls -a functions/node_modules
 - ls -a functions/node_modules/.bin
-- npm --prefix functions install --only=dev
 deploy:
   provider: firebase
   skip_cleanup: true
