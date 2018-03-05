@@ -34,6 +34,7 @@ function App() {
     <MuiThemeProvider theme={theme}>
       <Router>
         <div>
+          <Route component={GoogleTagManager} />
           <Route component={Header} />
           <Switch>
             <Route path="/users/:id/edit" component={ProfileEdit} />
@@ -64,6 +65,14 @@ function App() {
       </Router>
     </MuiThemeProvider>
   );
+}
+
+// Send page view to Google Analytics
+function GoogleTagManager({ location }) {
+  if (window.gtag) {
+    window.gtag('config', process.env.REACT_APP_GA_TRACKING_ID, { 'page_path': location.pathname });
+  }
+  return null;
 }
 
 export default withStyles({})(App);
