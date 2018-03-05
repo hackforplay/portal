@@ -8,6 +8,7 @@ import moment from 'moment';
 import 'moment/locale/ja';
 import 'normalize.css';
 import '@babel/polyfill';
+import 'url-search-params-polyfill';
 
 import './index.css';
 import App from './containers/App';
