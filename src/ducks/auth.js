@@ -11,12 +11,12 @@ type User = $npm$firebase$auth$User;
 
 type ActionType =
   | {
-      type: typeof SIGNED_IN,
-      user: User
-    }
+    type: typeof SIGNED_IN,
+    user: User
+  }
   | {
-      type: typeof SIGNED_OUT
-    };
+    type: typeof SIGNED_OUT
+  };
 
 export type State = {
   user?: User
@@ -99,8 +99,7 @@ function connectExternalService(user: User) {
       }
     }
   })(
-    // () => window.gtag('set', { user_id: user.uid }), // ログインしている user_id を使用してUser-ID を設定します
-    () => window.ga('set', 'userId', user.uid), // ログインしている user_id を使用してUser-ID を設定します。
+    () => window.gtag('set', { user_id: user.uid }), // ログインしている user_id を使用してUser-ID を設定します
     () => window.sessionstack('identify', { userId: user.uid, displayName: user.displayName })
   );
 }
