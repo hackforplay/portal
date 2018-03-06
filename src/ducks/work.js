@@ -22,6 +22,7 @@ const LOAD_USERS = 'portal/work/LOAD_USERS';
 const SET_USERS = 'portal/work/SET_USERS';
 const SEARCH_START = 'portal/work/SEARCH_START';
 const SEARCH_RESULT = 'portal/work/SEARCH_RESULT';
+const SEARCH_FAILED = 'portal/work/SEARCH_FAILED';
 
 export type WorkData = {
   id: string, // Document ID
@@ -50,7 +51,7 @@ export type WorkData = {
 type migrateType = (old: WorkData) => WorkData;
 const migrate: migrateType = old => ({
   id: `${old.id}`,
-  path: `/products/${old.search || ''}`,
+  path: `/products/${old.search || old.id}`,
   title: old.title,
   description: old.description,
   author: old.author,
@@ -119,6 +120,11 @@ type Action =
       type: typeof SEARCH_RESULT,
       query: string,
       payload: Array<WorkData>
+    }
+  | {
+      type: typeof SEARCH_FAILED,
+      query: string,
+      code: string
     };
 
 export type State = {
@@ -169,6 +175,7 @@ const listReducer: ListReducer = (state, action) => {
         ? helpers.has(action.payload)
         : helpers.empty();
     case INVALID_LIST:
+    case SEARCH_FAILED:
       return helpers.invalid(action.code);
     default:
       return state;
@@ -176,9 +183,13 @@ const listReducer: ListReducer = (state, action) => {
 };
 
 type byPathReducerType = (
-  state: { [string]: WorkItemType },
+  state: {
+    [string]: WorkItemType
+  },
   action: Action
-) => { [string]: WorkItemType };
+) => {
+  [string]: WorkItemType
+};
 
 const byPathReducer: byPathReducerType = (state, action) => {
   switch (action.type) {
@@ -188,7 +199,9 @@ const byPathReducer: byPathReducerType = (state, action) => {
       if (action.payload.length < 1) {
         return state;
       }
-      const byPath = { ...state };
+      const byPath = {
+        ...state
+      };
       for (const data of action.payload) {
         byPath[data.path] = helpers.has(data);
       }
@@ -260,6 +273,7 @@ export default (state: State = initialState, action: Action): State => {
         }
       };
     case SEARCH_RESULT:
+    case SEARCH_FAILED:
       // まだそのクエリが残っているか？
       const search =
         state.search.query === action.query
@@ -290,7 +304,9 @@ const request = (query: {
   // ids?: Array<string>,
   original?: string,
   kit_identifier?: string
-}): Promise<{ data: Array<WorkData> }> => {
+}): Promise<{
+  data: Array<WorkData>
+}> => {
   let params = '';
   for (const key of Object.keys(query)) {
     const value = query[key];
@@ -367,18 +383,27 @@ export const searchStart = (query: string): Action => ({
   query
 });
 
-export const searchResult = (
-  query: string,
-  payload: Array<WorkData>
-): Action => ({
+type searchResultType = (query: string, payload: Array<WorkData>) => Action;
+
+export const searchResult: searchResultType = (query, payload) => ({
   type: SEARCH_RESULT,
   query,
   payload
 });
 
+type searchFailedType = (query: string, code: string) => Action;
+
+export const searchFailed: searchFailedType = (query, code) => ({
+  type: SEARCH_FAILED,
+  query,
+  code
+});
+
 export const fetchRecommendedWorks = () => async (
   dispatch,
-  getState: () => { work: State }
+  getState: () => {
+    work: State
+  }
 ) => {
   const state = getState().work;
   if (state.recommended.isProcessing || state.recommended.isAvailable) {
@@ -425,7 +450,9 @@ export const fetchRecommendedWorks = () => async (
 
 export const fetchTrendingWorks = () => async (
   dispatch,
-  getState: () => { work: State }
+  getState: () => {
+    work: State
+  }
 ) => {
   const state = getState().work;
   if (state.trending.isProcessing || state.trending.isAvailable) {
@@ -444,7 +471,9 @@ export const fetchTrendingWorks = () => async (
 
 export const fetchPickupWorks = () => async (
   dispatch,
-  getState: () => { work: State }
+  getState: () => {
+    work: State
+  }
 ) => {
   const state = getState().work;
   if (state.pickup.isProcessing || state.pickup.isAvailable) {
@@ -463,7 +492,9 @@ export const fetchPickupWorks = () => async (
 
 export const fetchWorksByUser = (user: UserType) => async (
   dispatch,
-  getState: () => { work: State }
+  getState: () => {
+    work: State
+  }
 ) => {
   if (!user.isAvailable) {
     // ユーザーのデータがない
@@ -509,7 +540,9 @@ export const fetchWorksByUser = (user: UserType) => async (
 
 export const fetchWorkByPath = (path: string) => async (
   dispatch,
-  getState: () => { work: State }
+  getState: () => {
+    work: State
+  }
 ) => {
   // 今の状態
   const work = getWorkByPath(getState(), path);
@@ -576,7 +609,9 @@ export const fetchWorkByPath = (path: string) => async (
 
 export const searchWorks = (query: string) => async (
   dispatch,
-  getState: () => { work: State }
+  getState: () => {
+    work: State
+  }
 ) => {
   if (!query) {
     // クエリが空
@@ -589,26 +624,77 @@ export const searchWorks = (query: string) => async (
     return;
   }
   // リクエスト
+  dispatch(searchStart(query));
   try {
-    dispatch(searchStart(query));
+    const works = [];
+    // Cloud Functions から取得
+    if (process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS) {
+      const body = {
+        query: {
+          bool: {
+            must: [
+              {
+                match: { visibility: 'public' }
+              },
+              {
+                bool: {
+                  should: [
+                    { match: { title: query } },
+                    { match: { description: query } },
+                    { match: { author: query } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        sort: {
+          createdAt: 'desc'
+        },
+        from: 0,
+        size: 10
+      };
+      const url = `${
+        process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS
+      }/elasticsearch/works/work`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+      const result = await response.json();
+      if (result.version === 0) {
+        works.push(...result.works);
+      }
+    }
+    // Heroku から取得
     const result = await request({
       q: query
     });
-    dispatch(searchResult(query, result.data.map(migrate)));
+    works.push(...result.data.map(migrate));
+    dispatch(searchResult(query, works));
   } catch (error) {
+    dispatch(searchFailed(query, error.message));
     console.error(error);
   }
 };
 
 export function getWorksByUserId(
-  state: { work: State },
+  state: {
+    work: State
+  },
   uid: string
 ): WorkCollectionType {
   return state.work.byUserId[uid] || helpers.initialized();
 }
 
 export function getWorkByPath(
-  state: { work: State },
+  state: {
+    work: State
+  },
   path: string
 ): WorkItemType {
   return state.work.byPath[path] || helpers.initialized();
