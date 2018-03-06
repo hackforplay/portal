@@ -1,6 +1,8 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 
+export * from './elasticsearch';
+
 admin.initializeApp(functions.config().firebase);
 
 const users = admin.firestore().collection('users');

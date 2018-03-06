@@ -1,0 +1,27 @@
+// PUT works
+{
+  "mappings": {
+    "work": {
+      "properties": {
+        "uid": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "description": {
+          "type": "text"
+        },
+        "visibility": {
+          "type": "keyword"
+        },
+        "author": {
+          "type": "text"
+        },
+        "createdAt": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}
