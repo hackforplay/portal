@@ -141,7 +141,7 @@ export default class WorkList extends React.Component<Props> {
                   <span role="img" aria-label="Confused">
                     😕
                   </span>
-                  {works.code}
+                  {works.error}
                 </Typography>
               ) : null}
               {works.isEmpty ? (

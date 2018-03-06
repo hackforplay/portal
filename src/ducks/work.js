@@ -86,7 +86,7 @@ type Action =
   | {
       type: typeof INVALID,
       path: string,
-      code: string
+      error: string
     }
   | {
       type: typeof LOAD_LIST,
@@ -101,7 +101,7 @@ type Action =
       type: typeof INVALID_LIST,
       list: listType,
       path: string,
-      code: string
+      error: string
     }
   | {
       type: typeof LOAD_USERS,
@@ -124,7 +124,7 @@ type Action =
   | {
       type: typeof SEARCH_FAILED,
       query: string,
-      code: string
+      error: string
     };
 
 export type State = {
@@ -176,7 +176,7 @@ const listReducer: ListReducer = (state, action) => {
         : helpers.empty();
     case INVALID_LIST:
     case SEARCH_FAILED:
-      return helpers.invalid(action.code);
+      return helpers.invalid(action.error);
     default:
       return state;
   }
@@ -243,7 +243,7 @@ export default (state: State = initialState, action: Action): State => {
         ...state,
         byPath: {
           ...state.byPath,
-          [action.path]: helpers.invalid(action.code)
+          [action.path]: helpers.invalid(action.error)
         }
       };
     case LOAD_LIST:
@@ -336,10 +336,10 @@ export const empty = (path: string): Action => ({
   path
 });
 
-export const invalid = (path: string, code: string): Action => ({
+export const invalid = (path: string, error: string): Action => ({
   type: INVALID,
   path,
-  code
+  error
 });
 
 type loadListType = (list: listType) => Action;
@@ -357,12 +357,12 @@ export const setList: setListType = (list, payload) => ({
   payload
 });
 
-type invalidListType = (list: listType, code: string) => Action;
+type invalidListType = (list: listType, error: string) => Action;
 
-export const invalidList: invalidListType = (list, code) => ({
+export const invalidList: invalidListType = (list, error) => ({
   type: INVALID_LIST,
   list,
-  code
+  error
 });
 
 export const loadUsers = (uid: string): Action => ({
@@ -391,12 +391,12 @@ export const searchResult: searchResultType = (query, payload) => ({
   payload
 });
 
-type searchFailedType = (query: string, code: string) => Action;
+type searchFailedType = (query: string, error: string) => Action;
 
-export const searchFailed: searchFailedType = (query, code) => ({
+export const searchFailed: searchFailedType = (query, error) => ({
   type: SEARCH_FAILED,
   query,
-  code
+  error
 });
 
 export const fetchRecommendedWorks = () => async (
@@ -442,7 +442,7 @@ export const fetchRecommendedWorks = () => async (
     if (error.name === 'FirebaseError') {
       dispatch(invalidList('recommended', error.code));
     } else {
-      dispatch(invalidList('recommended', error.name));
+      dispatch(invalidList('recommended', error.message));
     }
     throw error;
   }
@@ -602,7 +602,7 @@ export const fetchWorkByPath = (path: string) => async (
     if (error.name === 'FirebaseError') {
       dispatch(invalid(path, error.code));
     } else {
-      dispatch(invalid(path, error.name));
+      dispatch(invalid(path, error.message));
     }
   }
 };
@@ -678,7 +678,7 @@ export const searchWorks = (query: string) => async (
     dispatch(searchResult(query, works));
   } catch (error) {
     dispatch(searchFailed(query, error.message));
-    console.error(error);
+    console.warn(error);
   }
 };
 

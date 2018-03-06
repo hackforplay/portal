@@ -4,7 +4,7 @@ export type Statefull<T> = {
   isProcessing: boolean,
   isEmpty: boolean,
   isInvalid: boolean,
-  code?: string,
+  error?: string,
   data?: T
 };
 
@@ -35,13 +35,13 @@ export function empty(): Statefull<*> {
   };
 }
 
-export function invalid(code: string): Statefull<*> {
+export function invalid(error: string): Statefull<*> {
   return {
     isAvailable: false,
     isProcessing: false,
     isEmpty: false,
     isInvalid: true,
-    code
+    error
   };
 }
 
