@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 
 import WorkList from '../containers/WorkList';
@@ -21,17 +20,11 @@ type Props = {
 })
 export default class SearchList extends React.Component<Props> {
   render() {
-    const { classes, query, result } = this.props;
+    const { classes, result } = this.props;
 
     return (
       <div className={classes.root}>
-        {result.isAvailable || result.isProcessing ? (
-          <WorkList works={result} title="検索結果" more moreLink="" />
-        ) : result.isEmpty ? (
-          <Typography type="headline">
-            {query}は見つかりませんでした 😕
-          </Typography>
-        ) : null}
+        <WorkList works={result} title="検索結果" more moreLink="" />
       </div>
     );
   }

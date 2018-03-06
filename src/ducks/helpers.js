@@ -1,43 +1,28 @@
 // @flow
-export type Statefull<T> =
-  | {
-      isAvailable: false,
-      isProcessing: false
-    }
-  | {
-      isAvailable: false,
-      isProcessing: true
-    }
-  | {
-      isAvailable: false,
-      isProcessing: false,
-      isEmpty: true
-    }
-  | {
-      isAvailable: false,
-      isProcessing: false,
-      isEmpty: false,
-      isInvalid: true,
-      code: string
-    }
-  | {
-      isAvailable: true,
-      isProcessing: false,
-      isEmpty: false,
-      data: T
-    };
+export type Statefull<T> = {
+  isAvailable: boolean,
+  isProcessing: boolean,
+  isEmpty: boolean,
+  isInvalid: boolean,
+  code?: string,
+  data?: T
+};
 
 export function initialized(): Statefull<*> {
   return {
     isAvailable: false,
-    isProcessing: false
+    isProcessing: false,
+    isEmpty: false,
+    isInvalid: false
   };
 }
 
 export function processing(): Statefull<*> {
   return {
     isAvailable: false,
-    isProcessing: true
+    isProcessing: true,
+    isEmpty: false,
+    isInvalid: false
   };
 }
 
@@ -45,7 +30,8 @@ export function empty(): Statefull<*> {
   return {
     isAvailable: false,
     isProcessing: false,
-    isEmpty: true
+    isEmpty: true,
+    isInvalid: false
   };
 }
 
@@ -64,6 +50,7 @@ export function has<T>(data: T): Statefull<T> {
     isAvailable: true,
     isProcessing: false,
     isEmpty: false,
+    isInvalid: false,
     data
   };
 }

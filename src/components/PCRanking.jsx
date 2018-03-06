@@ -61,7 +61,10 @@ const playLinks = {
 export default class PCRanking extends React.Component<Props> {
   render() {
     const { classes, records, match } = this.props;
-    const { stage } = match.params;
+    const stage = match.params && match.params.stage;
+    if (!stage) {
+      return null;
+    }
 
     const fromNow = (createdAt: string) => {
       return moment(createdAt, 'ddd MMM DD YYYY hh:mm:ss GMTZ').fromNow();
@@ -70,7 +73,7 @@ export default class PCRanking extends React.Component<Props> {
     return (
       <div className={classes.root}>
         <h1>ランキング</h1>
-        {records.isAvailable ? (
+        {records.data ? (
           <Paper>
             <Table>
               <TableHead>

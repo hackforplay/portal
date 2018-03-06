@@ -496,7 +496,7 @@ export const fetchWorksByUser = (user: UserType) => async (
     work: State
   }
 ) => {
-  if (!user.isAvailable) {
+  if (!user.data) {
     // ユーザーのデータがない
     return;
   }
@@ -546,7 +546,7 @@ export const fetchWorkByPath = (path: string) => async (
 ) => {
   // 今の状態
   const work = getWorkByPath(getState(), path);
-  if (work.isProcessing || work.isAvailable) {
+  if (work.isProcessing || work.data) {
     // すでにリクエストを送信しているか、取得済み
     return;
   }

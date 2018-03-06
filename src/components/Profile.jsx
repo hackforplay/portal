@@ -94,7 +94,8 @@ export default class Profile extends React.Component<Props> {
   handleClickPhotoIcon = () => {
     const { user } = this.props;
 
-    if (this.input && user.isAvailable) {
+    if (this.input && user.data) {
+      const { uid } = user.data;
       this.input.onchange = (event: SyntheticInputEvent<HTMLInputElement>) => {
         const [file] = event.target.files;
         if (!file) return;
@@ -117,7 +118,7 @@ export default class Profile extends React.Component<Props> {
           const hash = md5(buffer);
 
           // 格納場所
-          const path = `images/public/users/${user.data.uid}/${hash}.${ext}`;
+          const path = `images/public/users/${uid}/${hash}.${ext}`;
           // アップロード！
           this.props.uploadBlob(path, file);
           // パスを設定
@@ -141,7 +142,7 @@ export default class Profile extends React.Component<Props> {
       );
     }
 
-    if (!user.isAvailable) {
+    if (!user.data) {
       return (
         <div className={classes.root}>
           <Typography type="headline">ロード中です</Typography>

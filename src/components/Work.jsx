@@ -74,12 +74,13 @@ class Work extends React.Component<Props, State> {
 
   handleLoad() {
     const { work } = this.props;
-    if (this.state.loading && this.state.rootEl && work.isAvailable) {
+    const jsonURL = work.data && work.data.asset_url;
+    if (this.state.loading && this.state.rootEl && jsonURL) {
       h4pPromise.then(h4p => {
         this.setState({ loading: false }, () => {
           h4p({
             rootElement: this.state.rootEl,
-            jsonURL: work.data.asset_url,
+            jsonURL,
             onChange: value => {}
           });
         });
@@ -99,7 +100,7 @@ class Work extends React.Component<Props, State> {
     const { classes, work } = this.props;
     // const { anchorEl } = this.state;
 
-    if (!work.isAvailable) {
+    if (!work.data) {
       if (work.isProcessing) {
         return <div>ロード中...</div>;
       }
@@ -117,14 +118,14 @@ class Work extends React.Component<Props, State> {
         {/* <AppBar position="static" color="default" elevation={0}>
           <Toolbar>
             <Typography type="headline">
-              {work.isAvailable ? work.data.title : '読み込み中...'}
+              {work.data ? work.data.title : '読み込み中...'}
             </Typography>
             <div className={classes.blank} />
             <Button
-              disabled={!work.isAvailable}
+              disabled={!work.data}
               target="_blank"
               href={
-                work.isAvailable
+                work.data
                   ? `https://www.feeles.com/p/${work.data.search}`
                   : ''
               }

@@ -121,7 +121,7 @@ class Header extends React.Component<Props, State> {
             <Button color="contrast" component={Link} to="/contents/kit">
               ゲームを作る
             </Button>
-            {user.isAvailable ? (
+            {user.data ? (
               user.data.photoURL ? (
                 // アイコンアバター
                 <Avatar
@@ -163,12 +163,12 @@ class Header extends React.Component<Props, State> {
               open={Boolean(anchorEl)}
               onClose={this.handleClose}
             >
-              {user.isAvailable ? (
+              {user.data ? (
                 <MenuItem onClick={this.goTo(`/users/${user.data.uid}`)}>
                   <Typography type="button">マイページ</Typography>
                 </MenuItem>
               ) : null}
-              {user.isAvailable || user.isProcessing ? (
+              {user.data || user.isProcessing ? (
                 <MenuItem onClick={this.signOut}>
                   <Typography type="button">ログアウト</Typography>
                 </MenuItem>
