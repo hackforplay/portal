@@ -16,10 +16,8 @@ const mapDispatchToProps = {
   fetchTrendingWorks
 };
 
-type TopicPropsType = typeof mapDispatchToProps;
-
 @connect(mapStateToProps, mapDispatchToProps)
-export default class Topic extends React.Component<TopicPropsType> {
+export default class Topic extends React.Component<*> {
   componentDidMount() {
     this.props.fetchTrendingWorks();
   }

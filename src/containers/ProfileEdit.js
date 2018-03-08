@@ -1,7 +1,6 @@
 // @flow
 import * as React from 'react';
 import { connect } from 'react-redux';
-import type { ContextRouter } from 'react-router-dom';
 
 import type { StoreState } from '../ducks';
 import {
@@ -38,10 +37,8 @@ const mapDispatchToProps = {
   uploadBlob
 };
 
-type PropsType = typeof mapDispatchToProps & ContextRouter;
-
 @connect(mapStateToProps, mapDispatchToProps)
-export default class ProfileEdit extends React.Component<PropsType> {
+export default class ProfileEdit extends React.Component<*> {
   componentDidMount() {
     // /users/:id の :id にあたる文字列
     const { id } = this.props.match.params;

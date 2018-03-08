@@ -1,7 +1,6 @@
 // @flow
 import * as React from 'react';
 import { connect } from 'react-redux';
-import type { ContextRouter } from 'react-router-dom';
 
 import type { StoreState } from '../ducks';
 import { fetchUserIfNeeded, getUserByUid } from '../ducks/user';
@@ -23,10 +22,8 @@ const mapDispatchToProps = {
   fetchUserIfNeeded
 };
 
-type PropsType = typeof mapDispatchToProps & ContextRouter;
-
 @connect(mapStateToProps, mapDispatchToProps)
-class Profile extends React.Component<PropsType> {
+class Profile extends React.Component<*> {
   componentDidMount() {
     // /users/:id の :id にあたる文字列
     const { id } = this.props.match.params;

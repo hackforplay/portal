@@ -1,13 +1,10 @@
 // @flow
 import * as React from 'react';
 import { connect } from 'react-redux';
-import type { ContextRouter } from 'react-router-dom';
 
 import WrappedHeader from '../components/Header';
 import { signInWithGoogle, signOut } from '../ducks/auth';
 import { fetchUserIfNeeded, getUserByUid } from '../ducks/user';
-import type { UserType } from '../ducks/user';
-import type { State as AuthType } from '../ducks/auth';
 import type { StoreState } from '../ducks';
 
 const mapStateToProps = (state: StoreState, ownProps) => {
@@ -29,14 +26,8 @@ const mapDispatchToProps = {
   fetchUserIfNeeded
 };
 
-type PropsType = typeof mapDispatchToProps &
-  ContextRouter & {
-    auth: AuthType,
-    user?: UserType
-  };
-
 @connect(mapStateToProps, mapDispatchToProps)
-class Header extends React.Component<PropsType> {
+class Header extends React.Component<*> {
   componentDidMount() {
     // サインインユーザー
     const { auth } = this.props;
@@ -46,7 +37,7 @@ class Header extends React.Component<PropsType> {
     }
   }
 
-  componentDidUpdate(prevProps: PropsType) {
+  componentDidUpdate(prevProps: *) {
     const { auth } = this.props;
     if (auth !== prevProps.auth && auth.user) {
       this.props.fetchUserIfNeeded(auth.user.uid);

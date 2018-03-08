@@ -21,10 +21,8 @@ const mapDispatchToProps = {
   fetchTrendingWorks
 };
 
-type Props = typeof mapDispatchToProps;
-
 @connect(mapStateToProps, mapDispatchToProps)
-export default class FeatureLists extends React.Component<Props> {
+export default class FeatureLists extends React.Component<*> {
   componentDidMount() {
     this.props.fetchRecommendedWorks();
     this.props.fetchTrendingWorks();

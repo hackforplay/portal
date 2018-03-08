@@ -13,11 +13,8 @@ const mapDispatchToProps = {
   fetchPickupWorks
 };
 
-type Props = typeof mapDispatchToProps;
-
-class Pickup extends React.Component<Props> {
+class Pickup extends React.Component<*> {
   componentDidMount() {
-    console.log('works');
     this.props.fetchPickupWorks();
   }
   render() {
