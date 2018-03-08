@@ -13,9 +13,9 @@ export type Props = {
     root: string
   },
   lists: {
-    public: WorkCollectionType //,
-    // private: WorkCollectionType,
-    // likes: WorkCollectionType
+    public: WorkCollectionType,
+    private: WorkCollectionType,
+    likes: WorkCollectionType
   }
 } & ContextRouter;
 
@@ -29,10 +29,11 @@ class UserWorks extends React.Component<Props> {
     const { classes, match, lists } = this.props;
 
     // 現在の URL に対して適切なデータを表示
-    const { id, tab } = match.params;
+    const id = match.params.id || '';
+    const tab = match.params.tab || '';
     return (
       <div className={classes.root}>
-        {tab === undefined ? (
+        {tab === '' ? (
           <WorkList
             works={lists.public}
             title="公開済み"
