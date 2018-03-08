@@ -2,6 +2,7 @@ import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 
 export * from './elasticsearch';
+export * from './work';
 
 admin.initializeApp(functions.config().firebase);
 

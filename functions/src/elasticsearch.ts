@@ -7,14 +7,36 @@ import * as _ from 'lodash';
 
 // Refferer: https://medium.com/joolsoftware/extending-firebase-with-cloud-functions-elasticsearch-129fbbb951e0
 
+const elasticsearchFields = [
+  'uid',
+  'title',
+  'description',
+  'visibility',
+  'author',
+  'createdAt'
+];
+
 export const indexWorksToElastic = functions.firestore
   .document('/works/{workId}')
   .onWrite(event => {
     console.log(event.data);
+
+    // event.data と event.previous を比較して、インデックス対象のフィールドが変化していたときのみアップデート
     const workData = event.data.data();
+    const specificData = _.pick(workData, elasticsearchFields);
+    const previousData = event.data.previous && event.data.previous.data();
+
+    if (
+      previousData &&
+      _.isEqual(specificData, _.pick(previousData, elasticsearchFields))
+    ) {
+      // previous が存在し、かつ elasticsearchFields のフィールド値が更新されていない
+      return Promise.resolve();
+    }
+
     const workId = event.data.id;
     console.log('Indexing work ', workId, workData);
-    const elasticsearchFields = ['uid', 'title', 'description', 'visibility', 'author', 'createdAt'];
+
     const elasticSearchConfig = functions.config().elasticsearch;
     const elasticSearchUrl = elasticSearchConfig.url + 'works/work/' + workId;
     const elasticSearchMethod = workData ? 'POST' : 'DELETE';
@@ -25,14 +47,13 @@ export const indexWorksToElastic = functions.firestore
         username: elasticSearchConfig.username,
         password: elasticSearchConfig.password
       },
-      body: _.pick(workData, elasticsearchFields),
+      body: specificData,
       json: true
     };
     return request(elasticsearchRequest).then(response => {
       console.log('Elasticsearch response', response);
     });
   });
-
 
 const app = express();
 app.use(cors());
