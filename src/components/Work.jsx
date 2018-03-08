@@ -9,9 +9,10 @@ import type { ContextRouter } from 'react-router-dom';
 // import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
 
-import type { WorkItemType } from '../ducks/work';
+import type { WorkItemType, addWorkViewType } from '../ducks/work';
 
 type Props = {
+  addWorkView: addWorkViewType,
   classes: {
     blank: string,
     root: string
@@ -74,13 +75,14 @@ class Work extends React.Component<Props, State> {
 
   handleLoad() {
     const { work } = this.props;
-    const jsonURL = work.data && work.data.asset_url;
-    if (this.state.loading && this.state.rootEl && jsonURL) {
+    if (!work.data) return;
+    const { asset_url } = work.data;
+    if (this.state.loading && this.state.rootEl && asset_url) {
       h4pPromise.then(h4p => {
         this.setState({ loading: false }, () => {
           h4p({
             rootElement: this.state.rootEl,
-            jsonURL,
+            jsonURL: asset_url,
             onChange: value => {}
           });
         });

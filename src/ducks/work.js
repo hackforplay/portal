@@ -5,6 +5,7 @@ import 'firebase/firestore';
 import * as helpers from './helpers';
 import type { Statefull } from './helpers';
 import type { UserType } from './user';
+import type { State as AuthStateType } from './auth';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'work';
@@ -14,6 +15,8 @@ const LOAD = 'portal/work/LOAD';
 const SET = 'portal/work/SET';
 const EMPTY = 'portal/work/EMPTY';
 const INVALID = 'portal/work/INVALID';
+const VIEW = 'portal/work/VIEW';
+
 // Heroku にあるデータ
 const LOAD_LIST = 'portal/work/LOAD_LIST';
 const SET_LIST = 'portal/work/SET_LIST';
@@ -87,6 +90,10 @@ type Action =
       type: typeof INVALID,
       path: string,
       error: string
+    }
+  | {
+      type: typeof VIEW,
+      path: string
     }
   | {
       type: typeof LOAD_LIST,
@@ -340,6 +347,11 @@ export const invalid = (path: string, error: string): Action => ({
   type: INVALID,
   path,
   error
+});
+
+export const view = (path: string): Action => ({
+  type: VIEW,
+  path
 });
 
 type loadListType = (list: listType) => Action;
@@ -643,7 +655,7 @@ export const searchWorks = (query: string) => async (
                     { match: { description: query } },
                     { match: { author: query } }
                   ]
-                }
+                } 
               }
             ]
           }
@@ -680,6 +692,36 @@ export const searchWorks = (query: string) => async (
     dispatch(searchFailed(query, error.message));
     console.warn(error);
   }
+};
+
+export type addWorkViewType = (
+  path: string
+) => (
+  dispatch: (action: Action) => {},
+  getState: () => {
+    auth: AuthStateType
+  }
+) => Promise<*>;
+
+export const addWorkView: addWorkViewType = path => async (
+  dispatch,
+  getState
+) => {
+  if (!path.startsWith('/works')) {
+    // Firestore にデータがない作品ならスルー
+    return;
+  }
+  // 作品の views コレクションにドキュメントを追加
+  const { user } = getState().auth;
+  dispatch(view(path));
+  await firebase
+    .firestore()
+    .collection(`${path}/views`)
+    .add({
+      uid: user ? user.uid : null,
+      labels: {},
+      createdAt: new Date()
+    });
 };
 
 export function getWorksByUserId(

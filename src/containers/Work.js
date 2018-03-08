@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import WrappedWork from '../components/Work';
-import { getWorkByPath, fetchWorkByPath } from '../ducks/work';
+import { getWorkByPath, fetchWorkByPath, addWorkView } from '../ducks/work';
 
 const mapStateToProps = (state, ownProps) => {
   const { url } = ownProps.match;
@@ -13,7 +13,8 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = {
-  fetchWorkByPath
+  fetchWorkByPath,
+  addWorkView
 };
 
 @withRouter
@@ -21,7 +22,10 @@ const mapDispatchToProps = {
 export default class Work extends React.Component {
   componentDidMount() {
     const { url } = this.props.match;
+    // 作品データがなければ取得
     this.props.fetchWorkByPath(url);
+    // 作品のビューカウントを増やす
+    this.props.addWorkView(url);
   }
   render() {
     return <WrappedWork {...this.props} />;
