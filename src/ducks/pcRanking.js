@@ -10,7 +10,7 @@ export const storeName: string = 'pcRanking';
 const LOAD_RECORDS = 'portal/pcRanking/LOAD_RECORDS';
 const SET_RECORDS = 'portal/pcRanking/SET_RECORDS';
 
-type RecordData = {
+type RecordData = {|
   id: string,
   cheat: boolean,
   createdAt: string,
@@ -19,7 +19,7 @@ type RecordData = {
   rating: number,
   score: number,
   stage: string
-};
+|};
 
 // created_at => createdAt
 const fixData = (snapShot: firebase.firestore.DocumentSnapshot): RecordData => {

@@ -6,21 +6,21 @@ import firebase from 'firebase';
 export const storeName: string = 'storage';
 
 export type StorageType =
-  | {
+  | {|
       isAvailable: false,
       isUploading: boolean,
       isDownloading: boolean,
       isEmpty: boolean,
       path: string
-    }
-  | {
+    |}
+  | {|
       isAvailable: true,
       isUploading: false,
       isDownloading: false,
       isEmpty: false,
       path: string,
       url: string
-    };
+    |};
 
 const UPLOAD = 'portal/storage/UPLOAD';
 const DOWNLOAD = 'portal/storage/DOWNLOAD';

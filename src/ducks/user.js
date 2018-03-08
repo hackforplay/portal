@@ -35,24 +35,24 @@ export type EditingUserData = {|
 export type UserType = Statefull<UserData>;
 
 type ActionType =
-  | {
+  | {|
       type: typeof LOAD,
       uid: string
-    }
-  | {
+    |}
+  | {|
       type: typeof SET,
       uid: string,
       user?: UserData
-    }
-  | {
+    |}
+  | {|
       type: typeof EDIT,
       uid: string,
       payload: EditingUserData
-    }
-  | {
+    |}
+  | {|
       type: typeof UPDATE,
       uid: string
-    };
+    |};
 
 export type State = {
   byUid: {

@@ -74,65 +74,64 @@ export type WorkCollectionType = Statefull<Array<WorkData>>;
 type listType = 'recommended' | 'trending' | 'pickup';
 
 type Action =
-  | {
+  | {|
       type: typeof LOAD,
       path: string
-    }
-  | {
+    |}
+  | {|
       type: typeof SET,
       payload: WorkData
-    }
-  | {
+    |}
+  | {|
       type: typeof EMPTY,
       path: string
-    }
-  | {
+    |}
+  | {|
       type: typeof INVALID,
       path: string,
       error: string
-    }
-  | {
+    |}
+  | {|
       type: typeof VIEW,
       path: string
-    }
-  | {
+    |}
+  | {|
       type: typeof LOAD_LIST,
       list: listType
-    }
-  | {
+    |}
+  | {|
       type: typeof SET_LIST,
       list: listType,
       payload: Array<WorkData>
-    }
-  | {
+    |}
+  | {|
       type: typeof INVALID_LIST,
       list: listType,
-      path: string,
       error: string
-    }
-  | {
+    |}
+  | {|
       type: typeof LOAD_USERS,
       uid: string
-    }
-  | {
+    |}
+  | {|
       type: typeof SET_USERS,
       uid: string,
       payload: Array<WorkData>
-    }
-  | {
+    |}
+  | {|
       type: typeof SEARCH_START,
       query: string
-    }
-  | {
+    |}
+  | {|
       type: typeof SEARCH_RESULT,
       query: string,
       payload: Array<WorkData>
-    }
-  | {
+    |}
+  | {|
       type: typeof SEARCH_FAILED,
       query: string,
       error: string
-    };
+    |};
 
 export type State = {
   recommended: WorkCollectionType,
@@ -723,7 +722,7 @@ export const searchWorks: searchWorksType = query => async (
       q: query
     });
     works.push(...result.data.map(migrate));
-    dispatch(searchResult(query, works));
+    // dispatch(searchResult(query, works));
   } catch (error) {
     dispatch(searchFailed(query, error.message));
     console.warn(error);

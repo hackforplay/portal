@@ -10,13 +10,13 @@ const SIGNED_OUT = 'portal/auth/SIGNED_OUT';
 type User = $npm$firebase$auth$User;
 
 type ActionType =
-  | {
+  | {|
       type: typeof SIGNED_IN,
       user: User
-    }
-  | {
+    |}
+  | {|
       type: typeof SIGNED_OUT
-    };
+    |};
 
 export type State = {
   user?: User
