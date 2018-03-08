@@ -2,12 +2,8 @@
 import * as React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import Table, {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow
-} from 'material-ui/Table';
+import Table from 'material-ui/Table/Table';
+import { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
 import Button from 'material-ui/Button';
 import { CircularProgress } from 'material-ui/Progress';
@@ -78,21 +74,38 @@ export default class PCRanking extends React.Component<Props> {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>順位</TableCell>
-                  <TableCell>名前</TableCell>
-                  <TableCell>スコア</TableCell>
-                  <TableCell>残り時間</TableCell>
-                  <TableCell />
+                  <TableCell numeric={false} padding="default">
+                    順位
+                  </TableCell>
+                  <TableCell numeric={false} padding="default">
+                    名前
+                  </TableCell>
+                  <TableCell numeric={false} padding="default">
+                    スコア
+                  </TableCell>
+                  <TableCell numeric={false} padding="default">
+                    残り時間
+                  </TableCell>
+                  <TableCell numeric={false} padding="default" />
                 </TableRow>
               </TableHead>
               <TableBody>
                 {records.data.map((item, i) => (
                   <TableRow key={item.id}>
-                    <TableCell>{`${i + 1}位`}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.score}</TableCell>
-                    <TableCell>{`${item.lastTime}秒`}</TableCell>
-                    <TableCell>{fromNow(item.createdAt)}</TableCell>
+                    <TableCell numeric={false} padding="default">{`${i +
+                      1}位`}</TableCell>
+                    <TableCell numeric={false} padding="default">
+                      {item.name}
+                    </TableCell>
+                    <TableCell numeric={false} padding="default">
+                      {item.score}
+                    </TableCell>
+                    <TableCell numeric={false} padding="default">{`${
+                      item.lastTime
+                    }秒`}</TableCell>
+                    <TableCell numeric={false} padding="default">
+                      {fromNow(item.createdAt)}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
