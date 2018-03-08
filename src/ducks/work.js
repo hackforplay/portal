@@ -411,11 +411,16 @@ export const searchFailed: searchFailedType = (query, error) => ({
   error
 });
 
-export const fetchRecommendedWorks = () => async (
-  dispatch,
+export type fetchRecommendedWorksType = () => (
+  dispatch: (action: Action) => void,
   getState: () => {
     work: State
   }
+) => Promise<void>;
+
+export const fetchRecommendedWorks: fetchRecommendedWorksType = () => async (
+  dispatch,
+  getState
 ) => {
   const state = getState().work;
   if (state.recommended.isProcessing || state.recommended.isAvailable) {
@@ -460,11 +465,16 @@ export const fetchRecommendedWorks = () => async (
   }
 };
 
-export const fetchTrendingWorks = () => async (
-  dispatch,
+export type fetchTrendingWorksType = () => (
+  dispatch: (action: Action) => void,
   getState: () => {
     work: State
   }
+) => Promise<void>;
+
+export const fetchTrendingWorks: fetchTrendingWorksType = () => async (
+  dispatch,
+  getState
 ) => {
   const state = getState().work;
   if (state.trending.isProcessing || state.trending.isAvailable) {
@@ -481,11 +491,16 @@ export const fetchTrendingWorks = () => async (
   }
 };
 
-export const fetchPickupWorks = () => async (
-  dispatch,
+export type fetchPickupWorksType = () => (
+  dispatch: (action: Action) => void,
   getState: () => {
     work: State
   }
+) => Promise<void>;
+
+export const fetchPickupWorks: fetchPickupWorksType = () => async (
+  dispatch,
+  getState
 ) => {
   const state = getState().work;
   if (state.pickup.isProcessing || state.pickup.isAvailable) {
@@ -502,11 +517,18 @@ export const fetchPickupWorks = () => async (
   }
 };
 
-export const fetchWorksByUser = (user: UserType) => async (
-  dispatch,
+export type fetchWorksByUserType = (
+  user: UserType
+) => (
+  dispatch: (action: Action) => void,
   getState: () => {
     work: State
   }
+) => Promise<void>;
+
+export const fetchWorksByUser: fetchWorksByUserType = user => async (
+  dispatch,
+  getState
 ) => {
   if (!user.data) {
     // ユーザーのデータがない
@@ -550,11 +572,18 @@ export const fetchWorksByUser = (user: UserType) => async (
   }
 };
 
-export const fetchWorkByPath = (path: string) => async (
-  dispatch,
+export type fetchWorkByPathType = (
+  path: string
+) => (
+  dispatch: (action: Action) => void,
   getState: () => {
     work: State
   }
+) => Promise<void>;
+
+export const fetchWorkByPath: fetchWorkByPathType = path => async (
+  dispatch,
+  getState
 ) => {
   // 今の状態
   const work = getWorkByPath(getState(), path);
@@ -619,11 +648,18 @@ export const fetchWorkByPath = (path: string) => async (
   }
 };
 
-export const searchWorks = (query: string) => async (
-  dispatch,
+export type searchWorksType = (
+  query: string
+) => (
+  dispatch: (action: Action) => void,
   getState: () => {
     work: State
   }
+) => Promise<void>;
+
+export const searchWorks: searchWorksType = query => async (
+  dispatch,
+  getState
 ) => {
   if (!query) {
     // クエリが空
@@ -655,7 +691,7 @@ export const searchWorks = (query: string) => async (
                     { match: { description: query } },
                     { match: { author: query } }
                   ]
-                } 
+                }
               }
             ]
           }

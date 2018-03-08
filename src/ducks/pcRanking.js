@@ -1,5 +1,7 @@
 // @flow
 import firebase from 'firebase';
+
+import * as helpers from './helpers';
 import type { Statefull } from './helpers';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
@@ -55,24 +57,11 @@ const recordsReducer = (
 ): RecordCollectionType => {
   switch (action.type) {
     case LOAD_RECORDS:
-      return {
-        isAvailable: false,
-        isProcessing: true,
-        data: []
-      };
+      return helpers.initialized();
     case SET_RECORDS:
       return action.payload.length > 0
-        ? {
-            isAvailable: true,
-            isProcessing: false,
-            isEmpty: false,
-            data: action.payload
-          }
-        : {
-            isAvailable: false,
-            isProcessing: false,
-            isEmpty: true
-          };
+        ? helpers.has(action.payload)
+        : helpers.empty();
     default:
       return state;
   }
@@ -120,9 +109,16 @@ export const set = (stage: string, payload: Array<RecordData>): Action => ({
   payload
 });
 
-export const fetchRecordsByStage = (stage: string) => async (
-  dispatch,
+export type fetchRecordsByStageType = (
+  stage: string
+) => (
+  dispatch: (action: Action) => void,
   getState: () => { pcRanking: State }
+) => Promise<void>;
+
+export const fetchRecordsByStage: fetchRecordsByStageType = stage => async (
+  dispatch,
+  getState
 ) => {
   const current = getRecordsByStage(getState(), stage);
   if (current.isProcessing || current.isAvailable || current.isEmpty) {
@@ -151,10 +147,5 @@ export function getRecordsByStage(
   state: { pcRanking: State },
   stage: string
 ): RecordCollectionType {
-  return (
-    state.pcRanking.byStage[stage] || {
-      isAvailable: false,
-      isProcessing: false
-    }
-  );
+  return state.pcRanking.byStage[stage] || helpers.initialized();
 }

@@ -178,9 +178,16 @@ export const updateUser = (uid: string): ActionType => ({
   uid
 });
 
-export const fetchUserIfNeeded = (uid: string) => (
-  dispatch,
+export type fetchUserIfNeededType = (
+  uid: string
+) => (
+  dispatch: (action: ActionType) => void,
   getState: () => { user: State }
+) => void;
+
+export const fetchUserIfNeeded: fetchUserIfNeededType = uid => (
+  dispatch,
+  getState
 ) => {
   // その UID が Store にあるか確認
   const currentUser = getUserByUid(getState(), uid);
@@ -208,7 +215,10 @@ export const fetchUserIfNeeded = (uid: string) => (
 
 export type editAuthUserType = (
   editing: EditingUserData
-) => (dispatch, getState: () => { auth: auth.State }) => void;
+) => (
+  dispatch: (action: ActionType) => void,
+  getState: () => { auth: auth.State }
+) => void;
 
 export const editAuthUser: editAuthUserType = editing => (
   dispatch,
@@ -223,9 +233,14 @@ export const editAuthUser: editAuthUserType = editing => (
   dispatch(editUser(user.uid, editing));
 };
 
-export const cancelAuthUserEditing = () => (
-  dispatch,
+export type cancelAuthUserEditingType = () => (
+  dispatch: (action: ActionType) => void,
   getState: () => { auth: auth.State }
+) => void;
+
+export const cancelAuthUserEditing: cancelAuthUserEditingType = () => (
+  dispatch,
+  getState
 ) => {
   // ログインユーザーを確認
   const { user } = getState().auth;
@@ -236,9 +251,14 @@ export const cancelAuthUserEditing = () => (
   dispatch(editCancel(user.uid));
 };
 
-export const confirmAuthUserEditing = () => async (
-  dispatch,
+export type confirmAuthUserEditingType = () => (
+  dispatch: (action: ActionType) => void,
   getState: () => { auth: auth.State, user: State }
+) => Promise<void>;
+
+export const confirmAuthUserEditing: confirmAuthUserEditingType = () => async (
+  dispatch,
+  getState
 ) => {
   const state = getState();
   // ログインユーザーを確認

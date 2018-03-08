@@ -127,9 +127,17 @@ export const empty = (path: string): ActionType => ({
   path
 });
 
-export const uploadBlob = (path: string, file: Blob) => async (
-  dispatch,
+export type uploadBlobType = (
+  path: string,
+  file: Blob
+) => (
+  dispatch: (action: ActionType) => void,
   getState: () => { storage: State }
+) => Promise<void>;
+
+export const uploadBlob: uploadBlobType = (path, file) => async (
+  dispatch,
+  getState
 ) => {
   const storage = getStorageByPath(getState(), path);
   if (storage.isAvailable || storage.isUploading) {
@@ -150,9 +158,16 @@ export const uploadBlob = (path: string, file: Blob) => async (
   }
 };
 
-export const downloadUrl = (path: string) => async (
-  dispatch,
+export type downloadUrlType = (
+  path: string
+) => (
+  dispatch: (action: ActionType) => void,
   getState: () => { storage: State }
+) => Promise<void>;
+
+export const downloadUrl: downloadUrlType = path => async (
+  dispatch,
+  getState
 ) => {
   const storage = getStorageByPath(getState(), path);
   if (storage.isAvailable || storage.isDownloading) {
