@@ -16,6 +16,7 @@ const SET = 'portal/work/SET';
 const EMPTY = 'portal/work/EMPTY';
 const INVALID = 'portal/work/INVALID';
 const VIEW = 'portal/work/VIEW';
+const CHANGE = 'portal/work/CHANGE';
 
 // Heroku にあるデータ
 const LOAD_LIST = 'portal/work/LOAD_LIST';
@@ -96,6 +97,10 @@ type Action =
       +path: string
     |}
   | {|
+      +type: 'portal/work/CHANGE',
+      +payload: Array<{}>
+    |}
+  | {|
       +type: 'portal/work/LOAD_LIST',
       +list: listType
     |}
@@ -147,6 +152,10 @@ export type State = {
     query: string,
     result: WorkCollectionType
   },
+  creating: {
+    exists: boolean,
+    files?: Array<{}>
+  },
   privates: WorkCollectionType
 };
 
@@ -159,6 +168,9 @@ const initialState: State = {
   search: {
     query: '',
     result: helpers.initialized()
+  },
+  creating: {
+    exists: false
   },
   privates: helpers.initialized()
 };
@@ -293,6 +305,14 @@ export default (state: State = initialState, action: Action): State => {
         byPath: byPathReducer(state.byPath, action),
         search
       };
+    case CHANGE:
+      return {
+        ...state,
+        creating: {
+          exists: true,
+          files: action.payload
+        }
+      };
     default:
       return state;
   }
@@ -353,6 +373,13 @@ export const view = (path: string): Action => ({
   path
 });
 
+type changeType = (payload: Array<{}>) => Action;
+
+export const change: changeType = payload => ({
+  type: CHANGE,
+  payload
+});
+
 type loadListType = (list: listType) => Action;
 
 export const loadList: loadListType = list => ({
@@ -409,6 +436,22 @@ export const searchFailed: searchFailedType = (query, error) => ({
   query,
   error
 });
+
+export type changeWorkType = (
+  files: Array<{}>
+) => (
+  dispatch: (action: Action) => void,
+  getState: () => {
+    work: State
+  }
+) => Promise<void>;
+
+export const changeWork: changeWorkType = files => async (
+  dispatch,
+  getState
+) => {
+  dispatch(change(files));
+};
 
 export type fetchRecommendedWorksType = () => (
   dispatch: (action: Action) => void,

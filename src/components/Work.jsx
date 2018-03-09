@@ -9,9 +9,10 @@ import type { ContextRouter } from 'react-router-dom';
 // import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
 
-import type { WorkItemType } from '../ducks/work';
+import type { WorkItemType, changeWorkType } from '../ducks/work';
 
 type Props = {
+  changeWork: changeWorkType,
   classes: {
     blank: string,
     root: string
@@ -82,7 +83,7 @@ class Work extends React.Component<Props, State> {
           h4p({
             rootElement: this.state.rootEl,
             jsonURL: asset_url,
-            onChange: value => {}
+            onChange: this.props.changeWork
           });
         });
       });

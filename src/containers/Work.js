@@ -3,7 +3,12 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import WrappedWork from '../components/Work';
-import { getWorkByPath, fetchWorkByPath, addWorkView } from '../ducks/work';
+import {
+  getWorkByPath,
+  fetchWorkByPath,
+  addWorkView,
+  changeWork
+} from '../ducks/work';
 
 const mapStateToProps = (state, ownProps) => {
   const { url } = ownProps.match;
@@ -13,6 +18,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = {
+  changeWork,
   fetchWorkByPath,
   addWorkView
 };
