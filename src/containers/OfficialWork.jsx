@@ -4,18 +4,26 @@ import { connect } from 'react-redux';
 
 import officials from '../settings/officials';
 import Work from '../components/Work';
-import { changeWork } from '../ducks/work';
+import { changeWork, trashWork } from '../ducks/work';
+import type { StoreState } from '../ducks';
 
-const mapStateToProps = () => {
-  return {};
+const mapStateToProps = (state: StoreState) => {
+  return {
+    creating: state.work.creating
+  };
 };
 
 const mapDispatchToProps = {
-  changeWork
+  changeWork,
+  trashWork
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class OfficialWork extends React.Component {
+  componentWillUnmount() {
+    this.props.trashWork();
+  }
+
   render() {
     const { location } = this.props;
 
@@ -29,6 +37,8 @@ export default class OfficialWork extends React.Component {
       return null;
     }
 
-    return <Work {...this.props} work={source.work} />;
+    return (
+      <Work {...this.props} replayable={source.replayable} work={source.work} />
+    );
   }
 }

@@ -17,6 +17,7 @@ const EMPTY = 'portal/work/EMPTY';
 const INVALID = 'portal/work/INVALID';
 const VIEW = 'portal/work/VIEW';
 const CHANGE = 'portal/work/CHANGE';
+const TRASH = 'portal/work/TRASH';
 
 // Heroku にあるデータ
 const LOAD_LIST = 'portal/work/LOAD_LIST';
@@ -74,6 +75,11 @@ export type WorkItemType = Statefull<WorkData>;
 export type WorkCollectionType = Statefull<Array<WorkData>>;
 type listType = 'recommended' | 'trending' | 'pickup';
 
+export type CreatingType = {
+  exists: boolean,
+  files?: Array<{}>
+};
+
 type Action =
   | {|
       +type: 'portal/work/LOAD',
@@ -99,6 +105,9 @@ type Action =
   | {|
       +type: 'portal/work/CHANGE',
       +payload: Array<{}>
+    |}
+  | {|
+      +type: 'portal/work/TRASH'
     |}
   | {|
       +type: 'portal/work/LOAD_LIST',
@@ -152,10 +161,7 @@ export type State = {
     query: string,
     result: WorkCollectionType
   },
-  creating: {
-    exists: boolean,
-    files?: Array<{}>
-  },
+  creating: CreatingType,
   privates: WorkCollectionType
 };
 
@@ -313,6 +319,13 @@ export default (state: State = initialState, action: Action): State => {
           files: action.payload
         }
       };
+    case TRASH:
+      return {
+        ...state,
+        creating: {
+          exists: false
+        }
+      };
     default:
       return state;
   }
@@ -378,6 +391,12 @@ type changeType = (payload: Array<{}>) => Action;
 export const change: changeType = payload => ({
   type: CHANGE,
   payload
+});
+
+type trashType = () => Action;
+
+export const trash: trashType = () => ({
+  type: TRASH
 });
 
 type loadListType = (list: listType) => Action;
@@ -451,6 +470,17 @@ export const changeWork: changeWorkType = files => async (
   getState
 ) => {
   dispatch(change(files));
+};
+
+export type trashWorkType = () => (
+  dispatch: (action: Action) => void,
+  getState: () => {
+    work: State
+  }
+) => Promise<void>;
+
+export const trashWork: trashWorkType = () => async (dispatch, getState) => {
+  dispatch(trash());
 };
 
 export type fetchRecommendedWorksType = () => (

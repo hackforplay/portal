@@ -7,18 +7,22 @@ import {
   getWorkByPath,
   fetchWorkByPath,
   addWorkView,
-  changeWork
+  changeWork,
+  trashWork
 } from '../ducks/work';
+import type { StoreState } from '../ducks';
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state: StoreState, ownProps) => {
   const { url } = ownProps.match;
   return {
-    work: getWorkByPath(state, url)
+    work: getWorkByPath(state, url),
+    creating: state.work.creating
   };
 };
 
 const mapDispatchToProps = {
   changeWork,
+  trashWork,
   fetchWorkByPath,
   addWorkView
 };
@@ -33,6 +37,11 @@ export default class Work extends React.Component {
     // 作品のビューカウントを増やす
     this.props.addWorkView(url);
   }
+
+  componentWillUnmount() {
+    this.props.trashWork();
+  }
+
   render() {
     return <WrappedWork {...this.props} />;
   }
