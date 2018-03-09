@@ -116,7 +116,7 @@ class Header extends React.Component<Props, State> {
               チュートリアル
             </Button>
             <Button color="contrast" component={Link} to="/lists">
-              ゲームを探す
+              ゲームで遊ぶ
             </Button>
             <Button color="contrast" component={Link} to="/contents/kit">
               ゲームを作る
