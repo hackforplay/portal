@@ -9,10 +9,9 @@ import type { ContextRouter } from 'react-router-dom';
 // import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
 
-import type { WorkItemType, addWorkViewType } from '../ducks/work';
+import type { WorkItemType } from '../ducks/work';
 
 type Props = {
-  addWorkView: addWorkViewType,
   classes: {
     blank: string,
     root: string
