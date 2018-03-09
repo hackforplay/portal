@@ -75,62 +75,62 @@ type listType = 'recommended' | 'trending' | 'pickup';
 
 type Action =
   | {|
-      type: typeof LOAD,
-      path: string
+      +type: 'portal/work/LOAD',
+      +path: string
     |}
   | {|
-      type: typeof SET,
-      payload: WorkData
+      +type: 'portal/work/SET',
+      +payload: WorkData
     |}
   | {|
-      type: typeof EMPTY,
-      path: string
+      +type: 'portal/work/EMPTY',
+      +path: string
     |}
   | {|
-      type: typeof INVALID,
-      path: string,
-      error: string
+      +type: 'portal/work/INVALID',
+      +path: string,
+      +error: string
     |}
   | {|
-      type: typeof VIEW,
-      path: string
+      +type: 'portal/work/VIEW',
+      +path: string
     |}
   | {|
-      type: typeof LOAD_LIST,
-      list: listType
+      +type: 'portal/work/LOAD_LIST',
+      +list: listType
     |}
   | {|
-      type: typeof SET_LIST,
-      list: listType,
-      payload: Array<WorkData>
+      +type: 'portal/work/SET_LIST',
+      +list: listType,
+      +payload: Array<WorkData>
     |}
   | {|
-      type: typeof INVALID_LIST,
-      list: listType,
-      error: string
+      +type: 'portal/work/INVALID_LIST',
+      +list: listType,
+      +error: string
     |}
   | {|
-      type: typeof USERS_LOAD,
-      uid: string
+      +type: 'portal/work/USERS_LOAD',
+      +uid: string
     |}
   | {|
-      type: typeof USERS_SET,
-      uid: string,
-      payload: Array<WorkData>
+      +type: 'portal/work/USERS_SET',
+      +uid: string,
+      +payload: Array<WorkData>
     |}
   | {|
-      type: typeof SEARCH_START,
-      query: string
+      +type: 'portal/work/SEARCH_START',
+      +query: string
     |}
   | {|
-      type: typeof SEARCH_RESULT,
-      query: string,
-      payload: Array<WorkData>
+      +type: 'portal/work/SEARCH_RESULT',
+      +query: string,
+      +payload: Array<WorkData>
     |}
   | {|
-      type: typeof SEARCH_FAILED,
-      query: string,
-      error: string
+      +type: 'portal/work/SEARCH_FAILED',
+      +query: string,
+      +error: string
     |};
 
 export type State = {
