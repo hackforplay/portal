@@ -7,11 +7,11 @@ service cloud.firestore {
     match /works/{work} {
       allow get: if request.auth.uid == resource.data.uid || !exists(request.path) || resource.data.visibility == 'public' || resource.data.visibility == 'limited';
       allow list: if request.auth.uid == resource.data.uid || resource.data.visibility == 'public';
-      allow write: if request.auth.uid == resource.data.uid;
+      allow create: if request.resource.data.uid == null || request.auth.uid == request.resource.data.uid;
+      allow update: if request.auth.uid == resource.data.uid && request.resource.data.keys().hasAny(['uid', 'createdAt', 'updatedAt', 'viewsNum', 'favsNum']);
 
       match /views/{view} {
-        allow create;
-        allow update, delete: if request.auth.uid == resource.data.uid;
+        allow create: if request.resource.data.uid == null || request.auth.uid == request.resource.data.uid;
       }
     }
   }
