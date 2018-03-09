@@ -1,18 +1,23 @@
+// @flow
 import type { WorkItemType } from '../ducks/work';
 
 const makeItem = (asset_url = ''): WorkItemType => ({
   isAvailable: true,
   isProcessing: false,
   isEmpty: false,
+  isInvalid: false,
   data: {
-    asset_url,
-    url: '',
-    created_at: '',
-    favs: 0,
-    id: 0,
-    search: '',
+    id: '', // Document ID
+    path: '', // Page path
     title: '',
-    views: 0
+    description: '',
+    asset_url,
+    // additional structure
+    visibility: 'public',
+    viewsNum: 0,
+    favsNum: 0,
+    createdAt: '',
+    updatedAt: null
   }
 });
 
