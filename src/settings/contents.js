@@ -37,7 +37,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         description:
           '体力9999のスライムに、ふれたら即GAMEOVERのブレス……クリアするには、プログラムを書きかえるしかない!!',
         image: thumbnail,
-        url: 'https://hack-rpg.hackforplay.xyz',
+        url: '/officials/hack-rpg',
         buttons: [
           {
             raised: true,
