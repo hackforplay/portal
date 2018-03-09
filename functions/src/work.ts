@@ -6,13 +6,25 @@ import * as functions from 'firebase-functions';
 
 export const incrementViewsCount = functions.firestore
   .document('/works/{workId}/views/{viewId}')
-  .onCreate(event => {
+  .onCreate(async event => {
+    const { workId, viewId } = event.params;
+    const { uid, createdAt } = event.data.data();
+    // もしログインユーザーなら、 users.histories (履歴) に追加する
+    if (uid) {
+      await admin
+        .firestore()
+        .collection(`/users/${uid}/histories`)
+        .add({
+          viewId,
+          workId,
+          createdAt
+        });
+    }
     // views コレクションに新しいドキュメントが追加されたら、 viewsCount をインクリメントする
-    const { workId } = event.params;
 
     const workRef = admin.firestore().doc(`/works/${workId}`);
 
-    return admin.firestore().runTransaction(async t => {
+    await admin.firestore().runTransaction(async t => {
       const doc = await t.get(workRef);
       const viewsNum = doc.data().viewsNum + 1;
       t.update(workRef, { viewsNum });
