@@ -21,8 +21,8 @@ const VIEW = 'portal/work/VIEW';
 const LOAD_LIST = 'portal/work/LOAD_LIST';
 const SET_LIST = 'portal/work/SET_LIST';
 const INVALID_LIST = 'portal/work/INVALID_LIST';
-const LOAD_USERS = 'portal/work/LOAD_USERS';
-const SET_USERS = 'portal/work/SET_USERS';
+const USERS_LOAD = 'portal/work/USERS_LOAD';
+const USERS_SET = 'portal/work/USERS_SET';
 const SEARCH_START = 'portal/work/SEARCH_START';
 const SEARCH_RESULT = 'portal/work/SEARCH_RESULT';
 const SEARCH_FAILED = 'portal/work/SEARCH_FAILED';
@@ -110,11 +110,11 @@ type Action =
       error: string
     |}
   | {|
-      type: typeof LOAD_USERS,
+      type: typeof USERS_LOAD,
       uid: string
     |}
   | {|
-      type: typeof SET_USERS,
+      type: typeof USERS_SET,
       uid: string,
       payload: Array<WorkData>
     |}
@@ -171,11 +171,11 @@ type ListReducer = (
 const listReducer: ListReducer = (state, action) => {
   switch (action.type) {
     case LOAD_LIST:
-    case LOAD_USERS:
+    case USERS_LOAD:
     case SEARCH_START:
       return helpers.processing();
     case SET_LIST:
-    case SET_USERS:
+    case USERS_SET:
     case SEARCH_RESULT:
       return action.payload.length > 0
         ? helpers.has(action.payload)
@@ -200,7 +200,7 @@ type byPathReducerType = (
 const byPathReducer: byPathReducerType = (state, action) => {
   switch (action.type) {
     case SET_LIST:
-    case SET_USERS:
+    case USERS_SET:
     case SEARCH_RESULT:
       if (action.payload.length < 1) {
         return state;
@@ -260,8 +260,8 @@ export default (state: State = initialState, action: Action): State => {
         byPath: byPathReducer(state.byPath, action),
         [action.list]: listReducer(state[action.list], action)
       };
-    case LOAD_USERS:
-    case SET_USERS:
+    case USERS_LOAD:
+    case USERS_SET:
       return {
         ...state,
         byPath: byPathReducer(state.byPath, action),
@@ -377,14 +377,14 @@ export const invalidList: invalidListType = (list, error) => ({
 });
 
 export const loadUsers = (uid: string): Action => ({
-  type: LOAD_USERS,
+  type: USERS_LOAD,
   uid
 });
 
 type setUsersType = (uid: string, payload: Array<WorkData>) => Action;
 
 export const setUsers: setUsersType = (uid, payload) => ({
-  type: SET_USERS,
+  type: USERS_SET,
   uid,
   payload
 });
