@@ -1,15 +1,16 @@
 // @flow
 import * as React from 'react';
+import classNames from 'classnames';
 import type { ContextRouter } from 'react-router-dom';
-// import AppBar from 'material-ui/AppBar';
-// import Toolbar from 'material-ui/Toolbar';
-// import Typography from 'material-ui/Typography';
-// import Button from 'material-ui/Button';
-// import Popover from 'material-ui/Popover';
-// import { MenuItem } from 'material-ui/Menu';
+import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
+import Typography from 'material-ui/Typography';
+import Button from 'material-ui/Button';
+import Popover from 'material-ui/Popover';
+import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
 
-import type { WorkItemType, changeWorkType } from '../ducks/work';
+import type { WorkItemType, changeWorkType, CreatingType } from '../ducks/work';
 
 type Props = {
   changeWork: changeWorkType,
@@ -17,7 +18,9 @@ type Props = {
     blank: string,
     root: string
   },
-  work: WorkItemType
+  work: WorkItemType,
+  replayable: boolean,
+  creating: CreatingType
 } & ContextRouter;
 
 type State = {
@@ -36,21 +39,32 @@ const h4pPromise = new Promise((resolve, reject) => {
   }, 100);
 });
 
+const replayableClassName = 'replayable';
+
+const rootStyle = (padding: number) => ({
+  [`&.${replayableClassName}`]: {
+    height: `calc(100vh - ${padding * 2}px)`
+  },
+  height: `calc(100vh - ${padding}px)`
+});
+
 @withStyles({
   blank: {
     flex: 1
   },
-  root: {
-    '@media (min-width:0px) and (orientation: landscape)': {
-      height: `calc(100vh - ${48}px)`
-    },
-    '@media (min-width:600px)': {
-      height: `calc(100vh - ${64}px)`
-    },
-    height: `calc(100vh - ${56}px)`
+  root: rootStyle(56),  
+  '@media (min-width:0px) and (orientation: landscape)': {
+    root: rootStyle(48)
+  },
+  '@media (min-width:600px)': {
+    root: rootStyle(64)
   }
 })
 class Work extends React.Component<Props, State> {
+  static defaultProps = {
+    replayable: false
+  };
+
   state = {
     anchorEl: null,
     rootEl: null,
@@ -99,8 +113,12 @@ class Work extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, work } = this.props;
-    // const { anchorEl } = this.state;
+    const { classes, work, replayable, creating } = this.props;
+    const { anchorEl } = this.state;
+
+    const root = classNames(classes.root, {
+      [replayableClassName]: replayable
+    });
 
     if (!work.data) {
       if (work.isProcessing) {
@@ -117,44 +135,36 @@ class Work extends React.Component<Props, State> {
 
     return (
       <div>
-        {/* <AppBar position="static" color="default" elevation={0}>
-          <Toolbar>
-            <Typography type="headline">
-              {work.data ? work.data.title : '読み込み中...'}
-            </Typography>
-            <div className={classes.blank} />
-            <Button
-              disabled={!work.data}
-              target="_blank"
-              href={
-                work.data
-                  ? `https://www.feeles.com/p/${work.data.search}`
-                  : ''
-              }
-            >
-              改造する
-            </Button>
-            {<Button 
-              aria-owns={anchorEl ? 'simple-menu' : null}
-              aria-haspopup="true"
-              onClick={this.handleClick}
-            >
-              その他
-            </Button>
-            <Popover
-              id="simple-menu"
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={this.handleClose}
-            >
-              <MenuItem onClick={this.handleClose}>なにかする</MenuItem>
-            </Popover>}
-          </Toolbar>
-        </AppBar> */}
+        {replayable ? (
+          <AppBar position="static" color="default" elevation={0}>
+            <Toolbar>
+              <Typography type="headline">
+                {work.data ? work.data.title : '読み込み中...'}
+              </Typography>
+              <div className={classes.blank} />
+              <Button disabled={!creating.exists}>保存する</Button>
+              <Button
+                aria-owns={anchorEl ? 'simple-menu' : null}
+                aria-haspopup="true"
+                onClick={this.handleClick}
+              >
+                その他
+              </Button>
+              <Popover
+                id="simple-menu"
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={this.handleClose}
+              >
+                <MenuItem onClick={this.handleClose} />
+              </Popover>
+            </Toolbar>
+          </AppBar>
+        ) : null}
         <div
-          className={classes.root}
+          className={root}
           ref={rootEl => this.state.rootEl || this.setState({ rootEl })}
         />
       </div>
