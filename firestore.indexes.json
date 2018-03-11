@@ -14,15 +14,9 @@
     {
       "collectionId": "works",
       "fields": [
+        { "fieldPath": "uid", "mode": "ASCENDING" },
         { "fieldPath": "visibility", "mode": "ASCENDING" },
         { "fieldPath": "createdAt", "mode": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionId": "works",
-      "fields": [
-        { "fieldPath": "uid", "mode": "ASCENDING" },
-        { "fieldPath": "visibility", "mode": "ASCENDING" }
       ]
     }
   ]
