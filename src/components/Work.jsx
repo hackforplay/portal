@@ -52,7 +52,7 @@ const rootStyle = (padding: number) => ({
   blank: {
     flex: 1
   },
-  root: rootStyle(56),  
+  root: rootStyle(56),
   '@media (min-width:0px) and (orientation: landscape)': {
     root: rootStyle(48)
   },
