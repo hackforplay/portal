@@ -113,10 +113,10 @@ class Header extends React.Component<Props, State> {
             </Typography>
             <div className={classes.blank} />
             <Button color="contrast" component={Link} to="/contents/tutorial">
-              チュートリアル
+              あそびかた
             </Button>
             <Button color="contrast" component={Link} to="/lists">
-              ゲームで遊ぶ
+              みんなの作品
             </Button>
             <Button color="contrast" component={Link} to="/contents/kit">
               ゲームを作る

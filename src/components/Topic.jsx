@@ -149,7 +149,7 @@ class Topic extends React.Component<Props> {
                   className={classes.button}
                   style={{ marginTop: 16 }}
                 >
-                  チュートリアル
+                  ゲームスタート
                 </Button>
               </Paper>
             </Grid>
