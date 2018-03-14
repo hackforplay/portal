@@ -456,20 +456,21 @@ export const searchFailed: searchFailedType = (query, error) => ({
   error
 });
 
-export type changeWorkType = (
-  files: Array<{}>
-) => (
-  dispatch: (action: Action) => void,
-  getState: () => {
-    work: State
-  }
+export type changeWorkType = (payload: { files: Array<{}> }) => (
+  dispatch: Dispatch,
+  getState: GetState
 ) => Promise<void>;
 
-export const changeWork: changeWorkType = files => async (
+export const changeWork: changeWorkType = payload => async (
   dispatch,
   getState
 ) => {
-  dispatch(change(files));
+  const project = [];
+  for (const file of payload.files) {
+    const composed = await file.compose();
+    project.push(composed);
+  }
+  dispatch(change(project));
 };
 
 export type trashWorkType = () => (
