@@ -25,12 +25,17 @@ const reducer = combineReducers({
 });
 
 // TODO: auth, work などのキーワードを二度定義している. 型チェックすべき
-export type StoreState = {
-  auth: AuthState,
-  work: WorkState,
-  user: UserState,
-  pcRanking: PCRankingState,
-  storage: StorageState
+export type StoreState = {|
+  +auth: AuthState,
+  +work: WorkState,
+  +user: UserState,
+  +pcRanking: PCRankingState,
+  +storage: StorageState
+|};
+
+type ReduxResetAction = {
+  type: 'RESET',
+  state?: StoreState
 };
 
 /* eslint-disable no-use-before-define */
@@ -39,7 +44,8 @@ export type Action =
   | StorageAction
   | AuthAction
   | UserAction
-  | PCRankingAction;
+  | PCRankingAction
+  | ReduxResetAction;
 export type Dispatch = (
   action: Action | ThunkAction | PromiseAction
 ) => void | Promise<void>;

@@ -14,7 +14,7 @@ const mapStateToProps = (state: StoreState, ownProps) => {
   const user = getUserByUid(state, id || '');
 
   return {
-    authUser: auth.user,
+    isSignedIn: !!auth.user,
     auth,
     user
   };

@@ -7,18 +7,13 @@ import type { Dispatch, GetState } from './';
 export const storeName: string = 'auth';
 
 const SIGNED_IN = 'portal/auth/SIGNED_IN';
-const SIGNED_OUT = 'portal/auth/SIGNED_OUT';
 
 type User = $npm$firebase$auth$User;
 
-export type Action =
-  | {|
-      type: typeof SIGNED_IN,
-      user: User
-    |}
-  | {|
-      type: typeof SIGNED_OUT
-    |};
+export type Action = {|
+  type: typeof SIGNED_IN,
+  user: User
+|};
 
 export type State = {
   user?: User
@@ -34,10 +29,6 @@ export default (state: State = initialState, action: Action): State => {
         ...state,
         user: action.user
       };
-    case SIGNED_OUT:
-      // delete state.user
-      const { user, ...next } = state;
-      return next;
     default:
       return state;
   }
@@ -48,10 +39,6 @@ export default (state: State = initialState, action: Action): State => {
 export const signedIn = (user: User): Action => ({
   type: SIGNED_IN,
   user
-});
-
-export const signedOut = (): Action => ({
-  type: SIGNED_OUT
 });
 
 export type initializeAuthType = () => (
@@ -77,7 +64,9 @@ export const initializeAuth: initializeAuthType = () => (
       }
     } else if (getState().user) {
       // No use is signed in.
-      dispatch(signedOut());
+      dispatch({
+        type: 'RESET' // redux-reset
+      });
     }
   });
 };

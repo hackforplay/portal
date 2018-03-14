@@ -26,6 +26,7 @@ type Props = {
     avatar: string,
     title: string
   },
+  isSignedIn: boolean,
   user: UserType,
   signInWithGoogle: () => {},
   signOut: () => {}
@@ -96,7 +97,7 @@ class Header extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, user } = this.props;
+    const { classes, user, isSignedIn } = this.props;
     const { anchorEl } = this.state;
     return (
       <div className={classes.root}>
@@ -168,7 +169,7 @@ class Header extends React.Component<Props, State> {
                   <Typography type="button">マイページ</Typography>
                 </MenuItem>
               ) : null}
-              {user.data || user.isProcessing ? (
+              {isSignedIn ? (
                 <MenuItem onClick={this.signOut}>
                   <Typography type="button">ログアウト</Typography>
                 </MenuItem>
