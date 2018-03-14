@@ -49,13 +49,13 @@ export type WorkData = {
   assetStoragePath?: string,
   viewsNum: number,
   favsNum: number,
-  createdAt: string,
-  updatedAt: string | null
+  createdAt: string | Date,
+  updatedAt: string | Date | null
 };
 
 type migrateType = (old: WorkData) => WorkData;
 const migrate: migrateType = old => ({
-  id: `${old.id}`,
+  id: old.id,
   path: `/products/${old.search || old.id}`,
   title: old.title,
   description: old.description,
