@@ -11,12 +11,12 @@ import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
 
 import type { WorkItemType, changeWorkType, CreatingType } from '../ducks/work';
+import Feeles from '../containers/Feeles';
 
 type Props = {
   changeWork: changeWorkType,
   classes: {
-    blank: string,
-    root: string
+    blank: string
   },
   work: WorkItemType,
   replayable: boolean,
@@ -24,40 +24,12 @@ type Props = {
 } & ContextRouter;
 
 type State = {
-  anchorEl: ?HTMLElement,
-  rootEl: ?HTMLElement,
-  loading: boolean
+  anchorEl: ?HTMLElement
 };
-
-// <script async defer src="/h4p.js"></script> が挿入するグローバル変数を受け取る
-const h4pPromise = new Promise((resolve, reject) => {
-  const timer = setInterval(() => {
-    if (window.h4p) {
-      clearInterval(timer);
-      resolve(window.h4p);
-    }
-  }, 100);
-});
-
-const replayableClassName = 'replayable';
-
-const rootStyle = (padding: number) => ({
-  [`&.${replayableClassName}`]: {
-    height: `calc(100vh - ${padding * 2}px)`
-  },
-  height: `calc(100vh - ${padding}px)`
-});
 
 @withStyles({
   blank: {
     flex: 1
-  },
-  root: rootStyle(56),  
-  '@media (min-width:0px) and (orientation: landscape)': {
-    root: rootStyle(48)
-  },
-  '@media (min-width:600px)': {
-    root: rootStyle(64)
   }
 })
 class Work extends React.Component<Props, State> {
@@ -66,43 +38,8 @@ class Work extends React.Component<Props, State> {
   };
 
   state = {
-    anchorEl: null,
-    rootEl: null,
-    loading: true
+    anchorEl: null
   };
-
-  componentDidMount() {
-    this.handleLoad();
-  }
-
-  componentDidUpdate() {
-    this.handleLoad();
-  }
-
-  componentWillUnmount() {
-    h4pPromise.then(h4p => {
-      if (this.state.rootEl) {
-        h4p.unmount(this.state.rootEl);
-      }
-    });
-  }
-
-  handleLoad() {
-    const { work } = this.props;
-    if (!work.data) return;
-    const { asset_url } = work.data;
-    if (this.state.loading && this.state.rootEl && asset_url) {
-      h4pPromise.then(h4p => {
-        this.setState({ loading: false }, () => {
-          h4p({
-            rootElement: this.state.rootEl,
-            jsonURL: asset_url,
-            onChange: this.props.changeWork
-          });
-        });
-      });
-    }
-  }
 
   handleClick = (event: SyntheticEvent<HTMLButtonElement>) => {
     this.setState({ anchorEl: event.currentTarget });
@@ -116,10 +53,6 @@ class Work extends React.Component<Props, State> {
     const { classes, work, replayable, creating } = this.props;
     const { anchorEl } = this.state;
 
-    const root = classNames(classes.root, {
-      [replayableClassName]: replayable
-    });
-
     if (!work.data) {
       if (work.isProcessing) {
         return <div>ロード中...</div>;
@@ -132,6 +65,10 @@ class Work extends React.Component<Props, State> {
       }
       return null;
     }
+
+    const alt = work.data.title;
+    const src = work.data.asset_url || '';
+    const storagePath = work.data.assetStoragePath || '';
 
     return (
       <div>
@@ -163,9 +100,11 @@ class Work extends React.Component<Props, State> {
             </Toolbar>
           </AppBar>
         ) : null}
-        <div
-          className={root}
-          ref={rootEl => this.state.rootEl || this.setState({ rootEl })}
+        <Feeles
+          src={src}
+          alt={alt}
+          storagePath={storagePath}
+          replayable={replayable}
         />
       </div>
     );
