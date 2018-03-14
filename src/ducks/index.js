@@ -3,15 +3,18 @@
 import { combineReducers } from 'redux';
 
 import * as auth from './auth';
-import type { State as AuthState } from './auth';
+import type { State as AuthState, Action as AuthAction } from './auth';
 import * as work from './work';
-import type { State as WorkState } from './work';
+import type { State as WorkState, Action as WorkAction } from './work';
 import * as user from './user';
-import type { State as UserState } from './user';
+import type { State as UserState, Action as UserAction } from './user';
 import * as pcRanking from './pcRanking';
-import type { State as PCRankingState } from './pcRanking';
+import type {
+  State as PCRankingState,
+  Action as PCRankingAction
+} from './pcRanking';
 import * as storage from './storage';
-import type { State as StorageState } from './storage';
+import type { State as StorageState, Action as StorageAction } from './storage';
 
 const reducer = combineReducers({
   [auth.storeName]: auth.default,
@@ -29,5 +32,23 @@ export type StoreState = {
   pcRanking: PCRankingState,
   storage: StorageState
 };
+
+/* eslint-disable no-use-before-define */
+export type Action =
+  | WorkAction
+  | StorageAction
+  | AuthAction
+  | UserAction
+  | PCRankingAction;
+export type Dispatch = (
+  action: Action | ThunkAction | PromiseAction
+) => void | Promise<void>;
+export type ThunkAction = (
+  dispatch: Dispatch,
+  getState: GetState
+) => void | Promise<void>;
+export type GetState = () => StoreState;
+export type PromiseAction = Promise<Action>;
+/* eslint-enable no-use-before-define */
 
 export default reducer;

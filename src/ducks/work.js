@@ -5,7 +5,7 @@ import 'firebase/firestore';
 import * as helpers from './helpers';
 import type { Statefull } from './helpers';
 import type { UserType } from './user';
-import type { State as AuthStateType } from './auth';
+import type { Dispatch, GetState } from './';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'work';
@@ -80,7 +80,7 @@ export type CreatingType = {
   files?: Array<{}>
 };
 
-type Action =
+export type Action =
   | {|
       +type: 'portal/work/LOAD',
       +path: string
@@ -473,10 +473,8 @@ export const changeWork: changeWorkType = files => async (
 };
 
 export type trashWorkType = () => (
-  dispatch: (action: Action) => void,
-  getState: () => {
-    work: State
-  }
+  dispatch: Dispatch,
+  getState: GetState
 ) => Promise<void>;
 
 export const trashWork: trashWorkType = () => async (dispatch, getState) => {
@@ -538,10 +536,8 @@ export const fetchRecommendedWorks: fetchRecommendedWorksType = () => async (
 };
 
 export type fetchTrendingWorksType = () => (
-  dispatch: (action: Action) => void,
-  getState: () => {
-    work: State
-  }
+  dispatch: Dispatch,
+  getState: GetState
 ) => Promise<void>;
 
 export const fetchTrendingWorks: fetchTrendingWorksType = () => async (
@@ -564,10 +560,8 @@ export const fetchTrendingWorks: fetchTrendingWorksType = () => async (
 };
 
 export type fetchPickupWorksType = () => (
-  dispatch: (action: Action) => void,
-  getState: () => {
-    work: State
-  }
+  dispatch: Dispatch,
+  getState: GetState
 ) => Promise<void>;
 
 export const fetchPickupWorks: fetchPickupWorksType = () => async (
@@ -592,10 +586,8 @@ export const fetchPickupWorks: fetchPickupWorksType = () => async (
 export type fetchWorksByUserType = (
   user: UserType
 ) => (
-  dispatch: (action: Action) => void,
-  getState: () => {
-    work: State
-  }
+  dispatch: Dispatch,
+  getState: GetState
 ) => Promise<void>;
 
 export const fetchWorksByUser: fetchWorksByUserType = user => async (
@@ -647,10 +639,8 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
 export type fetchWorkByPathType = (
   path: string
 ) => (
-  dispatch: (action: Action) => void,
-  getState: () => {
-    work: State
-  }
+  dispatch: Dispatch,
+  getState: GetState
 ) => Promise<void>;
 
 export const fetchWorkByPath: fetchWorkByPathType = path => async (
@@ -723,10 +713,8 @@ export const fetchWorkByPath: fetchWorkByPathType = path => async (
 export type searchWorksType = (
   query: string
 ) => (
-  dispatch: (action: Action) => void,
-  getState: () => {
-    work: State
-  }
+  dispatch: Dispatch,
+  getState: GetState
 ) => Promise<void>;
 
 export const searchWorks: searchWorksType = query => async (
@@ -805,10 +793,8 @@ export const searchWorks: searchWorksType = query => async (
 export type addWorkViewType = (
   path: string
 ) => (
-  dispatch: (action: Action) => {},
-  getState: () => {
-    auth: AuthStateType
-  }
+  dispatch: Dispatch,
+  getState: GetState
 ) => Promise<*>;
 
 export const addWorkView: addWorkViewType = path => async (

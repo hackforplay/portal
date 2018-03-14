@@ -1,6 +1,7 @@
 // @flow
-
 import firebase from 'firebase';
+
+import type { Dispatch, GetState } from './';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'storage';
@@ -27,7 +28,7 @@ const DOWNLOAD = 'portal/storage/DOWNLOAD';
 const SET = 'portal/storage/SET';
 const EMPTY = 'portal/storage/EMPTY';
 
-type ActionType =
+export type Action =
   | {
       type: typeof UPLOAD,
       path: string
@@ -54,7 +55,7 @@ const initialState: State = {};
 
 // Reducers
 
-export default (state: State = initialState, action: ActionType): State => {
+export default (state: State = initialState, action: Action): State => {
   switch (action.type) {
     case UPLOAD:
       return {
@@ -106,23 +107,23 @@ export default (state: State = initialState, action: ActionType): State => {
   }
 };
 
-export const upload = (path: string): ActionType => ({
+export const upload = (path: string): Action => ({
   type: DOWNLOAD,
   path
 });
 
-export const download = (path: string): ActionType => ({
+export const download = (path: string): Action => ({
   type: DOWNLOAD,
   path
 });
 
-export const set = (path: string, url: string): ActionType => ({
+export const set = (path: string, url: string): Action => ({
   type: SET,
   path,
   url
 });
 
-export const empty = (path: string): ActionType => ({
+export const empty = (path: string): Action => ({
   type: EMPTY,
   path
 });
@@ -130,10 +131,7 @@ export const empty = (path: string): ActionType => ({
 export type uploadBlobType = (
   path: string,
   file: Blob
-) => (
-  dispatch: (action: ActionType) => void,
-  getState: () => { storage: State }
-) => Promise<void>;
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
 
 export const uploadBlob: uploadBlobType = (path, file) => async (
   dispatch,
@@ -160,10 +158,7 @@ export const uploadBlob: uploadBlobType = (path, file) => async (
 
 export type downloadUrlType = (
   path: string
-) => (
-  dispatch: (action: ActionType) => void,
-  getState: () => { storage: State }
-) => Promise<void>;
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
 
 export const downloadUrl: downloadUrlType = path => async (
   dispatch,

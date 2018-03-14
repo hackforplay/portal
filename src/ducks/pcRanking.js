@@ -3,6 +3,7 @@ import firebase from 'firebase';
 
 import * as helpers from './helpers';
 import type { Statefull } from './helpers';
+import type { Dispatch, GetState } from './';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'pcRanking';
@@ -30,7 +31,7 @@ const fixData = (snapShot: firebase.firestore.DocumentSnapshot): RecordData => {
 export type RecordType = Statefull<RecordData>;
 export type RecordCollectionType = Statefull<Array<RecordData>>;
 
-type Action =
+export type Action =
   | {
       type: typeof LOAD_RECORDS,
       stage: string
@@ -111,10 +112,7 @@ export const set = (stage: string, payload: Array<RecordData>): Action => ({
 
 export type fetchRecordsByStageType = (
   stage: string
-) => (
-  dispatch: (action: Action) => void,
-  getState: () => { pcRanking: State }
-) => Promise<void>;
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
 
 export const fetchRecordsByStage: fetchRecordsByStageType = stage => async (
   dispatch,

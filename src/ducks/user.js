@@ -3,14 +3,15 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
 
-import type { Statefull } from './helpers';
 import * as helpers from './helpers';
 import * as auth from './auth';
+import type { Statefull } from './helpers';
+import type { Dispatch, GetState } from './';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'user';
 
-// TODO: 実際にはページングやクエリに対応する ActionType が必要
+// TODO: 実際にはページングやクエリに対応する Action が必要
 const LOAD = 'portal/user/LOAD';
 const SET = 'portal/user/SET';
 const EDIT = 'portal/user/EDIT';
@@ -34,7 +35,7 @@ export type EditingUserData = {|
 
 export type UserType = Statefull<UserData>;
 
-type ActionType =
+export type Action =
   | {|
       type: typeof LOAD,
       uid: string
@@ -70,7 +71,7 @@ const initialState: State = {
 
 // Reducers
 
-const userReducer = (user: ?UserType, action: ActionType): ?UserType => {
+const userReducer = (user: ?UserType, action: Action): ?UserType => {
   switch (action.type) {
     case LOAD:
       return helpers.processing();
@@ -83,7 +84,7 @@ const userReducer = (user: ?UserType, action: ActionType): ?UserType => {
 
 type editingReducerType = (
   editingByUid: $PropertyType<State, 'editingByUid'>,
-  action: ActionType
+  action: Action
 ) => $PropertyType<State, 'editingByUid'>;
 
 const editingReducer: editingReducerType = (editingByUid, action) => {
@@ -107,7 +108,7 @@ const editingReducer: editingReducerType = (editingByUid, action) => {
 };
 
 // Root Reducer
-export default (state: State = initialState, action: ActionType): State => {
+export default (state: State = initialState, action: Action): State => {
   switch (action.type) {
     case LOAD:
     case SET:
@@ -144,23 +145,23 @@ export default (state: State = initialState, action: ActionType): State => {
 
 // Action Creators
 
-export const loadUser = (uid: string): ActionType => ({
+export const loadUser = (uid: string): Action => ({
   type: LOAD,
   uid
 });
 
-export const setUser = (user: UserData): ActionType => ({
+export const setUser = (user: UserData): Action => ({
   type: SET,
   uid: user.uid,
   user
 });
 
-export const setUserNotFound = (uid: string): ActionType => ({
+export const setUserNotFound = (uid: string): Action => ({
   type: SET,
   uid
 });
 
-type editUserType = (uid: string, editing: EditingUserData) => ActionType;
+type editUserType = (uid: string, editing: EditingUserData) => Action;
 
 export const editUser: editUserType = (uid, editing) => ({
   type: EDIT,
@@ -168,22 +169,19 @@ export const editUser: editUserType = (uid, editing) => ({
   payload: editing
 });
 
-export const editCancel = (uid: string): ActionType => ({
+export const editCancel = (uid: string): Action => ({
   type: EDIT_CANCEL,
   uid
 });
 
-export const updateUser = (uid: string): ActionType => ({
+export const updateUser = (uid: string): Action => ({
   type: UPDATE,
   uid
 });
 
 export type fetchUserIfNeededType = (
   uid: string
-) => (
-  dispatch: (action: ActionType) => void,
-  getState: () => { user: State }
-) => void;
+) => (dispatch: Dispatch, getState: GetState) => void;
 
 export const fetchUserIfNeeded: fetchUserIfNeededType = uid => (
   dispatch,
@@ -215,10 +213,7 @@ export const fetchUserIfNeeded: fetchUserIfNeededType = uid => (
 
 export type editAuthUserType = (
   editing: EditingUserData
-) => (
-  dispatch: (action: ActionType) => void,
-  getState: () => { auth: auth.State }
-) => void;
+) => (dispatch: Dispatch, getState: GetState) => void;
 
 export const editAuthUser: editAuthUserType = editing => (
   dispatch,
@@ -234,8 +229,8 @@ export const editAuthUser: editAuthUserType = editing => (
 };
 
 export type cancelAuthUserEditingType = () => (
-  dispatch: (action: ActionType) => void,
-  getState: () => { auth: auth.State }
+  dispatch: Dispatch,
+  getState: GetState
 ) => void;
 
 export const cancelAuthUserEditing: cancelAuthUserEditingType = () => (
@@ -252,7 +247,7 @@ export const cancelAuthUserEditing: cancelAuthUserEditingType = () => (
 };
 
 export type confirmAuthUserEditingType = () => (
-  dispatch: (action: ActionType) => void,
+  dispatch: Dispatch,
   getState: () => { auth: auth.State, user: State }
 ) => Promise<void>;
 

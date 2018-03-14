@@ -1,6 +1,8 @@
 // @flow
 import firebase from 'firebase';
 
+import type { Dispatch, GetState } from './';
+
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'auth';
 
@@ -9,7 +11,7 @@ const SIGNED_OUT = 'portal/auth/SIGNED_OUT';
 
 type User = $npm$firebase$auth$User;
 
-type ActionType =
+export type Action =
   | {|
       type: typeof SIGNED_IN,
       user: User
@@ -25,7 +27,7 @@ export type State = {
 const initialState: State = {};
 
 // Root Reducer
-export default (state: State = initialState, action: ActionType): State => {
+export default (state: State = initialState, action: Action): State => {
   switch (action.type) {
     case SIGNED_IN:
       return {
@@ -43,18 +45,18 @@ export default (state: State = initialState, action: ActionType): State => {
 
 // Action Creators
 
-export const signedIn = (user: User): ActionType => ({
+export const signedIn = (user: User): Action => ({
   type: SIGNED_IN,
   user
 });
 
-export const signedOut = (): ActionType => ({
+export const signedOut = (): Action => ({
   type: SIGNED_OUT
 });
 
 export type initializeAuthType = () => (
-  dispatch: (action: ActionType) => {},
-  getState: () => State
+  dispatch: Dispatch,
+  getState: GetState
 ) => void;
 
 export const initializeAuth: initializeAuthType = () => (
