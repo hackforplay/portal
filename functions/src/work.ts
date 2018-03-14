@@ -26,8 +26,10 @@ export const incrementViewsCount = functions.firestore
 
     await admin.firestore().runTransaction(async t => {
       const doc = await t.get(workRef);
-      const viewsNum = doc.data().viewsNum + 1;
-      t.update(workRef, { viewsNum });
+      if (doc.exists) {
+        const viewsNum = doc.data().viewsNum + 1;
+        t.update(workRef, { viewsNum });
+      }
     });
   });
 
@@ -41,7 +43,9 @@ export const decrementViewsCount = functions.firestore
 
     return admin.firestore().runTransaction(async t => {
       const doc = await t.get(workRef);
-      const viewsNum = doc.data().viewsNum - 1;
-      t.update(workRef, { viewsNum });
+      if (doc.exists) {
+        const viewsNum = doc.data().viewsNum - 1;
+        t.update(workRef, { viewsNum });
+      }
     });
   });
