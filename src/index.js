@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import reduxReset from 'redux-reset';
+import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProduction';
 import moment from 'moment';
 import 'moment/locale/ja';
 import 'normalize.css';
@@ -24,7 +25,10 @@ if (process.env.NODE_ENV !== 'production') {
   middleware.push(createLogger());
 }
 
-const enhancer = compose(applyMiddleware(...middleware), reduxReset());
+const enhancer = composeWithDevTools(
+  applyMiddleware(...middleware),
+  reduxReset()
+);
 
 const store = createStore(reducer, enhancer);
 
