@@ -7,8 +7,8 @@ import {
   getWorkByPath,
   fetchWorkByPath,
   addWorkView,
-  changeWork,
-  trashWork
+  trashWork,
+  saveWork
 } from '../ducks/work';
 import type { StoreState } from '../ducks';
 
@@ -30,10 +30,10 @@ const mapStateToProps = (state: StoreState, ownProps): string => {
 };
 
 const mapDispatchToProps = {
-  changeWork,
   trashWork,
   fetchWorkByPath,
-  addWorkView
+  addWorkView,
+  saveWork
 };
 
 @withRouter

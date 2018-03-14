@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import officials from '../settings/officials';
 import Work from '../components/Work';
-import { changeWork, trashWork } from '../ducks/work';
+import { changeWork, trashWork, saveWork } from '../ducks/work';
 import type { StoreState } from '../ducks';
 
 const mapStateToProps = (state: StoreState) => {
@@ -15,7 +15,8 @@ const mapStateToProps = (state: StoreState) => {
 
 const mapDispatchToProps = {
   changeWork,
-  trashWork
+  trashWork,
+  saveWork
 };
 
 @connect(mapStateToProps, mapDispatchToProps)

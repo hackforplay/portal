@@ -1,6 +1,5 @@
 // @flow
 import * as React from 'react';
-import classNames from 'classnames';
 import type { ContextRouter } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -10,16 +9,17 @@ import Popover from 'material-ui/Popover';
 import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
 
-import type { WorkItemType, changeWorkType, CreatingType } from '../ducks/work';
+import type { WorkItemType, saveWorkType, CreatingType } from '../ducks/work';
 import Feeles from '../containers/Feeles';
 
 type Props = {
-  changeWork: changeWorkType,
+  saveWork: saveWorkType,
   classes: {
     blank: string
   },
   work: WorkItemType,
-  replayable: boolean,
+  replay: boolean,
+  replayable: boolean, // TODO: 旧保存を残すための Props. いずれ replay に統合する
   creating: CreatingType
 } & ContextRouter;
 
@@ -34,6 +34,7 @@ type State = {
 })
 class Work extends React.Component<Props, State> {
   static defaultProps = {
+    replay: false,
     replayable: false
   };
 
@@ -49,8 +50,16 @@ class Work extends React.Component<Props, State> {
     this.setState({ anchorEl: null });
   };
 
+  handleSave = () => {
+    this.props.saveWork({
+      title: 'たいとるのてすと',
+      description: 'せつめいのてすと',
+      author: 'なまえのてすと'
+    });
+  };
+
   render() {
-    const { classes, work, replayable, creating } = this.props;
+    const { classes, work, replay, replayable, creating } = this.props;
     const { anchorEl } = this.state;
 
     if (!work.data) {
@@ -72,14 +81,16 @@ class Work extends React.Component<Props, State> {
 
     return (
       <div>
-        {replayable ? (
+        {replay || replayable ? (
           <AppBar position="static" color="default" elevation={0}>
             <Toolbar>
               <Typography type="headline">
                 {work.data ? work.data.title : '読み込み中...'}
               </Typography>
               <div className={classes.blank} />
-              <Button disabled={!creating.exists}>保存する</Button>
+              <Button disabled={!creating.files} onClick={this.handleSave}>
+                保存する
+              </Button>
               <Button
                 aria-owns={anchorEl ? 'simple-menu' : null}
                 aria-haspopup="true"
@@ -104,6 +115,7 @@ class Work extends React.Component<Props, State> {
           src={src}
           alt={alt}
           storagePath={storagePath}
+          replay={replay}
           replayable={replayable}
         />
       </div>

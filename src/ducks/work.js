@@ -1,8 +1,10 @@
 // @flow
 import firebase from 'firebase';
 import 'firebase/firestore';
+import md5 from 'md5';
 
 import * as helpers from './helpers';
+import { uploadBlob } from './storage';
 import type { Statefull } from './helpers';
 import type { UserType } from './user';
 import type { Dispatch, GetState } from './';
@@ -18,6 +20,7 @@ const INVALID = 'portal/work/INVALID';
 const VIEW = 'portal/work/VIEW';
 const CHANGE = 'portal/work/CHANGE';
 const TRASH = 'portal/work/TRASH';
+const SAVE = 'portal/work/SAVE';
 
 // Heroku にあるデータ
 const LOAD_LIST = 'portal/work/LOAD_LIST';
@@ -76,7 +79,7 @@ export type WorkCollectionType = Statefull<Array<WorkData>>;
 type listType = 'recommended' | 'trending' | 'pickup';
 
 export type CreatingType = {
-  exists: boolean,
+  saved: boolean,
   files?: Array<{}>
 };
 
@@ -108,6 +111,9 @@ export type Action =
     |}
   | {|
       +type: 'portal/work/TRASH'
+    |}
+  | {|
+      +type: 'portal/work/SAVE'
     |}
   | {|
       +type: 'portal/work/LOAD_LIST',
@@ -176,7 +182,7 @@ const initialState: State = {
     result: helpers.initialized()
   },
   creating: {
-    exists: false
+    saved: false
   },
   privates: helpers.initialized()
 };
@@ -315,7 +321,7 @@ export default (state: State = initialState, action: Action): State => {
       return {
         ...state,
         creating: {
-          exists: true,
+          saved: false,
           files: action.payload
         }
       };
@@ -323,7 +329,15 @@ export default (state: State = initialState, action: Action): State => {
       return {
         ...state,
         creating: {
-          exists: false
+          saved: false
+        }
+      };
+    case SAVE:
+      return {
+        ...state,
+        creating: {
+          ...state.creating,
+          saved: true
         }
       };
     default:
@@ -397,6 +411,12 @@ type trashType = () => Action;
 
 export const trash: trashType = () => ({
   type: TRASH
+});
+
+type saveType = () => Action;
+
+export const save: saveType = () => ({
+  type: SAVE
 });
 
 type loadListType = (list: listType) => Action;
@@ -480,6 +500,56 @@ export type trashWorkType = () => (
 
 export const trashWork: trashWorkType = () => async (dispatch, getState) => {
   dispatch(trash());
+};
+
+type UploadDataType = {
+  title: string,
+  description: string,
+  author: string
+};
+
+export type saveWorkType = (
+  data: UploadDataType
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+
+export const saveWork: saveWorkType = data => async (dispatch, getState) => {
+  const { auth: { user }, work: { creating: { saved, files } } } = getState();
+  const { title, description, author } = data;
+
+  if (!files || saved || !user) {
+    // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていない
+    return;
+  }
+
+  try {
+    // プロジェクトを JSON に書き出し
+    const json = JSON.stringify(files);
+    const file = new Blob([json], { type: 'application/json' });
+    // JSON 文字列から MD5 ハッシュを計算
+    const hash = md5(json);
+    // Storage にアップロード
+    const storagePath = `json/private/users/${user.uid}/${hash}.json`;
+    await dispatch(uploadBlob(storagePath, file));
+    const work = {
+      uid: user.uid,
+      title,
+      description,
+      author,
+      visibility: 'private',
+      assetStoragePath: storagePath,
+      viewsNum: 0,
+      favsNum: 0,
+      createdAt: new Date(),
+      updatedAt: null
+    };
+    await firebase
+      .firestore()
+      .collection('works')
+      .add(work);
+    dispatch(save());
+  } catch (error) {
+    console.error(error.message);
+  }
 };
 
 export type fetchRecommendedWorksType = () => (
