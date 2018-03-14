@@ -483,10 +483,8 @@ export const trashWork: trashWorkType = () => async (dispatch, getState) => {
 };
 
 export type fetchRecommendedWorksType = () => (
-  dispatch: (action: Action) => void,
-  getState: () => {
-    work: State
-  }
+  dispatch: Dispatch,
+  getState: GetState
 ) => Promise<void>;
 
 export const fetchRecommendedWorks: fetchRecommendedWorksType = () => async (
