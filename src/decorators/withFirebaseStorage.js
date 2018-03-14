@@ -9,7 +9,7 @@ const mapStateToProps = (state: StoreState, ownProps) => {
 
   return ownProps.storagePath
     ? {
-        src: storage.url || ' '
+        src: storage.url
       }
     : {};
 };
@@ -45,7 +45,7 @@ export default function withFirebaseStorage(WrappedComponent: React.Component) {
       }
       if (props.alt) {
         // alt を表示
-        return <WrappedComponent {...props}>{props.alt}</WrappedComponent>;
+        return props.alt;
       }
       // そのまま描画
       return <WrappedComponent {...props} />;
