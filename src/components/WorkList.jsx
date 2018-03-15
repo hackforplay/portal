@@ -27,6 +27,7 @@ export type Props = {
   classes: {
     root: string,
     card: string,
+    card_private: string,
     media: string,
     headline: string,
     title: string,
@@ -52,6 +53,9 @@ export type Props = {
     maxWidth: 240,
     cursor: 'pointer',
     textAlign: 'left'
+  },
+  card_private: {
+    filter: `brightness(90%)`
   },
   media: {
     height: 160
@@ -161,7 +165,9 @@ export default class WorkList extends React.Component<Props> {
                   <Grid item key={item.path}>
                     <Card
                       elevation={0}
-                      className={classes.card}
+                      className={classNames(classes.card, {
+                        [classes.card_private]: item.visibility === 'private'
+                      })}
                       onClick={this.link(item.path)}
                     >
                       <CardMedia
