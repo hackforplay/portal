@@ -663,11 +663,12 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
   dispatch,
   getState
 ) => {
-  if (!user.data) {
+  const userData = user.data;
+  if (!userData) {
     // ユーザーのデータがない
     return;
   }
-  const { uid, email } = user.data;
+  const { uid, email } = userData;
   // 今の状態
   const works = getWorksByUserId(getState(), uid);
   if (works.isProcessing || works.isAvailable) {
@@ -679,11 +680,17 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
   try {
     const works = [];
     // Firestore から取得
-    const querySnapshot = await firebase
-      .firestore()
-      .collection('works')
-      .where('uid', '==', uid)
-      .get();
+    let query = firebase
+    .firestore()
+    .collection('works')
+    .where('uid', '==', uid);
+    // 自分かどうか
+    const authUser = getState().auth.user;
+    if (!authUser || authUser.uid !== userData.uid) {
+      // 自分ではない
+      query = query.where('visibility', '==', 'public');
+    }
+    const querySnapshot = await query.get();
     for (const snapshot of querySnapshot.docs) {
       works.push({
         ...snapshot.data(),
