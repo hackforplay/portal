@@ -70,14 +70,15 @@ export default class Feeles extends React.Component<Props, State> {
   }
 
   handleLoad() {
-    const { src } = this.props;
+    const { src, replay } = this.props;
     if (this.state.loading && this.state.rootEl && src) {
       h4pPromise.then(h4p => {
         this.setState({ loading: false }, () => {
           h4p({
             rootElement: this.state.rootEl,
             jsonURL: src,
-            onChange: this.props.changeWork
+            onChange: this.props.changeWork,
+            disableLocalSave: replay // デフォルトのメニューを出さない
           });
         });
       });

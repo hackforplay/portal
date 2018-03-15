@@ -9,6 +9,7 @@ import type { StoreState } from '../ducks';
 
 const mapStateToProps = (state: StoreState) => {
   return {
+    isSignedIn: !!state.auth.user,
     creating: state.work.creating
   };
 };
@@ -26,7 +27,7 @@ export default class OfficialWork extends React.Component {
   }
 
   render() {
-    const { location } = this.props;
+    const { location, isSignedIn } = this.props;
 
     // 現在表示している URL にふさわしいデータソースを取得する
     const source = officials.find(item => {
@@ -39,7 +40,11 @@ export default class OfficialWork extends React.Component {
     }
 
     return (
-      <Work {...this.props} replayable={source.replayable} work={source.work} />
+      <Work
+        {...this.props}
+        replayable={isSignedIn && source.replayable}
+        work={source.work}
+      />
     );
   }
 }
