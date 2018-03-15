@@ -64,7 +64,7 @@ type State = {
   },
   title: {
     color: 'black',
-    filter: 'invert()'
+    filter: 'invert(100%)'
   }
 })
 class Header extends React.Component<Props, State> {
