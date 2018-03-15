@@ -895,9 +895,7 @@ export const addWorkView: addWorkViewType = path => async (
 };
 
 export function getWorksByUserId(
-  state: {
-    work: State
-  },
+  state: $Call<GetState>,
   uid: string
 ): WorkCollectionType {
   return state.work.byUserId[uid] || helpers.initialized();

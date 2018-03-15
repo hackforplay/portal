@@ -279,6 +279,6 @@ export const confirmAuthUserEditing: confirmAuthUserEditingType = () => async (
 
 // Helpers
 
-export function getUserByUid(state: { user: State }, uid: string): UserType {
+export function getUserByUid(state: $Call<GetState>, uid: string): UserType {
   return state.user.byUid[uid] || helpers.initialized();
 }
