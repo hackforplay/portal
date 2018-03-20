@@ -19,7 +19,7 @@ import diamond_pink from '../resources/diamond_pink.png';
 import mail from '../resources/mail.png';
 import info from '../resources/info.png';
 import news from '../resources/news.png';
-// import dragon from '../resources/dragon.png';
+import dragon from '../resources/dragon.png';
 import facebook from '../resources/facebook.png';
 import twitter from '../resources/twitter.png';
 import logo from '../resources/logo.png';
@@ -155,7 +155,7 @@ class Topic extends React.Component<Props> {
             </Grid>
 
             {/* プログラミングコロシアム */}
-            {/* <Grid item xs={12}>
+            <Grid item xs={12}>
               <Paper elevation={1} className={classes.paper}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <img src={dragon} alt="" />
@@ -208,7 +208,7 @@ class Topic extends React.Component<Props> {
                   詳しい説明を読む
                 </Button>
               </Paper>
-            </Grid> */}
+            </Grid>
 
             <Grid item xs={12}>
               <WorkList
