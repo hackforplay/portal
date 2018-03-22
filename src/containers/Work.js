@@ -9,7 +9,12 @@ import {
   addWorkView,
   isAuthUsersWork
 } from '../ducks/work';
-import { trashWork, saveWork, editExistingWork } from '../ducks/make';
+import {
+  trashWork,
+  saveWork,
+  editExistingWork,
+  publishWork
+} from '../ducks/make';
 import type { StoreState } from '../ducks';
 
 const getPath = (url: string, params: {}) => {
@@ -34,7 +39,8 @@ const mapDispatchToProps = {
   fetchWorkByPath,
   addWorkView,
   saveWork,
-  editExistingWork
+  editExistingWork,
+  publishWork
 };
 
 @withRouter

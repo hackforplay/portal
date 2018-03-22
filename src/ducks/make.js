@@ -4,7 +4,7 @@ import 'firebase/firestore';
 import md5 from 'md5';
 
 import * as helpers from './helpers';
-import { uploadBlob } from './storage';
+import { uploadBlob, getStorageByPath } from './storage';
 import type { Dispatch, GetState } from './';
 import type { WorkItemType, WorkData } from './work';
 
@@ -17,12 +17,6 @@ const TRASH = 'portal/make/TRASH';
 const PUSH = 'portal/make/PUSH';
 const PULL = 'portal/make/PULL';
 const SET = 'portal/make/SET';
-
-export type CreatingType = {
-  work: WorkItemType,
-  saved: boolean,
-  files?: Array<{}>
-};
 
 export type Action =
   | {|
@@ -198,13 +192,15 @@ export const saveWork: saveWorkType = data => async (dispatch, getState) => {
   dispatch(push());
 
   try {
+    // visibility を取得
+    const visibility = work.data ? work.data.visibility : 'private';
     // プロジェクトを JSON に書き出し
     const json = JSON.stringify(files);
     const file = new Blob([json], { type: 'application/json' });
     // JSON 文字列から MD5 ハッシュを計算
     const hash = md5(json);
     // Storage にアップロード
-    const storagePath = `json/private/users/${user.uid}/${hash}.json`;
+    const storagePath = `json/${visibility}/users/${user.uid}/${hash}.json`;
     await dispatch(uploadBlob(storagePath, file));
 
     // 取得
@@ -226,6 +222,65 @@ export const saveWork: saveWorkType = data => async (dispatch, getState) => {
   } catch (error) {
     console.error(error.message);
   }
+};
+
+export type publishWorkType = () => (
+  dispatch: Dispatch,
+  getState: GetState
+) => Promise<void>;
+
+export const publishWork: publishWorkType = () => async (
+  dispatch,
+  getState
+) => {
+  const { auth: { user }, make: { work } } = getState();
+  const workData = work.data;
+  if (!workData || !workData.assetStoragePath || !user) {
+    // 作品が投稿されていないか、ログインしていない
+    return;
+  }
+  dispatch(push());
+
+  // プロジェクトの JSON を取得
+  const { assetStoragePath } = workData;
+  if (!assetStoragePath) {
+    // JSON ファイルのパスが設定されていない
+    return;
+  }
+  const asset = getStorageByPath(getState(), assetStoragePath);
+  if (!asset.url) {
+    // ダウンロードされていない
+    return;
+  }
+  const response = await fetch(asset.url);
+  const json = await response.text();
+  const file = new Blob([json], { type: 'application/json' });
+  // JSON 文字列から MD5 ハッシュを計算
+  const hash = md5(json);
+  // Storage にアップロード
+  const storagePath = `json/public/users/${user.uid}/${hash}.json`;
+  await dispatch(uploadBlob(storagePath, file));
+
+  // 既存のドキュメントを更新
+  const updated = {
+    assetStoragePath: storagePath,
+    visibility: 'public',
+    updatedAt: new Date()
+  };
+  const ref = firebase
+    .firestore()
+    .collection('works')
+    .doc(workData.id);
+  await ref.update(updated);
+
+  const snapshot = await ref.get();
+  const updatedDoc = {
+    ...snapshot.data(),
+    id: snapshot.id,
+    path: `/works/${snapshot.id}`
+  };
+  // 作品をセット
+  dispatch(set(updatedDoc));
 };
 
 async function uploadWorkData({
@@ -251,7 +306,7 @@ async function uploadWorkData({
       .firestore()
       .collection('works')
       .doc(workData.id);
-    await ref.set(updated);
+    await ref.update(updated);
     return ref;
   } else {
     // 新しく追加

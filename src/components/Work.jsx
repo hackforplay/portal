@@ -12,10 +12,15 @@ import { withStyles } from 'material-ui/styles';
 import theme from '../settings/theme';
 import Feeles from '../containers/Feeles';
 import type { WorkItemType } from '../ducks/work';
-import type { saveWorkType, State as MakeState } from '../ducks/make';
+import type {
+  saveWorkType,
+  publishWorkType,
+  State as MakeState
+} from '../ducks/make';
 
 type Props = {
   saveWork: saveWorkType,
+  publishWork: publishWorkType,
   classes: {
     blank: string,
     caption: string
@@ -86,6 +91,7 @@ class Work extends React.Component<Props, State> {
     const src = work.data.asset_url || '';
     const storagePath = work.data.assetStoragePath || '';
     const canSave = !make.saved && (make.work.isEmpty || make.work.isAvailable);
+    const makeWorkData = make.work.data;
 
     return (
       <div>
@@ -96,6 +102,19 @@ class Work extends React.Component<Props, State> {
                 {work.data ? work.data.title : '読み込み中...'}
               </Typography>
               <div className={classes.blank} />
+              {makeWorkData && makeWorkData.visibility === 'public' ? (
+                <Typography
+                  type="caption"
+                  className={classes.caption}
+                >{`公開中`}</Typography>
+              ) : (
+                <Button
+                  disabled={!makeWorkData}
+                  onClick={this.props.publishWork}
+                >
+                  {`公開する`}
+                </Button>
+              )}
               {make.work.isProcessing || make.saved ? (
                 <Typography type="caption" className={classes.caption}>
                   {make.saved ? `保存されています` : `保存中...`}

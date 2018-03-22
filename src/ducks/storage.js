@@ -181,7 +181,7 @@ export const downloadUrl: downloadUrlType = path => async (
 };
 
 export function getStorageByPath(
-  state: { storage: State },
+  state: $Call<GetState>,
   path: string
 ): StorageType {
   return (
