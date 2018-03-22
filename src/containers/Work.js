@@ -3,8 +3,13 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import WrappedWork from '../components/Work';
-import { getWorkByPath, fetchWorkByPath, addWorkView } from '../ducks/work';
-import { trashWork, saveWork } from '../ducks/make';
+import {
+  getWorkByPath,
+  fetchWorkByPath,
+  addWorkView,
+  isAuthUsersWork
+} from '../ducks/work';
+import { trashWork, saveWork, editExistingWork } from '../ducks/make';
 import type { StoreState } from '../ducks';
 
 const getPath = (url: string, params: {}) => {
@@ -20,7 +25,7 @@ const mapStateToProps = (state: StoreState, ownProps): string => {
   return {
     work: getWorkByPath(state, path),
     make: state.make,
-    replay: params && params.action === 'replay'
+    replay: isAuthUsersWork(state, path)
   };
 };
 
@@ -28,7 +33,8 @@ const mapDispatchToProps = {
   trashWork,
   fetchWorkByPath,
   addWorkView,
-  saveWork
+  saveWork,
+  editExistingWork
 };
 
 @withRouter
@@ -41,6 +47,15 @@ export default class Work extends React.Component {
     this.props.fetchWorkByPath(path);
     // 作品のビューカウントを増やす
     this.props.addWorkView(path);
+    if (this.props.replay) {
+      this.props.editExistingWork(this.props.work);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.replay !== nextProps.replay && nextProps.replay) {
+      this.props.editExistingWork(nextProps.work);
+    }
   }
 
   componentWillUnmount() {

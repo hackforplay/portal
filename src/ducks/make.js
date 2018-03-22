@@ -274,3 +274,20 @@ async function uploadWorkData({
     return docRef;
   }
 }
+
+export type editExistingWorkType = (
+  work: WorkItemType
+) => (dispatch: Dispatch, getState: GetState) => void;
+
+export const editExistingWork: editExistingWorkType = work => (
+  dispatch,
+  getState
+) => {
+  const { auth: { user } } = getState();
+  if (!work.data || !user || work.data.uid !== user.uid) {
+    // 自分の作品ではないか、ログインしていない
+    return;
+  }
+  // 作品をセット
+  dispatch(set(work.data));
+};

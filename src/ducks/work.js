@@ -736,3 +736,16 @@ export function getWorkByPath(
 ): WorkItemType {
   return state.work.byPath[path] || helpers.initialized();
 }
+
+export function isAuthUsersWork(
+  state: $Call<GetState>,
+  path: string
+) {
+  const { auth: {user} } = state;
+  if (!user) {
+    // ログインしていない
+    return false;
+  }
+  const work = getWorkByPath(state, path);
+  return work.data && work.data.uid === user.uid;
+}
