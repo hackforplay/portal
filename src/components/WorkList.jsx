@@ -140,78 +140,75 @@ export default class WorkList extends React.Component<Props> {
         )}
         <Collapse collapsedHeight="284px" in={more}>
           <Grid container justify="center">
-            <Grid item>
-              {works.isProcessing ? <CircularProgress /> : null}
-              {works.isInvalid ? (
-                <Typography type="headline">
-                  エラーが発生しました
-                  <span role="img" aria-label="Confused">
-                    😕
-                  </span>
-                  {works.error}
-                </Typography>
-              ) : null}
-              {works.isEmpty ? (
-                <Typography type="headline">
-                  ステージが見つかりませんでした
-                  <span role="img" aria-label="Confused">
-                    😕
-                  </span>
-                </Typography>
-              ) : null}
-            </Grid>
-            {works.data
-              ? works.data.map(item => (
-                  <Grid item key={item.path}>
-                    <Card
-                      elevation={0}
-                      className={classNames(classes.card, {
-                        [classes.card_private]: item.visibility === 'private'
-                      })}
-                      onClick={this.link(item.path)}
-                    >
-                      <CardMedia
-                        className={classes.media}
-                        component="img"
-                        src={item.image || noImage}
-                        title={item.title}
-                        storagePath={item.thumbnailStoragePath}
-                      />
-                      <CardHeader
-                        action={
-                          <IconButton onClick={e => e.stopPropagation()}>
-                            <MoreVertIcon />
-                          </IconButton>
-                        }
-                        title={
-                          <Typography type="body2">{item.title}</Typography>
-                        }
-                        subheader={
-                          <span
-                            onClick={this.link(
-                              `/anonymous/${item.author || ''}`
-                            )}
-                            className={classes.authorName}
-                          >
-                            {item.author || ''}
-                          </span>
-                        }
-                        classes={{
-                          title: classes.title,
-                          subheader: classes.subheader
-                        }}
-                      />
-                      <CardContent>
-                        <Typography type="caption">
-                          {`プレイ回数 ${item.viewsNum} 回・${this.fromNow(
-                            item.createdAt
-                          )}`}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))
-              : null}
+            {works.data ? (
+              works.data.map(item => (
+                <Grid item key={item.path}>
+                  <Card
+                    elevation={0}
+                    className={classNames(classes.card, {
+                      [classes.card_private]: item.visibility === 'private'
+                    })}
+                    onClick={this.link(item.path)}
+                  >
+                    <CardMedia
+                      className={classes.media}
+                      component="img"
+                      src={item.image || noImage}
+                      title={item.title}
+                      storagePath={item.thumbnailStoragePath}
+                    />
+                    <CardHeader
+                      action={
+                        <IconButton onClick={e => e.stopPropagation()}>
+                          <MoreVertIcon />
+                        </IconButton>
+                      }
+                      title={<Typography type="body2">{item.title}</Typography>}
+                      subheader={
+                        <span
+                          onClick={this.link(`/anonymous/${item.author || ''}`)}
+                          className={classes.authorName}
+                        >
+                          {item.author || ''}
+                        </span>
+                      }
+                      classes={{
+                        title: classes.title,
+                        subheader: classes.subheader
+                      }}
+                    />
+                    <CardContent>
+                      <Typography type="caption">
+                        {`プレイ回数 ${item.viewsNum} 回・${this.fromNow(
+                          item.createdAt
+                        )}`}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))
+            ) : (
+              <Grid item>
+                {works.isProcessing ? <CircularProgress /> : null}
+                {works.isInvalid ? (
+                  <Typography type="headline">
+                    {`エラーが発生しました`}
+                    <span role="img" aria-label="Confused">
+                      {`😕`}
+                    </span>
+                    {works.error}
+                  </Typography>
+                ) : null}
+                {works.isEmpty ? (
+                  <Typography type="headline">
+                    {`ステージが見つかりませんでした`}
+                    <span role="img" aria-label="Confused">
+                      {`😕`}
+                    </span>
+                  </Typography>
+                ) : null}
+              </Grid>
+            )}
           </Grid>
         </Collapse>
         {more ? null : (
