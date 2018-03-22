@@ -1,10 +1,8 @@
 // @flow
 import firebase from 'firebase';
 import 'firebase/firestore';
-import md5 from 'md5';
 
 import * as helpers from './helpers';
-import { uploadBlob } from './storage';
 import type { Statefull } from './helpers';
 import type { UserType } from './user';
 import type { Dispatch, GetState } from './';
@@ -18,9 +16,6 @@ const SET = 'portal/work/SET';
 const EMPTY = 'portal/work/EMPTY';
 const INVALID = 'portal/work/INVALID';
 const VIEW = 'portal/work/VIEW';
-const CHANGE = 'portal/work/CHANGE';
-const TRASH = 'portal/work/TRASH';
-const SAVE = 'portal/work/SAVE';
 
 // Heroku にあるデータ
 const LOAD_LIST = 'portal/work/LOAD_LIST';
@@ -78,11 +73,6 @@ export type WorkItemType = Statefull<WorkData>;
 export type WorkCollectionType = Statefull<Array<WorkData>>;
 type listType = 'recommended' | 'trending' | 'pickup';
 
-export type CreatingType = {
-  saved: boolean,
-  files?: Array<{}>
-};
-
 export type Action =
   | {|
       +type: 'portal/work/LOAD',
@@ -104,16 +94,6 @@ export type Action =
   | {|
       +type: 'portal/work/VIEW',
       +path: string
-    |}
-  | {|
-      +type: 'portal/work/CHANGE',
-      +payload: Array<{}>
-    |}
-  | {|
-      +type: 'portal/work/TRASH'
-    |}
-  | {|
-      +type: 'portal/work/SAVE'
     |}
   | {|
       +type: 'portal/work/LOAD_LIST',
@@ -166,9 +146,7 @@ export type State = {
   search: {
     query: string,
     result: WorkCollectionType
-  },
-  creating: CreatingType,
-  privates: WorkCollectionType
+  }
 };
 
 const initialState: State = {
@@ -180,11 +158,7 @@ const initialState: State = {
   search: {
     query: '',
     result: helpers.initialized()
-  },
-  creating: {
-    saved: false
-  },
-  privates: helpers.initialized()
+  }
 };
 
 type ListReducer = (
@@ -317,29 +291,6 @@ export default (state: State = initialState, action: Action): State => {
         byPath: byPathReducer(state.byPath, action),
         search
       };
-    case CHANGE:
-      return {
-        ...state,
-        creating: {
-          saved: false,
-          files: action.payload
-        }
-      };
-    case TRASH:
-      return {
-        ...state,
-        creating: {
-          saved: false
-        }
-      };
-    case SAVE:
-      return {
-        ...state,
-        creating: {
-          ...state.creating,
-          saved: true
-        }
-      };
     default:
       return state;
   }
@@ -400,25 +351,6 @@ export const view = (path: string): Action => ({
   path
 });
 
-type changeType = (payload: Array<{}>) => Action;
-
-export const change: changeType = payload => ({
-  type: CHANGE,
-  payload
-});
-
-type trashType = () => Action;
-
-export const trash: trashType = () => ({
-  type: TRASH
-});
-
-type saveType = () => Action;
-
-export const save: saveType = () => ({
-  type: SAVE
-});
-
 type loadListType = (list: listType) => Action;
 
 export const loadList: loadListType = list => ({
@@ -476,82 +408,6 @@ export const searchFailed: searchFailedType = (query, error) => ({
   error
 });
 
-export type changeWorkType = (payload: { files: Array<{}> }) => (
-  dispatch: Dispatch,
-  getState: GetState
-) => Promise<void>;
-
-export const changeWork: changeWorkType = payload => async (
-  dispatch,
-  getState
-) => {
-  const project = [];
-  for (const file of payload.files) {
-    const composed = await file.compose();
-    project.push(composed);
-  }
-  dispatch(change(project));
-};
-
-export type trashWorkType = () => (
-  dispatch: Dispatch,
-  getState: GetState
-) => Promise<void>;
-
-export const trashWork: trashWorkType = () => async (dispatch, getState) => {
-  dispatch(trash());
-};
-
-type UploadDataType = {
-  title: string,
-  description: string,
-  author: string
-};
-
-export type saveWorkType = (
-  data: UploadDataType
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
-
-export const saveWork: saveWorkType = data => async (dispatch, getState) => {
-  const { auth: { user }, work: { creating: { saved, files } } } = getState();
-  const { title, description, author } = data;
-
-  if (!files || saved || !user) {
-    // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていない
-    return;
-  }
-
-  try {
-    // プロジェクトを JSON に書き出し
-    const json = JSON.stringify(files);
-    const file = new Blob([json], { type: 'application/json' });
-    // JSON 文字列から MD5 ハッシュを計算
-    const hash = md5(json);
-    // Storage にアップロード
-    const storagePath = `json/private/users/${user.uid}/${hash}.json`;
-    await dispatch(uploadBlob(storagePath, file));
-    const work = {
-      uid: user.uid,
-      title,
-      description,
-      author,
-      visibility: 'private',
-      assetStoragePath: storagePath,
-      viewsNum: 0,
-      favsNum: 0,
-      createdAt: new Date(),
-      updatedAt: null
-    };
-    await firebase
-      .firestore()
-      .collection('works')
-      .add(work);
-    dispatch(save());
-  } catch (error) {
-    console.error(error.message);
-  }
-};
-
 export type fetchRecommendedWorksType = () => (
   dispatch: Dispatch,
   getState: GetState
@@ -562,10 +418,7 @@ export const fetchRecommendedWorks: fetchRecommendedWorksType = () => async (
   getState
 ) => {
   const state = getState().work;
-  if (state.recommended.isProcessing || state.recommended.isAvailable) {
-    // すでにリクエストを送信しているか、取得済み
-    return;
-  }
+  if (!helpers.isFetchNeeded(state.recommended)) return;
 
   dispatch(loadList('recommended'));
   try {
@@ -614,10 +467,7 @@ export const fetchTrendingWorks: fetchTrendingWorksType = () => async (
   getState
 ) => {
   const state = getState().work;
-  if (state.trending.isProcessing || state.trending.isAvailable) {
-    // すでにリクエストを送信しているか、取得済み
-    return;
-  }
+  if (!helpers.isFetchNeeded(state.trending)) return;
 
   try {
     dispatch(loadList('trending'));
@@ -636,12 +486,9 @@ export type fetchPickupWorksType = () => (
 export const fetchPickupWorks: fetchPickupWorksType = () => async (
   dispatch,
   getState
-) => {
+) => {  
   const state = getState().work;
-  if (state.pickup.isProcessing || state.pickup.isAvailable) {
-    // すでにリクエストを送信しているか、取得済み
-    return;
-  }
+  if (!helpers.isFetchNeeded(state.pickup)) return;
 
   try {
     dispatch(loadList('pickup'));
@@ -654,10 +501,7 @@ export const fetchPickupWorks: fetchPickupWorksType = () => async (
 
 export type fetchWorksByUserType = (
   user: UserType
-) => (
-  dispatch: Dispatch,
-  getState: GetState
-) => Promise<void>;
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
 
 export const fetchWorksByUser: fetchWorksByUserType = user => async (
   dispatch,
@@ -671,19 +515,17 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
   const { uid, email } = userData;
   // 今の状態
   const works = getWorksByUserId(getState(), uid);
-  if (works.isProcessing || works.isAvailable) {
-    // すでにリクエストを送信しているか、取得済み
-    return;
-  }
+  if (!helpers.isFetchNeeded(works)) return;
+  
   // リクエスト
   dispatch(loadUsers(uid));
   try {
     const works = [];
     // Firestore から取得
     let query = firebase
-    .firestore()
-    .collection('works')
-    .where('uid', '==', uid);
+      .firestore()
+      .collection('works')
+      .where('uid', '==', uid);
     // 自分かどうか
     const authUser = getState().auth.user;
     if (!authUser || authUser.uid !== userData.uid) {
@@ -714,10 +556,7 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
 
 export type fetchWorkByPathType = (
   path: string
-) => (
-  dispatch: Dispatch,
-  getState: GetState
-) => Promise<void>;
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
 
 export const fetchWorkByPath: fetchWorkByPathType = path => async (
   dispatch,
@@ -725,15 +564,11 @@ export const fetchWorkByPath: fetchWorkByPathType = path => async (
 ) => {
   // 今の状態
   const work = getWorkByPath(getState(), path);
-  if (work.isProcessing || work.data) {
-    // すでにリクエストを送信しているか、取得済み
-    return;
-  }
+  if (!helpers.isFetchNeeded(work)) return;
+
   // リクエスト
   dispatch(load(path));
-
   const [, collection, id] = path.split('/');
-
   try {
     switch (collection) {
       case 'works':
@@ -788,10 +623,7 @@ export const fetchWorkByPath: fetchWorkByPathType = path => async (
 
 export type searchWorksType = (
   query: string
-) => (
-  dispatch: Dispatch,
-  getState: GetState
-) => Promise<void>;
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
 
 export const searchWorks: searchWorksType = query => async (
   dispatch,
@@ -868,10 +700,7 @@ export const searchWorks: searchWorksType = query => async (
 
 export type addWorkViewType = (
   path: string
-) => (
-  dispatch: Dispatch,
-  getState: GetState
-) => Promise<*>;
+) => (dispatch: Dispatch, getState: GetState) => Promise<*>;
 
 export const addWorkView: addWorkViewType = path => async (
   dispatch,
@@ -902,9 +731,7 @@ export function getWorksByUserId(
 }
 
 export function getWorkByPath(
-  state: {
-    work: State
-  },
+  state: $Call<GetState>,
   path: string
 ): WorkItemType {
   return state.work.byPath[path] || helpers.initialized();

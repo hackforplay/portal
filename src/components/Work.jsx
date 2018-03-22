@@ -9,8 +9,9 @@ import Popover from 'material-ui/Popover';
 import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
 
-import type { WorkItemType, saveWorkType, CreatingType } from '../ducks/work';
 import Feeles from '../containers/Feeles';
+import type { WorkItemType } from '../ducks/work';
+import type { saveWorkType, State as MakeState } from '../ducks/make';
 
 type Props = {
   saveWork: saveWorkType,
@@ -20,7 +21,7 @@ type Props = {
   work: WorkItemType,
   replay: boolean,
   replayable: boolean, // TODO: 旧保存を残すための Props. いずれ replay に統合する
-  creating: CreatingType
+  make: MakeState
 } & ContextRouter;
 
 type State = {
@@ -59,7 +60,7 @@ class Work extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, work, replay, replayable, creating } = this.props;
+    const { classes, work, replay, replayable, make } = this.props;
     const { anchorEl } = this.state;
 
     if (!work.data) {
@@ -78,6 +79,7 @@ class Work extends React.Component<Props, State> {
     const alt = work.data.title;
     const src = work.data.asset_url || '';
     const storagePath = work.data.assetStoragePath || '';
+    const canSave = !make.saved && (make.work.isEmpty || make.work.isAvailable);
 
     return (
       <div>
@@ -88,9 +90,15 @@ class Work extends React.Component<Props, State> {
                 {work.data ? work.data.title : '読み込み中...'}
               </Typography>
               <div className={classes.blank} />
-              <Button disabled={!creating.files} onClick={this.handleSave}>
-                保存する
-              </Button>
+              {make.work.isProcessing || make.saved ? (
+                <Typography type="caption">
+                  {make.saved ? `保存されています` : `保存中...`}
+                </Typography>
+              ) : (
+                <Button disabled={!canSave} onClick={this.handleSave}>
+                  保存する
+                </Button>
+              )}
               <Button
                 aria-owns={anchorEl ? 'simple-menu' : null}
                 aria-haspopup="true"

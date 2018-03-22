@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 
 import officials from '../settings/officials';
 import Work from '../components/Work';
-import { changeWork, trashWork, saveWork } from '../ducks/work';
+import { changeWork, trashWork, saveWork } from '../ducks/make';
 import type { StoreState } from '../ducks';
 
 const mapStateToProps = (state: StoreState) => {
   return {
     isSignedIn: !!state.auth.user,
-    creating: state.work.creating
+    make: state.make
   };
 };
 

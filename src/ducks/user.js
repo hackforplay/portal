@@ -189,10 +189,8 @@ export const fetchUserIfNeeded: fetchUserIfNeededType = uid => (
 ) => {
   // その UID が Store にあるか確認
   const currentUser = getUserByUid(getState(), uid);
-  if (currentUser.isProcessing || currentUser.isAvailable) {
-    // すでにリクエストが送られているか、取得済み
-    return;
-  }
+  if (!helpers.isFetchNeeded(currentUser)) return;
+
   // リクエストを送る
   dispatch(loadUser(uid));
   firebase

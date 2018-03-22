@@ -6,6 +6,8 @@ import * as auth from './auth';
 import type { State as AuthState, Action as AuthAction } from './auth';
 import * as work from './work';
 import type { State as WorkState, Action as WorkAction } from './work';
+import * as make from './make';
+import type { State as MakeState, Action as MakeAction } from './make';
 import * as user from './user';
 import type { State as UserState, Action as UserAction } from './user';
 import * as pcRanking from './pcRanking';
@@ -19,6 +21,7 @@ import type { State as StorageState, Action as StorageAction } from './storage';
 const reducer = combineReducers({
   [auth.storeName]: auth.default,
   [work.storeName]: work.default,
+  [make.storeName]: make.default,
   [user.storeName]: user.default,
   [pcRanking.storeName]: pcRanking.default,
   [storage.storeName]: storage.default
@@ -28,6 +31,7 @@ const reducer = combineReducers({
 export type StoreState = {|
   +auth: AuthState,
   +work: WorkState,
+  +make: MakeState,
   +user: UserState,
   +pcRanking: PCRankingState,
   +storage: StorageState
@@ -41,6 +45,7 @@ type ReduxResetAction = {
 /* eslint-disable no-use-before-define */
 export type Action =
   | WorkAction
+  | MakeAction
   | StorageAction
   | AuthAction
   | UserAction

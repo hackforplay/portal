@@ -119,10 +119,7 @@ export const fetchRecordsByStage: fetchRecordsByStageType = stage => async (
   getState
 ) => {
   const current = getRecordsByStage(getState(), stage);
-  if (current.isProcessing || current.isAvailable || current.isEmpty) {
-    // すでにリクエストを送信しているか、取得済みか、データが空
-    return;
-  }
+  if (!helpers.isFetchNeeded(current)) return;
 
   try {
     dispatch(load(stage));
@@ -142,7 +139,7 @@ export const fetchRecordsByStage: fetchRecordsByStageType = stage => async (
 };
 
 export function getRecordsByStage(
-  state: { pcRanking: State },
+  state: $Call<GetState>,
   stage: string
 ): RecordCollectionType {
   return state.pcRanking.byStage[stage] || helpers.initialized();

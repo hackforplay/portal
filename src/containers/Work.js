@@ -3,13 +3,8 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import WrappedWork from '../components/Work';
-import {
-  getWorkByPath,
-  fetchWorkByPath,
-  addWorkView,
-  trashWork,
-  saveWork
-} from '../ducks/work';
+import { getWorkByPath, fetchWorkByPath, addWorkView } from '../ducks/work';
+import { trashWork, saveWork } from '../ducks/make';
 import type { StoreState } from '../ducks';
 
 const getPath = (url: string, params: {}) => {
@@ -24,7 +19,7 @@ const mapStateToProps = (state: StoreState, ownProps): string => {
   const path = getPath(url, params);
   return {
     work: getWorkByPath(state, path),
-    creating: state.work.creating,
+    make: state.make,
     replay: params && params.action === 'replay'
   };
 };

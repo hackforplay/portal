@@ -2,7 +2,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 
 import withFirebaseStorage from '../decorators/withFirebaseStorage';
-import { changeWork } from '../ducks/work';
+import { changeWork } from '../ducks/make';
 import Feeles from '../components/Feeles';
 
 const mapStateToProps = (state, ownProps) => ({});
