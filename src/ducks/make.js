@@ -11,12 +11,12 @@ import type { WorkItemType, WorkData } from './work';
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'make';
 
-const CREATE = 'portal/work/CREATE';
-const CHANGE = 'portal/work/CHANGE';
-const TRASH = 'portal/work/TRASH';
-const PUSH = 'portal/work/PUSH';
-const PULL = 'portal/work/PULL';
-const SET = 'portal/work/SET';
+const CREATE = 'portal/make/CREATE';
+const CHANGE = 'portal/make/CHANGE';
+const TRASH = 'portal/make/TRASH';
+const PUSH = 'portal/make/PUSH';
+const PULL = 'portal/make/PULL';
+const SET = 'portal/make/SET';
 
 export type CreatingType = {
   work: WorkItemType,
@@ -26,24 +26,24 @@ export type CreatingType = {
 
 export type Action =
   | {|
-      +type: 'portal/work/CREATE',
+      +type: 'portal/make/CREATE',
       +payload: Array<{}>
     |}
   | {|
-      +type: 'portal/work/CHANGE',
+      +type: 'portal/make/CHANGE',
       +payload: Array<{}>
     |}
   | {|
-      +type: 'portal/work/TRASH'
+      +type: 'portal/make/TRASH'
     |}
   | {|
-      +type: 'portal/work/PUSH'
+      +type: 'portal/make/PUSH'
     |}
   | {|
-      +type: 'portal/work/PULL'
+      +type: 'portal/make/PULL'
     |}
   | {|
-      +type: 'portal/work/SET',
+      +type: 'portal/make/SET',
       +payload: WorkData
     |};
 
