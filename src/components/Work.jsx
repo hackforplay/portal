@@ -9,6 +9,7 @@ import Popover from 'material-ui/Popover';
 import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
 
+import theme from '../settings/theme';
 import Feeles from '../containers/Feeles';
 import type { WorkItemType } from '../ducks/work';
 import type { saveWorkType, State as MakeState } from '../ducks/make';
@@ -16,7 +17,8 @@ import type { saveWorkType, State as MakeState } from '../ducks/make';
 type Props = {
   saveWork: saveWorkType,
   classes: {
-    blank: string
+    blank: string,
+    caption: string
   },
   work: WorkItemType,
   replay: boolean,
@@ -31,6 +33,10 @@ type State = {
 @withStyles({
   blank: {
     flex: 1
+  },
+  caption: {
+    marginLeft: theme.spacing.unit * 2,
+    marginRight: theme.spacing.unit * 2,
   }
 })
 class Work extends React.Component<Props, State> {
@@ -91,7 +97,7 @@ class Work extends React.Component<Props, State> {
               </Typography>
               <div className={classes.blank} />
               {make.work.isProcessing || make.saved ? (
-                <Typography type="caption">
+                <Typography type="caption" className={classes.caption}>
                   {make.saved ? `保存されています` : `保存中...`}
                 </Typography>
               ) : (
