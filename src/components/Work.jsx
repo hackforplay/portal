@@ -15,12 +15,14 @@ import type { WorkItemType } from '../ducks/work';
 import type {
   saveWorkType,
   publishWorkType,
+  setMetadataType,
   State as MakeState
 } from '../ducks/make';
 
 type Props = {
   saveWork: saveWorkType,
   publishWork: publishWorkType,
+  setMetadata: setMetadataType,
   classes: {
     blank: string,
     caption: string
@@ -41,7 +43,7 @@ type State = {
   },
   caption: {
     marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
+    marginRight: theme.spacing.unit * 2
   }
 })
 class Work extends React.Component<Props, State> {
@@ -60,14 +62,6 @@ class Work extends React.Component<Props, State> {
 
   handleClose = () => {
     this.setState({ anchorEl: null });
-  };
-
-  handleSave = () => {
-    this.props.saveWork({
-      title: 'たいとるのてすと',
-      description: 'せつめいのてすと',
-      author: 'なまえのてすと'
-    });
   };
 
   render() {
@@ -120,7 +114,7 @@ class Work extends React.Component<Props, State> {
                   {make.saved ? `保存されています` : `保存中...`}
                 </Typography>
               ) : (
-                <Button disabled={!canSave} onClick={this.handleSave}>
+                <Button disabled={!canSave} onClick={this.props.saveWork}>
                   保存する
                 </Button>
               )}

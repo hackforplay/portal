@@ -2,10 +2,11 @@ import * as React from 'react';
 import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 
-import type { changeWorkType } from '../ducks/work';
+import type { changeWorkType, thumbnailType } from '../ducks/make';
 
 type Props = {
   changeWork: changeWorkType,
+  thumbnail: thumbnailType,
   src: string,
   alt: string,
   replay: boolean,
@@ -74,12 +75,20 @@ export default class Feeles extends React.Component<Props, State> {
     if (this.state.loading && this.state.rootEl && src) {
       h4pPromise.then(h4p => {
         this.setState({ loading: false }, () => {
-          h4p({
+          const props = {
             rootElement: this.state.rootEl,
-            jsonURL: src,
-            onChange: this.props.changeWork,
-            disableLocalSave: replay // デフォルトのメニューを出さない
-          });
+            jsonURL: src
+          };
+          // TODO: Feeles の機能をなくして portal の機能に一元化する
+          // Feeles の機能と portal の機能が両立している場合があるので,
+          // replay === false でも onChange は捉える
+          props.onChange = this.props.changeWork;
+          if (replay) {
+            props.onThumbnailChange = this.props.thumbnail;
+            props.disableLocalSave = true; // デフォルトのメニューを出さない
+            props.disableScreenShotCard = true; // スクリーンショットカードを無効化
+          }
+          h4p(props);
         });
       });
     }

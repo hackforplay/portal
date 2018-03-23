@@ -2,13 +2,15 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 
 import withFirebaseStorage from '../decorators/withFirebaseStorage';
-import { changeWork } from '../ducks/make';
+import { changeWork, setMetadata, thumbnail } from '../ducks/make';
 import Feeles from '../components/Feeles';
 
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = {
-  changeWork
+  changeWork,
+  setMetadata,
+  thumbnail
 };
 
 export default compose(

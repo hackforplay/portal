@@ -2,6 +2,7 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
 import md5 from 'md5';
+import mime from 'mime-types';
 
 import * as helpers from './helpers';
 import { uploadBlob, getStorageByPath } from './storage';
@@ -13,10 +14,19 @@ export const storeName: string = 'make';
 
 const CREATE = 'portal/make/CREATE';
 const CHANGE = 'portal/make/CHANGE';
+const METADATA = 'portal/make/METADATA';
+const THUMBNAIL = 'portal/make/THUMBNAIL';
 const TRASH = 'portal/make/TRASH';
 const PUSH = 'portal/make/PUSH';
 const PULL = 'portal/make/PULL';
 const SET = 'portal/make/SET';
+
+export type Metadata = {
+  +title?: string,
+  +description?: string,
+  +author?: string,
+  +thumbnailStoragePath?: string
+};
 
 export type Action =
   | {|
@@ -26,6 +36,14 @@ export type Action =
   | {|
       +type: 'portal/make/CHANGE',
       +payload: Array<{}>
+    |}
+  | {|
+      +type: 'portal/make/METADATA',
+      +payload: Metadata
+    |}
+  | {|
+      +type: 'portal/make/THUMBNAIL',
+      +payload: string
     |}
   | {|
       +type: 'portal/make/TRASH'
@@ -44,12 +62,16 @@ export type Action =
 export type State = {
   work: WorkItemType,
   saved: boolean,
+  metadata: Metadata,
+  thumbnails: Array<string>,
   files?: Array<{}>
 };
 
 const initialState: State = {
   work: helpers.initialized(),
-  saved: false
+  saved: false,
+  metadata: {},
+  thumbnails: []
 };
 
 // Root Reducer
@@ -59,7 +81,9 @@ export default (state: State = initialState, action: Action): State => {
       return {
         work: helpers.empty(),
         saved: false,
-        files: action.payload
+        files: action.payload,
+        metadata: {},
+        thumbnails: []
       };
     case CHANGE:
       return {
@@ -67,11 +91,26 @@ export default (state: State = initialState, action: Action): State => {
         saved: false,
         files: action.payload
       };
-    case TRASH:
+    case METADATA:
       return {
         ...state,
+        saved: false,
+        metadata: {
+          ...state.metadata,
+          ...action.payload
+        }
+      };
+    case THUMBNAIL:
+      return {
+        ...state,
+        thumbnails: [...state.thumbnails, action.payload]
+      };
+    case TRASH:
+      return {
         work: helpers.initialized(),
-        saved: false
+        saved: false,
+        metadata: {},
+        thumbnails: []
       };
     case PUSH:
     case PULL:
@@ -84,7 +123,13 @@ export default (state: State = initialState, action: Action): State => {
       return {
         ...state,
         work: helpers.has(action.payload),
-        saved: true
+        saved: true,
+        metadata: {
+          title: action.payload.title,
+          description: action.payload.description,
+          author: action.payload.author,
+          assetStoragePath: action.payload.assetStoragePath
+        }
       };
     default:
       return state;
@@ -102,6 +147,20 @@ type changeType = (payload: Array<{}>) => Action;
 
 export const change: changeType = payload => ({
   type: CHANGE,
+  payload
+});
+
+type metadataType = (metadata: Metadata) => Action;
+
+export const metadata: metadataType = payload => ({
+  type: METADATA,
+  payload
+});
+
+type thumbnailType = (thumbnail: string) => Action;
+
+export const thumbnail: thumbnailType = payload => ({
+  type: THUMBNAIL,
   payload
 });
 
@@ -161,6 +220,45 @@ export const changeWork: changeWorkType = payload => async (
   }
 };
 
+export type setMetadataType = (
+  payload: Metadata
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+
+export const setMetadata: setMetadataType = payload => async (
+  dispatch,
+  getState
+) => {
+  dispatch(metadata(payload));
+};
+
+export type setThumbnailFromDataURLType = (
+  dataURL: string
+) => (dispatch: Dispatch, getState: GetState) => void;
+
+export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => (
+  dispatch,
+  getState
+) => {
+  const { make: { work }, auth: { user } } = getState();
+  if (!user) {
+    // ログインしていない
+    return;
+  }
+  const visibility = work.data ? work.data.visibility : 'private';
+  const [param, base64] = dataURL.split(',');
+  const [, type] = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
+  const hash = md5(base64);
+  const ext = mime.extension(type);
+  if (base64 && type && ext) {
+    const blob = new Blob([base64], { type });
+    const thumbnailStoragePath = `image/${visibility}/users/${
+      user.uid
+    }/${hash}.${ext}`;
+    dispatch(uploadBlob(thumbnailStoragePath, blob));
+    dispatch(setMetadata({ thumbnailStoragePath }));
+  }
+};
+
 export type trashWorkType = () => (
   dispatch: Dispatch,
   getState: GetState
@@ -170,23 +268,27 @@ export const trashWork: trashWorkType = () => async (dispatch, getState) => {
   dispatch(trash());
 };
 
-type UploadDataType = {
-  title: string,
-  description: string,
-  author: string
-};
-
 export type saveWorkType = (
-  data: UploadDataType
 ) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
 
-export const saveWork: saveWorkType = data => async (dispatch, getState) => {
-  const { auth: { user }, make: { saved, files, work } } = getState();
-  const { title, description, author } = data;
+export const saveWork: saveWorkType = () => async (dispatch, getState) => {
+  const { auth: { user }, make: { saved, files, work, metadata, thumbnails } } = getState();
+  const workData = work.data;
 
   if (!files || saved || !user) {
     // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていない
     return;
+  }
+
+  // （仮実装）もしサムネイルが設定されていなければ, thumbnails の先頭をアップロードして設定する
+  if (!workData && !metadata.assetStoragePath) {
+    const [dataURL] = thumbnails;
+    if (dataURL) {
+      dispatch(setThumbnailFromDataURL(dataURL))
+      // ----> ストアが更新される（はず）
+      dispatch(saveWork());
+      return;
+    }
   }
 
   dispatch(push());
@@ -208,9 +310,13 @@ export const saveWork: saveWorkType = data => async (dispatch, getState) => {
       work,
       user,
       storagePath,
-      title,
-      description,
-      author
+      metadata: {
+        // デフォルト値
+        title: '',
+        description: '',
+        // ユーザーが設定したメタデータ
+        ...metadata
+      }
     });
     const snapshot = await uploadedRef.get();
     const uploadedDoc = {
@@ -287,18 +393,14 @@ async function uploadWorkData({
   work,
   user,
   storagePath,
-  title,
-  description,
-  author
+  metadata
 }) {
   const workData = work.data;
   if (workData) {
     // 既存のドキュメントを更新
     const updated = {
+      ...metadata,
       uid: user.uid,
-      title,
-      description,
-      author,
       assetStoragePath: storagePath,
       updatedAt: new Date()
     };
@@ -311,10 +413,8 @@ async function uploadWorkData({
   } else {
     // 新しく追加
     const appended = {
+      ...metadata,
       uid: user.uid,
-      title,
-      description,
-      author,
       visibility: 'private',
       assetStoragePath: storagePath,
       viewsNum: 0,

@@ -13,7 +13,8 @@ import {
   trashWork,
   saveWork,
   editExistingWork,
-  publishWork
+  publishWork,
+  setMetadata
 } from '../ducks/make';
 import type { StoreState } from '../ducks';
 
@@ -40,7 +41,8 @@ const mapDispatchToProps = {
   addWorkView,
   saveWork,
   editExistingWork,
-  publishWork
+  publishWork,
+  setMetadata
 };
 
 @withRouter
