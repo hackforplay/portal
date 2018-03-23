@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import classNames from 'classnames';
 import type { ContextRouter } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -11,6 +12,7 @@ import { withStyles } from 'material-ui/styles';
 
 import theme from '../settings/theme';
 import Feeles from '../containers/Feeles';
+import EditableTitleTextField from '../containers/EditableTitleTextField';
 import type { WorkItemType } from '../ducks/work';
 import type {
   saveWorkType,
@@ -25,7 +27,10 @@ type Props = {
   setMetadata: setMetadataType,
   classes: {
     blank: string,
-    caption: string
+    caption: string,
+    noTitle: string,
+    title: string,
+    underline: string
   },
   work: WorkItemType,
   replay: boolean,
@@ -44,6 +49,21 @@ type State = {
   caption: {
     marginLeft: theme.spacing.unit * 2,
     marginRight: theme.spacing.unit * 2
+  },
+  noTitle: {
+    fontStyle: 'italic'
+  },
+  title: {
+    ...theme.typography.title,
+    maxWidth: 500,
+    flexGrow: 1,
+    flexShrink: 10000
+  },
+  underline: {
+    '&:before': {
+      // focus も hover もされていないときの underline を消去
+      height: 0
+    }
   }
 })
 class Work extends React.Component<Props, State> {
@@ -81,7 +101,7 @@ class Work extends React.Component<Props, State> {
       return null;
     }
 
-    const alt = work.data.title;
+    const title = work.data.title;
     const src = work.data.asset_url || '';
     const storagePath = work.data.assetStoragePath || '';
     const canSave = !make.saved && (make.work.isEmpty || make.work.isAvailable);
@@ -92,9 +112,21 @@ class Work extends React.Component<Props, State> {
         {replay || replayable ? (
           <AppBar position="static" color="default" elevation={0}>
             <Toolbar>
-              <Typography type="headline">
-                {work.data ? work.data.title : '読み込み中...'}
-              </Typography>
+              {replay || replayable ? (
+                <EditableTitleTextField
+                  placeholder="タイトルがついていません"
+                  className={classNames(classes.title, {
+                    [classes.noTitle]: !make.metadata.title
+                  })}
+                  InputProps={{
+                    classes: {
+                      underline: classes.underline
+                    }
+                  }}
+                />
+              ) : (
+                <Typography type="title">{title}</Typography>
+              )}
               <div className={classes.blank} />
               {makeWorkData && makeWorkData.visibility === 'public' ? (
                 <Typography
@@ -140,7 +172,7 @@ class Work extends React.Component<Props, State> {
         ) : null}
         <Feeles
           src={src}
-          alt={alt}
+          alt={title}
           storagePath={storagePath}
           replay={replay}
           replayable={replayable}
