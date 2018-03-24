@@ -31,8 +31,10 @@ export type Props = {
     media: string,
     headline: string,
     title: string,
+    noTitle: string,
     subheader: string,
     authorName: string,
+    noAuthorName: string,
     button: string,
     more: string
   },
@@ -71,6 +73,9 @@ export type Props = {
     maxHeight: 48,
     overflow: 'hidden'
   },
+  noTitle: {
+    fontStyle: 'italic'
+  },
   subheader: {
     maxWidth: 176,
     overflow: 'hidden',
@@ -81,6 +86,10 @@ export type Props = {
     '&:hover': {
       color: grey[900]
     }
+  },
+  noAuthorName: {
+    color: grey[500],
+    fontStyle: 'italic'
   },
   more: {
     width: '100%',
@@ -167,13 +176,25 @@ export default class WorkList extends React.Component<Props> {
                           <MoreVertIcon />
                         </IconButton>
                       }
-                      title={<Typography type="body2">{item.title}</Typography>}
+                      title={
+                        <Typography
+                          type="body2"
+                          className={classNames({
+                            [classes.noTitle]: !item.title
+                          })}
+                        >
+                          {item.title || `タイトルがついていません`}
+                        </Typography>
+                      }
                       subheader={
                         <span
                           onClick={this.link(`/anonymous/${item.author || ''}`)}
-                          className={classes.authorName}
+                          className={classNames({
+                            [classes.authorName]: !!item.author,
+                            [classes.noAuthorName]: !item.author
+                          })}
                         >
-                          {item.author || ''}
+                          {item.author || '名無しの権兵衛'}
                         </span>
                       }
                       classes={{
