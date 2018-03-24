@@ -486,7 +486,7 @@ export type fetchPickupWorksType = () => (
 export const fetchPickupWorks: fetchPickupWorksType = () => async (
   dispatch,
   getState
-) => {  
+) => {
   const state = getState().work;
   if (!helpers.isFetchNeeded(state.pickup)) return;
 
@@ -516,7 +516,7 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
   // 今の状態
   const works = getWorksByUserId(getState(), uid);
   if (!helpers.isFetchNeeded(works)) return;
-  
+
   // リクエスト
   dispatch(loadUsers(uid));
   try {
@@ -706,13 +706,19 @@ export const addWorkView: addWorkViewType = path => async (
   dispatch,
   getState
 ) => {
+  const { auth: { user } } = getState();
+
   if (!path.startsWith('/works')) {
     // Firestore にデータがない作品ならスルー
     return;
   }
-  // 作品の views コレクションにドキュメントを追加
-  const { user } = getState().auth;
-  dispatch(view(path));
+
+  const work = getWorkByPath(getState(), path);
+  if (!user || (work.data && work.data.uid !== user.uid)) {
+    // 自分の作品でないなら、作品の views コレクションにドキュメントを追加
+    dispatch(view(path));
+  }
+
   await firebase
     .firestore()
     .collection(`${path}/views`)
@@ -737,11 +743,8 @@ export function getWorkByPath(
   return state.work.byPath[path] || helpers.initialized();
 }
 
-export function isAuthUsersWork(
-  state: $Call<GetState>,
-  path: string
-) {
-  const { auth: {user} } = state;
+export function isAuthUsersWork(state: $Call<GetState>, path: string) {
+  const { auth: { user } } = state;
   if (!user) {
     // ログインしていない
     return false;
