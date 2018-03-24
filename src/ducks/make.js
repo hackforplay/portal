@@ -284,7 +284,6 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
     auth: { user },
     make: { saved, files, work, metadata, thumbnails }
   } = getState();
-  const workData = work.data;
 
   if (!files || saved || !user) {
     // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていない
@@ -293,7 +292,7 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
 
   // TODO: サムネイルを選択する GUI を実装する
   // （仮実装）もしサムネイルが設定されていなければ, thumbnails の先頭をアップロードして設定する
-  if (!workData && !metadata.assetStoragePath) {
+  if (!metadata.thumbnailStoragePath) {
     const [dataURL] = thumbnails;
     if (dataURL) {
       dispatch(setThumbnailFromDataURL(dataURL));
@@ -305,7 +304,7 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
 
   // TODO: author を編集する GUI を実装する
   // （仮実装）もし author が設定されていなければ, ログインユーザの DisplayName を author とする
-  if (!workData && !metadata.author) {
+  if (!metadata.author) {
     const userData = getUserByUid(getState(), user.uid).data;
     if (userData && userData.displayName) {
       dispatch(setMetadata({ author: userData.displayName }));
