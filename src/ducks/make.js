@@ -6,6 +6,7 @@ import mime from 'mime-types';
 
 import * as helpers from './helpers';
 import { uploadBlob, getStorageByPath } from './storage';
+import { getUserByUid } from './user';
 import type { Dispatch, GetState } from './';
 import type { WorkItemType, WorkData } from './work';
 
@@ -268,11 +269,16 @@ export const trashWork: trashWorkType = () => async (dispatch, getState) => {
   dispatch(trash());
 };
 
-export type saveWorkType = (
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+export type saveWorkType = () => (
+  dispatch: Dispatch,
+  getState: GetState
+) => Promise<void>;
 
 export const saveWork: saveWorkType = () => async (dispatch, getState) => {
-  const { auth: { user }, make: { saved, files, work, metadata, thumbnails } } = getState();
+  const {
+    auth: { user },
+    make: { saved, files, work, metadata, thumbnails }
+  } = getState();
   const workData = work.data;
 
   if (!files || saved || !user) {
@@ -280,11 +286,24 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
     return;
   }
 
+  // TODO: サムネイルを選択する GUI を実装する
   // （仮実装）もしサムネイルが設定されていなければ, thumbnails の先頭をアップロードして設定する
   if (!workData && !metadata.assetStoragePath) {
     const [dataURL] = thumbnails;
     if (dataURL) {
-      dispatch(setThumbnailFromDataURL(dataURL))
+      dispatch(setThumbnailFromDataURL(dataURL));
+      // ----> ストアが更新される（はず）
+      dispatch(saveWork());
+      return;
+    }
+  }
+
+  // TODO: author を編集する GUI を実装する
+  // （仮実装）もし author が設定されていなければ, ログインユーザの DisplayName を author とする
+  if (!workData && !metadata.author) {
+    const userData = getUserByUid(getState(), user.uid).data;
+    if (userData && userData.displayName) {
+      dispatch(setMetadata({ author: userData.displayName }));
       // ----> ストアが更新される（はず）
       dispatch(saveWork());
       return;
@@ -389,12 +408,7 @@ export const publishWork: publishWorkType = () => async (
   dispatch(set(updatedDoc));
 };
 
-async function uploadWorkData({
-  work,
-  user,
-  storagePath,
-  metadata
-}) {
+async function uploadWorkData({ work, user, storagePath, metadata }) {
   const workData = work.data;
   if (workData) {
     // 既存のドキュメントを更新
