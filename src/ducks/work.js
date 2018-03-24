@@ -691,10 +691,10 @@ export const searchWorks: searchWorksType = query => async (
       q: query
     });
     works.push(...result.data.map(migrate));
-    // dispatch(searchResult(query, works));
+    dispatch(searchResult(query, works));
   } catch (error) {
     dispatch(searchFailed(query, error.message));
-    console.warn(error);
+    console.error(error);
   }
 };
 
