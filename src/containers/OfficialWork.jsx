@@ -50,7 +50,7 @@ export default class OfficialWork extends React.Component {
     return (
       <Work
         {...this.props}
-        replayable={isSignedIn && source.replayable}
+        replay={isSignedIn && source.replayable}
         work={source.work}
       />
     );

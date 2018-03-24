@@ -34,7 +34,6 @@ type Props = {
   },
   work: WorkItemType,
   replay: boolean,
-  replayable: boolean, // TODO: 旧保存を残すための Props. いずれ replay に統合する
   make: MakeState
 } & ContextRouter;
 
@@ -68,8 +67,7 @@ type State = {
 })
 class Work extends React.Component<Props, State> {
   static defaultProps = {
-    replay: false,
-    replayable: false
+    replay: false
   };
 
   state = {
@@ -85,7 +83,7 @@ class Work extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, work, replay, replayable, make } = this.props;
+    const { classes, work, replay, make } = this.props;
     const { anchorEl } = this.state;
 
     if (!work.data) {
@@ -109,10 +107,10 @@ class Work extends React.Component<Props, State> {
 
     return (
       <div>
-        {replay || replayable ? (
+        {replay ? (
           <AppBar position="static" color="default" elevation={0}>
             <Toolbar>
-              {replay || replayable ? (
+              {replay ? (
                 <EditableTitleTextField
                   placeholder="タイトルがついていません"
                   className={classNames(classes.title, {
@@ -175,7 +173,6 @@ class Work extends React.Component<Props, State> {
           alt={title}
           storagePath={storagePath}
           replay={replay}
-          replayable={replayable}
         />
       </div>
     );

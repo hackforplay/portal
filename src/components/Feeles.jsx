@@ -10,7 +10,6 @@ type Props = {
   src: string,
   alt: string,
   replay: boolean,
-  replayable: boolean,
   classes: {
     root: string
   }
@@ -95,10 +94,10 @@ export default class Feeles extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes, replay, replayable } = this.props;
+    const { classes, replay } = this.props;
 
     const root = classNames(classes.root, {
-      [replayClassName]: replay || replayable
+      [replayClassName]: replay
     });
 
     return (
