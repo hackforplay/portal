@@ -11,12 +11,15 @@ import 'moment/locale/ja';
 import 'normalize.css';
 import '@babel/polyfill';
 import 'url-search-params-polyfill';
+import objectFitImages from 'object-fit-images';
 
 import './index.css';
 import App from './containers/App';
 // import registerServiceWorker from './registerServiceWorker';
 import reducer from './ducks';
 import './settings/firebase';
+
+objectFitImages();
 
 moment.locale(navigator.language);
 
