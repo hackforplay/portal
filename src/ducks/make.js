@@ -248,10 +248,15 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => (
   const visibility = work.data ? work.data.visibility : 'private';
   const [param, base64] = dataURL.split(',');
   const [, type] = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
-  const hash = md5(base64);
   const ext = mime.extension(type);
   if (base64 && type && ext) {
-    const blob = new Blob([base64], { type });
+    const bin = atob(base64); // base64 encoded string => binary string
+    let byteArray = new Uint8Array(bin.length); // binary string => 8bit TypedArray
+    for (let i = bin.length - 1; i >= 0; i--) {
+      byteArray[i] = bin.charCodeAt(i);
+    }
+    const blob = new Blob([byteArray.buffer], { type });
+    const hash = md5(byteArray);
     const thumbnailStoragePath = `image/${visibility}/users/${
       user.uid
     }/${hash}.${ext}`;
