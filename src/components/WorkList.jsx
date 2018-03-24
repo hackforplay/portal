@@ -188,7 +188,11 @@ export default class WorkList extends React.Component<Props> {
                       }
                       subheader={
                         <span
-                          onClick={this.link(`/anonymous/${item.author || ''}`)}
+                          onClick={this.link(
+                            item.uid
+                              ? `/users/${item.uid}`
+                              : `/anonymous/${item.author || ''}`
+                          )}
                           className={classNames({
                             [classes.authorName]: !!item.author,
                             [classes.noAuthorName]: !item.author
