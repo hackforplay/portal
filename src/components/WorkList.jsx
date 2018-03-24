@@ -58,7 +58,11 @@ export type Props = {
     filter: `brightness(90%)`
   },
   media: {
-    height: 160
+    minHeight: 160,
+    maxHeight: 160,
+    objectFit: 'cover',
+    // https://github.com/bfred-it/object-fit-images/
+    fontFamily: "'object-fit: contain;'"
   },
   headline: {
     marginBottom: theme.spacing.unit * 4
