@@ -172,7 +172,24 @@ export const downloadUrl: downloadUrlType = path => async (
 
   // ダウンロード開始
   dispatch(download(path));
-  const result = await firebase
+  try {
+    const result = await firebase
+      .storage()
+      .ref()
+      .child(path)
+      .getDownloadURL();
+    if (result) {
+      // URL を格納
+      dispatch(set(path, result));
+    } else {
+      // フィールドが空だった
+      dispatch(empty(path));
+    }
+  } catch (error) {
+    // 何らかのエラー => 空とみなす
+    dispatch(empty(path));
+    console.error(error);
+  }
     .storage()
     .ref()
     .child(path)
