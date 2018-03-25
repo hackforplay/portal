@@ -201,11 +201,51 @@ export const downloadUrl: downloadUrlType = path => async (
     dispatch(empty(path));
     console.error(error);
   }
+};
+
+export type moveFileType = (
+  prevPath: string,
+  nextPath: string
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+
+export const moveFile: moveFileType = (prevPath, nextPath) => async (
+  dispatch,
+  getState
+) => {
+  if (prevPath === nextPath) {
+    // 移動先のパスと同じ (何もしなくていい)
+    return;
+  }
+  // 1. prevPath からファイルをダウンロード
+  const prev = getStorageByPath(getState(), prevPath);
+  if (prev.isDownloading || prev.isEmpty) {
+    // ダウンロード中またはファイルが存在しない
+    return;
+  }
+  if (!prev.url) {
+    // URL を取得して再挑戦
+    await dispatch(downloadUrl(prevPath));
+    // ===> Store が更新される
+    return dispatch(moveFile(prevPath, nextPath));
+  }
+  const response = await fetch(prev.url);
+  const file = await response.blob();
+
+  // 2. nextPath に同じファイルをアップロード
+  await dispatch(uploadBlob(nextPath, file));
+
+  const next = getStorageByPath(getState(), nextPath);
+  if (!next.url) {
+    // アップロードに失敗した
+    return;
+  }
+
+  // 3. prevPath からファイルを削除
+  await firebase
     .storage()
-    .ref()
-    .child(path)
-    .getDownloadURL();
-  dispatch(set(path, result));
+    .ref(prevPath)
+    .delete();
+  dispatch(empty(prevPath));
 };
 
 export function getStorageByPath(
