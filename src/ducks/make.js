@@ -5,7 +5,7 @@ import md5 from 'md5';
 import mime from 'mime-types';
 
 import * as helpers from './helpers';
-import { uploadBlob, getStorageByPath } from './storage';
+import { uploadBlob, getStorageByPath, moveFile, parseStoragePath } from './storage';
 import { getUserByUid } from './user';
 import type { Dispatch, GetState } from './';
 import type { WorkItemType, WorkData } from './work';
@@ -364,35 +364,31 @@ export const publishWork: publishWorkType = () => async (
 ) => {
   const { auth: { user }, make: { work } } = getState();
   const workData = work.data;
-  if (!workData || !workData.assetStoragePath || !user) {
-    // 作品が投稿されていないか、ログインしていない
+  if (!workData || !user || workData.visibility === 'public') {
+    // 作品が投稿されていないか、ログインしていないか、すでに公開されている
     return;
   }
-  dispatch(push());
-
   // プロジェクトの JSON を取得
   const { assetStoragePath } = workData;
   if (!assetStoragePath) {
     // JSON ファイルのパスが設定されていない
     return;
   }
-  const asset = getStorageByPath(getState(), assetStoragePath);
-  if (!asset.url) {
-    // ダウンロードされていない
+  const parsed = parseStoragePath(assetStoragePath);
+  const publicAssetPath = `json/public/users/${parsed.uid}/${parsed.fileName}`;
+  
+  dispatch(push());
+
+  // asset を public に移す
+  await dispatch(moveFile(assetStoragePath, publicAssetPath));
+  if (!getStorageByPath(getState(), publicAssetPath).url) {
+    // アセットの移動に失敗している
     return;
   }
-  const response = await fetch(asset.url);
-  const json = await response.text();
-  const file = new Blob([json], { type: 'application/json' });
-  // JSON 文字列から MD5 ハッシュを計算
-  const hash = md5(json);
-  // Storage にアップロード
-  const storagePath = `json/public/users/${user.uid}/${hash}.json`;
-  await dispatch(uploadBlob(storagePath, file));
 
   // 既存のドキュメントを更新
   const updated = {
-    assetStoragePath: storagePath,
+    assetStoragePath: publicAssetPath,
     visibility: 'public',
     updatedAt: new Date()
   };
@@ -464,3 +460,4 @@ export const editExistingWork: editExistingWorkType = work => (
   // 作品をセット
   dispatch(set(work.data));
 };
+
