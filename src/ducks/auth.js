@@ -6,27 +6,40 @@ import type { Dispatch, GetState } from './';
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'auth';
 
+const INIT = 'portal/auth/INIT';
 const SIGNED_IN = 'portal/auth/SIGNED_IN';
 
 type User = $npm$firebase$auth$User;
 
-export type Action = {|
-  type: typeof SIGNED_IN,
-  user: User
-|};
+export type Action =
+  | {|
+      type: typeof INIT
+    |}
+  | {|
+      type: typeof SIGNED_IN,
+      user: User
+    |};
 
 export type State = {
+  initialized: boolean,
   user?: User
 };
 
-const initialState: State = {};
+const initialState: State = {
+  initialized: false
+};
 
 // Root Reducer
 export default (state: State = initialState, action: Action): State => {
   switch (action.type) {
+    case INIT:
+      return {
+        initialized: true
+      };
     case SIGNED_IN:
       return {
         ...state,
+        initialized: true,
         user: action.user
       };
     default:
@@ -35,6 +48,10 @@ export default (state: State = initialState, action: Action): State => {
 };
 
 // Action Creators
+
+export const initialize = (): Action => ({
+  type: INIT
+});
 
 export const signedIn = (user: User): Action => ({
   type: SIGNED_IN,
@@ -62,11 +79,16 @@ export const initializeAuth: initializeAuthType = () => (
       if (process.env.NODE_ENV === 'production') {
         connectExternalService(user);
       }
-    } else if (getState().user) {
-      // No use is signed in.
-      dispatch({
-        type: 'RESET' // redux-reset
-      });
+    } else {
+      if (getState().user) {
+        // サインイン => サインアウト
+        dispatch({
+          type: 'RESET' // redux-reset
+        });
+      } else {
+        // サインインしていない状態
+        dispatch(initialize());
+      }
     }
   });
 };
