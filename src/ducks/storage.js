@@ -1,6 +1,7 @@
 // @flow
 import firebase from 'firebase';
 
+import { isAuthUser } from './auth';
 import type { Dispatch, GetState } from './';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
@@ -142,6 +143,11 @@ export const uploadBlob: uploadBlobType = (path, file) => async (
     // すでにアップロードされたファイル
     return;
   }
+  const parsed = parseStoragePath(path);
+  if (!isAuthUser(getState(), parsed.uid)) {
+    // アップロード権限がない
+    return;
+  }
 
   // アップロード開始
   dispatch(upload(path));
@@ -167,6 +173,11 @@ export const downloadUrl: downloadUrlType = path => async (
   const storage = getStorageByPath(getState(), path);
   if (storage.isAvailable || storage.isDownloading) {
     // すでにダウンロードされたファイル
+    return;
+  }
+  const parsed = parseStoragePath(path);
+  if (!isAuthUser(getState(), parsed.uid) && parsed.visibility === 'private') {
+    // ダウンロード権限がない
     return;
   }
 
