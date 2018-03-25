@@ -211,3 +211,56 @@ export function getStorageByPath(
     }
   );
 }
+
+export function parseStoragePath(path: string) {
+  const [container, visibility, _users, uid, fileName] = path.split('/');
+  const [hash, extention] = fileName.split('.');
+  const error = new ParseError(path);
+  if (!['image', 'images', 'json'].includes(container)) {
+    error.add('container', container);
+  }
+  if (!['public', 'limited', 'private'].includes(visibility)) {
+    error.add('visibility', visibility);
+  }
+  if (_users !== 'users') {
+    error.add('"users"', _users);
+  }
+  if (!uid) {
+    error.add('uid', uid);
+  }
+  if (!hash) {
+    error.add('hash', hash);
+  }
+  if (!extention) {
+    error.add('extension', extention);
+  }
+  if (error.has()) {
+    throw error;
+  }
+  return {
+    container,
+    visibility,
+    uid,
+    fileName,
+    hash,
+    extention
+  };
+}
+
+class ParseError extends Error {
+  path: string;
+  message: string = '';
+
+  constructor(path: string) {
+    super();
+    this.path = path;
+  }
+
+  add = (name, value) => {
+    this.message += `There is an invalid ${name}, ${value}.`;
+  };
+
+  has = () => {
+    return !!this.message;
+  };
+}
