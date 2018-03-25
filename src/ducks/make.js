@@ -5,7 +5,12 @@ import md5 from 'md5';
 import mime from 'mime-types';
 
 import * as helpers from './helpers';
-import { uploadBlob, getStorageByPath, moveFile, parseStoragePath } from './storage';
+import {
+  uploadBlob,
+  getStorageByPath,
+  moveFile,
+  parseStoragePath
+} from './storage';
 import { getUserByUid } from './user';
 import type { Dispatch, GetState } from './';
 import type { WorkItemType, WorkData, VisibilityType } from './work';
@@ -367,14 +372,17 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
     // 作品が投稿されていないか、ログインしていないか、すでにその設定になっている
     return;
   }
-  // プロジェクトの JSON を取得
-  const { assetStoragePath } = workData;
-  if (!assetStoragePath) {
+  // asset と thumbnail の現在のパスを取得
+  const { assetStoragePath, thumbnailStoragePath } = workData;
+  if (!assetStoragePath || !thumbnailStoragePath) {
     // JSON ファイルのパスが設定されていない
     return;
   }
   const nextAssetStoragePath = `json/${visibility}/users/${user.uid}/${
     parseStoragePath(assetStoragePath).fileName
+  }`;
+  const nextThumbnailStoragePath = `image/${visibility}/users/${user.uid}/${
+    parseStoragePath(thumbnailStoragePath).fileName
   }`;
 
   dispatch(push());
@@ -383,6 +391,12 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
   await dispatch(moveFile(assetStoragePath, nextAssetStoragePath));
   if (!getStorageByPath(getState(), nextAssetStoragePath).url) {
     // アセットの移動に失敗している
+    return;
+  }
+  // thumbnail を移す
+  await dispatch(moveFile(thumbnailStoragePath, nextThumbnailStoragePath));
+  if (!getStorageByPath(getState(), nextThumbnailStoragePath).url) {
+    // サムネイルの移動に失敗している
     return;
   }
 
