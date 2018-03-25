@@ -106,3 +106,8 @@ function connectExternalService(user: User) {
       })
   );
 }
+
+export function isAuthUser(state: $Call<GetState>, uid: string) {
+  const { auth: { user } } = state;
+  return user && user.uid === uid;
+}
