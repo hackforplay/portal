@@ -287,11 +287,10 @@ export type saveWorkType = () => (
 export const saveWork: saveWorkType = () => async (dispatch, getState) => {
   const {
     auth: { user },
-    make: { saved, files, work, metadata, thumbnails }
+    make: { files, work, metadata, thumbnails }
   } = getState();
 
-  if (!files || saved || !user) {
-    // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていない
+  if (!user || !canSave(getState())) {
     return;
   }
 
@@ -475,3 +474,11 @@ export const editExistingWork: editExistingWorkType = work => (
   dispatch(set(work.data));
 };
 
+export function canSave(state: $Call<GetState>) {
+  const { make: { files, saved, work }, auth: { user } } = state;
+  if (!files || saved || !user) {
+    // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていない
+    return false;
+  }
+  return work.isEmpty || work.isAvailable;
+}

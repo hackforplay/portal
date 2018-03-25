@@ -34,6 +34,7 @@ type Props = {
   },
   work: WorkItemType,
   replay: boolean,
+  canSave: boolean,
   make: MakeState
 } & ContextRouter;
 
@@ -83,7 +84,7 @@ class Work extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, work, replay, make } = this.props;
+    const { classes, work, canSave, replay, make } = this.props;
     const { anchorEl } = this.state;
 
     if (!work.data) {
@@ -102,7 +103,6 @@ class Work extends React.Component<Props, State> {
     const title = work.data.title;
     const src = work.data.asset_url || '';
     const storagePath = work.data.assetStoragePath || '';
-    const canSave = !make.saved && (make.work.isEmpty || make.work.isAvailable);
     const makeWorkData = make.work.data;
 
     return (
