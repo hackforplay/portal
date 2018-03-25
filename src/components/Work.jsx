@@ -16,14 +16,14 @@ import EditableTitleTextField from '../containers/EditableTitleTextField';
 import type { WorkItemType } from '../ducks/work';
 import type {
   saveWorkType,
-  publishWorkType,
+  setWorkVisibilityType,
   setMetadataType,
   State as MakeState
 } from '../ducks/make';
 
 type Props = {
   saveWork: saveWorkType,
-  publishWork: publishWorkType,
+  setWorkVisibility: setWorkVisibilityType,
   setMetadata: setMetadataType,
   classes: {
     blank: string,
@@ -134,7 +134,7 @@ class Work extends React.Component<Props, State> {
               ) : (
                 <Button
                   disabled={!makeWorkData}
-                  onClick={this.props.publishWork}
+                  onClick={() => this.props.setWorkVisibility('public')}
                 >
                   {`公開する`}
                 </Button>

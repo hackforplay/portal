@@ -27,6 +27,7 @@ const SEARCH_START = 'portal/work/SEARCH_START';
 const SEARCH_RESULT = 'portal/work/SEARCH_RESULT';
 const SEARCH_FAILED = 'portal/work/SEARCH_FAILED';
 
+export type VisibilityType = 'public' | 'limited' | 'private';
 export type WorkData = {
   id: string, // Document ID
   path: string, // Page path
@@ -41,7 +42,7 @@ export type WorkData = {
   views?: number,
   favs?: number,
   // additional structure
-  visibility: 'public' | 'limited' | 'private',
+  visibility: VisibilityType,
   uid?: string,
   thumbnailStoragePath?: string,
   assetStoragePath?: string,

@@ -8,7 +8,7 @@ import * as helpers from './helpers';
 import { uploadBlob, getStorageByPath, moveFile, parseStoragePath } from './storage';
 import { getUserByUid } from './user';
 import type { Dispatch, GetState } from './';
-import type { WorkItemType, WorkData } from './work';
+import type { WorkItemType, WorkData, VisibilityType } from './work';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'make';
@@ -353,19 +353,18 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
   }
 };
 
-export type publishWorkType = () => (
-  dispatch: Dispatch,
-  getState: GetState
-) => Promise<void>;
+export type setWorkVisibilityType = (
+  visibility: VisibilityType
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
 
-export const publishWork: publishWorkType = () => async (
+export const setWorkVisibility: setWorkVisibilityType = visibility => async (
   dispatch,
   getState
 ) => {
   const { auth: { user }, make: { work } } = getState();
   const workData = work.data;
-  if (!workData || !user || workData.visibility === 'public') {
-    // 作品が投稿されていないか、ログインしていないか、すでに公開されている
+  if (!workData || !user || workData.visibility === visibility) {
+    // 作品が投稿されていないか、ログインしていないか、すでにその設定になっている
     return;
   }
   // プロジェクトの JSON を取得
@@ -374,21 +373,22 @@ export const publishWork: publishWorkType = () => async (
     // JSON ファイルのパスが設定されていない
     return;
   }
-  const parsed = parseStoragePath(assetStoragePath);
-  const publicAssetPath = `json/public/users/${parsed.uid}/${parsed.fileName}`;
-  
+  const nextAssetStoragePath = `json/${visibility}/users/${user.uid}/${
+    parseStoragePath(assetStoragePath).fileName
+  }`;
+
   dispatch(push());
 
-  // asset を public に移す
-  await dispatch(moveFile(assetStoragePath, publicAssetPath));
-  if (!getStorageByPath(getState(), publicAssetPath).url) {
+  // asset を移す
+  await dispatch(moveFile(assetStoragePath, nextAssetStoragePath));
+  if (!getStorageByPath(getState(), nextAssetStoragePath).url) {
     // アセットの移動に失敗している
     return;
   }
 
   // 既存のドキュメントを更新
   const updated = {
-    assetStoragePath: publicAssetPath,
+    assetStoragePath: nextAssetStoragePath,
     visibility: 'public',
     updatedAt: new Date()
   };

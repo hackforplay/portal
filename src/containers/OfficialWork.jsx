@@ -8,8 +8,8 @@ import {
   changeWork,
   trashWork,
   saveWork,
-  publishWork,
   setMetadata
+  setWorkVisibility,
 } from '../ducks/make';
 import type { StoreState } from '../ducks';
 
@@ -24,7 +24,7 @@ const mapDispatchToProps = {
   changeWork,
   trashWork,
   saveWork,
-  publishWork,
+  setWorkVisibility,
   setMetadata
 };
 
