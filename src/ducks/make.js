@@ -499,7 +499,7 @@ export function canSave(state: $Call<GetState>) {
 export function canPublish(state: $Call<GetState>) {
   const { make: { saved, work }, auth: { user } } = state;
   const workData = work.data;
-  if (!workData || !saved || !user) {
+  if (!workData || !saved || !user || user.uid !== workData.uid) {
     // 保存されていないか、ログインしていない
     return false;
   }
