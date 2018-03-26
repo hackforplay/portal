@@ -31,6 +31,7 @@ export type Metadata = {
   +title?: string,
   +description?: string,
   +author?: string,
+  +assetStoragePath?: string,
   +thumbnailStoragePath?: string
 };
 
@@ -134,7 +135,8 @@ export default (state: State = initialState, action: Action): State => {
           title: action.payload.title,
           description: action.payload.description,
           author: action.payload.author,
-          assetStoragePath: action.payload.assetStoragePath
+          assetStoragePath: action.payload.assetStoragePath,
+          thumbnailStoragePath: action.payload.thumbnailStoragePath
         }
       };
     default:
@@ -239,9 +241,9 @@ export const setMetadata: setMetadataType = payload => async (
 
 export type setThumbnailFromDataURLType = (
   dataURL: string
-) => (dispatch: Dispatch, getState: GetState) => void;
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
 
-export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => (
+export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => async (
   dispatch,
   getState
 ) => {
@@ -265,8 +267,8 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => (
     const thumbnailStoragePath = `image/${visibility}/users/${
       user.uid
     }/${hash}.${ext}`;
-    dispatch(uploadBlob(thumbnailStoragePath, blob));
-    dispatch(setMetadata({ thumbnailStoragePath }));
+    await dispatch(uploadBlob(thumbnailStoragePath, blob));
+    await dispatch(setMetadata({ thumbnailStoragePath }));
   }
 };
 
@@ -299,10 +301,9 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
   if (!metadata.thumbnailStoragePath) {
     const [dataURL] = thumbnails;
     if (dataURL) {
-      dispatch(setThumbnailFromDataURL(dataURL));
+      await dispatch(setThumbnailFromDataURL(dataURL));
       // ----> ストアが更新される（はず）
-      dispatch(saveWork());
-      return;
+      return dispatch(saveWork());
     }
   }
 
@@ -311,10 +312,9 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
   if (!metadata.author) {
     const userData = getUserByUid(getState(), user.uid).data;
     if (userData && userData.displayName) {
-      dispatch(setMetadata({ author: userData.displayName }));
+      await dispatch(setMetadata({ author: userData.displayName }));
       // ----> ストアが更新される（はず）
-      dispatch(saveWork());
-      return;
+      return dispatch(saveWork());
     }
   }
 
@@ -336,12 +336,12 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
     const uploadedRef = await uploadWorkData({
       work,
       user,
-      storagePath,
       metadata: {
         // デフォルト値
         title: '',
         description: '',
         // ユーザーが設定したメタデータ
+        assetStoragePath,
         ...metadata
       }
     });
@@ -402,7 +402,8 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
   // 既存のドキュメントを更新
   const updated = {
     assetStoragePath: nextAssetStoragePath,
-    visibility: 'public',
+    thumbnailStoragePath: nextThumbnailStoragePath,
+    visibility,
     updatedAt: new Date()
   };
   const ref = firebase
@@ -421,14 +422,13 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
   dispatch(set(updatedDoc));
 };
 
-async function uploadWorkData({ work, user, storagePath, metadata }) {
+async function uploadWorkData({ work, user, metadata }) {
   const workData = work.data;
   if (workData) {
     // 既存のドキュメントを更新
     const updated = {
       ...metadata,
       uid: user.uid,
-      assetStoragePath: storagePath,
       updatedAt: new Date()
     };
     const ref = firebase
@@ -443,7 +443,6 @@ async function uploadWorkData({ work, user, storagePath, metadata }) {
       ...metadata,
       uid: user.uid,
       visibility: 'private',
-      assetStoragePath: storagePath,
       viewsNum: 0,
       favsNum: 0,
       createdAt: new Date(),
