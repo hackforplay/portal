@@ -10,99 +10,74 @@ import Popover from 'material-ui/Popover';
 import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
 
-import type { WorkItemType, changeWorkType, CreatingType } from '../ducks/work';
+import theme from '../settings/theme';
+import Feeles from '../containers/Feeles';
+import EditableTitleTextField from '../containers/EditableTitleTextField';
+import type { WorkItemType } from '../ducks/work';
+import type {
+  saveWorkType,
+  setWorkVisibilityType,
+  setMetadataType,
+  removeWorkType,
+  State as MakeState
+} from '../ducks/make';
 
 type Props = {
-  changeWork: changeWorkType,
+  saveWork: saveWorkType,
+  setWorkVisibility: setWorkVisibilityType,
+  setMetadata: setMetadataType,
+  removeWork: removeWorkType,
   classes: {
     blank: string,
-    root: string
+    caption: string,
+    noTitle: string,
+    title: string,
+    underline: string
   },
   work: WorkItemType,
-  replayable: boolean,
-  creating: CreatingType
+  replay: boolean,
+  canSave: boolean,
+  canPublish: boolean,
+  canRemove: boolean,
+  make: MakeState
 } & ContextRouter;
 
 type State = {
-  anchorEl: ?HTMLElement,
-  rootEl: ?HTMLElement,
-  loading: boolean
+  anchorEl: ?HTMLElement
 };
-
-// <script async defer src="/h4p.js"></script> が挿入するグローバル変数を受け取る
-const h4pPromise = new Promise((resolve, reject) => {
-  const timer = setInterval(() => {
-    if (window.h4p) {
-      clearInterval(timer);
-      resolve(window.h4p);
-    }
-  }, 100);
-});
-
-const replayableClassName = 'replayable';
-
-const rootStyle = (padding: number) => ({
-  [`&.${replayableClassName}`]: {
-    height: `calc(100vh - ${padding * 2}px)`
-  },
-  height: `calc(100vh - ${padding}px)`
-});
 
 @withStyles({
   blank: {
     flex: 1
   },
-  root: rootStyle(56),
-  '@media (min-width:0px) and (orientation: landscape)': {
-    root: rootStyle(48)
+  caption: {
+    marginLeft: theme.spacing.unit * 2,
+    marginRight: theme.spacing.unit * 2
   },
-  '@media (min-width:600px)': {
-    root: rootStyle(64)
+  noTitle: {
+    fontStyle: 'italic'
+  },
+  title: {
+    ...theme.typography.title,
+    maxWidth: 500,
+    flexGrow: 1,
+    flexShrink: 10000
+  },
+  underline: {
+    '&:before': {
+      // focus も hover もされていないときの underline を消去
+      height: 0
+    }
   }
 })
 class Work extends React.Component<Props, State> {
   static defaultProps = {
-    replayable: false
+    replay: false
   };
 
   state = {
-    anchorEl: null,
-    rootEl: null,
-    loading: true
+    anchorEl: null
   };
-
-  componentDidMount() {
-    this.handleLoad();
-  }
-
-  componentDidUpdate() {
-    this.handleLoad();
-  }
-
-  componentWillUnmount() {
-    h4pPromise.then(h4p => {
-      if (this.state.rootEl) {
-        h4p.unmount(this.state.rootEl);
-      }
-    });
-  }
-
-  handleLoad() {
-    const { work } = this.props;
-    if (!work.data) return;
-    const { asset_url } = work.data;
-    if (this.state.loading && this.state.rootEl && asset_url) {
-      h4pPromise.then(h4p => {
-        this.setState({ loading: false }, () => {
-          h4p({
-            rootElement: this.state.rootEl,
-            jsonURL: asset_url,
-            onChange: this.props.changeWork
-          });
-        });
-      });
-    }
-  }
 
   handleClick = (event: SyntheticEvent<HTMLButtonElement>) => {
     this.setState({ anchorEl: event.currentTarget });
@@ -112,13 +87,30 @@ class Work extends React.Component<Props, State> {
     this.setState({ anchorEl: null });
   };
 
-  render() {
-    const { classes, work, replayable, creating } = this.props;
-    const { anchorEl } = this.state;
+  handleSetPrivate = () => {
+    this.props.setWorkVisibility('private');
+    this.handleClose();
+  };
 
-    const root = classNames(classes.root, {
-      [replayableClassName]: replayable
-    });
+  handleRemove = () => {
+    const message = `削除すると、二度と復元はできません。本当に削除しますか？`;
+    if (window.confirm(message)) {
+      this.props.removeWork();
+      this.handleClose();
+    }
+  };
+
+  render() {
+    const {
+      classes,
+      work,
+      canSave,
+      canPublish,
+      canRemove,
+      replay,
+      make
+    } = this.props;
+    const { anchorEl } = this.state;
 
     if (!work.data) {
       if (work.isProcessing) {
@@ -133,16 +125,56 @@ class Work extends React.Component<Props, State> {
       return null;
     }
 
+    const title = work.data.title;
+    const src = work.data.asset_url || '';
+    const storagePath = work.data.assetStoragePath || '';
+    const makeWorkData = make.work.data;
+
     return (
       <div>
-        {replayable ? (
+        {replay ? (
           <AppBar position="static" color="default" elevation={0}>
             <Toolbar>
-              <Typography type="headline">
-                {work.data ? work.data.title : '読み込み中...'}
-              </Typography>
+              {replay ? (
+                <EditableTitleTextField
+                  placeholder="タイトルがついていません"
+                  className={classNames(classes.title, {
+                    [classes.noTitle]: !make.metadata.title
+                  })}
+                  InputProps={{
+                    classes: {
+                      underline: classes.underline
+                    }
+                  }}
+                />
+              ) : (
+                <Typography type="title">{title}</Typography>
+              )}
               <div className={classes.blank} />
-              <Button disabled={!creating.exists}>保存する</Button>
+              {makeWorkData ? (
+                makeWorkData.visibility === 'public' ? (
+                  <Typography
+                    type="caption"
+                    className={classes.caption}
+                  >{`公開中`}</Typography>
+                ) : (
+                  <Button
+                    disabled={!canPublish}
+                    onClick={() => this.props.setWorkVisibility('public')}
+                  >
+                    {`公開する`}
+                  </Button>
+                )
+              ) : null}
+              {make.work.isProcessing || make.saved ? (
+                <Typography type="caption" className={classes.caption}>
+                  {make.saved ? `保存されています` : `ちょっとまってね...`}
+                </Typography>
+              ) : (
+                <Button disabled={!canSave} onClick={this.props.saveWork}>
+                  保存する
+                </Button>
+              )}
               <Button
                 aria-owns={anchorEl ? 'simple-menu' : null}
                 aria-haspopup="true"
@@ -158,15 +190,21 @@ class Work extends React.Component<Props, State> {
                 open={Boolean(anchorEl)}
                 onClose={this.handleClose}
               >
-                <MenuItem onClick={this.handleClose} />
+                {makeWorkData && makeWorkData.visibility === 'public' ? (
+                  <MenuItem onClick={this.handleSetPrivate}>
+                    非公開にする
+                  </MenuItem>
+                ) : null}
+                {makeWorkData ? (
+                  <MenuItem disabled={!canRemove} onClick={this.handleRemove}>
+                    削除する
+                  </MenuItem>
+                ) : null}
               </Popover>
             </Toolbar>
           </AppBar>
         ) : null}
-        <div
-          className={root}
-          ref={rootEl => this.state.rootEl || this.setState({ rootEl })}
-        />
+        <Feeles src={src} storagePath={storagePath} replay={replay} />
       </div>
     );
   }

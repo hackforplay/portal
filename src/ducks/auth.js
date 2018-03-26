@@ -1,41 +1,47 @@
 // @flow
 import firebase from 'firebase';
 
+import type { Dispatch, GetState } from './';
+
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'auth';
 
+const INIT = 'portal/auth/INIT';
 const SIGNED_IN = 'portal/auth/SIGNED_IN';
-const SIGNED_OUT = 'portal/auth/SIGNED_OUT';
 
 type User = $npm$firebase$auth$User;
 
-type ActionType =
+export type Action =
+  | {|
+      type: typeof INIT
+    |}
   | {|
       type: typeof SIGNED_IN,
       user: User
-    |}
-  | {|
-      type: typeof SIGNED_OUT
     |};
 
 export type State = {
+  initialized: boolean,
   user?: User
 };
 
-const initialState: State = {};
+const initialState: State = {
+  initialized: false
+};
 
 // Root Reducer
-export default (state: State = initialState, action: ActionType): State => {
+export default (state: State = initialState, action: Action): State => {
   switch (action.type) {
+    case INIT:
+      return {
+        initialized: true
+      };
     case SIGNED_IN:
       return {
         ...state,
+        initialized: true,
         user: action.user
       };
-    case SIGNED_OUT:
-      // delete state.user
-      const { user, ...next } = state;
-      return next;
     default:
       return state;
   }
@@ -43,18 +49,18 @@ export default (state: State = initialState, action: ActionType): State => {
 
 // Action Creators
 
-export const signedIn = (user: User): ActionType => ({
+export const initialize = (): Action => ({
+  type: INIT
+});
+
+export const signedIn = (user: User): Action => ({
   type: SIGNED_IN,
   user
 });
 
-export const signedOut = (): ActionType => ({
-  type: SIGNED_OUT
-});
-
 export type initializeAuthType = () => (
-  dispatch: (action: ActionType) => {},
-  getState: () => State
+  dispatch: Dispatch,
+  getState: GetState
 ) => void;
 
 export const initializeAuth: initializeAuthType = () => (
@@ -73,9 +79,16 @@ export const initializeAuth: initializeAuthType = () => (
       if (process.env.NODE_ENV === 'production') {
         connectExternalService(user);
       }
-    } else if (getState().user) {
-      // No use is signed in.
-      dispatch(signedOut());
+    } else {
+      if (getState().user) {
+        // サインイン => サインアウト
+        dispatch({
+          type: 'RESET' // redux-reset
+        });
+      } else {
+        // サインインしていない状態
+        dispatch(initialize());
+      }
     }
   });
 };
@@ -114,4 +127,9 @@ function connectExternalService(user: User) {
         displayName: user.displayName
       })
   );
+}
+
+export function isAuthUser(state: $Call<GetState>, uid: string) {
+  const { auth: { user } } = state;
+  return user && user.uid === uid;
 }

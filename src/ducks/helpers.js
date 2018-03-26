@@ -54,3 +54,22 @@ export function has<T>(data: T): Statefull<T> {
     data
   };
 }
+
+const emptyQueue = new WeakSet();
+
+export function isFetchNeeded<T>(data: Statefull<T>): boolean {
+  if (data.isAvailable || data.isProcessing || data.isInvalid) {
+    // すでに取得済みか、クエリを実行中か、エラーで終了している
+    return false;
+  }
+  if (emptyQueue.has(data)) {
+    // 前回の実行から時間がたっていない
+    return false;
+  }
+  // 実行したことをキューに入れて、しばらく差し止める
+  emptyQueue.add(data);
+  setTimeout(() => {
+    emptyQueue.delete(data);
+  }, 5000);
+  return true;
+}

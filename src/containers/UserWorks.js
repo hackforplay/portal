@@ -14,10 +14,7 @@ const mapStateToProps = (state: StoreState, props: Props) => {
 
   return {
     user: getUserByUid(state, id || ''),
-    lists: {
-      public: getWorksByUserId(state, id || ''),
-      private: []
-    }
+    works: getWorksByUserId(state, id || '')
   };
 };
 

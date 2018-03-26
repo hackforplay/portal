@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import type { ContextRouter } from 'react-router-dom';
-import Paper from 'material-ui/Paper';
+// import Paper from 'material-ui/Paper';
 import { withStyles } from 'material-ui/styles';
 
 import WorkList from '../containers/WorkList';
@@ -12,11 +12,7 @@ export type Props = {
   classes: {
     root: string
   },
-  lists: {
-    public: WorkCollectionType,
-    private: WorkCollectionType,
-    likes: WorkCollectionType
-  }
+  works: WorkCollectionType
 } & ContextRouter;
 
 @withStyles({
@@ -26,7 +22,7 @@ export type Props = {
 })
 class UserWorks extends React.Component<Props> {
   render() {
-    const { classes, match, lists } = this.props;
+    const { classes, match, works } = this.props;
 
     // 現在の URL に対して適切なデータを表示
     const id = match.params.id || '';
@@ -34,30 +30,19 @@ class UserWorks extends React.Component<Props> {
     return (
       <div className={classes.root}>
         {tab === '' ? (
+          <WorkList works={works} title="作品" more moreLink={`/users/${id}`} />
+        ) : /* tab === 'likes' ? (
           <WorkList
-            works={lists.public}
-            title="公開済み"
-            more
-            moreLink={`/users/${id}`}
-          />
-        ) : tab === 'private' ? (
-          <WorkList
-            works={lists.private}
-            title="保存済み"
-            more
-            moreLink={`/users/${id}/private`}
-          />
-        ) : tab === 'likes' ? (
-          <WorkList
-            works={lists.likes}
+            works={}
             title="お気に入り"
             moreLink={`/users/${id}/likes`}
           />
-        ) : tab === 'following' ? (
+        ) : tab ===
+        'following' ? (
           <Paper>フォロー</Paper>
         ) : tab === 'followers' ? (
           <Paper>フォロワー</Paper>
-        ) : null}
+        ) :*/ null}
       </div>
     );
   }

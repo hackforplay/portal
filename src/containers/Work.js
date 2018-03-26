@@ -7,35 +7,71 @@ import {
   getWorkByPath,
   fetchWorkByPath,
   addWorkView,
-  changeWork,
-  trashWork
+  isAuthUsersWork
 } from '../ducks/work';
+import {
+  trashWork,
+  saveWork,
+  editExistingWork,
+  setWorkVisibility,
+  setMetadata,
+  canSave,
+  canPublish,
+  canRemove,
+  removeWork
+} from '../ducks/make';
 import type { StoreState } from '../ducks';
 
-const mapStateToProps = (state: StoreState, ownProps) => {
-  const { url } = ownProps.match;
+const getPath = (url: string, params: {}) => {
+  const isWork = url.startsWith('/work');
+  const id = params && params.id;
+  const path = `/${isWork ? 'works' : 'products'}/${id}`;
+  return path;
+};
+
+const mapStateToProps = (state: StoreState, ownProps): string => {
+  const { url, params } = ownProps.match;
+  const path = getPath(url, params);
   return {
-    work: getWorkByPath(state, url),
-    creating: state.work.creating
+    work: getWorkByPath(state, path),
+    make: state.make,
+    canSave: canSave(state),
+    canPublish: canPublish(state),
+    canRemove: canRemove(state),
+    replay: isAuthUsersWork(state, path)
   };
 };
 
 const mapDispatchToProps = {
-  changeWork,
   trashWork,
   fetchWorkByPath,
-  addWorkView
+  addWorkView,
+  saveWork,
+  editExistingWork,
+  setWorkVisibility,
+  setMetadata,
+  removeWork
 };
 
 @withRouter
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Work extends React.Component {
   componentDidMount() {
-    const { url } = this.props.match;
+    const { url, params } = this.props.match;
+    const path = getPath(url, params);
     // 作品データがなければ取得
-    this.props.fetchWorkByPath(url);
+    this.props.fetchWorkByPath(path);
     // 作品のビューカウントを増やす
-    this.props.addWorkView(url);
+    this.props.addWorkView(path);
+    if (this.props.replay) {
+      this.props.editExistingWork(this.props.work);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.replay !== nextProps.replay && nextProps.replay) {
+      this.props.editExistingWork(nextProps.work);
+    }
   }
 
   componentWillUnmount() {

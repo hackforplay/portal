@@ -33,16 +33,17 @@ export const indexWorksToElastic = functions.firestore
       // previous が存在し、かつ elasticsearchFields のフィールド値が更新されていない
       return Promise.resolve();
     }
+    if (!previousData && workData.visibility !== 'public') {
+      // はじめて追加されたデータで、かつ検索できないデータに設定されている
+      return Promise.resolve();
+    }
 
     const workId = event.data.id;
-    console.log('Indexing work ', workId, workData);
 
     const elasticSearchConfig = functions.config().elasticsearch;
-    const elasticSearchUrl = elasticSearchConfig.url + 'works/work/' + workId;
-    const elasticSearchMethod = workData ? 'POST' : 'DELETE';
     const elasticsearchRequest = {
-      method: elasticSearchMethod,
-      uri: elasticSearchUrl,
+      method: 'POST',
+      uri: `${elasticSearchConfig.url}works/work/${workId}`,
       auth: {
         username: elasticSearchConfig.username,
         password: elasticSearchConfig.password
@@ -50,6 +51,19 @@ export const indexWorksToElastic = functions.firestore
       body: specificData,
       json: true
     };
+
+    if (
+      !workData ||
+      (previousData.visibility === 'public' && workData.visibility !== 'public')
+    ) {
+      // データが削除されたか、検索できないデータに設定された
+      elasticsearchRequest.method = 'DELETE';
+      elasticsearchRequest.body = {};
+      console.log('Remove index ', workId, workData);
+    } else {
+      console.log('Indexing work ', workId, workData);
+    }
+
     return request(elasticsearchRequest).then(response => {
       console.log('Elasticsearch response', response);
     });

@@ -118,7 +118,7 @@ export default class Profile extends React.Component<Props> {
           const hash = md5(buffer);
 
           // 格納場所
-          const path = `images/public/users/${uid}/${hash}.${ext}`;
+          const path = `image/public/users/${uid}/${hash}.${ext}`;
           // アップロード！
           this.props.uploadBlob(path, file);
           // パスを設定
