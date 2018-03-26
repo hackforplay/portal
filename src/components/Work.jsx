@@ -84,6 +84,11 @@ class Work extends React.Component<Props, State> {
     this.setState({ anchorEl: null });
   };
 
+  handleSetPrivate = () => {
+    this.props.setWorkVisibility('private');
+    this.handleClose();
+  };
+
   render() {
     const { classes, work, canSave, canPublish, replay, make } = this.props;
     const { anchorEl } = this.state;
@@ -166,7 +171,11 @@ class Work extends React.Component<Props, State> {
                 open={Boolean(anchorEl)}
                 onClose={this.handleClose}
               >
-                <MenuItem onClick={this.handleClose} />
+                {makeWorkData && makeWorkData.visibility === 'public' ? (
+                  <MenuItem onClick={this.handleSetPrivate}>
+                    非公開にする
+                  </MenuItem>
+                ) : null}
               </Popover>
             </Toolbar>
           </AppBar>
