@@ -80,7 +80,7 @@ export const initializeAuth: initializeAuthType = () => (
         connectExternalService(user);
       }
     } else {
-      if (getState().user) {
+      if (getState().auth.user) {
         // サインイン => サインアウト
         dispatch({
           type: 'RESET' // redux-reset
