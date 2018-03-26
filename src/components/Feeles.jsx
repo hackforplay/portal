@@ -7,8 +7,7 @@ import type { changeWorkType, thumbnailType } from '../ducks/make';
 type Props = {
   changeWork: changeWorkType,
   thumbnail: thumbnailType,
-  src: string,
-  alt: string,
+  src: string | void,
   replay: boolean,
   classes: {
     root: string
@@ -48,6 +47,10 @@ const rootStyle = (padding: number) => ({
   }
 })
 export default class Feeles extends React.Component<Props, State> {
+  static defaultProps = {
+    src: ''
+  };
+
   state = {
     rootEl: null,
     loading: true
