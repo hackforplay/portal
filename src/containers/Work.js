@@ -16,7 +16,9 @@ import {
   setWorkVisibility,
   setMetadata,
   canSave,
-  canPublish
+  canPublish,
+  canRemove,
+  removeWork
 } from '../ducks/make';
 import type { StoreState } from '../ducks';
 
@@ -35,6 +37,7 @@ const mapStateToProps = (state: StoreState, ownProps): string => {
     make: state.make,
     canSave: canSave(state),
     canPublish: canPublish(state),
+    canRemove: canRemove(state),
     replay: isAuthUsersWork(state, path)
   };
 };
@@ -46,7 +49,8 @@ const mapDispatchToProps = {
   saveWork,
   editExistingWork,
   setWorkVisibility,
-  setMetadata
+  setMetadata,
+  removeWork
 };
 
 @withRouter

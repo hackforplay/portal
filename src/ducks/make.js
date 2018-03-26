@@ -10,9 +10,11 @@ import {
   uploadBlob,
   getStorageByPath,
   moveFile,
+  removeFile,
   parseStoragePath
 } from './storage';
 import { getUserByUid } from './user';
+import { empty } from './work';
 import type { Dispatch, GetState } from './';
 import type { WorkItemType, WorkData, VisibilityType } from './work';
 
@@ -27,6 +29,7 @@ const TRASH = 'portal/make/TRASH';
 const PUSH = 'portal/make/PUSH';
 const PULL = 'portal/make/PULL';
 const SET = 'portal/make/SET';
+const REMOVE = 'portal/make/REMOVE';
 
 export type Metadata = {
   +title?: string,
@@ -65,6 +68,9 @@ export type Action =
   | {|
       +type: 'portal/make/SET',
       +payload: WorkData
+    |}
+  | {|
+      +type: 'portal/make/REMOVE'
     |};
 
 export type State = {
@@ -122,6 +128,7 @@ export default (state: State = initialState, action: Action): State => {
       };
     case PUSH:
     case PULL:
+    case REMOVE:
       return {
         ...state,
         work: helpers.processing(),
@@ -196,6 +203,12 @@ type setType = (payload: WorkData) => Action;
 export const set: setType = payload => ({
   type: SET,
   payload
+});
+
+type removeType = () => Action;
+
+export const remove: removeType = () => ({
+  type: REMOVE
 });
 
 export type changeWorkType = (payload: { files: Array<{}> }) => (
@@ -279,7 +292,7 @@ export type trashWorkType = () => (
 ) => Promise<void>;
 
 export const trashWork: trashWorkType = () => async (dispatch, getState) => {
-  dispatch(trash());
+  await dispatch(trash());
 };
 
 export type saveWorkType = () => (
@@ -487,6 +500,38 @@ export const editExistingWork: editExistingWorkType = work => (
   dispatch(set(work.data));
 };
 
+export type removeWorkType = () => (
+  dispatch: Dispatch,
+  getState: GetState
+) => Promise<void>;
+
+export const removeWork: removeWorkType = work => async (
+  dispatch,
+  getState
+) => {
+  const { make: { work } } = getState();
+  const workData = work.data;
+  if (!canRemove(getState()) || !workData) {
+    return;
+  }
+  dispatch(remove());
+  // ストレージからデータを削除
+  if (workData.assetStoragePath) {
+    await dispatch(removeFile(workData.assetStoragePath));
+  }
+  if (workData.thumbnailStoragePath) {
+    await dispatch(removeFile(workData.thumbnailStoragePath));
+  }
+  // DB から削除
+  await firebase
+    .firestore()
+    .doc(workData.path)
+    .delete();
+  dispatch(trash());
+  // その work を空とみなす
+  dispatch(empty(workData.path));
+};
+
 export function canSave(state: $Call<GetState>) {
   const { make: { files, saved, work }, auth: { user } } = state;
   if (!files || saved || !user) {
@@ -506,4 +551,14 @@ export function canPublish(state: $Call<GetState>) {
   return Boolean(
     workData.assetStoragePath && workData.thumbnailStoragePath && workData.title
   );
+}
+
+export function canRemove(state: $Call<GetState>) {
+  const { make: { work }, auth: { user } } = state;
+  const workData = work.data;
+  if (!workData || !user || user.uid !== workData.uid) {
+    // 保存されていないか、ログインしていない
+    return false;
+  }
+  return true;
 }

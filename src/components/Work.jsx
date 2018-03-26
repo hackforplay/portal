@@ -18,6 +18,7 @@ import type {
   saveWorkType,
   setWorkVisibilityType,
   setMetadataType,
+  removeWorkType,
   State as MakeState
 } from '../ducks/make';
 
@@ -25,6 +26,7 @@ type Props = {
   saveWork: saveWorkType,
   setWorkVisibility: setWorkVisibilityType,
   setMetadata: setMetadataType,
+  removeWork: removeWorkType,
   classes: {
     blank: string,
     caption: string,
@@ -36,6 +38,7 @@ type Props = {
   replay: boolean,
   canSave: boolean,
   canPublish: boolean,
+  canRemove: boolean,
   make: MakeState
 } & ContextRouter;
 
@@ -89,8 +92,24 @@ class Work extends React.Component<Props, State> {
     this.handleClose();
   };
 
+  handleRemove = () => {
+    const message = `削除すると、二度と復元はできません。本当に削除しますか？`;
+    if (window.confirm(message)) {
+      this.props.removeWork();
+      this.handleClose();
+    }
+  };
+
   render() {
-    const { classes, work, canSave, canPublish, replay, make } = this.props;
+    const {
+      classes,
+      work,
+      canSave,
+      canPublish,
+      canRemove,
+      replay,
+      make
+    } = this.props;
     const { anchorEl } = this.state;
 
     if (!work.data) {
@@ -149,7 +168,7 @@ class Work extends React.Component<Props, State> {
               ) : null}
               {make.work.isProcessing || make.saved ? (
                 <Typography type="caption" className={classes.caption}>
-                  {make.saved ? `保存されています` : `保存中...`}
+                  {make.saved ? `保存されています` : `ちょっとまってね...`}
                 </Typography>
               ) : (
                 <Button disabled={!canSave} onClick={this.props.saveWork}>
@@ -174,6 +193,11 @@ class Work extends React.Component<Props, State> {
                 {makeWorkData && makeWorkData.visibility === 'public' ? (
                   <MenuItem onClick={this.handleSetPrivate}>
                     非公開にする
+                  </MenuItem>
+                ) : null}
+                {makeWorkData ? (
+                  <MenuItem disabled={!canRemove} onClick={this.handleRemove}>
+                    削除する
                   </MenuItem>
                 ) : null}
               </Popover>
