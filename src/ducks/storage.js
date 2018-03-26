@@ -12,6 +12,7 @@ export type StorageType =
       isAvailable: false,
       isUploading: boolean,
       isDownloading: boolean,
+      isRemoving: boolean,
       isEmpty: boolean,
       path: string
     |}
@@ -19,6 +20,7 @@ export type StorageType =
       isAvailable: true,
       isUploading: false,
       isDownloading: false,
+      isRemoving: false,
       isEmpty: false,
       path: string,
       url: string
@@ -26,6 +28,7 @@ export type StorageType =
 
 const UPLOAD = 'portal/storage/UPLOAD';
 const DOWNLOAD = 'portal/storage/DOWNLOAD';
+const REMOVE = 'portal/storage/REMOVE';
 const SET = 'portal/storage/SET';
 const EMPTY = 'portal/storage/EMPTY';
 
@@ -38,6 +41,10 @@ export type Action =
       type: typeof DOWNLOAD,
       path: string
     }
+    | {
+        type: typeof REMOVE,
+        path: string
+      }
   | {
       type: typeof SET,
       path: string,
@@ -65,6 +72,7 @@ export default (state: State = initialState, action: Action): State => {
           isAvailable: false,
           isUploading: true,
           isDownloading: false,
+          isRemoving: false,
           isEmpty: false,
           path: action.path
         }
@@ -76,10 +84,23 @@ export default (state: State = initialState, action: Action): State => {
           isAvailable: false,
           isUploading: false,
           isDownloading: true,
+          isRemoving: false,
           isEmpty: false,
           path: action.path
         }
       };
+      case REMOVE:
+        return {
+          ...state,
+          [action.path]: {
+            isAvailable: false,
+            isUploading: false,
+            isDownloading: false,
+            isRemoving: true,
+            isEmpty: false,
+            path: action.path
+          }
+        };
     case SET:
       return {
         ...state,
@@ -87,6 +108,7 @@ export default (state: State = initialState, action: Action): State => {
           isAvailable: true,
           isUploading: false,
           isDownloading: false,
+          isRemoving: false,
           isEmpty: false,
           path: action.path,
           url: action.url
@@ -99,6 +121,7 @@ export default (state: State = initialState, action: Action): State => {
           isAvailable: false,
           isUploading: false,
           isDownloading: false,
+          isRemoving: false,
           isEmpty: true,
           path: action.path
         }
@@ -115,6 +138,11 @@ export const upload = (path: string): Action => ({
 
 export const download = (path: string): Action => ({
   type: DOWNLOAD,
+  path
+});
+
+export const remove = (path: string): Action => ({
+  type: REMOVE,
   path
 });
 
@@ -248,6 +276,26 @@ export const moveFile: moveFileType = (prevPath, nextPath) => async (
   dispatch(empty(prevPath));
 };
 
+export type removeFileType = (
+  path: string
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+
+export const removeFile: removeFileType = (path) => async (
+  dispatch,
+  getState
+) => {
+  const storage = getStorageByPath(getState(), path);
+  if (storage.isRemoving || storage.isEmpty) {
+    // すでに削除中か、削除済み
+    return;
+  }
+  dispatch(remove(path));
+
+  await firebase.storage().ref(path).delete();
+  
+  dispatch(empty(path));
+};
+
 export function getStorageByPath(
   state: $Call<GetState>,
   path: string
@@ -257,6 +305,7 @@ export function getStorageByPath(
       isAvailable: false,
       isUploading: false,
       isDownloading: false,
+      isRemoving: false,
       isEmpty: false,
       path
     }
