@@ -8,7 +8,7 @@ service cloud.firestore {
       allow get: if request.auth.uid == resource.data.uid || !exists(request.path) || resource.data.visibility == 'public' || resource.data.visibility == 'limited';
       allow list: if request.auth.uid == resource.data.uid || resource.data.visibility == 'public';
       allow create: if request.resource.data.uid == null || request.auth.uid == request.resource.data.uid;
-      allow update: if request.auth.uid == resource.data.uid;
+      allow update, delete: if request.auth.uid == resource.data.uid;
 
       match /views/{view} {
         allow create: if request.resource.data.uid == null || request.auth.uid == request.resource.data.uid;
