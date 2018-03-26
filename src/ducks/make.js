@@ -6,6 +6,7 @@ import mime from 'mime-types';
 
 import * as helpers from './helpers';
 import {
+  downloadUrl,
   uploadBlob,
   getStorageByPath,
   moveFile,
@@ -388,12 +389,14 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
 
   // asset を移す
   await dispatch(moveFile(assetStoragePath, nextAssetStoragePath));
+  await dispatch(downloadUrl(nextAssetStoragePath));
   if (!getStorageByPath(getState(), nextAssetStoragePath).url) {
     // アセットの移動に失敗している
     return;
   }
   // thumbnail を移す
   await dispatch(moveFile(thumbnailStoragePath, nextThumbnailStoragePath));
+  await dispatch(downloadUrl(nextThumbnailStoragePath));
   if (!getStorageByPath(getState(), nextThumbnailStoragePath).url) {
     // サムネイルの移動に失敗している
     return;
