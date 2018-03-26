@@ -65,7 +65,7 @@ export default (state: State = initialState, action: Action): State => {
           isAvailable: false,
           isUploading: true,
           isDownloading: false,
-          isEmpty: true,
+          isEmpty: false,
           path: action.path
         }
       };
@@ -109,7 +109,7 @@ export default (state: State = initialState, action: Action): State => {
 };
 
 export const upload = (path: string): Action => ({
-  type: DOWNLOAD,
+  type: UPLOAD,
   path
 });
 
@@ -191,14 +191,14 @@ export const downloadUrl: downloadUrlType = path => async (
       .getDownloadURL();
     if (result) {
       // URL を格納
-      dispatch(set(path, result));
+      await dispatch(set(path, result));
     } else {
       // フィールドが空だった
-      dispatch(empty(path));
+      await dispatch(empty(path));
     }
   } catch (error) {
     // 何らかのエラー => 空とみなす
-    dispatch(empty(path));
+    await dispatch(empty(path));
     console.error(error);
   }
 };
