@@ -343,8 +343,10 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
     // JSON 文字列から MD5 ハッシュを計算
     const hash = md5(json);
     // Storage にアップロード
-    const storagePath = `json/${visibility}/users/${user.uid}/${hash}.json`;
-    await dispatch(uploadBlob(storagePath, file));
+    const assetStoragePath = `json/${visibility}/users/${
+      user.uid
+    }/${hash}.json`;
+    await dispatch(uploadBlob(assetStoragePath, file));
 
     // 取得
     const uploadedRef = await uploadWorkData({
