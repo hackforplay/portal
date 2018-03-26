@@ -368,8 +368,11 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
 ) => {
   const { auth: { user }, make: { work } } = getState();
   const workData = work.data;
-  if (!workData || !user || workData.visibility === visibility) {
-    // 作品が投稿されていないか、ログインしていないか、すでにその設定になっている
+  if (!canPublish(getState()) || !workData || !user) {
+    return;
+  }
+  if (workData.visibility === visibility) {
+    // すでにその設定になっている
     return;
   }
   // asset と thumbnail の現在のパスを取得
@@ -483,4 +486,16 @@ export function canSave(state: $Call<GetState>) {
     return false;
   }
   return work.isEmpty || work.isAvailable;
+}
+
+export function canPublish(state: $Call<GetState>) {
+  const { make: { saved, work }, auth: { user } } = state;
+  const workData = work.data;
+  if (!workData || !saved || !user) {
+    // 保存されていないか、ログインしていない
+    return false;
+  }
+  return Boolean(
+    workData.assetStoragePath && workData.thumbnailStoragePath && workData.title
+  );
 }

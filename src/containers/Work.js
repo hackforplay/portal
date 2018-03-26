@@ -15,7 +15,8 @@ import {
   editExistingWork,
   setWorkVisibility,
   setMetadata,
-  canSave
+  canSave,
+  canPublish
 } from '../ducks/make';
 import type { StoreState } from '../ducks';
 
@@ -33,6 +34,7 @@ const mapStateToProps = (state: StoreState, ownProps): string => {
     work: getWorkByPath(state, path),
     make: state.make,
     canSave: canSave(state),
+    canPublish: canPublish(state),
     replay: isAuthUsersWork(state, path)
   };
 };

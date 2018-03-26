@@ -11,7 +11,8 @@ import {
   saveWork,
   setWorkVisibility,
   setMetadata,
-  canSave
+  canSave,
+  canPublish
 } from '../ducks/make';
 import type { StoreState } from '../ducks';
 
@@ -31,6 +32,7 @@ const mapStateToProps = (state: StoreState, ownProps) => {
     make: state.make,
     replay: replayable && !!state.auth.user,
     canSave: canSave(state),
+    canPublish: canPublish(state),
     // URL が間違っているとき null を render する
     // replay かどうかを確かめるために onAuthStateChanged を待つ
     renderNull: !state.auth.initialized

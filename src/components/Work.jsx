@@ -35,6 +35,7 @@ type Props = {
   work: WorkItemType,
   replay: boolean,
   canSave: boolean,
+  canPublish: boolean,
   make: MakeState
 } & ContextRouter;
 
@@ -84,7 +85,7 @@ class Work extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, work, canSave, replay, make } = this.props;
+    const { classes, work, canSave, canPublish, replay, make } = this.props;
     const { anchorEl } = this.state;
 
     if (!work.data) {
@@ -126,19 +127,21 @@ class Work extends React.Component<Props, State> {
                 <Typography type="title">{title}</Typography>
               )}
               <div className={classes.blank} />
-              {makeWorkData && makeWorkData.visibility === 'public' ? (
-                <Typography
-                  type="caption"
-                  className={classes.caption}
-                >{`公開中`}</Typography>
-              ) : (
-                <Button
-                  disabled={!makeWorkData}
-                  onClick={() => this.props.setWorkVisibility('public')}
-                >
-                  {`公開する`}
-                </Button>
-              )}
+              {makeWorkData ? (
+                makeWorkData.visibility === 'public' ? (
+                  <Typography
+                    type="caption"
+                    className={classes.caption}
+                  >{`公開中`}</Typography>
+                ) : (
+                  <Button
+                    disabled={!canPublish}
+                    onClick={() => this.props.setWorkVisibility('public')}
+                  >
+                    {`公開する`}
+                  </Button>
+                )
+              ) : null}
               {make.work.isProcessing || make.saved ? (
                 <Typography type="caption" className={classes.caption}>
                   {make.saved ? `保存されています` : `保存中...`}
