@@ -390,42 +390,50 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
 
   dispatch(push());
 
-  // asset を移す
-  await dispatch(moveFile(assetStoragePath, nextAssetStoragePath));
-  await dispatch(downloadUrl(nextAssetStoragePath));
-  if (!getStorageByPath(getState(), nextAssetStoragePath).url) {
-    // アセットの移動に失敗している
-    return;
-  }
-  // thumbnail を移す
-  await dispatch(moveFile(thumbnailStoragePath, nextThumbnailStoragePath));
-  await dispatch(downloadUrl(nextThumbnailStoragePath));
-  if (!getStorageByPath(getState(), nextThumbnailStoragePath).url) {
-    // サムネイルの移動に失敗している
-    return;
-  }
+  try {
+    // asset を移す
+    await dispatch(moveFile(assetStoragePath, nextAssetStoragePath));
+    await dispatch(downloadUrl(nextAssetStoragePath));
+    if (!getStorageByPath(getState(), nextAssetStoragePath).url) {
+      // アセットの移動に失敗している
+      throw new Error('Failed to moveFile');
+    }
+    // thumbnail を移す
+    await dispatch(moveFile(thumbnailStoragePath, nextThumbnailStoragePath));
+    await dispatch(downloadUrl(nextThumbnailStoragePath));
+    if (!getStorageByPath(getState(), nextThumbnailStoragePath).url) {
+      // サムネイルの移動に失敗している
+      throw new Error('Failed to moveFile');
+    }
 
-  // 既存のドキュメントを更新
-  const updated = {
-    assetStoragePath: nextAssetStoragePath,
-    thumbnailStoragePath: nextThumbnailStoragePath,
-    visibility,
-    updatedAt: new Date()
-  };
-  const ref = firebase
-    .firestore()
-    .collection('works')
-    .doc(workData.id);
-  await ref.update(updated);
+    // 既存のドキュメントを更新
+    const updated = {
+      assetStoragePath: nextAssetStoragePath,
+      thumbnailStoragePath: nextThumbnailStoragePath,
+      visibility,
+      updatedAt: new Date()
+    };
+    const ref = firebase
+      .firestore()
+      .collection('works')
+      .doc(workData.id);
+    await ref.update(updated);
 
-  const snapshot = await ref.get();
-  const updatedDoc = {
-    ...snapshot.data(),
-    id: snapshot.id,
-    path: `/works/${snapshot.id}`
-  };
-  // 作品をセット
-  dispatch(set(updatedDoc));
+    const snapshot = await ref.get();
+    const updatedDoc = {
+      ...snapshot.data(),
+      id: snapshot.id,
+      path: `/works/${snapshot.id}`
+    };
+    // 作品をセット
+    dispatch(set(updatedDoc));
+  } catch (error) {
+    // 元に戻す
+    console.error(error);
+    await dispatch(moveFile(assetStoragePath, nextAssetStoragePath));
+    await dispatch(moveFile(thumbnailStoragePath, nextThumbnailStoragePath));
+    await dispatch(set(workData));
+  }
 };
 
 async function uploadWorkData({ work, user, metadata }) {
