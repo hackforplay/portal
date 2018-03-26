@@ -35,7 +35,8 @@ const officials: officialsType = [
   },
   {
     path: '/officials/make-rpg',
-    replayable: true,
+    // replayable: true,
+    replayable: false, // TODO: replayable: true
     work: makeItem('https://make-rpg.hackforplay.xyz/make-rpg.json')
   },
   {

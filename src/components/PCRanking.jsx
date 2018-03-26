@@ -18,6 +18,7 @@ type Props = {
   classes: {
     root: string,
     progress: string,
+    cell: string,
     button: string
   },
   records: RecordCollectionType
@@ -52,6 +53,11 @@ const playLinks = {
   button: {
     marginTop: theme.spacing.unit * 3,
     marginBottom: theme.spacing.unit * 3
+  },
+  cell: {
+    maxWidth: 200,
+    textOverflow: 'ellipsis',
+    overflow: 'hidden'
   }
 })
 export default class PCRanking extends React.Component<Props> {
@@ -92,18 +98,35 @@ export default class PCRanking extends React.Component<Props> {
               <TableBody>
                 {records.data.map((item, i) => (
                   <TableRow key={item.id}>
-                    <TableCell numeric={false} padding="default">{`${i +
-                      1}位`}</TableCell>
-                    <TableCell numeric={false} padding="default">
+                    <TableCell
+                      numeric={false}
+                      padding="default"
+                      className={classes.cell}
+                    >{`${i + 1}位`}</TableCell>
+                    <TableCell
+                      numeric={false}
+                      padding="default"
+                      className={classes.cell}
+                    >
                       {item.name}
                     </TableCell>
-                    <TableCell numeric={false} padding="default">
+                    <TableCell
+                      numeric={false}
+                      padding="default"
+                      className={classes.cell}
+                    >
                       {item.score}
                     </TableCell>
-                    <TableCell numeric={false} padding="default">{`${
-                      item.lastTime
-                    }秒`}</TableCell>
-                    <TableCell numeric={false} padding="default">
+                    <TableCell
+                      numeric={false}
+                      padding="default"
+                      className={classes.cell}
+                    >{`${item.lastTime}秒`}</TableCell>
+                    <TableCell
+                      numeric={false}
+                      padding="default"
+                      className={classes.cell}
+                    >
                       {fromNow(item.createdAt)}
                     </TableCell>
                   </TableRow>
