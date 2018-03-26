@@ -171,12 +171,7 @@ class Work extends React.Component<Props, State> {
             </Toolbar>
           </AppBar>
         ) : null}
-        <Feeles
-          src={src}
-          alt={title}
-          storagePath={storagePath}
-          replay={replay}
-        />
+        <Feeles src={src} storagePath={storagePath} replay={replay} />
       </div>
     );
   }
