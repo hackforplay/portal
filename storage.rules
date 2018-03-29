@@ -4,6 +4,11 @@ service firebase.storage {
       allow read;
       allow write: if request.auth.uid == uid;
     }
+    match /{type}/limited/users/{uid}/{allPaths=**} {
+      allow get;
+      allow list: if request.auth.uid == uid;
+      allow write: if request.auth.uid == uid;
+    }
     match /{type}/private/users/{uid}/{allPaths=**} {
       allow read: if request.auth.uid == uid;
       allow write: if request.auth.uid == uid;
