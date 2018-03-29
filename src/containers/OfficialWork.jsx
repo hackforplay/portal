@@ -57,6 +57,18 @@ export default class OfficialWork extends React.Component {
     this.props.trashWork();
   }
 
+  shouldComponentUpdate(nextProps) {
+    const { history } = this.props;
+    const makeWorkData = nextProps.make.work.data;
+
+    if (makeWorkData && makeWorkData.id) {
+      // official(キット)を保存したとき /works/{id} にリダイレクトする
+      history.replace(`/works/${makeWorkData.id}`);
+      return false;
+    }
+    return true;
+  }
+
   render() {
     const { renderNull, ...props } = this.props;
 
