@@ -84,7 +84,14 @@ class Work extends React.Component<Props, State> {
   };
 
   handleClose = () => {
-    this.setState({ anchorEl: null });
+    if (this.state.anchorEl) {
+      this.setState({ anchorEl: null });
+    }
+  };
+
+  handleSetPublic = () => {
+    this.props.setWorkVisibility('public');
+    this.handleClose();
   };
 
   handleSetPrivate = () => {
@@ -158,10 +165,7 @@ class Work extends React.Component<Props, State> {
                     className={classes.caption}
                   >{`公開中`}</Typography>
                 ) : (
-                  <Button
-                    disabled={!canPublish}
-                    onClick={() => this.props.setWorkVisibility('public')}
-                  >
+                  <Button disabled={!canPublish} onClick={this.handleSetPublic}>
                     {`公開する`}
                   </Button>
                 )
@@ -190,8 +194,11 @@ class Work extends React.Component<Props, State> {
                 open={Boolean(anchorEl)}
                 onClose={this.handleClose}
               >
-                {makeWorkData && makeWorkData.visibility === 'public' ? (
-                  <MenuItem onClick={this.handleSetPrivate}>
+                {makeWorkData && makeWorkData.visibility !== 'private' ? (
+                  <MenuItem
+                    disabled={!canPublish}
+                    onClick={this.handleSetPrivate}
+                  >
                     非公開にする
                   </MenuItem>
                 ) : null}
