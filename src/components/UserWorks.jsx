@@ -30,7 +30,13 @@ class UserWorks extends React.Component<Props> {
     return (
       <div className={classes.root}>
         {tab === '' ? (
-          <WorkList works={works} title="作品" more moreLink={`/users/${id}`} />
+          <WorkList
+            works={works}
+            title="作品"
+            more
+            moreLink={`/users/${id}`}
+            showVisibility
+          />
         ) : /* tab === 'likes' ? (
           <WorkList
             works={}

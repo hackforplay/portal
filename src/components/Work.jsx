@@ -7,6 +7,7 @@ import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Popover from 'material-ui/Popover';
+import Chip from 'material-ui/Chip';
 import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
 
@@ -28,6 +29,7 @@ type Props = {
   setMetadata: setMetadataType,
   removeWork: removeWorkType,
   classes: {
+    chip: string,
     blank: string,
     caption: string,
     noTitle: string,
@@ -47,6 +49,9 @@ type State = {
 };
 
 @withStyles({
+  chip: {
+    marginRight: theme.spacing.unit * 2
+  },
   blank: {
     flex: 1
   },
@@ -147,6 +152,18 @@ class Work extends React.Component<Props, State> {
         {replay ? (
           <AppBar position="static" color="default" elevation={0}>
             <Toolbar>
+              {makeWorkData ? (
+                <Chip
+                  label={
+                    {
+                      public: '公開中',
+                      limited: '限定公開',
+                      private: '非公開'
+                    }[makeWorkData.visibility]
+                  }
+                  className={classes.chip}
+                />
+              ) : null}
               {replay ? (
                 <EditableTitleTextField
                   placeholder="タイトルがついていません"
@@ -163,17 +180,10 @@ class Work extends React.Component<Props, State> {
                 <Typography type="title">{title}</Typography>
               )}
               <div className={classes.blank} />
-              {makeWorkData ? (
-                makeWorkData.visibility === 'public' ? (
-                  <Typography
-                    type="caption"
-                    className={classes.caption}
-                  >{`公開中`}</Typography>
-                ) : (
-                  <Button disabled={!canPublish} onClick={this.handleSetPublic}>
-                    {`公開する`}
-                  </Button>
-                )
+              {makeWorkData && makeWorkData.visibility !== 'public' ? (
+                <Button disabled={!canPublish} onClick={this.handleSetPublic}>
+                  {`公開する`}
+                </Button>
               ) : null}
               {make.work.isProcessing || make.saved ? (
                 <Typography type="caption" className={classes.caption}>

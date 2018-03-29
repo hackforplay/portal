@@ -13,6 +13,7 @@ import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import IconButton from 'material-ui/IconButton';
 import { CircularProgress } from 'material-ui/Progress';
+import Chip from 'material-ui/Chip';
 import Collapse from 'material-ui/transitions/Collapse';
 import { withStyles } from 'material-ui/styles';
 import { grey } from 'material-ui/colors';
@@ -36,12 +37,14 @@ export type Props = {
     authorName: string,
     noAuthorName: string,
     button: string,
-    more: string
+    more: string,
+    chip: string
   },
   works: WorkCollectionType,
   title: React.Node,
   more: boolean,
   moreLink: string,
+  showVisibility: boolean | void,
   className?: string
 } & ContextRouter;
 
@@ -113,11 +116,13 @@ export type Props = {
     paddingRight: theme.spacing.unit * 4,
     paddingBottom: theme.spacing.unit * 2,
     paddingLeft: theme.spacing.unit * 4
-  }
+  },
+  chip: {}
 })
 export default class WorkList extends React.Component<Props> {
   static defaultProps = {
-    more: false
+    more: false,
+    showVisibility: false
   };
 
   link(to: string) {
@@ -140,7 +145,14 @@ export default class WorkList extends React.Component<Props> {
   }
 
   render() {
-    const { classes, works, title, more, moreLink } = this.props;
+    const {
+      classes,
+      works,
+      title,
+      more,
+      moreLink,
+      showVisibility
+    } = this.props;
 
     return (
       <Paper className={classNames(classes.root, this.props.className)}>
@@ -210,7 +222,15 @@ export default class WorkList extends React.Component<Props> {
                       <Typography type="caption">
                         {`プレイ回数 ${item.viewsNum} 回・${this.fromNow(
                           item.createdAt
-                        )}`}
+                        )}${
+                          showVisibility
+                            ? {
+                                public: '・公開中',
+                                limited: '・限定公開',
+                                private: '・非公開'
+                              }[item.visibility]
+                            : ''
+                        }`}
                       </Typography>
                     </CardContent>
                   </Card>
