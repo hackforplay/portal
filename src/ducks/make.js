@@ -78,14 +78,16 @@ export type State = {
   saved: boolean,
   metadata: Metadata,
   thumbnails: Array<string>,
-  files?: Array<{}>
+  files?: Array<{}>,
+  hashOfFiles: string
 };
 
 const initialState: State = {
   work: helpers.initialized(),
   saved: false,
   metadata: {},
-  thumbnails: []
+  thumbnails: [],
+  hashOfFiles: ''
 };
 
 // Root Reducer
@@ -97,9 +99,16 @@ export default (state: State = initialState, action: Action): State => {
         saved: false,
         files: action.payload,
         metadata: {},
-        thumbnails: []
+        thumbnails: [],
+        // JSON 文字列から MD5 ハッシュを計算
+        hashOfFiles: md5(JSON.stringify(action.payload))
       };
     case CHANGE:
+      // JSON 文字列から MD5 ハッシュを計算
+      const hashOfFiles = md5(JSON.stringify(action.payload));
+      if (hashOfFiles === state.hashOfFiles) {
+        return state; // 変更なし
+      }
       return {
         ...state,
         saved: false,
@@ -124,7 +133,8 @@ export default (state: State = initialState, action: Action): State => {
         work: helpers.initialized(),
         saved: false,
         metadata: {},
-        thumbnails: []
+        thumbnails: [],
+        hashOfFiles: ''
       };
     case PUSH:
     case PULL:
@@ -303,7 +313,7 @@ export type saveWorkType = () => (
 export const saveWork: saveWorkType = () => async (dispatch, getState) => {
   const {
     auth: { user },
-    make: { files, work, metadata, thumbnails }
+    make: { files, hashOfFiles, work, metadata, thumbnails }
   } = getState();
 
   if (!user || !canSave(getState())) {
@@ -340,12 +350,10 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
     // プロジェクトを JSON に書き出し
     const json = JSON.stringify(files);
     const file = new Blob([json], { type: 'application/json' });
-    // JSON 文字列から MD5 ハッシュを計算
-    const hash = md5(json);
     // Storage にアップロード
     const assetStoragePath = `json/${visibility}/users/${
       user.uid
-    }/${hash}.json`;
+    }/${hashOfFiles}.json`;
     await dispatch(uploadBlob(assetStoragePath, file));
 
     // 取得
@@ -535,8 +543,8 @@ export const removeWork: removeWorkType = work => async (
 };
 
 export function canSave(state: $Call<GetState>) {
-  const { make: { files, saved, work }, auth: { user } } = state;
-  if (!files || saved || !user) {
+  const { make: { files, hashOfFiles, saved, work }, auth: { user } } = state;
+  if (!files || !hashOfFiles || saved || !user) {
     // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていない
     return false;
   }
