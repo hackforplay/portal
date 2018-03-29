@@ -94,6 +94,11 @@ class Work extends React.Component<Props, State> {
     this.handleClose();
   };
 
+  handleSetLimited = () => {
+    this.props.setWorkVisibility('limited');
+    this.handleClose();
+  };
+
   handleSetPrivate = () => {
     this.props.setWorkVisibility('private');
     this.handleClose();
@@ -200,6 +205,14 @@ class Work extends React.Component<Props, State> {
                     onClick={this.handleSetPrivate}
                   >
                     非公開にする
+                  </MenuItem>
+                ) : null}
+                {makeWorkData && makeWorkData.visibility !== 'limited' ? (
+                  <MenuItem
+                    disabled={!canPublish}
+                    onClick={this.handleSetLimited}
+                  >
+                    限定公開にする
                   </MenuItem>
                 ) : null}
                 {makeWorkData ? (
