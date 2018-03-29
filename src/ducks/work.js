@@ -526,7 +526,8 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
     let query = firebase
       .firestore()
       .collection('works')
-      .where('uid', '==', uid);
+      .where('uid', '==', uid)
+      .orderBy('createdAt', 'desc');
     // 自分かどうか
     const authUser = getState().auth.user;
     if (!authUser || authUser.uid !== userData.uid) {
