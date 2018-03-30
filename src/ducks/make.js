@@ -454,12 +454,20 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
       path: `/works/${snapshot.id}`
     };
     // 作品をセット
-    dispatch(set(updatedDoc));
+    await dispatch(set(updatedDoc));
   } catch (error) {
     // 元に戻す
     console.error(error);
-    await dispatch(moveFile(assetStoragePath, nextAssetStoragePath));
-    await dispatch(moveFile(thumbnailStoragePath, nextThumbnailStoragePath));
+    const { make: { work } } = getState();
+    if (!work.data || !work.data.assetStoragePath !== nextAssetStoragePath) {
+      await dispatch(moveFile(nextAssetStoragePath, assetStoragePath));
+    }
+    if (
+      !work.data ||
+      !work.data.thumbnailStoragePath !== nextThumbnailStoragePath
+    ) {
+      await dispatch(moveFile(nextThumbnailStoragePath, thumbnailStoragePath));
+    }
     await dispatch(set(workData));
   }
 };
