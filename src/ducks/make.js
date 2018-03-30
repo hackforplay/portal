@@ -68,7 +68,10 @@ export type Action =
     |}
   | {|
       +type: 'portal/make/SET',
-      +payload: WorkData
+      +payload: {
+        workData: WorkData,
+        files: Array<{}>
+      }
     |}
   | {|
       +type: 'portal/make/REMOVE'
@@ -147,16 +150,19 @@ export default (state: State = initialState, action: Action): State => {
         saved: false
       };
     case SET:
+      const { workData, files } = action.payload;
       return {
         ...state,
-        work: helpers.has(action.payload),
+        work: helpers.has(workData),
         saved: true,
+        // JSON 文字列から MD5 ハッシュを計算
+        hashOfFiles: md5(JSON.stringify(files)),
         metadata: {
-          title: action.payload.title,
-          description: action.payload.description,
-          author: action.payload.author,
-          assetStoragePath: action.payload.assetStoragePath,
-          thumbnailStoragePath: action.payload.thumbnailStoragePath
+          title: workData.title,
+          description: workData.description,
+          author: workData.author,
+          assetStoragePath: workData.assetStoragePath,
+          thumbnailStoragePath: workData.thumbnailStoragePath
         }
       };
     default:
@@ -210,11 +216,14 @@ export const pull: pullType = () => ({
   type: PULL
 });
 
-type setType = (payload: WorkData) => Action;
+type setType = (workData: WorkData, files: Array<{}>) => Action;
 
-export const set: setType = payload => ({
+export const set: setType = (workData, files) => ({
   type: SET,
-  payload
+  payload: {
+    workData,
+    files
+  }
 });
 
 type removeType = () => Action;
@@ -322,7 +331,7 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
     make: { files, work, metadata, thumbnails }
   } = getState();
 
-  if (!user || !canSave(getState())) {
+  if (!user || !files || !canSave(getState())) {
     return;
   }
 
@@ -381,7 +390,7 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
       id: snapshot.id,
       path: `/works/${snapshot.id}`
     };
-    dispatch(set(uploadedDoc));
+    dispatch(set(uploadedDoc, files));
     // 古いアセットを削除
     if (work.data && work.data.assetStoragePath) {
       dispatch(removeFile(work.data.assetStoragePath));
@@ -407,9 +416,9 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
   dispatch,
   getState
 ) => {
-  const { auth: { user }, make: { work } } = getState();
+  const { auth: { user }, make: { work, files } } = getState();
   const workData = work.data;
-  if (!canPublish(getState()) || !workData || !user) {
+  if (!canPublish(getState()) || !workData || !user || !files) {
     return;
   }
   if (workData.visibility === visibility) {
@@ -467,7 +476,7 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
       path: `/works/${snapshot.id}`
     };
     // 作品をセット
-    await dispatch(set(updatedDoc));
+    await dispatch(set(updatedDoc, files));
   } catch (error) {
     // 元に戻す
     console.error(error);
@@ -481,7 +490,7 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
     ) {
       await dispatch(moveFile(nextThumbnailStoragePath, thumbnailStoragePath));
     }
-    await dispatch(set(workData));
+    await dispatch(set(workData, files));
   }
 };
 
@@ -521,19 +530,41 @@ async function uploadWorkData({ work, user, metadata }) {
 
 export type editExistingWorkType = (
   work: WorkItemType
-) => (dispatch: Dispatch, getState: GetState) => void;
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
 
-export const editExistingWork: editExistingWorkType = work => (
+export const editExistingWork: editExistingWorkType = work => async (
   dispatch,
   getState
 ) => {
-  const { auth: { user } } = getState();
-  if (!work.data || !user || work.data.uid !== user.uid) {
-    // 自分の作品ではないか、ログインしていない
+  const { auth: { user }, make: { work } } = getState();
+  const workData = work.data;
+  if (!workData || !user || workData.uid !== user.uid || work.data) {
+    // 自分の作品ではないか、ログインしていないか、すでに別のものを作り始めている
     return;
   }
+  const { assetStoragePath, asset_url } = workData;
+  let url;
+  if (assetStoragePath) {
+    // アセットをダウンロード
+    await dispatch(downloadUrl(assetStoragePath));
+    const storage = getStorageByPath(getState(), assetStoragePath);
+    if (!storage.url) {
+      return;
+    }
+    url = storage.url;
+  } else if (asset_url) {
+    url = asset_url;
+  } else {
+    // どちらもない
+    return;
+  }
+  const response = await fetch(url);
+  const text = await response.text();
+  const files = JSON.parse(text); // : Array<{}>
   // 作品をセット
-  dispatch(set(work.data));
+  await dispatch(set(workData, files));
+  // files を格納
+  await dispatch(change(files));
 };
 
 export type removeWorkType = () => (

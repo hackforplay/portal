@@ -147,6 +147,12 @@ class Work extends React.Component<Props, State> {
     const storagePath = work.data.assetStoragePath || '';
     const makeWorkData = make.work.data;
 
+    // portal 側でプロジェクトの中身を取得できるまで render しない
+    // (onChange によって Store が書き換えられると saved: false になるため)
+    if (replay && !makeWorkData) {
+      return <div>{title} を準備中...</div>;
+    }
+
     return (
       <div>
         {replay ? (
