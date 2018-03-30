@@ -113,7 +113,8 @@ export default (state: State = initialState, action: Action): State => {
       return {
         ...state,
         saved: false,
-        files: action.payload
+        files: action.payload,
+        hashOfFiles
       };
     case METADATA:
       return {
