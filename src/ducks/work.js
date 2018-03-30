@@ -29,27 +29,27 @@ const SEARCH_FAILED = 'portal/work/SEARCH_FAILED';
 
 export type VisibilityType = 'public' | 'limited' | 'private';
 export type WorkData = {
-  id: string, // Document ID
-  path: string, // Page path
-  title: string,
-  description: string,
-  image?: string,
-  asset_url?: string | null,
-  search?: string,
-  url?: string,
-  author?: string,
-  created_at?: string,
-  views?: number,
-  favs?: number,
+  +id: string, // Document ID
+  +path: string, // Page path
+  +title: string,
+  +description: string,
+  +image?: string,
+  +asset_url?: string | null,
+  +search?: string,
+  +url?: string,
+  +author?: string,
+  +created_at?: string,
+  +views?: number,
+  +favs?: number,
   // additional structure
-  visibility: VisibilityType,
-  uid?: string,
-  thumbnailStoragePath?: string,
-  assetStoragePath?: string,
-  viewsNum: number,
-  favsNum: number,
-  createdAt: string | Date,
-  updatedAt: string | Date | null
+  +visibility: VisibilityType,
+  +uid?: string,
+  +thumbnailStoragePath?: string,
+  +assetStoragePath?: string,
+  +viewsNum: number,
+  +favsNum: number,
+  +createdAt: string | Date,
+  +updatedAt: string | Date | null
 };
 
 type migrateType = (old: WorkData) => WorkData;
@@ -752,5 +752,5 @@ export function isAuthUsersWork(state: $Call<GetState>, path: string) {
     return false;
   }
   const work = getWorkByPath(state, path);
-  return work.data && work.data.uid === user.uid;
+  return Boolean(work.data && work.data.uid === user.uid);
 }
