@@ -41,10 +41,10 @@ export type Action =
       type: typeof DOWNLOAD,
       path: string
     }
-    | {
-        type: typeof REMOVE,
-        path: string
-      }
+  | {
+      type: typeof REMOVE,
+      path: string
+    }
   | {
       type: typeof SET,
       path: string,
@@ -89,18 +89,18 @@ export default (state: State = initialState, action: Action): State => {
           path: action.path
         }
       };
-      case REMOVE:
-        return {
-          ...state,
-          [action.path]: {
-            isAvailable: false,
-            isUploading: false,
-            isDownloading: false,
-            isRemoving: true,
-            isEmpty: false,
-            path: action.path
-          }
-        };
+    case REMOVE:
+      return {
+        ...state,
+        [action.path]: {
+          isAvailable: false,
+          isUploading: false,
+          isDownloading: false,
+          isRemoving: true,
+          isEmpty: false,
+          path: action.path
+        }
+      };
     case SET:
       return {
         ...state,
@@ -280,7 +280,7 @@ export type removeFileType = (
   path: string
 ) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
 
-export const removeFile: removeFileType = (path) => async (
+export const removeFile: removeFileType = path => async (
   dispatch,
   getState
 ) => {
@@ -291,8 +291,11 @@ export const removeFile: removeFileType = (path) => async (
   }
   dispatch(remove(path));
 
-  await firebase.storage().ref(path).delete();
-  
+  await firebase
+    .storage()
+    .ref(path)
+    .delete();
+
   dispatch(empty(path));
 };
 
