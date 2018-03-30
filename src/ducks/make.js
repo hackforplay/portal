@@ -105,19 +105,18 @@ export default (state: State = initialState, action: Action): State => {
         metadata: {},
         thumbnails: [],
         // JSON 文字列から MD5 ハッシュを計算
-        hashOfFiles: md5(JSON.stringify(action.payload))
+        hashOfFiles: hashFiles(action.payload)
       };
     case CHANGE:
-      // JSON 文字列から MD5 ハッシュを計算
-      const hashOfFiles = md5(JSON.stringify(action.payload));
-      if (hashOfFiles === state.hashOfFiles) {
+      if ( hashFiles(action.payload) === state.hashOfFiles) {
         return state; // 変更なし
       }
       return {
         ...state,
         saved: false,
         files: action.payload,
-        hashOfFiles
+      // JSON 文字列から MD5 ハッシュを計算
+        hashOfFiles: hashFiles(action.payload)
       };
     case METADATA:
       return {
@@ -156,7 +155,7 @@ export default (state: State = initialState, action: Action): State => {
         work: helpers.has(workData),
         saved: true,
         // JSON 文字列から MD5 ハッシュを計算
-        hashOfFiles: md5(JSON.stringify(files)),
+        hashOfFiles: hashFiles(files),
         metadata: {
           title: workData.title,
           description: workData.description,
@@ -628,4 +627,13 @@ export function canRemove(state: $Call<GetState>) {
     return false;
   }
   return true;
+}
+
+const hashFilesCache: WeakMap<Array<{}>, string> = new WeakMap();
+export function hashFiles(files: Array<{}>) {
+  const cache = hashFilesCache.get(files);
+  if (cache) return cache; 
+  const hash = md5(JSON.stringify(files));
+  hashFilesCache.set(files, hash);
+  return hash;
 }
