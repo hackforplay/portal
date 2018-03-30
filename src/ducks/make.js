@@ -3,6 +3,7 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 import md5 from 'md5';
 import mime from 'mime-types';
+import uuid from 'uuid/v4';
 
 import * as helpers from './helpers';
 import {
@@ -276,24 +277,28 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
     // ログインしていない
     return;
   }
+  // data url => base64 string and metadata
   const visibility = work.data ? work.data.visibility : 'private';
   const [param, base64] = dataURL.split(',');
   const [, type] = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
   const ext = mime.extension(type);
-  if (base64 && type && ext) {
-    const bin = atob(base64); // base64 encoded string => binary string
-    let byteArray = new Uint8Array(bin.length); // binary string => 8bit TypedArray
-    for (let i = bin.length - 1; i >= 0; i--) {
-      byteArray[i] = bin.charCodeAt(i);
-    }
-    const blob = new Blob([byteArray.buffer], { type });
-    const hash = md5(byteArray);
-    const thumbnailStoragePath = `image/${visibility}/users/${
-      user.uid
-    }/${hash}.${ext}`;
-    await dispatch(uploadBlob(thumbnailStoragePath, blob));
-    await dispatch(setMetadata({ thumbnailStoragePath }));
+  if (!base64 || !type || !ext) {
+    throw new Error(`Invalid Data URL: ${param},...`);
   }
+  // base64 string => blob ==[UPLOAD]==> storage path
+  const bin = atob(base64); // base64 encoded string => binary string
+  let byteArray = new Uint8Array(bin.length); // binary string => 8bit TypedArray
+  for (let i = bin.length - 1; i >= 0; i--) {
+    byteArray[i] = bin.charCodeAt(i);
+  }
+  const blob = new Blob([byteArray.buffer], { type });
+  const thumbnailStoragePath = `image/${visibility}/users/${
+    user.uid
+  }/${uuid()}.${ext}`;
+  // Upload to storage
+  await dispatch(uploadBlob(thumbnailStoragePath, blob));
+  // Set to redux store
+  await dispatch(setMetadata({ thumbnailStoragePath }));
 };
 
 export type trashWorkType = () => (
@@ -313,7 +318,7 @@ export type saveWorkType = () => (
 export const saveWork: saveWorkType = () => async (dispatch, getState) => {
   const {
     auth: { user },
-    make: { files, hashOfFiles, work, metadata, thumbnails }
+    make: { files, work, metadata, thumbnails }
   } = getState();
 
   if (!user || !canSave(getState())) {
@@ -353,7 +358,7 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
     // Storage にアップロード
     const assetStoragePath = `json/${visibility}/users/${
       user.uid
-    }/${hashOfFiles}.json`;
+    }/${uuid()}.json`;
     await dispatch(uploadBlob(assetStoragePath, file));
 
     // 取得
@@ -404,12 +409,12 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
     // JSON ファイルのパスが設定されていない
     return;
   }
-  const nextAssetStoragePath = `json/${visibility}/users/${user.uid}/${
-    parseStoragePath(assetStoragePath).fileName
-  }`;
-  const nextThumbnailStoragePath = `image/${visibility}/users/${user.uid}/${
-    parseStoragePath(thumbnailStoragePath).fileName
-  }`;
+  const nextAssetStoragePath = `json/${visibility}/users/${
+    user.uid
+  }/${uuid()}.${parseStoragePath(assetStoragePath).extention}`;
+  const nextThumbnailStoragePath = `image/${visibility}/users/${
+    user.uid
+  }/${uuid()}.${parseStoragePath(thumbnailStoragePath).extention}`;
 
   dispatch(push());
 
