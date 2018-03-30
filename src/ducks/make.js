@@ -381,6 +381,18 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
       path: `/works/${snapshot.id}`
     };
     dispatch(set(uploadedDoc));
+    // 古いアセットを削除
+    if (work.data && work.data.assetStoragePath) {
+      dispatch(removeFile(work.data.assetStoragePath));
+    }
+    // 古いサムネイルを削除
+    if (
+      work.data &&
+      work.data.thumbnailStoragePath &&
+      work.data.thumbnailStoragePath !== metadata.thumbnailStoragePath
+    ) {
+      dispatch(removeFile(work.data.thumbnailStoragePath));
+    }
   } catch (error) {
     console.error(error.message);
   }
