@@ -23,7 +23,7 @@ export const addUserDocument = functions.auth.user().onCreate(event => {
 
   const data: UserDocumentData = {
     uid: user.uid,
-    displayName: user.displayName,
+    displayName: 'guest',
     email: user.email, // いずれ非公開情報にする
     photoURL: user.photoURL,
     worksNum: 0,
