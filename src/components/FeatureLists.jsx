@@ -45,7 +45,7 @@ export default class FeatureLists extends React.Component<Props> {
             title={
               <Typography type="title" gutterBottom className={classes.title}>
                 <img src={diamond_blue} alt="" />
-                人気の作品
+                人気のステージ
               </Typography>
             }
             more={more === 'trending'}
@@ -58,7 +58,7 @@ export default class FeatureLists extends React.Component<Props> {
             title={
               <Typography type="title" gutterBottom className={classes.title}>
                 <img src={diamond_green} alt="" />
-                {/*"おすすめの作品"*/}あたらしい作品
+                {/*"おすすめのステージ"*/}あたらしいステージ
               </Typography>
             }
             more={more === 'recommended'}

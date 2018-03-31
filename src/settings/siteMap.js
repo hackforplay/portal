@@ -1,7 +1,7 @@
 export const searchBarInfo = [
   {
     path: '/contents/kit',
-    text: 'クリエイト',
+    text: 'ステージを作る',
     tabs: []
   },
   {
@@ -9,7 +9,7 @@ export const searchBarInfo = [
     text: '',
     tabs: [
       {
-        text: 'チュートリアル',
+        text: 'あそびかた',
         to: '/contents/tutorial'
       },
       {
@@ -40,7 +40,7 @@ export const searchBarInfo = [
     text: '',
     tabs: [
       {
-        text: '作品',
+        text: 'ステージ',
         to: '/users/:id'
       } /*,
       {
@@ -105,24 +105,24 @@ export const searchBarInfo = [
 export const optionalHeaderInfo = [
   {
     path: '/contents/tutorial',
-    headline: 'チュートリアルをプレイして使い方を学ぼう',
+    headline: 'ハックフォープレイのあそびかた',
     caption:
-      'まずは下の「ゲームスタート」をクリックしてチュートリアルをやってみよう'
+      'まずは下の「ゲームスタート」をクリックして、あそびかたをマスターしよう'
   },
   {
     path: '/contents/youtube',
-    headline: 'HackforPlay の使い方を動画で学ぼう',
-    caption: 'チュートリアルのプレイ動画を見て、基本的な使い方をマスターしよう'
+    headline: 'HackforPlay の使い方を YouTube でしらべよう',
+    caption: 'YouTube を見て、きほんの使い方をマスターしよう'
   },
   {
     path: '/contents/kit',
-    headline: 'ゲームを作ってみよう',
-    caption: 'きみもオリジナルゲームを作ってクリエイターになろう！'
+    headline: 'ステージを作ってみよう',
+    caption: 'きみもオリジナルステージを作って、ゲームクリエイターになろう！'
   },
   {
     path: '/lists',
-    headline: 'みんなの作品をプレイしてみよう',
+    headline: 'みんなのステージをプレイしてみよう',
     caption:
-      'ここにあるのはすべてユーザーの作品。たくさん遊んで好きなゲームをさがしてみよう'
+      'ここにあるのはすべてユーザーが作ったステージ。たくさん遊んで好きなステージをさがしてみよう'
   }
 ];

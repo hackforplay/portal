@@ -120,10 +120,10 @@ class Header extends React.Component<Props, State> {
               あそびかた
             </Button>
             <Button color="contrast" component={Link} to="/lists">
-              みんなの作品
+              みんなのステージ
             </Button>
             <Button color="contrast" component={Link} to="/contents/kit">
-              ゲームを作る
+              ステージを作る
             </Button>
             {user.data ? (
               user.data.photoURL ? (

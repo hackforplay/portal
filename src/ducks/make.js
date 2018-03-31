@@ -474,7 +474,7 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
       id: snapshot.id,
       path: `/works/${snapshot.id}`
     };
-    // 作品をセット
+    // ステージをセット
     await dispatch(set(updatedDoc, files));
   } catch (error) {
     // 元に戻す
@@ -538,7 +538,7 @@ export const editExistingWork: editExistingWorkType = work => async (
   const { auth: { user }, make } = getState();
   const workData = work.data;
   if (!workData || !user || workData.uid !== user.uid || make.work.data) {
-    // 自分の作品ではないか、ログインしていないか、すでに別のものを作り始めている
+    // 自分のステージではないか、ログインしていないか、すでに別のものを作り始めている
     return;
   }
   const { assetStoragePath, asset_url } = workData;
@@ -560,7 +560,7 @@ export const editExistingWork: editExistingWorkType = work => async (
   const response = await fetch(url);
   const text = await response.text();
   const files = JSON.parse(text); // : Array<{}>
-  // 作品をセット
+  // ステージをセット
   await dispatch(set(workData, files));
   // files を格納
   await dispatch(change(files));

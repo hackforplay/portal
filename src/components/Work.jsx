@@ -137,7 +137,7 @@ class Work extends React.Component<Props, State> {
         return <div>ロード中...</div>;
       }
       if (work.isEmpty) {
-        return <div>作品が見つかりませんでした</div>;
+        return <div>ステージが見つかりませんでした</div>;
       }
       if (work.isInvalid) {
         return <div>権限がありません</div>;

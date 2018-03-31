@@ -65,9 +65,9 @@ export default class Work extends React.Component {
   componentDidMount() {
     const { url, params } = this.props.match;
     const path = getPath(url, params);
-    // 作品データがなければ取得
+    // ステージデータがなければ取得
     this.props.fetchWorkByPath(path);
-    // 作品のビューカウントを増やす
+    // ステージのビューカウントを増やす
     this.props.addWorkView(path);
     if (this.props.replay) {
       this.props.editExistingWork(this.props.work);

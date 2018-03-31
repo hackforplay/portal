@@ -135,7 +135,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
     items: [
       {
         type: 'stage',
-        title: 'ゲームが作れる！RPGキット',
+        title: 'オリジナルステージが作れる！RPGキット',
         author: null,
         description: 'ハックフォープレイのステージを自分で作れるキットです⚔',
         image: 'https://assets.feeles.com/www/kit/screenshot-makerpg.png',
@@ -144,7 +144,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
           {
             raised: true,
             color: 'primary',
-            children: 'ゲームをつくる',
+            children: 'ステージをつくる',
             component: Link,
             to: '/officials/make-rpg'
           },

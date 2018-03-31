@@ -32,7 +32,7 @@ class UserWorks extends React.Component<Props> {
         {tab === '' ? (
           <WorkList
             works={works}
-            title="作品"
+            title="ステージ"
             more
             moreLink={`/users/${id}`}
             showVisibility

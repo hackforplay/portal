@@ -711,13 +711,13 @@ export const addWorkView: addWorkViewType = path => async (
   const { auth: { user } } = getState();
 
   if (!path.startsWith('/works')) {
-    // Firestore にデータがない作品ならスルー
+    // Firestore にデータがないステージならスルー
     return;
   }
 
   const work = getWorkByPath(getState(), path);
   if (!user || (work.data && work.data.uid !== user.uid)) {
-    // 自分の作品でないなら、作品の views コレクションにドキュメントを追加
+    // 自分のステージでないなら、ステージの views コレクションにドキュメントを追加
     dispatch(view(path));
   }
 
