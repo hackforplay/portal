@@ -20,6 +20,7 @@ import {
   canRemove,
   removeWork
 } from '../ducks/make';
+import * as helpers from '../ducks/helpers';
 import type { StoreState } from '../ducks';
 
 const getPath = (url: string, params: {}) => {
@@ -32,13 +33,18 @@ const getPath = (url: string, params: {}) => {
 const mapStateToProps = (state: StoreState, ownProps): string => {
   const { url, params } = ownProps.match;
   const path = getPath(url, params);
+  const replay = isAuthUsersWork(state, path);
+  const isPreparing = replay && helpers.isInitialized(state.make.work);
   return {
     work: getWorkByPath(state, path),
     make: state.make,
     canSave: canSave(state),
     canPublish: canPublish(state),
     canRemove: canRemove(state),
-    replay: isAuthUsersWork(state, path)
+    replay,
+    // アセットのロードが Feeles 側より早く終わるよう,
+    // editExistingWork が終わるのを待つ
+    isPreparing
   };
 };
 

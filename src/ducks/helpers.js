@@ -73,3 +73,9 @@ export function isFetchNeeded<T>(data: Statefull<T>): boolean {
   }, 5000);
   return true;
 }
+
+export function isInitialized<T>(data: Statefull<T>): boolean {
+  return (
+    !data.isAvailable && !data.isEmpty && !data.isProcessing && !data.isInvalid
+  );
+}

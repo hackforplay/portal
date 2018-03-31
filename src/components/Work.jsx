@@ -41,7 +41,8 @@ type Props = {
   canSave: boolean,
   canPublish: boolean,
   canRemove: boolean,
-  make: MakeState
+  make: MakeState,
+  isPreparing: boolean | void
 } & ContextRouter;
 
 type State = {
@@ -77,7 +78,8 @@ type State = {
 })
 class Work extends React.Component<Props, State> {
   static defaultProps = {
-    replay: false
+    replay: false,
+    isPreparing: false
   };
 
   state = {
@@ -125,7 +127,8 @@ class Work extends React.Component<Props, State> {
       canPublish,
       canRemove,
       replay,
-      make
+      make,
+      isPreparing
     } = this.props;
     const { anchorEl } = this.state;
 
@@ -149,8 +152,8 @@ class Work extends React.Component<Props, State> {
 
     // portal 側でプロジェクトの中身を取得できるまで render しない
     // (onChange によって Store が書き換えられると saved: false になるため)
-    if (replay && !makeWorkData) {
-      return <div>{title} を準備中...</div>;
+    if (isPreparing) {
+      return <div>「{title}」を準備中...</div>;
     }
 
     return (
