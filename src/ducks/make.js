@@ -535,9 +535,9 @@ export const editExistingWork: editExistingWorkType = work => async (
   dispatch,
   getState
 ) => {
-  const { auth: { user }, make: { work } } = getState();
+  const { auth: { user }, make } = getState();
   const workData = work.data;
-  if (!workData || !user || workData.uid !== user.uid || work.data) {
+  if (!workData || !user || workData.uid !== user.uid || make.work.data) {
     // 自分の作品ではないか、ログインしていないか、すでに別のものを作り始めている
     return;
   }
