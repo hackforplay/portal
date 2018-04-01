@@ -154,6 +154,7 @@ export default (state: State = initialState, action: Action): State => {
         ...state,
         work: helpers.has(workData),
         saved: true,
+        files,
         // JSON 文字列から MD5 ハッシュを計算
         hashOfFiles: hashFiles(files),
         metadata: {
@@ -562,8 +563,6 @@ export const editExistingWork: editExistingWorkType = work => async (
   const files = JSON.parse(text); // : Array<{}>
   // ステージをセット
   await dispatch(set(workData, files));
-  // files を格納
-  await dispatch(change(files));
 };
 
 export type removeWorkType = () => (
