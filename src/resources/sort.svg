@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>L1/icon/sort_b</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="L1/icon/sort_b" fill-rule="nonzero" fill="#2E2E2E">
+            <path d="M12.8647686,7.65802944 L20.3647686,15.6580294 C20.6641433,15.9773624 20.4377199,16.5 20,16.5 L5,16.5 C4.56228008,16.5 4.33585674,15.9773624 4.6352314,15.6580294 L12.1352314,7.65802944 C12.3327682,7.44732352 12.6672318,7.44732352 12.8647686,7.65802944 Z" id="Triangle-4" transform="translate(12.500000, 12.000000) scale(1, -1) translate(-12.500000, -12.000000) "></path>
+        </g>
+    </g>
+</svg>
