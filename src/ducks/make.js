@@ -380,8 +380,8 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
         title: '',
         description: '',
         // ユーザーが設定したメタデータ
-        assetStoragePath,
-        ...metadata
+        ...metadata,
+        assetStoragePath
       }
     });
     const snapshot = await uploadedRef.get();
