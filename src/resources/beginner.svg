@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>L1/icon/beginner_b</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="L1/icon/beginner_b" fill="#2E2E2E">
+            <path d="M11.3769724,21.8663388 L4.413,16.8095 C4.153,16.6215 4,16.3205 4,16.0005 L4,4.0005 C4,3.6445 4.189,3.3155 4.496,3.1365 C4.805,2.9575 5.183,2.9555 5.492,3.1295 L11.9998232,6.81013886 L18.508,3.1293 C18.817,2.9543 19.196,2.9573 19.504,3.1363 C19.811,3.3153 20,3.6453 20,4.0003 L20,16.0003 C20,16.3203 19.847,16.6213 19.587,16.8093 L12.587,21.8933 C12.414,22.0193 12.207,22.0843 12,22.0843 C11.845,22.0843 11.689,22.0473 11.546,21.9753 C11.4854328,21.9443836 11.4289189,21.9077795 11.3769724,21.8663388 Z M12,8.61358571 L6,5.22101429 L6,15.5067286 L12,19.8635857 L12,8.61358571 Z" id="Fill-7"></path>
+        </g>
+    </g>
+</svg>

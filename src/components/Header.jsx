@@ -10,11 +10,15 @@ import { MenuItem } from 'material-ui/Menu';
 import Popover from 'material-ui/Popover';
 import Button from 'material-ui/Button/Button';
 import grey from 'material-ui/colors/grey';
+import Home from 'material-ui-icons/Home';
 
 import Avatar from '../containers/Avatar';
 import theme from '../settings/theme';
 import googleIcon from '../resources/google.svg';
 import logo from '../resources/logo.png';
+import Beginner from '../icons/Beginner';
+import Play from '../icons/Play';
+import Create from '../icons/Create';
 import type { UserType } from '../ducks/user';
 
 type Props = {
@@ -24,7 +28,8 @@ type Props = {
     blank: string,
     icon: string,
     avatar: string,
-    title: string
+    title: string,
+    separator: string
   },
   isSignedIn: boolean,
   user: UserType,
@@ -65,6 +70,20 @@ type State = {
   title: {
     color: 'black',
     filter: 'invert(100%)'
+  },
+  separator: {
+    position: 'relative',
+    display: 'inline-flex',
+    minHeight: 36,
+    alignSelf: 'center',
+    '&:before': {
+      content: '""',
+      position: 'absolute',
+      left: 0,
+      backgroundColor: 'white',
+      width: 1,
+      height: 36
+    }
   }
 })
 class Header extends React.Component<Props, State> {
@@ -113,18 +132,43 @@ class Header extends React.Component<Props, State> {
               <img src={logo} height={36} alt="HackforPlay" />
             </Typography>
             <div className={classes.blank} />
-            <Button color="contrast" component={Link} to="/">
+            <Button
+              color="contrast"
+              component={Link}
+              to="/"
+              className={classes.separator}
+            >
+              <Home />
               ホーム
             </Button>
-            <Button color="contrast" component={Link} to="/contents/tutorial">
+            <Button
+              color="contrast"
+              component={Link}
+              to="/contents/tutorial"
+              className={classes.separator}
+            >
+              <Beginner />
               あそびかた
             </Button>
-            <Button color="contrast" component={Link} to="/lists">
+            <Button
+              color="contrast"
+              component={Link}
+              to="/lists"
+              className={classes.separator}
+            >
+              <Play />
               みんなのステージ
             </Button>
-            <Button color="contrast" component={Link} to="/contents/kit">
+            <Button
+              color="contrast"
+              component={Link}
+              to="/contents/kit"
+              className={classes.separator}
+            >
+              <Create />
               ステージを作る
             </Button>
+            {user.data ? <div className={classes.separator} /> : null}
             {user.data ? (
               user.data.photoURL ? (
                 // アイコンアバター

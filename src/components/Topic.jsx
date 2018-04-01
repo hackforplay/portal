@@ -175,9 +175,9 @@ class Topic extends React.Component<Props> {
                     <iframe
                       title="procolo-1"
                       src="https://www.youtube.com/embed/3fZl56ybaRk"
-                      frameborder="0"
+                      frameBorder="0"
                       allow="autoplay; encrypted-media"
-                      allowFullscreen
+                      allowFullScreen
                       className={classes.iframe}
                     />
                   </Grid>
@@ -185,9 +185,9 @@ class Topic extends React.Component<Props> {
                     <iframe
                       title="procolo-2"
                       src="https://www.youtube.com/embed/28X2Y3k3NMk"
-                      frameborder="0"
+                      frameBorder="0"
                       allow="autoplay; encrypted-media"
-                      allowFullscreen
+                      allowFullScreen
                       className={classes.iframe}
                     />
                   </Grid>
