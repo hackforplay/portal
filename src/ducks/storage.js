@@ -248,7 +248,8 @@ export const moveFile: moveFileType = (prevPath, nextPath) => async (
   const prev = getStorageByPath(getState(), prevPath);
   if (prev.isDownloading || prev.isEmpty) {
     // ダウンロード中またはファイルが存在しない
-    return;
+    // TODO: 本当は Downloading が終わるまで待つべき
+    throw new Error(`Failed to moveFile: ${prevPath} is not found`);
   }
   if (!prev.url) {
     // URL を取得して再挑戦
