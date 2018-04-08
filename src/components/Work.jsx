@@ -14,6 +14,7 @@ import { withStyles } from 'material-ui/styles';
 import theme from '../settings/theme';
 import Feeles from '../containers/Feeles';
 import EditableTitleTextField from '../containers/EditableTitleTextField';
+import ThumbnailDialog from '../containers/ThumbnailDialog';
 import type { WorkItemType } from '../ducks/work';
 import type {
   saveWorkType,
@@ -46,7 +47,8 @@ type Props = {
 } & ContextRouter;
 
 type State = {
-  anchorEl: ?HTMLElement
+  anchorEl: ?HTMLElement,
+  open: boolean
 };
 
 @withStyles({
@@ -83,16 +85,39 @@ class Work extends React.Component<Props, State> {
   };
 
   state = {
-    anchorEl: null
+    anchorEl: null,
+    open: false
   };
 
   handleClick = (event: SyntheticEvent<HTMLButtonElement>) => {
     this.setState({ anchorEl: event.currentTarget });
   };
 
+  handleDialogOpen = () => {
+    this.setState({ open: true, anchorEl: null });
+  };
+
   handleClose = () => {
+    const nextState = {};
     if (this.state.anchorEl) {
-      this.setState({ anchorEl: null });
+      nextState.anchorEl = null;
+    }
+    if (this.state.open) {
+      nextState.open = false;
+    }
+    this.setState(nextState);
+  };
+
+  handleSave = () => {
+    const { make: { metadata, thumbnails } } = this.props;
+    if (!metadata.thumbnailStoragePath && thumbnails.length > 0) {
+      // もしサムネイルが設定おらず, サムネイルが撮影されている場合, まずサムネイルを設定させる
+      this.setState({
+        open: true
+      });
+      // サムネイルを設定したら自動的にセーブされるので、何もしない
+    } else {
+      this.props.saveWork();
     }
   };
 
@@ -199,7 +224,7 @@ class Work extends React.Component<Props, State> {
                   {make.saved ? `保存されています` : `ちょっとまってね...`}
                 </Typography>
               ) : (
-                <Button disabled={!canSave} onClick={this.props.saveWork}>
+                <Button disabled={!canSave} onClick={this.handleSave}>
                   保存する
                 </Button>
               )}
@@ -218,6 +243,12 @@ class Work extends React.Component<Props, State> {
                 open={Boolean(anchorEl)}
                 onClose={this.handleClose}
               >
+                <MenuItem
+                  disabled={make.thumbnails.length === 0}
+                  onClick={this.handleDialogOpen}
+                >
+                  カバー画像をセットする
+                </MenuItem>
                 {makeWorkData && makeWorkData.visibility !== 'private' ? (
                   <MenuItem
                     disabled={!canPublish}
@@ -244,6 +275,7 @@ class Work extends React.Component<Props, State> {
           </AppBar>
         ) : null}
         <Feeles src={src} storagePath={storagePath} replay={replay} />
+        <ThumbnailDialog open={this.state.open} onClose={this.handleClose} />
       </div>
     );
   }
