@@ -598,8 +598,11 @@ export const removeWork: removeWorkType = work => async (
 };
 
 export function canSave(state: $Call<GetState>) {
-  const { make: { files, hashOfFiles, saved, work }, auth: { user } } = state;
-  if (!files || !hashOfFiles || saved || !user) {
+  const { make: { files, hashOfFiles, saved, work, metadata, thumbnails }, auth: { user } } = state;
+  
+  // サムネイルが設定されているか、撮影されたものがある (設定することができる)
+  const hasThumbnail = metadata.thumbnailStoragePath || thumbnails.length > 0;
+  if (!files || !hashOfFiles || saved || !user || !hasThumbnail) {
     // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていない
     return false;
   }

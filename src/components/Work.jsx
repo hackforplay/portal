@@ -108,6 +108,19 @@ class Work extends React.Component<Props, State> {
     this.setState(nextState);
   };
 
+  handleSave = () => {
+    const { make: { metadata, thumbnails } } = this.props;
+    if (!metadata.thumbnailStoragePath && thumbnails.length > 0) {
+      // もしサムネイルが設定おらず, サムネイルが撮影されている場合, まずサムネイルを設定させる
+      this.setState({
+        open: true
+      });
+      // サムネイルを設定したら自動的にセーブされるので、何もしない
+    } else {
+      this.props.saveWork();
+    }
+  };
+
   handleSetPublic = () => {
     this.props.setWorkVisibility('public');
     this.handleClose();
@@ -211,7 +224,7 @@ class Work extends React.Component<Props, State> {
                   {make.saved ? `保存されています` : `ちょっとまってね...`}
                 </Typography>
               ) : (
-                <Button disabled={!canSave} onClick={this.props.saveWork}>
+                <Button disabled={!canSave} onClick={this.handleSave}>
                   保存する
                 </Button>
               )}
