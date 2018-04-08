@@ -23,6 +23,7 @@
     "eslint-plugin-jsx-a11y": "5.1.1",
     "eslint-plugin-react": "7.1.0",
     "extract-text-webpack-plugin": "3.0.0",
+    "feeles-ide": "^0.2.1",
     "file-loader": "0.11.2",
     "firebase": "^4.9.0",
     "firebaseui": "^2.5.1",
@@ -71,8 +72,7 @@
     "test": "node scripts/test.js --env=jsdom",
     "flow": "flow",
     "precommit": "lint-staged && flow check",
-    "svgr":
-      "./node_modules/.bin/svgr -d ./src/icons/ ./src/resources/ --template ./svgr-template.js --ext jsx --no-title --no-dimensions --no-view-box --replace-attr-value=\"#2E2E2E=currentColor\""
+    "svgr": "./node_modules/.bin/svgr -d ./src/icons/ ./src/resources/ --template ./svgr-template.js --ext jsx --no-title --no-dimensions --no-view-box --replace-attr-value=\"#2E2E2E=currentColor\""
   },
   "devDependencies": {
     "babel-eslint": "^8.1.2",
@@ -85,8 +85,12 @@
     "svgr": "^1.9.1"
   },
   "jest": {
-    "collectCoverageFrom": ["src/**/*.{js,jsx}"],
-    "setupFiles": ["<rootDir>/config/polyfills.js"],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ],
+    "setupFiles": [
+      "<rootDir>/config/polyfills.js"
+    ],
     "testMatch": [
       "<rootDir>/src/**/__tests__/**/*.js?(x)",
       "<rootDir>/src/**/?(*.)(spec|test).js?(x)"
@@ -98,14 +102,25 @@
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
       "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
-    "transformIgnorePatterns": ["[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"],
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
+    ],
     "moduleNameMapper": {
       "^react-native$": "react-native-web"
     },
-    "moduleFileExtensions": ["web.js", "js", "json", "web.jsx", "jsx", "node"]
+    "moduleFileExtensions": [
+      "web.js",
+      "js",
+      "json",
+      "web.jsx",
+      "jsx",
+      "node"
+    ]
   },
   "babel": {
-    "presets": ["react-app"]
+    "presets": [
+      "react-app"
+    ]
   },
   "eslintConfig": {
     "extends": "react-app"
