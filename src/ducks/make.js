@@ -108,14 +108,14 @@ export default (state: State = initialState, action: Action): State => {
         hashOfFiles: hashFiles(action.payload)
       };
     case CHANGE:
-      if ( hashFiles(action.payload) === state.hashOfFiles) {
+      if (hashFiles(action.payload) === state.hashOfFiles) {
         return state; // 変更なし
       }
       return {
         ...state,
         saved: false,
         files: action.payload,
-      // JSON 文字列から MD5 ハッシュを計算
+        // JSON 文字列から MD5 ハッシュを計算
         hashOfFiles: hashFiles(action.payload)
       };
     case METADATA:
@@ -631,7 +631,7 @@ export function canRemove(state: $Call<GetState>) {
 const hashFilesCache: WeakMap<Array<{}>, string> = new WeakMap();
 export function hashFiles(files: Array<{}>) {
   const cache = hashFilesCache.get(files);
-  if (cache) return cache; 
+  if (cache) return cache;
   const hash = md5(JSON.stringify(files));
   hashFilesCache.set(files, hash);
   return hash;
