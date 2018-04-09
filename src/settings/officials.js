@@ -36,7 +36,9 @@ const officials: officialsType = [
   {
     path: '/officials/make-rpg',
     replayable: true,
-    work: makeItem('https://make-rpg.hackforplay.xyz/make-rpg.json')
+    work: makeItem(
+      'https://corporate-203c7.firebaseapp.com/make-rpg/index.json'
+    )
   },
   {
     path: '/officials/pg-colosseum',
