@@ -54,6 +54,7 @@ export type WorkData = {
 
 type migrateType = (old: WorkData) => WorkData;
 const migrate: migrateType = old => ({
+  ...old,
   id: old.id,
   path: `/products/${old.search || old.id}`,
   title: old.title,
