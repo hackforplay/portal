@@ -1,7 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
-import { h4p } from 'feeles-ide';
 
 import type { changeWorkType, thumbnailType } from '../ducks/make';
 
@@ -57,7 +56,9 @@ export default class Feeles extends React.Component<Props, State> {
 
   componentWillUnmount() {
     if (this.state.rootEl) {
-      h4p.unmount(this.state.rootEl);
+      import('feeles-ide').then(({ h4p }) => {
+        h4p.unmount(this.state.rootEl);
+      });
     }
   }
 
@@ -78,7 +79,9 @@ export default class Feeles extends React.Component<Props, State> {
           props.disableLocalSave = true; // デフォルトのメニューを出さない
           props.disableScreenShotCard = true; // スクリーンショットカードを無効化
         }
-        h4p(props);
+        import('feeles-ide').then(({ h4p }) => {
+          h4p(props);
+        });
       });
     }
   }
