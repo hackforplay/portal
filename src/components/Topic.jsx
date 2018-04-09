@@ -99,6 +99,7 @@ class Topic extends React.Component<Props> {
             style={{
               position: 'relative',
               height: 480,
+              maxHeight: '50vh',
               width: '100%',
               backgroundImage: `url(${topbackUrl})`,
               backgroundSize: 'cover',
