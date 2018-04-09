@@ -19,16 +19,6 @@ type State = {
   loading: boolean
 };
 
-// <script async defer src="/h4p.js"></script> が挿入するグローバル変数を受け取る
-const h4pPromise = new Promise((resolve, reject) => {
-  const timer = setInterval(() => {
-    if (window.h4p) {
-      clearInterval(timer);
-      resolve(window.h4p);
-    }
-  }, 100);
-});
-
 const replayClassName = 'replay';
 const rootStyle = (padding: number) => ({
   [`&.${replayClassName}`]: {
@@ -65,31 +55,31 @@ export default class Feeles extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    h4pPromise.then(h4p => {
-      if (this.state.rootEl) {
+    if (this.state.rootEl) {
+      import('feeles-ide').then(({ h4p }) => {
         h4p.unmount(this.state.rootEl);
-      }
-    });
+      });
+    }
   }
 
   handleLoad() {
     const { src, replay } = this.props;
     if (this.state.loading && this.state.rootEl && src) {
-      h4pPromise.then(h4p => {
-        this.setState({ loading: false }, () => {
-          const props = {
-            rootElement: this.state.rootEl,
-            jsonURL: src
-          };
-          // TODO: Feeles の機能をなくして portal の機能に一元化する
-          // Feeles の機能と portal の機能が両立している場合があるので,
-          // replay === false でも onChange は捉える
-          props.onChange = this.props.changeWork;
-          if (replay) {
-            props.onThumbnailChange = this.props.thumbnail;
-            props.disableLocalSave = true; // デフォルトのメニューを出さない
-            props.disableScreenShotCard = true; // スクリーンショットカードを無効化
-          }
+      this.setState({ loading: false }, () => {
+        const props = {
+          rootElement: this.state.rootEl,
+          jsonURL: src
+        };
+        // TODO: Feeles の機能をなくして portal の機能に一元化する
+        // Feeles の機能と portal の機能が両立している場合があるので,
+        // replay === false でも onChange は捉える
+        props.onChange = this.props.changeWork;
+        if (replay) {
+          props.onThumbnailChange = this.props.thumbnail;
+          props.disableLocalSave = true; // デフォルトのメニューを出さない
+          props.disableScreenShotCard = true; // スクリーンショットカードを無効化
+        }
+        import('feeles-ide').then(({ h4p }) => {
           h4p(props);
         });
       });
