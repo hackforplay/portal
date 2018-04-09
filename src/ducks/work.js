@@ -716,9 +716,9 @@ export const addWorkView: addWorkViewType = path => async (
   }
 
   const work = getWorkByPath(getState(), path);
-  if (!user || (work.data && work.data.uid !== user.uid)) {
-    // 自分のステージでないなら、ステージの views コレクションにドキュメントを追加
-    dispatch(view(path));
+  if (!work.data || (user && work.data && work.data.uid === user.uid)) {
+    // ステージがサーバーにないか, 自分のステージである場合はスルー
+    return;
   }
 
   await firebase
@@ -729,6 +729,7 @@ export const addWorkView: addWorkViewType = path => async (
       labels: {},
       createdAt: new Date()
     });
+  dispatch(view(path, {}));
 };
 
 export function getWorksByUserId(
