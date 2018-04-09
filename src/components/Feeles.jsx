@@ -5,6 +5,7 @@ import { withStyles } from 'material-ui/styles';
 import type { changeWorkType, thumbnailType } from '../ducks/make';
 
 type Props = {
+  onMessage?: () => {},
   changeWork: changeWorkType,
   thumbnail: thumbnailType,
   src: string | void,
@@ -38,6 +39,7 @@ const rootStyle = (padding: number) => ({
 })
 export default class Feeles extends React.Component<Props, State> {
   static defaultProps = {
+    onMessage: () => {},
     src: ''
   };
 
@@ -74,6 +76,7 @@ export default class Feeles extends React.Component<Props, State> {
         // Feeles の機能と portal の機能が両立している場合があるので,
         // replay === false でも onChange は捉える
         props.onChange = this.props.changeWork;
+        props.onMessage = this.props.onMessage;
         if (replay) {
           props.onThumbnailChange = this.props.thumbnail;
           props.disableLocalSave = true; // デフォルトのメニューを出さない
