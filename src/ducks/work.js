@@ -2,6 +2,7 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
 
+import * as trending from './trending';
 import * as helpers from './helpers';
 import type { Statefull } from './helpers';
 import type { UserType } from './user';
@@ -473,7 +474,7 @@ export const fetchTrendingWorks: fetchTrendingWorksType = () => async (
 
   try {
     dispatch(loadList('trending'));
-    const result = await import('./trending.js');
+    const result = trending;
     dispatch(setList('trending', result.data.map(migrate)));
   } catch (error) {
     // dispatch({ type: LOAD_FAILUAR, payload: error });
