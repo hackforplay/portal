@@ -15,7 +15,7 @@ import theme from '../settings/theme';
 import Feeles from '../containers/Feeles';
 import EditableTitleTextField from '../containers/EditableTitleTextField';
 import ThumbnailDialog from '../containers/ThumbnailDialog';
-import type { WorkItemType } from '../ducks/work';
+import type { WorkItemType, addWorkViewLabelType } from '../ducks/work';
 import type {
   saveWorkType,
   setWorkVisibilityType,
@@ -25,6 +25,7 @@ import type {
 } from '../ducks/make';
 
 type Props = {
+  addWorkViewLabel: addWorkViewLabelType,
   saveWork: saveWorkType,
   setWorkVisibility: setWorkVisibilityType,
   setMetadata: setMetadataType,

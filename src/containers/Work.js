@@ -7,6 +7,7 @@ import {
   getWorkByPath,
   fetchWorkByPath,
   addWorkView,
+  addWorkViewLabel,
   isAuthUsersWork
 } from '../ducks/work';
 import {
@@ -52,6 +53,7 @@ const mapDispatchToProps = {
   trashWork,
   fetchWorkByPath,
   addWorkView,
+  addWorkViewLabel,
   saveWork,
   editExistingWork,
   setWorkVisibility,

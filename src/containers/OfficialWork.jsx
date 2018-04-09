@@ -6,6 +6,9 @@ import officials from '../settings/officials';
 import Work from '../components/Work';
 import * as helpers from '../ducks/helpers';
 import {
+  addWorkViewLabel
+} from '../ducks/work'
+import {
   changeWork,
   trashWork,
   saveWork,
@@ -43,6 +46,7 @@ const mapStateToProps = (state: StoreState, ownProps) => {
 };
 
 const mapDispatchToProps = {
+  addWorkViewLabel,
   changeWork,
   trashWork,
   saveWork,
