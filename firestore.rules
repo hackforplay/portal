@@ -12,6 +12,8 @@ service cloud.firestore {
 
       match /views/{view} {
         allow create: if request.resource.data.uid == null || request.auth.uid == request.resource.data.uid;
+        // Allow a update if the view was created less than one day ago
+        allow update: if (resource.data.uid == null || resource.data.uid == request.auth.uid) && request.time < resource.data.createdAt + duration.value(1, 'd');
       }
     }
   }
