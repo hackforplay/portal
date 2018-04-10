@@ -7,6 +7,7 @@ import {
   getWorkByPath,
   fetchWorkByPath,
   addWorkView,
+  addWorkViewLabel,
   isAuthUsersWork
 } from '../ducks/work';
 import {
@@ -52,6 +53,7 @@ const mapDispatchToProps = {
   trashWork,
   fetchWorkByPath,
   addWorkView,
+  addWorkViewLabel,
   saveWork,
   editExistingWork,
   setWorkVisibility,
@@ -66,9 +68,10 @@ export default class Work extends React.Component {
     const { url, params } = this.props.match;
     const path = getPath(url, params);
     // ステージデータがなければ取得
-    this.props.fetchWorkByPath(path);
-    // ステージのビューカウントを増やす
-    this.props.addWorkView(path);
+    this.props.fetchWorkByPath(path).then(() => {
+      // ステージのビューカウントを増やす
+      this.props.addWorkView(path);
+    });
     if (this.props.replay) {
       this.props.editExistingWork(this.props.work);
     }

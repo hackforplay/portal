@@ -96,7 +96,9 @@ export type Action =
     |}
   | {|
       +type: 'portal/work/VIEW',
-      +path: string
+      +id: string,
+      +path: string,
+      +labels: {}
     |}
   | {|
       +type: 'portal/work/LOAD_LIST',
@@ -149,6 +151,11 @@ export type State = {
   search: {
     query: string,
     result: WorkCollectionType
+  },
+  currentView: {
+    path: string,
+    id: string,
+    labels: {}
   }
 };
 
@@ -161,6 +168,11 @@ const initialState: State = {
   search: {
     query: '',
     result: helpers.initialized()
+  },
+  currentView: {
+    path: '',
+    id: '',
+    labels: {}
   }
 };
 
@@ -294,6 +306,20 @@ export default (state: State = initialState, action: Action): State => {
         byPath: byPathReducer(state.byPath, action),
         search
       };
+    case VIEW:
+      const inherit =
+        state.currentView.path === action.path ? state.currentView.labels : {};
+      return {
+        ...state,
+        currentView: {
+          path: action.path,
+          id: action.id,
+          labels: {
+            ...inherit,
+            ...action.labels
+          }
+        }
+      };
     default:
       return state;
   }
@@ -349,9 +375,11 @@ export const invalid = (path: string, error: string): Action => ({
   error
 });
 
-export const view = (path: string): Action => ({
+export const view = (id: string, path: string, labels: {}): Action => ({
   type: VIEW,
-  path
+  id,
+  path,
+  labels
 });
 
 type loadListType = (list: listType) => Action;
@@ -718,12 +746,14 @@ export const addWorkView: addWorkViewType = path => async (
   }
 
   const work = getWorkByPath(getState(), path);
-  if (!user || (work.data && work.data.uid !== user.uid)) {
-    // 自分のステージでないなら、ステージの views コレクションにドキュメントを追加
-    dispatch(view(path));
+  if (!work.data || (user && work.data && work.data.uid === user.uid)) {
+    // ステージがサーバーにないか, 自分のステージである場合はスルー
+    return;
   }
 
-  await firebase
+  // ステージの views コレクションにドキュメントを追加
+  // works の histories にも自動で追加される
+  const ref = await firebase
     .firestore()
     .collection(`${path}/views`)
     .add({
@@ -731,6 +761,39 @@ export const addWorkView: addWorkViewType = path => async (
       labels: {},
       createdAt: new Date()
     });
+  dispatch(view(ref.id, path, {}));
+};
+
+export type addWorkViewLabelType = (
+  path: string,
+  name: string,
+  value: string
+) => (dispatch: Dispatch, getState: GetState) => Promise<*>;
+
+export const addWorkViewLabel: addWorkViewLabelType = (
+  path,
+  name,
+  value
+) => async (dispatch, getState) => {
+  const { work: { currentView } } = getState();
+  if (path !== currentView.path) {
+    // 現在プレイ中のステージでないならスルー
+    return;
+  }
+  if (currentView.labels[name] === value) {
+    // すでに登録された値ならスルー
+    return;
+  }
+
+  // labels を追加
+  await firebase
+    .firestore()
+    .doc(`${path}/views/${currentView.id}`)
+    .update({
+      [`labels.${name}`]: value,
+      updatedAt: new Date()
+    });
+  dispatch(view(currentView.id, path, { [name]: value }));
 };
 
 export function getWorksByUserId(

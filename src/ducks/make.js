@@ -79,7 +79,8 @@ export type Action =
 
 export type State = {
   work: WorkItemType,
-  saved: boolean,
+  saved: boolean, // 現時点での files が保存されているか
+  changed: boolean, // 起動時から一度でもファイルが変更されたか
   metadata: Metadata,
   thumbnails: Array<string>,
   files?: Array<{}>,
@@ -89,6 +90,7 @@ export type State = {
 const initialState: State = {
   work: helpers.initialized(),
   saved: false,
+  changed: false,
   metadata: {},
   thumbnails: [],
   hashOfFiles: ''
@@ -101,6 +103,7 @@ export default (state: State = initialState, action: Action): State => {
       return {
         work: helpers.empty(),
         saved: false,
+        changed: false,
         files: action.payload,
         metadata: {},
         thumbnails: [],
@@ -114,6 +117,7 @@ export default (state: State = initialState, action: Action): State => {
       return {
         ...state,
         saved: false,
+        changed: true,
         files: action.payload,
         // JSON 文字列から MD5 ハッシュを計算
         hashOfFiles: hashFiles(action.payload)
@@ -136,6 +140,7 @@ export default (state: State = initialState, action: Action): State => {
       return {
         work: helpers.initialized(),
         saved: false,
+        changed: false,
         metadata: {},
         thumbnails: [],
         hashOfFiles: ''

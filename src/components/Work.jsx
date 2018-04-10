@@ -15,7 +15,7 @@ import theme from '../settings/theme';
 import Feeles from '../containers/Feeles';
 import EditableTitleTextField from '../containers/EditableTitleTextField';
 import ThumbnailDialog from '../containers/ThumbnailDialog';
-import type { WorkItemType } from '../ducks/work';
+import type { WorkItemType, addWorkViewLabelType } from '../ducks/work';
 import type {
   saveWorkType,
   setWorkVisibilityType,
@@ -25,6 +25,7 @@ import type {
 } from '../ducks/make';
 
 type Props = {
+  addWorkViewLabel: addWorkViewLabelType,
   saveWork: saveWorkType,
   setWorkVisibility: setWorkVisibilityType,
   setMetadata: setMetadataType,
@@ -141,6 +142,23 @@ class Work extends React.Component<Props, State> {
     if (window.confirm(message)) {
       this.props.removeWork();
       this.handleClose();
+    }
+  };
+
+  // Feeles で実行している iframe から message を受け取った
+  handleMessage = event => {
+    const { data: { value: { labelName, labelValue } } } = event;
+    const { make, work } = this.props;
+    if (labelName) {
+      // path に対して実行 (その path とは, 改変前なら work.data.path, 改変後なら make.work.data.path)
+      const path = make.changed
+        ? make.work.data ? make.work.data.path : null
+        : work.data ? work.data.path : null;
+      if (path) {
+        // もし現在プレイ中の work の path が存在するなら labels に新たなラベルを追加
+        // e.g. { 'gameclear': 'gameclear' }
+        this.props.addWorkViewLabel(path, labelName, labelValue);
+      }
     }
   };
 
@@ -274,7 +292,12 @@ class Work extends React.Component<Props, State> {
             </Toolbar>
           </AppBar>
         ) : null}
-        <Feeles src={src} storagePath={storagePath} replay={replay} />
+        <Feeles
+          src={src}
+          storagePath={storagePath}
+          replay={replay}
+          onMessage={this.handleMessage}
+        />
         <ThumbnailDialog open={this.state.open} onClose={this.handleClose} />
       </div>
     );
