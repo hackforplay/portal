@@ -1,9 +1,13 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
-import { h4p } from 'feeles-ide';
+// import { h4p } from 'feeles-ide';
+import * as feelesIde from 'feeles-ide';
 
 import type { changeWorkType, thumbnailType } from '../ducks/make';
+
+console.log('feelesIde', feelesIde);
+const h4p = feelesIde.h4p || feelesIde;
 
 type Props = {
   onMessage?: () => {},
