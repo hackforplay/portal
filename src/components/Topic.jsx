@@ -12,8 +12,6 @@ import Typography from 'material-ui/Typography';
 
 import theme from '../settings/theme';
 import WorkList from '../containers/WorkList';
-import topbackUrl from '../resources/topback.jpg';
-import toplogoUrl from '../resources/toplogo_ja.png';
 import beginner from '../resources/beginner.png';
 import diamond_pink from '../resources/diamond_pink.png';
 import mail from '../resources/mail.png';
@@ -26,11 +24,16 @@ import logo from '../resources/logo.png';
 import fest1 from '../resources/fest1.jpg';
 import fest2 from '../resources/fest2.jpg';
 import news1 from '../resources/news1.jpg';
+import top1 from '../resources/h4p_top_01.gif';
+import top2 from '../resources/h4p_top_02.gif';
+import top3 from '../resources/h4p_top_03.gif';
 import type { WorkCollectionType } from '../ducks/work';
 
 type Props = {
   classes: {
     root: string,
+    slider: string,
+    sliderItem: string,
     workList: string,
     button: string,
     paper: string,
@@ -49,6 +52,25 @@ type Props = {
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 32
+  },
+  slider: {
+    '& .slick-prev': {
+      left: 25,
+      zIndex: 1
+    },
+    '& .slick-next': {
+      right: 25,
+      zIndex: 1
+    }
+  },
+  sliderItem: {
+    position: 'relative',
+    height: 480,
+    maxHeight: '50vh',
+    width: '100%',
+    objectFit: 'cover',
+    // https://github.com/bfred-it/object-fit-images/
+    fontFamily: "'object-fit: contain;'"
   },
   workList: {
     textAlign: 'center'
@@ -94,37 +116,29 @@ class Topic extends React.Component<Props> {
     const { classes } = this.props;
     return (
       <div>
-        <Slider dots infinite lazyLoad arrows={false}>
-          <div
-            style={{
-              position: 'relative',
-              height: 480,
-              maxHeight: '50vh',
-              width: '100%',
-              backgroundImage: `url(${topbackUrl})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-          >
-            <div
-              style={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                textAlign: 'center'
-              }}
-            >
-              <img
-                src={toplogoUrl}
-                alt="Hack for Play"
-                style={{
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                  paddingTop: 60
-                }}
-              />
-            </div>
-          </div>
+        <Slider
+          dots
+          infinite
+          speed={500}
+          slidesToShow={1}
+          slidesToScroll={1}
+          className={classes.slider}
+        >
+          <img
+            src={top1}
+            alt={`スライムがたおせない！？これは・・・バグっているね！`}
+            className={classes.sliderItem}
+          />
+          <img
+            src={top2}
+            alt={`本をひらいてみよう。おかしいのはどこ？`}
+            className={classes.sliderItem}
+          />
+          <img
+            src={top3}
+            alt={`プログラミングで、せかいをかきかえてみよう！`}
+            className={classes.sliderItem}
+          />
         </Slider>
         <div className={classes.root}>
           <Grid container spacing={24}>
