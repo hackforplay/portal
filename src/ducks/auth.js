@@ -61,12 +61,15 @@ export const signedIn = (user: User): Action => ({
 export type initializeAuthType = () => (
   dispatch: Dispatch,
   getState: GetState
-) => void;
+) => Promise<void>;
 
-export const initializeAuth: initializeAuthType = () => (
+export const initializeAuth: initializeAuthType = () => async (
   dispatch,
   getState
 ) => {
+  // 現在のセッションまたはタブでのみ状態が維持され、ユーザーが認証を受けたタブやウィンドウを閉じるとクリアされる
+  await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+
   // firebase.auth().signInWithRedirect(provider); されて戻ってきた
   firebase.auth().getRedirectResult();
 
