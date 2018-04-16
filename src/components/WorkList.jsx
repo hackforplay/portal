@@ -219,19 +219,20 @@ export default class WorkList extends React.Component<Props> {
                     />
                     <CardContent>
                       <Typography type="caption">
-                        {`プレイ回数 ${item.viewsNum} 回・${this.fromNow(
-                          item.createdAt
-                        )}${
-                          showVisibility
-                            ? {
-                                public: '・公開中',
-                                limited: '・限定公開',
-                                private: '・非公開'
-                              }[item.visibility]
-                            : ''
-                        }${
-                          item.clearRate ? `・${Math.floor(item.clearRate * 100)}%の人がクリア` : ''
-                        }`}
+                        {item.viewsNum
+                          ? `プレイ回数 ${item.viewsNum} 回・`
+                          : ''}
+                        {this.fromNow(item.createdAt)}
+                        {showVisibility
+                          ? {
+                              public: '・公開中',
+                              limited: '・限定公開',
+                              private: '・非公開'
+                            }[item.visibility]
+                          : ''}
+                        {item.clearRate
+                          ? `・${Math.floor(item.clearRate * 100)}%の人がクリア`
+                          : ''}
                       </Typography>
                     </CardContent>
                   </Card>
