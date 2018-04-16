@@ -49,3 +49,33 @@ export const decrementViewsCount = functions.firestore
       }
     });
   });
+
+export const calcurateClearRate = functions.firestore
+  .document('/works/{workId}/views/{viewId}')
+  .onUpdate(event => {
+    // views コレクションの labels が変更されたら,
+    // 直近の views を使って cleared / all を計算する
+    const { workId } = event.params;
+
+    const workRef = admin.firestore().doc(`/works/${workId}`);
+
+    return admin.firestore().runTransaction(async t => {
+      const doc = await t.get(workRef);
+      if (doc.exists) {
+        // 全部は計算できないので直近のドキュメントだけ...
+        // TODO: 毎回フェッチしなくても良い計算方法にする
+        const viewsSnapShot = await workRef
+          .collection('views')
+          .orderBy('createdAt', 'desc')
+          .limit(20)
+          .get();
+        const all = viewsSnapShot.size;
+        const cleared = viewsSnapShot.docs.filter(
+          snapshot => snapshot.get('labels.gameclear') === 'gameclear'
+        ).length;
+        const clearRate = cleared / all;
+
+        t.update(workRef, { clearRate });
+      }
+    });
+  });
