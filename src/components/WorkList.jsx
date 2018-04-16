@@ -229,6 +229,8 @@ export default class WorkList extends React.Component<Props> {
                                 private: '・非公開'
                               }[item.visibility]
                             : ''
+                        }${
+                          item.clearRate ? `・${Math.floor(item.clearRate * 100)}%の人がクリア` : ''
                         }`}
                       </Typography>
                     </CardContent>
