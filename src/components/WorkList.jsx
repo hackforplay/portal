@@ -220,9 +220,11 @@ export default class WorkList extends React.Component<Props> {
                     <CardContent>
                       <Typography type="caption">
                         {item.viewsNum
-                          ? `プレイ回数 ${item.viewsNum} 回・`
+                          ? `プレイ回数 ${item.viewsNum} 回`
+                          : 'NEW!'}
+                        {item.createdAt
+                          ? `・${this.fromNow(item.createdAt)}`
                           : ''}
-                        {this.fromNow(item.createdAt)}
                         {showVisibility
                           ? {
                               public: '・公開中',
