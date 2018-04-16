@@ -31,7 +31,9 @@ const officials: officialsType = [
   {
     path: '/officials/hack-rpg',
     replayable: false,
-    work: makeItem('https://hack-rpg.hackforplay.xyz/hack-rpg.json')
+    work: makeItem(
+      'https://corporate-203c7.firebaseapp.com/hack-rpg/index.json'
+    )
   },
   {
     path: '/officials/make-rpg',
