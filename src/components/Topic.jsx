@@ -122,6 +122,8 @@ class Topic extends React.Component<Props> {
           speed={500}
           slidesToShow={1}
           slidesToScroll={1}
+          autoplay
+          autoplaySpeed={10000}          
           className={classes.slider}
         >
           <img
