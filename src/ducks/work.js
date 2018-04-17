@@ -48,6 +48,7 @@ export type WorkData = {
   +thumbnailStoragePath?: string,
   +assetStoragePath?: string,
   +viewsNum: number,
+  +clearRate: number,
   +favsNum: number,
   +createdAt: string | Date,
   +updatedAt: string | Date | null
@@ -62,6 +63,7 @@ const migrate: migrateType = old => ({
   description: old.description,
   author: old.author,
   viewsNum: old.views || 0,
+  clearRate: 0,
   favsNum: old.favs || 0,
   visibility: 'public',
   createdAt: old.created_at || '',
