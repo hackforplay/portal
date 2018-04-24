@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import classNames from 'classnames';
+import { Prompt } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -298,6 +299,7 @@ class Work extends React.Component<Props, State> {
           replay={replay}
           onMessage={this.handleMessage}
         />
+        <Prompt message="このページを はなれますか？" />
         <ThumbnailDialog open={this.state.open} onClose={this.handleClose} />
       </div>
     );
