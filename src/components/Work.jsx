@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import classNames from 'classnames';
-import { Prompt } from 'react-router-dom';
+import { Prompt, Redirect } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -45,7 +45,8 @@ type Props = {
   canPublish: boolean,
   canRemove: boolean,
   make: MakeState,
-  isPreparing: boolean | void
+  isPreparing: boolean | void,
+  redirect?: string
 } & ContextRouter;
 
 type State = {
@@ -83,7 +84,8 @@ type State = {
 class Work extends React.Component<Props, State> {
   static defaultProps = {
     replay: false,
-    isPreparing: false
+    isPreparing: false,
+    redirect: ''
   };
 
   state = {
@@ -172,7 +174,8 @@ class Work extends React.Component<Props, State> {
       canRemove,
       replay,
       make,
-      isPreparing
+      isPreparing,
+      redirect
     } = this.props;
     const { anchorEl } = this.state;
 
@@ -299,7 +302,8 @@ class Work extends React.Component<Props, State> {
           replay={replay}
           onMessage={this.handleMessage}
         />
-        <Prompt message="このページを はなれますか？" />
+        <Prompt when={!redirect} message="このページを はなれますか？" />
+        {redirect && (<Redirect to={redirect}/>)}
         <ThumbnailDialog open={this.state.open} onClose={this.handleClose} />
       </div>
     );
