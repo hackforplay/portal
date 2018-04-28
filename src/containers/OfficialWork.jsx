@@ -5,9 +5,7 @@ import { connect } from 'react-redux';
 import officials from '../settings/officials';
 import Work from '../components/Work';
 import * as helpers from '../ducks/helpers';
-import {
-  addWorkViewLabel
-} from '../ducks/work'
+import { addWorkViewLabel } from '../ducks/work';
 import {
   changeWork,
   trashWork,
@@ -31,6 +29,7 @@ const mapStateToProps = (state: StoreState, ownProps) => {
   });
   const work = source ? source.work : helpers.invalid('Not Found');
   const replayable = source ? source.replayable : false;
+  const makeWorkData = state.make.work.data;
 
   return {
     work,
@@ -39,6 +38,10 @@ const mapStateToProps = (state: StoreState, ownProps) => {
     canSave: canSave(state),
     canPublish: canPublish(state),
     canRemove: canRemove(state),
+    // official(キット)を保存したとき /works/{id} にリダイレクトする
+    // render できたら redirect する
+    redirect:
+      makeWorkData && makeWorkData.id ? `/works/${makeWorkData.id}` : '',
     // URL が間違っているとき null を render する
     // replay かどうかを確かめるために onAuthStateChanged を待つ
     renderNull: !state.auth.initialized
@@ -59,18 +62,6 @@ const mapDispatchToProps = {
 export default class OfficialWork extends React.Component {
   componentWillUnmount() {
     this.props.trashWork();
-  }
-
-  shouldComponentUpdate(nextProps) {
-    const { history } = this.props;
-    const makeWorkData = nextProps.make.work.data;
-
-    if (makeWorkData && makeWorkData.id) {
-      // official(キット)を保存したとき /works/{id} にリダイレクトする
-      history.replace(`/works/${makeWorkData.id}`);
-      return false;
-    }
-    return true;
   }
 
   render() {
