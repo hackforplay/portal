@@ -302,8 +302,14 @@ class Work extends React.Component<Props, State> {
           replay={replay}
           onMessage={this.handleMessage}
         />
-        <Prompt when={!redirect} message="このページを はなれますか？" />
-        {redirect && (<Redirect to={redirect}/>)}
+        <Prompt
+          when={!redirect}
+          message={next =>
+            next.pathname === window.location.pathname ||
+            'このページを はなれますか？'
+          }
+        />
+        {redirect && <Redirect to={redirect} />}
         <ThumbnailDialog open={this.state.open} onClose={this.handleClose} />
       </div>
     );
