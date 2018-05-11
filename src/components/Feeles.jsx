@@ -77,8 +77,8 @@ export default class Feeles extends React.Component<Props, State> {
         // replay === false でも onChange は捉える
         props.onChange = this.props.changeWork;
         props.onMessage = this.props.onMessage;
+        props.onThumbnailChange = this.props.thumbnail;
         if (replay) {
-          props.onThumbnailChange = this.props.thumbnail;
           props.disableLocalSave = true; // デフォルトのメニューを出さない
           props.disableScreenShotCard = true; // スクリーンショットカードを無効化
         }
