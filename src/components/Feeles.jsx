@@ -82,6 +82,12 @@ export default class Feeles extends React.Component<Props, State> {
           props.disableLocalSave = true; // デフォルトのメニューを出さない
           props.disableScreenShotCard = true; // スクリーンショットカードを無効化
         }
+        // WIP
+        // TODO: ScreenShot Card の廃止
+        // 暫定的に make-rpg 以外では thumbnail の機能を排除する
+        if (!replay && window.location.pathname !== '/officials/make-rpg') {
+          delete props.onThumbnailChange;
+        }
         import('feeles-ide').then(({ h4p }) => {
           h4p(props);
         });
