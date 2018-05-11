@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import classNames from 'classnames';
-import { Prompt, Redirect } from 'react-router-dom';
+import { Prompt, Redirect, withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -54,6 +54,7 @@ type State = {
   open: boolean
 };
 
+@withRouter
 @withStyles({
   chip: {
     marginRight: theme.spacing.unit * 2
@@ -150,7 +151,7 @@ class Work extends React.Component<Props, State> {
 
   // Feeles で実行している iframe から message を受け取った
   handleMessage = event => {
-    const { data: { value: { labelName, labelValue } } } = event;
+    const { data: { value: { labelName, labelValue, href } } } = event;
     const { make, work } = this.props;
     if (labelName) {
       // path に対して実行 (その path とは, 改変前なら work.data.path, 改変後なら make.work.data.path)
@@ -162,6 +163,21 @@ class Work extends React.Component<Props, State> {
         // e.g. { 'gameclear': 'gameclear' }
         this.props.addWorkViewLabel(path, labelName, labelValue);
       }
+    }
+    if (href) {
+      // origin が同じか検証
+      const a = document.createElement('a');
+      a.href = href;
+      if (a.origin !== window.location.origin) {
+        console.error(`Cannot open ${href} because different origin`);
+        return;
+      }
+      // react-router で遷移
+      this.props.history.push({
+        hash: a.hash,
+        pathname: a.pathname,
+        search: a.search
+      });
     }
   };
 
