@@ -6,9 +6,9 @@ import * as functions from 'firebase-functions';
 
 export const incrementViewsCount = functions.firestore
   .document('/works/{workId}/views/{viewId}')
-  .onCreate(async event => {
-    const { workId, viewId } = event.params;
-    const { uid, createdAt } = event.data.data();
+  .onCreate(async (data, context) => {
+    const { workId, viewId } = context.params;
+    const { uid, createdAt } = data.data();
     // もしログインユーザーなら、 users.histories (履歴) に追加する
     if (uid) {
       await admin
@@ -35,9 +35,9 @@ export const incrementViewsCount = functions.firestore
 
 export const decrementViewsCount = functions.firestore
   .document('/works/{workId}/views/{viewId}')
-  .onDelete(event => {
+  .onDelete((data, context) => {
     // views コレクションからドキュメントが削除されたら、 viewsCount をデクリメントする
-    const { workId } = event.params;
+    const { workId } = context.params;
 
     const workRef = admin.firestore().doc(`/works/${workId}`);
 
@@ -52,10 +52,10 @@ export const decrementViewsCount = functions.firestore
 
 export const calcurateClearRate = functions.firestore
   .document('/works/{workId}/views/{viewId}')
-  .onUpdate(event => {
+  .onUpdate((data, context) => {
     // views コレクションの labels が変更されたら,
     // 直近の views を使って cleared / all を計算する
-    const { workId } = event.params;
+    const { workId } = context.params;
 
     const workRef = admin.firestore().doc(`/works/${workId}`);
 
