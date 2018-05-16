@@ -1,1 +1,1 @@
-web: node scripts/build.js && firebase serve --only hosting
+web: firebase serve --only hosting

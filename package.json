@@ -69,6 +69,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "GIT_COMMIT_HASH=$(git rev-parse HEAD) node scripts/build.js",
+    "heroku-postbuild": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "flow": "flow",
     "precommit": "lint-staged && flow check",
