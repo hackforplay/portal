@@ -280,7 +280,7 @@ class Topic extends React.Component<Props> {
               </Paper>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <Paper elevation={1} className={classes.paper}>
                 <Typography
                   type="title"
@@ -317,9 +317,9 @@ class Topic extends React.Component<Props> {
                   詳細はこちら
                 </Button>
               </Paper>
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <Paper elevation={1} className={classes.paper}>
                 <div>
                   <Typography
