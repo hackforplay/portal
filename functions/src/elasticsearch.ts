@@ -18,13 +18,13 @@ const elasticsearchFields = [
 
 export const indexWorksToElastic = functions.firestore
   .document('/works/{workId}')
-  .onWrite(event => {
-    console.log(event.data);
+  .onWrite((data, context) => {
+    console.log(data);
 
     // event.data と event.previous を比較して、インデックス対象のフィールドが変化していたときのみアップデート
-    const workData = event.data.data();
+    const workData = data.after.data();
     const specificData = _.pick(workData, elasticsearchFields);
-    const previousData = event.data.previous && event.data.previous.data();
+    const previousData = data.before.data();
 
     if (
       previousData &&
@@ -38,7 +38,7 @@ export const indexWorksToElastic = functions.firestore
       return Promise.resolve();
     }
 
-    const workId = event.data.id;
+    const { workId } = context.params;
 
     const elasticSearchConfig = functions.config().elasticsearch;
     const elasticsearchRequest = {
