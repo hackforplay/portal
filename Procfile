@@ -1,1 +1,1 @@
-web: npm run build && firebase serve --only hosting
+web: node scripts/build.js && firebase serve --only hosting
