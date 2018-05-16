@@ -1,1 +1,1 @@
-web: firebase serve --only hosting
+web: firebase serve --project default --only hosting
