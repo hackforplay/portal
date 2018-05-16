@@ -1,1 +1,1 @@
-web: firebase serve --project default --only hosting --port $PORT --token $FIREBASE_TOKEN
+web: firebase deploy --project earlybird --only hosting --port $PORT --token $FIREBASE_TOKEN

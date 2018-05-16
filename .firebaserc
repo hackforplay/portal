@@ -1,6 +1,7 @@
 {
   "projects": {
     "production": "hackforplay-production",
+    "earlybird": "hackforplay-earlybird",
     "default": "hackforplay-development"
   }
 }
