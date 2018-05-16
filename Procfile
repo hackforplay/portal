@@ -1,1 +1,1 @@
-web: firebase serve --project default --only hosting --token $FIREBASE_TOKEN
+web: firebase serve --project default --only hosting --port $PORT --token $FIREBASE_TOKEN
