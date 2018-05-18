@@ -1,6 +1,9 @@
 [
   {
-    "origin": ["https://www.hackforplay.xyz"],
+    "origin": [
+      "https://www.hackforplay.xyz",
+      "https://earlybird.hackforplay.xyz"
+    ],
     "responseHeader": ["Content-Type"],
     "method": ["GET", "HEAD", "DELETE"],
     "maxAgeSeconds": 3600
