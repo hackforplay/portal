@@ -9,6 +9,7 @@ import Typography from 'material-ui/Typography';
 import { MenuItem } from 'material-ui/Menu';
 import Popover from 'material-ui/Popover';
 import Button from 'material-ui/Button/Button';
+import Select from 'material-ui/Select';
 import grey from 'material-ui/colors/grey';
 import Home from 'material-ui-icons/Home';
 
@@ -29,7 +30,9 @@ type Props = {
     icon: string,
     avatar: string,
     title: string,
-    separator: string
+    separator: string,
+    select: string,
+    selectIcon: string
   },
   isSignedIn: boolean,
   user: UserType,
@@ -84,6 +87,14 @@ type State = {
       width: 1,
       height: 36
     }
+  },
+  select: {
+    marginLeft: 8,
+    marginRight: 8,
+    color: 'white'
+  },
+  selectIcon: {
+    color: 'white'
   }
 })
 class Header extends React.Component<Props, State> {
@@ -115,9 +126,24 @@ class Header extends React.Component<Props, State> {
     this.handleClose();
   };
 
+  handleVersionChange = (event: {}) => {
+    const subDomain = event.target.value;
+    const { pathname, search, hash, href } = window.location;
+    const url = `https://${subDomain}.hackforplay.xyz${pathname}${search}${hash}`;
+    if (href !== url) {
+      // サブドメインだけを www <==> earlybird に切り替える
+      window.location.assign(url);
+    }
+  };
+
   render() {
     const { classes, user, isSignedIn } = this.props;
     const { anchorEl } = this.state;
+
+    const { hostname } = window.location;
+    const isEarlyBird =
+      hostname.startsWith('earlybird') || hostname.startsWith('localhost');
+
     return (
       <div className={classes.root}>
         <AppBar position="fixed" elevation={0}>
@@ -131,6 +157,18 @@ class Header extends React.Component<Props, State> {
             >
               <img src={logo} height={36} alt="HackforPlay" />
             </Typography>
+            <Select
+              value={isEarlyBird ? 'earlybird' : 'www'}
+              displayEmpty
+              disableUnderline
+              onChange={this.handleVersionChange}
+              className={classes.select}
+              classes={{ icon: classes.selectIcon }}
+            >
+              <MenuItem value="earlybird">最新版</MenuItem>
+              <MenuItem value="www">安定版</MenuItem>
+            </Select>
+
             <div className={classes.blank} />
             <Button
               color="contrast"
