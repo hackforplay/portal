@@ -28,20 +28,23 @@ type officialsType = Array<{
   work: WorkItemType
 }>;
 
+const { hostname } = window.location;
+// earybird または開発中の時は, earlybird 向けのステージを配信する
+const origin =
+  hostname.startsWith('earlybird') || hostname.startsWith('localhost')
+    ? 'https://hackforplayofficial-earlybird.herokuapp.com'
+    : 'https://hackforplayofficial-production.herokuapp.com';
+
 const officials: officialsType = [
   {
     path: '/officials/hack-rpg',
     replayable: false,
-    work: makeItem(
-      'https://corporate-203c7.firebaseapp.com/hack-rpg/index.json'
-    )
+    work: makeItem(`${origin}/hack-rpg/index.json`)
   },
   {
     path: '/officials/make-rpg',
     replayable: true,
-    work: makeItem(
-      'https://corporate-203c7.firebaseapp.com/make-rpg/index.json'
-    )
+    work: makeItem(`${origin}/make-rpg/index.json`)
   },
   {
     path: '/officials/pg-colosseum',
