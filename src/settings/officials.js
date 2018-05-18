@@ -16,6 +16,7 @@ const makeItem = (asset_url = ''): WorkItemType => ({
     visibility: 'public',
     viewsNum: 0,
     favsNum: 0,
+    clearRate: 0,
     createdAt: '',
     updatedAt: null
   }
