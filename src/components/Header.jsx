@@ -56,7 +56,9 @@ type State = {
     height: 56
   },
   toolbar: {
-    backgroundColor: grey[900]
+    backgroundColor: grey[900],
+    maxHeight: 64,
+    overflow: 'hidden'
   },
   blank: {
     flex: 1
