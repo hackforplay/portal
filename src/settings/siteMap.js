@@ -27,7 +27,7 @@ export const searchBarInfo = [
   {
     path: '/lists/:tab?',
     searchTo: '/lists/search',
-    text: 'ゲームプレイ',
+    text: 'みんなのステージ',
     tabs: []
   },
   {
@@ -121,8 +121,8 @@ export const optionalHeaderInfo = [
   },
   {
     path: '/lists',
-    headline: 'みんなのステージをプレイしてみよう',
+    headline: 'おもしろいステージをさがそう',
     caption:
-      'ここにあるのはすべてユーザーが作ったステージ。たくさん遊んで好きなステージをさがしてみよう'
+      'ここにあるのはすべて子どもたちが作ったステージ。たくさん遊んで好きなステージをさがしてみよう。きみの作品のヒントになるかもよ'
   }
 ];
