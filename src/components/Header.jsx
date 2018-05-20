@@ -12,6 +12,7 @@ import Button from 'material-ui/Button/Button';
 import Select from 'material-ui/Select';
 import grey from 'material-ui/colors/grey';
 import Home from 'material-ui-icons/Home';
+import Tooltip from 'material-ui/Tooltip';
 
 import Avatar from '../containers/Avatar';
 import theme from '../settings/theme';
@@ -32,7 +33,9 @@ type Props = {
     title: string,
     separator: string,
     select: string,
-    selectIcon: string
+    selectIcon: string,
+    tooltip: string,
+    buttonLabel: string
   },
   isSignedIn: boolean,
   user: UserType,
@@ -57,8 +60,7 @@ type State = {
   },
   toolbar: {
     backgroundColor: grey[900],
-    maxHeight: 64,
-    overflow: 'hidden'
+    maxHeight: 64
   },
   blank: {
     flex: 1
@@ -73,6 +75,10 @@ type State = {
     marginRight: theme.spacing.unit
   },
   title: {
+    '@media (max-width:721px)': {
+      // 画面幅が一定以下の時はロゴを表示しない
+      display: 'none'
+    },
     color: 'black',
     filter: 'invert(100%)'
   },
@@ -82,12 +88,15 @@ type State = {
     minHeight: 36,
     alignSelf: 'center',
     '&:before': {
-      content: '""',
-      position: 'absolute',
-      left: 0,
-      backgroundColor: 'white',
-      width: 1,
-      height: 36
+      '@media (min-width:920px)': {
+        // button label が表示されるときだけ separator を表示する
+        content: '""',
+        position: 'absolute',
+        left: 0,
+        backgroundColor: 'white',
+        width: 1,
+        height: 36
+      }
     }
   },
   select: {
@@ -97,6 +106,18 @@ type State = {
   },
   selectIcon: {
     color: 'white'
+  },
+  tooltip: {
+    '@media (min-width:920px)': {
+      // button label が表示されるときは tooltip を表示しない
+      display: 'none'
+    }
+  },
+  buttonLabel: {
+    '@media (max-width:921px)': {
+      // 画面幅が一定以上の時だけ button label を表示する
+      display: 'none'
+    }
   }
 })
 class Header extends React.Component<Props, State> {
@@ -172,42 +193,50 @@ class Header extends React.Component<Props, State> {
             </Select>
 
             <div className={classes.blank} />
-            <Button
-              color="contrast"
-              component={Link}
-              to="/"
-              className={classes.separator}
-            >
-              <Home />
-              ホーム
-            </Button>
-            <Button
-              color="contrast"
-              component={Link}
-              to="/contents/tutorial"
-              className={classes.separator}
-            >
-              <Beginner />
-              あそびかた
-            </Button>
-            <Button
-              color="contrast"
-              component={Link}
-              to="/lists"
-              className={classes.separator}
-            >
-              <Play />
-              みんなのステージ
-            </Button>
-            <Button
-              color="contrast"
-              component={Link}
-              to="/contents/kit"
-              className={classes.separator}
-            >
-              <Create />
-              ステージを作る
-            </Button>
+            <Tooltip title="ホーム" classes={{ tooltip: classes.tooltip }}>
+              <Button
+                color="contrast"
+                component={Link}
+                to="/"
+                className={classes.separator}
+              >
+                <Home />
+                <span className={classes.buttonLabel}>ホーム</span>
+              </Button>
+            </Tooltip>
+            <Tooltip title="あそびかた" classes={{ tooltip: classes.tooltip }}>
+              <Button
+                color="contrast"
+                component={Link}
+                to="/contents/tutorial"
+                className={classes.separator}
+              >
+                <Beginner />
+                <span className={classes.buttonLabel}>あそびかた</span>
+              </Button>
+            </Tooltip>
+            <Tooltip title="みんなのステージ" classes={{ tooltip: classes.tooltip }}>
+              <Button
+                color="contrast"
+                component={Link}
+                to="/lists"
+                className={classes.separator}
+              >
+                <Play />
+                <span className={classes.buttonLabel}>みんなのステージ</span>
+              </Button>
+            </Tooltip>
+            <Tooltip title="ステージを作る" classes={{ tooltip: classes.tooltip }}>
+              <Button
+                color="contrast"
+                component={Link}
+                to="/contents/kit"
+                className={classes.separator}
+              >
+                <Create />
+                <span className={classes.buttonLabel}>ステージを作る</span>
+              </Button>
+            </Tooltip>
             {user.data ? <div className={classes.separator} /> : null}
             {user.data ? (
               user.data.photoURL ? (
