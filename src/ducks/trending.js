@@ -21,6 +21,7 @@ export const data: Array<WorkData> = [
       'https://assets.feeles.com/json/bimqmcyEZxQ6qtiV9gWNvHdwn417geYc4xwhIC6G.json'
   },
   {
+    id: 'sPbbbvJ7NqV7dYhVPXfAPLYZRDI2',
     author: 'む〜さん',
     updatedAt: '2018-04-06T14:11:16.895Z',
     visibility: 'public',
@@ -36,6 +37,7 @@ export const data: Array<WorkData> = [
     description: ''
   },
   {
+    id: 'w9kkswl31VgOz088b2UrQIM0j1S2',
     description: '',
     author: 'hayato hoshi',
     updatedAt: '2018-03-29T11:33:28.517Z',
