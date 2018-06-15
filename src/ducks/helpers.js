@@ -74,6 +74,11 @@ export function isFetchNeeded<T>(data: Statefull<T>): boolean {
   return true;
 }
 
+/**
+ * そのアイテムが初期化されたばかりかどうか
+ * @param {Object} data
+ * @returns {Boolean} 初期化されたばかりであれば true
+ */
 export function isInitialized<T>(data: Statefull<T>): boolean {
   return (
     !data.isAvailable && !data.isEmpty && !data.isProcessing && !data.isInvalid
