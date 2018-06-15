@@ -16,5 +16,8 @@ service cloud.firestore {
         allow update: if (resource.data.uid == null || resource.data.uid == request.auth.uid) && request.time < resource.data.createdAt + duration.value(1, 'd');
       }
     }
+    match /officialWorks/{id} {
+      allow get;
+    }
   }
 }

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import Work from '../components/Work';
 import * as helpers from '../ducks/helpers';
@@ -47,6 +48,7 @@ const mapStateToProps = (state: StoreState, ownProps) => {
 };
 
 const mapDispatchToProps = {
+  fetchWork: officialWork.fetchWork,
   addWorkViewLabel,
   changeWork,
   trashWork,
@@ -56,8 +58,17 @@ const mapDispatchToProps = {
   removeWork
 };
 
+@withRouter
 @connect(mapStateToProps, mapDispatchToProps)
 export default class OfficialWork extends React.Component {
+  componentDidMount() {
+    if (helpers.isInitialized(this.props.work)) {
+      // 現在のパスからデータを取得する
+      const { pathname } = this.props.location;
+      this.props.fetchWork(pathname);
+    }
+  }
+
   componentWillUnmount() {
     this.props.trashWork();
   }

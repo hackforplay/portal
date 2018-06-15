@@ -1,4 +1,7 @@
 // @flow
+import firebase from 'firebase';
+import 'firebase/firestore';
+
 import * as helpers from './helpers';
 import type { Dispatch, GetState as GetStore } from './';
 import type { WorkItemType } from '../ducks/work';
@@ -78,26 +81,7 @@ export type State = {
 };
 
 const initialState: State = {
-  byPathname: {
-    '/officials/hack-rpg': makeItem({
-      pathname: '/officials/hack-rpg',
-      replayable: false,
-      workJsonUrl: `https://hackforplayofficial-production.herokuapp.com/hack-rpg/index.json`,
-      earlybirdWorkJsonUrl: `https://hackforplayofficial-earlybird.herokuapp.com/hack-rpg/index.json`
-    }),
-    '/officials/make-rpg': makeItem({
-      pathname: '/officials/make-rpg',
-      replayable: true,
-      workJsonUrl: `https://hackforplayofficial-production.herokuapp.com/make-rpg/index.json`,
-      earlybirdWorkJsonUrl: `https://hackforplayofficial-earlybird.herokuapp.com/make-rpg/index.json`
-    }),
-    '/officials/pg-colosseum': makeItem({
-      pathname: '/officials/pg-colosseum',
-      replayable: false,
-      workJsonUrl: `https://pg-colosseum.hackforplay.xyz/make-rpg.json`,
-      earlybirdWorkJsonUrl: `https://pg-colosseum.hackforplay.xyz/make-rpg.json`
-    })
-  }
+  byPathname: {}
 };
 
 // Root Reducer
@@ -172,6 +156,37 @@ export const invalid = (pathname: string, error: string): Action => ({
   pathname,
   error
 });
+
+export const fetchWork = (pathname: string) => async (
+  dispatch: Dispatch,
+  getStore: GetStore
+) => {
+  // LOAD
+  dispatch(load(pathname));
+  try {
+    // officialWorks コレクションは list を許可していない (get only)
+    // pathname を一意のドキュメントキーとして get でデータを取得する
+    // しかし "/" などの記号はドキュメントキーに使用することができない
+    // そこで pathname を URL エンコードした文字列をキーとして扱う
+    const key = encodeURIComponent(pathname);
+    // Firestore から取得
+    let query = firebase
+      .firestore()
+      .collection('officialWorks')
+      .doc(key);
+    const documentSnapshot = await query.get();
+    if (documentSnapshot.exists) {
+      const data: OfficialWorkDocumentType = documentSnapshot.data();
+      dispatch(set(makeItem(data)));
+    } else {
+      dispatch(empty(pathname));
+    }
+  } catch (error) {
+    dispatch(invalid(pathname, error));
+    console.error(error);
+  }
+  return;
+};
 
 export function get(
   store: $Call<GetStore>,
