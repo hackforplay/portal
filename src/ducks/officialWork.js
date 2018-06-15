@@ -1,25 +1,15 @@
 // @flow
 import * as helpers from './helpers';
 import type { Dispatch, GetState as GetStore } from './';
-import type { WorkItemType, WorkData } from '../ducks/work';
+import type { WorkItemType } from '../ducks/work';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'officialWork';
 
-const makeData = (asset_url = ''): WorkData => ({
-  id: '', // Document ID
-  path: '', // Page path
-  title: '',
-  description: '',
-  asset_url,
-  // additional structure
-  visibility: 'public',
-  viewsNum: 0,
-  favsNum: 0,
-  clearRate: 0,
-  createdAt: '',
-  updatedAt: null
-});
+// earybird または開発中の時は, earlybird 向けのステージを配信する
+const { hostname } = window.location;
+const isEarlybird =
+  hostname.startsWith('earlybird') || hostname.startsWith('localhost');
 
 type OfficialWorkType = {|
   pathname: string,
@@ -30,8 +20,32 @@ type OfficialWorkType = {|
 type OfficialWorkDocumentType = {|
   pathname: string,
   replayable: boolean,
-  workJsonUrl: string
+  workJsonUrl: string,
+  earlybirdWorkJsonUrl: string
 |};
+
+const makeItem = (
+  documentData: OfficialWorkDocumentType
+): OfficialWorkType => ({
+  pathname: documentData.pathname,
+  replayable: documentData.replayable,
+  work: helpers.has({
+    id: '', // Document ID
+    path: '', // Page path
+    title: '',
+    description: '',
+    asset_url: isEarlybird
+      ? documentData.earlybirdWorkJsonUrl
+      : documentData.workJsonUrl,
+    // additional structure
+    visibility: 'public',
+    viewsNum: 0,
+    favsNum: 0,
+    clearRate: 0,
+    createdAt: '',
+    updatedAt: null
+  })
+});
 
 const LOAD = 'portal/officialWork/LOAD';
 const SET = 'portal/officialWork/SET';
@@ -45,7 +59,7 @@ export type Action =
     |}
   | {|
       +type: 'portal/officialWork/SET',
-      +payload: OfficialWorkDocumentType
+      +payload: OfficialWorkType
     |}
   | {|
       +type: 'portal/officialWork/EMPTY',
@@ -65,31 +79,24 @@ export type State = {
 
 const initialState: State = {
   byPathname: {
-    '/officials/hack-rpg': {
+    '/officials/hack-rpg': makeItem({
       pathname: '/officials/hack-rpg',
       replayable: false,
-      work: helpers.has(
-        makeData(
-          `https://hackforplayofficial-earlybird.herokuapp.com/hack-rpg/index.json`
-        )
-      )
-    },
-    '/officials/make-rpg': {
+      workJsonUrl: `https://hackforplayofficial-production.herokuapp.com/hack-rpg/index.json`,
+      earlybirdWorkJsonUrl: `https://hackforplayofficial-earlybird.herokuapp.com/hack-rpg/index.json`
+    }),
+    '/officials/make-rpg': makeItem({
       pathname: '/officials/make-rpg',
       replayable: true,
-      work: helpers.has(
-        makeData(
-          `https://hackforplayofficial-earlybird.herokuapp.com/make-rpg/index.json`
-        )
-      )
-    },
-    '/officials/pg-colosseum': {
+      workJsonUrl: `https://hackforplayofficial-production.herokuapp.com/make-rpg/index.json`,
+      earlybirdWorkJsonUrl: `https://hackforplayofficial-earlybird.herokuapp.com/make-rpg/index.json`
+    }),
+    '/officials/pg-colosseum': makeItem({
       pathname: '/officials/pg-colosseum',
       replayable: false,
-      work: helpers.has(
-        makeData('https://pg-colosseum.hackforplay.xyz/make-rpg.json')
-      )
-    }
+      workJsonUrl: `https://pg-colosseum.hackforplay.xyz/make-rpg.json`,
+      earlybirdWorkJsonUrl: `https://pg-colosseum.hackforplay.xyz/make-rpg.json`
+    })
   }
 };
 
@@ -113,11 +120,7 @@ export default (state: State = initialState, action: Action): State => {
         ...state,
         byPathname: {
           ...state.byPathname,
-          [action.payload.pathname]: {
-            pathname: action.payload.pathname,
-            replayable: action.payload.pathname,
-            work: helpers.has(makeData(action.payload.workJsonUrl))
-          }
+          [action.payload.pathname]: action.payload
         }
       };
     case EMPTY:
@@ -154,7 +157,7 @@ export const load = (pathname: string): Action => ({
   pathname
 });
 
-export const set = (payload: OfficialWorkDocumentType): Action => ({
+export const set = (payload: OfficialWorkType): Action => ({
   type: SET,
   payload
 });
