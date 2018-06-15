@@ -1,11 +1,11 @@
 import * as React from 'react';
-import pathToRegexp from 'path-to-regexp';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-import officials from '../settings/officials';
 import Work from '../components/Work';
 import * as helpers from '../ducks/helpers';
 import { addWorkViewLabel } from '../ducks/work';
+import * as officialWork from '../ducks/officialWork';
 import {
   changeWork,
   trashWork,
@@ -23,10 +23,9 @@ const mapStateToProps = (state: StoreState, ownProps) => {
   const { location } = ownProps;
 
   // 現在表示している URL にふさわしいデータソースを取得する
-  const source = officials.find(item => {
-    const re = pathToRegexp(item.path);
-    return re.exec(location.pathname);
-  });
+  // 現在のパスをもとに, 最適なコンテンツをサーバから取得
+
+  const source = officialWork.get(state, location.pathname);
   const work = source ? source.work : helpers.invalid('Not Found');
   const replayable = source ? source.replayable : false;
   const makeWorkData = state.make.work.data;
@@ -49,6 +48,7 @@ const mapStateToProps = (state: StoreState, ownProps) => {
 };
 
 const mapDispatchToProps = {
+  fetchWork: officialWork.fetchWork,
   addWorkViewLabel,
   changeWork,
   trashWork,
@@ -58,8 +58,17 @@ const mapDispatchToProps = {
   removeWork
 };
 
+@withRouter
 @connect(mapStateToProps, mapDispatchToProps)
 export default class OfficialWork extends React.Component {
+  componentDidMount() {
+    if (helpers.isInitialized(this.props.work)) {
+      // 現在のパスからデータを取得する
+      const { pathname } = this.props.location;
+      this.props.fetchWork(pathname);
+    }
+  }
+
   componentWillUnmount() {
     this.props.trashWork();
   }

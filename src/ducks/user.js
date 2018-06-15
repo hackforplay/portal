@@ -5,8 +5,9 @@ import 'firebase/firestore';
 
 import * as helpers from './helpers';
 import * as auth from './auth';
+import * as user from './user';
 import type { Statefull } from './helpers';
-import type { Dispatch, GetState } from './';
+import type { Dispatch, GetStore } from './';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'user';
@@ -181,14 +182,14 @@ export const updateUser = (uid: string): Action => ({
 
 export type fetchUserIfNeededType = (
   uid: string
-) => (dispatch: Dispatch, getState: GetState) => void;
+) => (dispatch: Dispatch, getStore: GetStore) => void;
 
 export const fetchUserIfNeeded: fetchUserIfNeededType = uid => (
   dispatch,
-  getState
+  getStore
 ) => {
   // その UID が Store にあるか確認
-  const currentUser = getUserByUid(getState(), uid);
+  const currentUser = getUserByUid(getStore(), uid);
   if (!helpers.isFetchNeeded(currentUser)) return;
 
   // リクエストを送る
@@ -211,14 +212,14 @@ export const fetchUserIfNeeded: fetchUserIfNeededType = uid => (
 
 export type editAuthUserType = (
   editing: EditingUserData
-) => (dispatch: Dispatch, getState: GetState) => void;
+) => (dispatch: Dispatch, getStore: GetStore) => void;
 
 export const editAuthUser: editAuthUserType = editing => (
   dispatch,
-  getState
+  getStore
 ) => {
   // ログインユーザーを確認
-  const { user } = getState().auth;
+  const { user } = auth.getState(getStore());
   if (!user) {
     // ログインしていない
     return;
@@ -228,15 +229,15 @@ export const editAuthUser: editAuthUserType = editing => (
 
 export type cancelAuthUserEditingType = () => (
   dispatch: Dispatch,
-  getState: GetState
+  getStore: GetStore
 ) => void;
 
 export const cancelAuthUserEditing: cancelAuthUserEditingType = () => (
   dispatch,
-  getState
+  getStore
 ) => {
   // ログインユーザーを確認
-  const { user } = getState().auth;
+  const { user } = auth.getState(getStore());
   if (!user) {
     // ログインしていない
     return;
@@ -246,37 +247,41 @@ export const cancelAuthUserEditing: cancelAuthUserEditingType = () => (
 
 export type confirmAuthUserEditingType = () => (
   dispatch: Dispatch,
-  getState: () => { auth: auth.State, user: State }
+  getStore: GetStore
 ) => Promise<void>;
 
 export const confirmAuthUserEditing: confirmAuthUserEditingType = () => async (
   dispatch,
-  getState
+  getStore
 ) => {
-  const state = getState();
   // ログインユーザーを確認
-  const { user } = state.auth;
-  if (!user) {
+  const authState = auth.getState(getStore());
+  const uid = authState.user && authState.user.uid;
+  if (!uid) {
     // ログインしていない
     return;
   }
   // 編集中のデータを取得
-  const editing = state.user.editingByUid[user.uid];
+  const editing = user.getState(getStore()).editingByUid[uid];
   if (!editing) {
     // 編集中のデータがない
     return;
   }
   // アップデートを開始
-  dispatch(updateUser(user.uid));
+  dispatch(updateUser(uid));
   await firebase
     .firestore()
     .collection('users')
-    .doc(user.uid)
+    .doc(uid)
     .update(editing);
 };
 
 // Helpers
 
-export function getUserByUid(state: $Call<GetState>, uid: string): UserType {
-  return state.user.byUid[uid] || helpers.initialized();
+export function getUserByUid(store: $Call<GetStore>, uid: string): UserType {
+  return getState(store).byUid[uid] || helpers.initialized();
+}
+
+export function getState(store: $Call<GetStore>): State {
+  return store[storeName];
 }

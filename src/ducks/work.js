@@ -4,9 +4,10 @@ import 'firebase/firestore';
 
 import * as trending from './trending';
 import * as helpers from './helpers';
+import * as auth from './auth';
 import type { Statefull } from './helpers';
 import type { UserType } from './user';
-import type { Dispatch, GetState } from './';
+import type { Dispatch, GetStore } from './';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'work';
@@ -443,14 +444,14 @@ export const searchFailed: searchFailedType = (query, error) => ({
 
 export type fetchRecommendedWorksType = () => (
   dispatch: Dispatch,
-  getState: GetState
+  getStore: GetStore
 ) => Promise<void>;
 
 export const fetchRecommendedWorks: fetchRecommendedWorksType = () => async (
   dispatch,
-  getState
+  getStore
 ) => {
-  const state = getState().work;
+  const state = getState(getStore());
   if (!helpers.isFetchNeeded(state.recommended)) return;
 
   dispatch(loadList('recommended'));
@@ -492,14 +493,14 @@ export const fetchRecommendedWorks: fetchRecommendedWorksType = () => async (
 
 export type fetchTrendingWorksType = () => (
   dispatch: Dispatch,
-  getState: GetState
+  getStore: GetStore
 ) => Promise<void>;
 
 export const fetchTrendingWorks: fetchTrendingWorksType = () => async (
   dispatch,
-  getState
+  getStore
 ) => {
-  const state = getState().work;
+  const state = getState(getStore());
   if (!helpers.isFetchNeeded(state.trending)) return;
 
   try {
@@ -513,14 +514,14 @@ export const fetchTrendingWorks: fetchTrendingWorksType = () => async (
 
 export type fetchPickupWorksType = () => (
   dispatch: Dispatch,
-  getState: GetState
+  getStore: GetStore
 ) => Promise<void>;
 
 export const fetchPickupWorks: fetchPickupWorksType = () => async (
   dispatch,
-  getState
+  getStore
 ) => {
-  const state = getState().work;
+  const state = getState(getStore());
   if (!helpers.isFetchNeeded(state.pickup)) return;
 
   try {
@@ -534,11 +535,11 @@ export const fetchPickupWorks: fetchPickupWorksType = () => async (
 
 export type fetchWorksByUserType = (
   user: UserType
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
 export const fetchWorksByUser: fetchWorksByUserType = user => async (
   dispatch,
-  getState
+  getStore
 ) => {
   const userData = user.data;
   if (!userData) {
@@ -547,7 +548,7 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
   }
   const { uid, email } = userData;
   // 今の状態
-  const works = getWorksByUserId(getState(), uid);
+  const works = getWorksByUserId(getStore(), uid);
   if (!helpers.isFetchNeeded(works)) return;
 
   // リクエスト
@@ -561,7 +562,7 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
       .where('uid', '==', uid)
       .orderBy('createdAt', 'desc');
     // 自分かどうか
-    const authUser = getState().auth.user;
+    const authUser = auth.getState(getStore()).user;
     if (!authUser || authUser.uid !== userData.uid) {
       // 自分ではない
       query = query.where('visibility', '==', 'public');
@@ -590,14 +591,14 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
 
 export type fetchWorkByPathType = (
   path: string
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
 export const fetchWorkByPath: fetchWorkByPathType = path => async (
   dispatch,
-  getState
+  getStore
 ) => {
   // 今の状態
-  const work = getWorkByPath(getState(), path);
+  const work = getWorkByPath(getStore(), path);
   if (!helpers.isFetchNeeded(work)) return;
 
   // リクエスト
@@ -657,18 +658,18 @@ export const fetchWorkByPath: fetchWorkByPathType = path => async (
 
 export type searchWorksType = (
   query: string
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
 export const searchWorks: searchWorksType = query => async (
   dispatch,
-  getState
+  getStore
 ) => {
   if (!query) {
     // クエリが空
     return;
   }
   // 今の状態
-  const { search } = getState().work;
+  const { search } = getState(getStore());
   if (search.query === query) {
     // すでに同じクエリでリクエストを送信しているか、取得済みか、検索結果が空
     return;
@@ -734,20 +735,20 @@ export const searchWorks: searchWorksType = query => async (
 
 export type addWorkViewType = (
   path: string
-) => (dispatch: Dispatch, getState: GetState) => Promise<*>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<*>;
 
 export const addWorkView: addWorkViewType = path => async (
   dispatch,
-  getState
+  getStore
 ) => {
-  const { auth: { user } } = getState();
+  const { user } = auth.getState(getStore());
 
   if (!path.startsWith('/works')) {
     // Firestore にデータがないステージならスルー
     return;
   }
 
-  const work = getWorkByPath(getState(), path);
+  const work = getWorkByPath(getStore(), path);
   if (!work.data || (user && work.data && work.data.uid === user.uid)) {
     // ステージがサーバーにないか, 自分のステージである場合はスルー
     return;
@@ -770,14 +771,14 @@ export type addWorkViewLabelType = (
   path: string,
   name: string,
   value: string
-) => (dispatch: Dispatch, getState: GetState) => Promise<*>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<*>;
 
 export const addWorkViewLabel: addWorkViewLabelType = (
   path,
   name,
   value
-) => async (dispatch, getState) => {
-  const { work: { currentView } } = getState();
+) => async (dispatch, getStore) => {
+  const { currentView } = getState(getStore());
   if (path !== currentView.path) {
     // 現在プレイ中のステージでないならスルー
     return;
@@ -799,25 +800,29 @@ export const addWorkViewLabel: addWorkViewLabelType = (
 };
 
 export function getWorksByUserId(
-  state: $Call<GetState>,
+  store: $Call<GetStore>,
   uid: string
 ): WorkCollectionType {
-  return state.work.byUserId[uid] || helpers.initialized();
+  return getState(store).byUserId[uid] || helpers.initialized();
 }
 
 export function getWorkByPath(
-  state: $Call<GetState>,
+  store: $Call<GetStore>,
   path: string
 ): WorkItemType {
-  return state.work.byPath[path] || helpers.initialized();
+  return getState(store).byPath[path] || helpers.initialized();
 }
 
-export function isAuthUsersWork(state: $Call<GetState>, path: string) {
-  const { auth: { user } } = state;
+export function isAuthUsersWork(store: $Call<GetStore>, path: string) {
+  const { user } = auth.getState(store);
   if (!user) {
     // ログインしていない
     return false;
   }
-  const work = getWorkByPath(state, path);
+  const work = getWorkByPath(store, path);
   return Boolean(work.data && work.data.uid === user.uid);
+}
+
+export function getState(store: $Call<GetStore>): State {
+  return store[storeName];
 }

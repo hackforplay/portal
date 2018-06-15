@@ -73,6 +73,7 @@
     "test": "node scripts/test.js --env=jsdom",
     "flow": "flow",
     "precommit": "lint-staged && flow check",
+    "seed": "node seeder/index.js",
     "svgr": "./node_modules/.bin/svgr -d ./src/icons/ ./src/resources/ --template ./svgr-template.js --ext jsx --no-title --no-dimensions --no-view-box --replace-attr-value=\"#2E2E2E=currentColor\""
   },
   "devDependencies": {
@@ -81,6 +82,7 @@
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "empty": "^0.10.1",
     "firebase-tools": "^3.18.4",
+    "firestore-seed": "0.0.5",
     "flow-bin": "^0.56.0",
     "generate-robotstxt": "^5.0.7",
     "redux-devtools-extension": "^2.13.2",
