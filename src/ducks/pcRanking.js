@@ -3,7 +3,7 @@ import firebase from 'firebase';
 
 import * as helpers from './helpers';
 import type { Statefull } from './helpers';
-import type { Dispatch, GetState } from './';
+import type { Dispatch, GetStore } from './';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'pcRanking';
@@ -112,13 +112,13 @@ export const set = (stage: string, payload: Array<RecordData>): Action => ({
 
 export type fetchRecordsByStageType = (
   stage: string
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
 export const fetchRecordsByStage: fetchRecordsByStageType = stage => async (
   dispatch,
-  getState
+  getStore
 ) => {
-  const current = getRecordsByStage(getState(), stage);
+  const current = getRecordsByStage(getStore(), stage);
   if (!helpers.isFetchNeeded(current)) return;
 
   try {
@@ -139,8 +139,12 @@ export const fetchRecordsByStage: fetchRecordsByStageType = stage => async (
 };
 
 export function getRecordsByStage(
-  state: $Call<GetState>,
+  store: $Call<GetStore>,
   stage: string
 ): RecordCollectionType {
-  return state.pcRanking.byStage[stage] || helpers.initialized();
+  return getState(store).byStage[stage] || helpers.initialized();
+}
+
+export function getState(store: $Call<GetStore>): State {
+  return store[storeName];
 }

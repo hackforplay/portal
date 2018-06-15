@@ -14,9 +14,10 @@ import {
   removeFile,
   parseStoragePath
 } from './storage';
-import { getUserByUid } from './user';
-import { empty } from './work';
-import type { Dispatch, GetState } from './';
+import * as user from './user';
+import * as work from './work';
+import * as auth from './auth';
+import type { Dispatch, GetStore } from './';
 import type { WorkItemType, WorkData, VisibilityType } from './work';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
@@ -239,14 +240,14 @@ export const remove: removeType = () => ({
 
 export type changeWorkType = (payload: { files: Array<{}> }) => (
   dispatch: Dispatch,
-  getState: GetState
+  getStore: GetStore
 ) => Promise<void>;
 
 export const changeWork: changeWorkType = payload => async (
   dispatch,
-  getState
+  getStore
 ) => {
-  const { make: { work } } = getState();
+  const { work } = getState(getStore());
   if (work.isProcessing || work.isInvalid) {
     // Sync 中またはエラーがある状態ならスルー
     return;
@@ -270,24 +271,25 @@ export const changeWork: changeWorkType = payload => async (
 
 export type setMetadataType = (
   payload: Metadata
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
 export const setMetadata: setMetadataType = payload => async (
   dispatch,
-  getState
+  getStore
 ) => {
   dispatch(metadata(payload));
 };
 
 export type setThumbnailFromDataURLType = (
   dataURL: string
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
 export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => async (
   dispatch,
-  getState
+  getStore
 ) => {
-  const { make: { work }, auth: { user } } = getState();
+  const { work } = getState(getStore());
+  const { user } = auth.getState(getStore());
   if (!user) {
     // ログインしていない
     return;
@@ -318,25 +320,23 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
 
 export type trashWorkType = () => (
   dispatch: Dispatch,
-  getState: GetState
+  getStore: GetStore
 ) => Promise<void>;
 
-export const trashWork: trashWorkType = () => async (dispatch, getState) => {
+export const trashWork: trashWorkType = () => async (dispatch, getStore) => {
   await dispatch(trash());
 };
 
 export type saveWorkType = () => (
   dispatch: Dispatch,
-  getState: GetState
+  getStore: GetStore
 ) => Promise<void>;
 
-export const saveWork: saveWorkType = () => async (dispatch, getState) => {
-  const {
-    auth: { user },
-    make: { files, work, metadata, thumbnails }
-  } = getState();
+export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
+  const { uid } = auth.getState(getStore()).user || { uid: '' };
+  const { files, work, metadata, thumbnails } = getState(getStore());
 
-  if (!user || !files || !canSave(getState())) {
+  if (!uid || !files || !canSave(getStore())) {
     return;
   }
 
@@ -354,7 +354,7 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
   // TODO: author を編集する GUI を実装する
   // （仮実装）もし author が設定されていなければ, ログインユーザの DisplayName を author とする
   if (!metadata.author) {
-    const userData = getUserByUid(getState(), user.uid).data;
+    const userData = user.getUserByUid(getStore(), uid).data;
     if (userData && userData.displayName) {
       await dispatch(setMetadata({ author: userData.displayName }));
       // ----> ストアが更新される（はず）
@@ -371,9 +371,7 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
     const json = JSON.stringify(files);
     const file = new Blob([json], { type: 'application/json' });
     // Storage にアップロード
-    const assetStoragePath = `json/${visibility}/users/${
-      user.uid
-    }/${uuid()}.json`;
+    const assetStoragePath = `json/${visibility}/users/${uid}/${uuid()}.json`;
     await dispatch(uploadBlob(assetStoragePath, file));
 
     // 取得
@@ -415,15 +413,16 @@ export const saveWork: saveWorkType = () => async (dispatch, getState) => {
 
 export type setWorkVisibilityType = (
   visibility: VisibilityType
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
 export const setWorkVisibility: setWorkVisibilityType = visibility => async (
   dispatch,
-  getState
+  getStore
 ) => {
-  const { auth: { user }, make: { work, files } } = getState();
+  const { user } = auth.getState(getStore());
+  const { work, files } = getState(getStore());
   const workData = work.data;
-  if (!canPublish(getState()) || !workData || !user || !files) {
+  if (!canPublish(getStore()) || !workData || !user || !files) {
     return;
   }
   if (workData.visibility === visibility) {
@@ -449,14 +448,14 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
     // asset を移す
     await dispatch(moveFile(assetStoragePath, nextAssetStoragePath));
     await dispatch(downloadUrl(nextAssetStoragePath));
-    if (!getStorageByPath(getState(), nextAssetStoragePath).url) {
+    if (!getStorageByPath(getStore(), nextAssetStoragePath).url) {
       // アセットの移動に失敗している
       throw new Error('Failed to moveFile');
     }
     // thumbnail を移す
     await dispatch(moveFile(thumbnailStoragePath, nextThumbnailStoragePath));
     await dispatch(downloadUrl(nextThumbnailStoragePath));
-    if (!getStorageByPath(getState(), nextThumbnailStoragePath).url) {
+    if (!getStorageByPath(getStore(), nextThumbnailStoragePath).url) {
       // サムネイルの移動に失敗している
       throw new Error('Failed to moveFile');
     }
@@ -485,7 +484,7 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
   } catch (error) {
     // 元に戻す
     console.error(error);
-    const { make: { work } } = getState();
+    const { work } = getState(getStore());
     if (!work.data || !work.data.assetStoragePath !== nextAssetStoragePath) {
       await dispatch(moveFile(nextAssetStoragePath, assetStoragePath));
     }
@@ -535,13 +534,14 @@ async function uploadWorkData({ work, user, metadata }) {
 
 export type editExistingWorkType = (
   work: WorkItemType
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
 export const editExistingWork: editExistingWorkType = work => async (
   dispatch,
-  getState
+  getStore
 ) => {
-  const { auth: { user }, make } = getState();
+  const make = getState(getStore());
+  const { user } = auth.getState(getStore());
   const workData = work.data;
   if (!workData || !user || workData.uid !== user.uid || make.work.data) {
     // 自分のステージではないか、ログインしていないか、すでに別のものを作り始めている
@@ -552,7 +552,7 @@ export const editExistingWork: editExistingWorkType = work => async (
   if (assetStoragePath) {
     // アセットをダウンロード
     await dispatch(downloadUrl(assetStoragePath));
-    const storage = getStorageByPath(getState(), assetStoragePath);
+    const storage = getStorageByPath(getStore(), assetStoragePath);
     if (!storage.url) {
       return;
     }
@@ -572,39 +572,38 @@ export const editExistingWork: editExistingWorkType = work => async (
 
 export type removeWorkType = () => (
   dispatch: Dispatch,
-  getState: GetState
+  getStore: GetStore
 ) => Promise<void>;
 
-export const removeWork: removeWorkType = work => async (
-  dispatch,
-  getState
-) => {
-  const { make: { work } } = getState();
-  const workData = work.data;
-  if (!canRemove(getState()) || !workData) {
+export const removeWork: removeWorkType = () => async (dispatch, getStore) => {
+  const { work: { data } } = getState(getStore());
+  if (!canRemove(getStore()) || !data) {
     return;
   }
   dispatch(remove());
   // ストレージからデータを削除
-  if (workData.assetStoragePath) {
-    await dispatch(removeFile(workData.assetStoragePath));
+  if (data.assetStoragePath) {
+    await dispatch(removeFile(data.assetStoragePath));
   }
-  if (workData.thumbnailStoragePath) {
-    await dispatch(removeFile(workData.thumbnailStoragePath));
+  if (data.thumbnailStoragePath) {
+    await dispatch(removeFile(data.thumbnailStoragePath));
   }
   // DB から削除
   await firebase
     .firestore()
-    .doc(workData.path)
+    .doc(data.path)
     .delete();
   dispatch(trash());
   // その work を空とみなす
-  dispatch(empty(workData.path));
+  dispatch(work.empty(data.path));
 };
 
-export function canSave(state: $Call<GetState>) {
-  const { make: { files, hashOfFiles, saved, work, metadata, thumbnails }, auth: { user } } = state;
-  
+export function canSave(state: $Call<GetStore>) {
+  const {
+    make: { files, hashOfFiles, saved, work, metadata, thumbnails },
+    auth: { user }
+  } = state;
+
   // サムネイルが設定されているか、撮影されたものがある (設定することができる)
   const hasThumbnail = metadata.thumbnailStoragePath || thumbnails.length > 0;
   if (!files || !hashOfFiles || saved || !user || !hasThumbnail) {
@@ -614,7 +613,7 @@ export function canSave(state: $Call<GetState>) {
   return work.isEmpty || work.isAvailable;
 }
 
-export function canPublish(state: $Call<GetState>) {
+export function canPublish(state: $Call<GetStore>) {
   const { make: { saved, work }, auth: { user } } = state;
   const workData = work.data;
   if (!workData || !saved || !user || user.uid !== workData.uid) {
@@ -626,7 +625,7 @@ export function canPublish(state: $Call<GetState>) {
   );
 }
 
-export function canRemove(state: $Call<GetState>) {
+export function canRemove(state: $Call<GetStore>) {
   const { make: { work }, auth: { user } } = state;
   const workData = work.data;
   if (!workData || !user || user.uid !== workData.uid) {
@@ -643,4 +642,8 @@ export function hashFiles(files: Array<{}>) {
   const hash = md5(JSON.stringify(files));
   hashFilesCache.set(files, hash);
   return hash;
+}
+
+export function getState(store: $Call<GetStore>): State {
+  return store[storeName];
 }

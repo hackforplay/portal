@@ -64,9 +64,9 @@ export type Dispatch = (
 ) => void | Promise<void>;
 export type ThunkAction = (
   dispatch: Dispatch,
-  getState: GetState
+  getState: GetStore
 ) => void | Promise<void>;
-export type GetState = () => StoreState;
+export type GetStore = () => StoreState;
 export type PromiseAction = Promise<Action>;
 /* eslint-enable no-use-before-define */
 
