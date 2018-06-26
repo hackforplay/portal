@@ -11,6 +11,8 @@ script:
 - npm run test
 - npm --prefix functions install
 - npm --prefix functions install --only=dev
+- if [ "$TRAVIS_BRANCH" == "earlybird" ]; then npx generate-robotstxt --config "./robots-txt.earlybird" build/robots.txt; fi
+- if [ "$TRAVIS_BRANCH" == "master" ]; then npx generate-robotstxt --config "./robots-txt" build/robots.txt; fi
 deploy:
   - provider: firebase
     skip_cleanup: true
