@@ -12,11 +12,13 @@ const mapStateToProps = (state: StoreState, ownProps) => {
   const { auth } = state;
   const id = auth.user && auth.user.uid;
   const user = getUserByUid(state, id || '');
+  const isInOfficialWork = ownProps.location.pathname.startsWith('/officials/');
 
   return {
     isSignedIn: !!auth.user,
     auth,
-    user
+    user,
+    isInOfficialWork
   };
 };
 
