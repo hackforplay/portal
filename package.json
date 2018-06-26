@@ -85,6 +85,7 @@
     "firebase-tools": "^3.18.4",
     "firestore-seed": "0.0.5",
     "flow-bin": "^0.56.0",
+    "generate-robotstxt": "^5.0.7",
     "redux-devtools-extension": "^2.13.2",
     "redux-mock-store": "^1.4.0",
     "svgr": "^1.9.1"

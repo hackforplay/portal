@@ -225,9 +225,11 @@ export const downloadUrl: downloadUrlType = path => async (
       await dispatch(empty(path));
     }
   } catch (error) {
-    // 何らかのエラー => 空とみなす
-    await dispatch(empty(path));
-    console.error(error);
+    if (error.code === 'storage/object-not-found') {
+      await dispatch(empty(path));
+    } else {
+      throw error;
+    }
   }
 };
 

@@ -7,7 +7,8 @@ import { downloadUrl, getStorageByPath } from '../ducks/storage';
 const mapStateToProps = (state: StoreState, ownProps) => {
   const storage = getStorageByPath(state, ownProps.storagePath);
 
-  return ownProps.storagePath
+  // storage.isEmpty の場合は src に設定されている URL が表示される
+  return ownProps.storagePath && !storage.isEmpty
     ? {
         src: storage.url
       }
