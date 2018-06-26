@@ -100,6 +100,10 @@ type State = {
     }
   },
   select: {
+    '@media (max-width:561px)': {
+      // 画面幅が一定以下の時は切り替えメニューを表示しない
+      display: 'none'
+    },
     marginLeft: 8,
     marginRight: 8,
     color: 'white'
@@ -215,7 +219,10 @@ class Header extends React.Component<Props, State> {
                 <span className={classes.buttonLabel}>あそびかた</span>
               </Button>
             </Tooltip>
-            <Tooltip title="みんなのステージ" classes={{ tooltip: classes.tooltip }}>
+            <Tooltip
+              title="みんなのステージ"
+              classes={{ tooltip: classes.tooltip }}
+            >
               <Button
                 color="contrast"
                 component={Link}
@@ -226,7 +233,10 @@ class Header extends React.Component<Props, State> {
                 <span className={classes.buttonLabel}>みんなのステージ</span>
               </Button>
             </Tooltip>
-            <Tooltip title="ステージを作る" classes={{ tooltip: classes.tooltip }}>
+            <Tooltip
+              title="ステージを作る"
+              classes={{ tooltip: classes.tooltip }}
+            >
               <Button
                 color="contrast"
                 component={Link}
