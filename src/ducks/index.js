@@ -6,6 +6,11 @@ import * as auth from './auth';
 import type { State as AuthState, Action as AuthAction } from './auth';
 import * as work from './work';
 import type { State as WorkState, Action as WorkAction } from './work';
+import * as officialWork from './officialWork';
+import type {
+  State as OfficialWorkState,
+  Action as OfficialWorkAction
+} from './officialWork';
 import * as make from './make';
 import type { State as MakeState, Action as MakeAction } from './make';
 import * as user from './user';
@@ -21,6 +26,7 @@ import type { State as StorageState, Action as StorageAction } from './storage';
 const reducer = combineReducers({
   [auth.storeName]: auth.default,
   [work.storeName]: work.default,
+  [officialWork.storeName]: officialWork.default,
   [make.storeName]: make.default,
   [user.storeName]: user.default,
   [pcRanking.storeName]: pcRanking.default,
@@ -31,6 +37,7 @@ const reducer = combineReducers({
 export type StoreState = {|
   +auth: AuthState,
   +work: WorkState,
+  +officialWork: OfficialWorkState,
   +make: MakeState,
   +user: UserState,
   +pcRanking: PCRankingState,
@@ -45,6 +52,7 @@ type ReduxResetAction = {
 /* eslint-disable no-use-before-define */
 export type Action =
   | WorkAction
+  | OfficialWorkAction
   | MakeAction
   | StorageAction
   | AuthAction
@@ -56,9 +64,9 @@ export type Dispatch = (
 ) => void | Promise<void>;
 export type ThunkAction = (
   dispatch: Dispatch,
-  getState: GetState
+  getState: GetStore
 ) => void | Promise<void>;
-export type GetState = () => StoreState;
+export type GetStore = () => StoreState;
 export type PromiseAction = Promise<Action>;
 /* eslint-enable no-use-before-define */
 

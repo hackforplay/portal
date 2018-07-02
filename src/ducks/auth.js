@@ -1,7 +1,7 @@
 // @flow
 import firebase from 'firebase';
 
-import type { Dispatch, GetState } from './';
+import type { Dispatch, GetStore } from './';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'auth';
@@ -60,12 +60,12 @@ export const signedIn = (user: User): Action => ({
 
 export type initializeAuthType = () => (
   dispatch: Dispatch,
-  getState: GetState
+  getStore: GetStore
 ) => Promise<void>;
 
 export const initializeAuth: initializeAuthType = () => async (
   dispatch,
-  getState
+  getStore
 ) => {
   // 現在のセッションまたはタブでのみ状態が維持され、ユーザーが認証を受けたタブやウィンドウを閉じるとクリアされる
   await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
@@ -83,7 +83,7 @@ export const initializeAuth: initializeAuthType = () => async (
         connectExternalService(user);
       }
     } else {
-      if (getState().auth.user) {
+      if (getState(getStore()).user) {
         // サインイン => サインアウト
         dispatch({
           type: 'RESET' // redux-reset
@@ -132,7 +132,11 @@ function connectExternalService(user: User) {
   );
 }
 
-export function isAuthUser(state: $Call<GetState>, uid: string) {
+export function isAuthUser(state: $Call<GetStore>, uid: string) {
   const { auth: { user } } = state;
   return user && user.uid === uid;
+}
+
+export function getState(store: $Call<GetStore>): State {
+  return store[storeName];
 }

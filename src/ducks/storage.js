@@ -2,7 +2,7 @@
 import firebase from 'firebase';
 
 import { isAuthUser } from './auth';
-import type { Dispatch, GetState } from './';
+import type { Dispatch, GetStore } from './';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'storage';
@@ -160,19 +160,19 @@ export const empty = (path: string): Action => ({
 export type uploadBlobType = (
   path: string,
   file: Blob
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
 export const uploadBlob: uploadBlobType = (path, file) => async (
   dispatch,
-  getState
+  getStore
 ) => {
-  const storage = getStorageByPath(getState(), path);
+  const storage = getStorageByPath(getStore(), path);
   if (storage.isAvailable || storage.isUploading) {
     // すでにアップロードされたファイル
     return;
   }
   const parsed = parseStoragePath(path);
-  if (!isAuthUser(getState(), parsed.uid)) {
+  if (!isAuthUser(getStore(), parsed.uid)) {
     // アップロード権限がない
     return;
   }
@@ -192,19 +192,19 @@ export const uploadBlob: uploadBlobType = (path, file) => async (
 
 export type downloadUrlType = (
   path: string
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
 export const downloadUrl: downloadUrlType = path => async (
   dispatch,
-  getState
+  getStore
 ) => {
-  const storage = getStorageByPath(getState(), path);
+  const storage = getStorageByPath(getStore(), path);
   if (storage.isAvailable || storage.isDownloading) {
     // すでにダウンロードされたファイル
     return;
   }
   const parsed = parseStoragePath(path);
-  if (!isAuthUser(getState(), parsed.uid) && parsed.visibility === 'private') {
+  if (!isAuthUser(getStore(), parsed.uid) && parsed.visibility === 'private') {
     // ダウンロード権限がない
     return;
   }
@@ -236,18 +236,18 @@ export const downloadUrl: downloadUrlType = path => async (
 export type moveFileType = (
   prevPath: string,
   nextPath: string
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
 export const moveFile: moveFileType = (prevPath, nextPath) => async (
   dispatch,
-  getState
+  getStore
 ) => {
   if (prevPath === nextPath) {
     // 移動先のパスと同じ (何もしなくていい)
     return;
   }
   // 1. prevPath からファイルをダウンロード
-  const prev = getStorageByPath(getState(), prevPath);
+  const prev = getStorageByPath(getStore(), prevPath);
   if (prev.isDownloading || prev.isEmpty) {
     // ダウンロード中またはファイルが存在しない
     // TODO: 本当は Downloading が終わるまで待つべき
@@ -265,7 +265,7 @@ export const moveFile: moveFileType = (prevPath, nextPath) => async (
   // 2. nextPath に同じファイルをアップロード
   await dispatch(uploadBlob(nextPath, file));
 
-  const next = getStorageByPath(getState(), nextPath);
+  const next = getStorageByPath(getStore(), nextPath);
   if (!next.url) {
     // アップロードに失敗した
     return;
@@ -281,13 +281,13 @@ export const moveFile: moveFileType = (prevPath, nextPath) => async (
 
 export type removeFileType = (
   path: string
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
 export const removeFile: removeFileType = path => async (
   dispatch,
-  getState
+  getStore
 ) => {
-  const storage = getStorageByPath(getState(), path);
+  const storage = getStorageByPath(getStore(), path);
   if (storage.isRemoving || storage.isEmpty) {
     // すでに削除中か、削除済み
     return;
@@ -303,11 +303,11 @@ export const removeFile: removeFileType = path => async (
 };
 
 export function getStorageByPath(
-  state: $Call<GetState>,
+  store: $Call<GetStore>,
   path: string
 ): StorageType {
   return (
-    state.storage[path] || {
+    getState(store)[path] || {
       isAvailable: false,
       isUploading: false,
       isDownloading: false,
@@ -369,4 +369,8 @@ class ParseError extends Error {
   has = () => {
     return !!this.message;
   };
+}
+
+export function getState(store: $Call<GetStore>): State {
+  return store[storeName];
 }
