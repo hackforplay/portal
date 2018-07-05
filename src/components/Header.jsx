@@ -39,6 +39,7 @@ type Props = {
   },
   isSignedIn: boolean,
   user: UserType,
+  isInOfficialWork: boolean,
   signInWithGoogle: () => {},
   signOut: () => {}
 } & ContextRouter;
@@ -164,7 +165,7 @@ class Header extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, user, isSignedIn } = this.props;
+    const { classes, user, isSignedIn, isInOfficialWork } = this.props;
     const { anchorEl } = this.state;
 
     const { hostname } = window.location;
@@ -208,17 +209,22 @@ class Header extends React.Component<Props, State> {
                 <span className={classes.buttonLabel}>ホーム</span>
               </Button>
             </Tooltip>
-            <Tooltip title="あそびかた" classes={{ tooltip: classes.tooltip }}>
-              <Button
-                color="contrast"
-                component={Link}
-                to="/contents/tutorial"
-                className={classes.separator}
+            {isInOfficialWork ? null : (
+              <Tooltip
+                title="あそびかた"
+                classes={{ tooltip: classes.tooltip }}
               >
-                <Beginner />
-                <span className={classes.buttonLabel}>あそびかた</span>
-              </Button>
-            </Tooltip>
+                <Button
+                  color="contrast"
+                  component={Link}
+                  to="/contents/tutorial"
+                  className={classes.separator}
+                >
+                  <Beginner />
+                  <span className={classes.buttonLabel}>あそびかた</span>
+                </Button>
+              </Tooltip>
+            )}
             <Tooltip
               title="みんなのステージ"
               classes={{ tooltip: classes.tooltip }}
