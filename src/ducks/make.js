@@ -377,7 +377,7 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
     // 取得
     const uploadedRef = await uploadWorkData({
       work,
-      user,
+      uid,
       metadata: {
         // デフォルト値
         title: '',
@@ -498,13 +498,13 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
   }
 };
 
-async function uploadWorkData({ work, user, metadata }) {
+async function uploadWorkData({ work, uid, metadata }) {
   const workData = work.data;
   if (workData) {
     // 既存のドキュメントを更新
     const updated = {
       ...metadata,
-      uid: user.uid,
+      uid,
       updatedAt: new Date()
     };
     const ref = firebase
@@ -517,7 +517,7 @@ async function uploadWorkData({ work, user, metadata }) {
     // 新しく追加
     const appended = {
       ...metadata,
-      uid: user.uid,
+      uid,
       visibility: 'private',
       viewsNum: 0,
       favsNum: 0,
