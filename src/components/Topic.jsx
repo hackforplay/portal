@@ -15,12 +15,10 @@ import WorkList from '../containers/WorkList';
 import beginner from '../resources/beginner.png';
 import diamond_pink from '../resources/diamond_pink.png';
 import mail from '../resources/mail.png';
-import news from '../resources/news.png';
 import dragon from '../resources/dragon.png';
 import facebook from '../resources/facebook.png';
 import twitter from '../resources/twitter.png';
 import logo from '../resources/logo.png';
-import news1 from '../resources/news1.jpg';
 import top1 from '../resources/h4p_top_01.gif';
 import top2 from '../resources/h4p_top_02.gif';
 import top3 from '../resources/h4p_top_03.gif';
@@ -175,7 +173,7 @@ class Topic extends React.Component<Props> {
                   <img src={dragon} alt="" />
                   <div style={{ marginLeft: 16 }}>
                     <Typography type="title" align="left" gutterBottom>
-                      プログラミングバトルに参加
+                      プログラミングコロシアム特別ステージ
                     </Typography>
                   </div>
                 </div>
@@ -188,7 +186,7 @@ class Topic extends React.Component<Props> {
                   <Grid item sm={6} xs={12}>
                     <iframe
                       title="procolo-1"
-                      src="https://www.youtube.com/embed/3fZl56ybaRk"
+                      src="https://www.youtube.com/embed/viUpCZXjbVc"
                       frameBorder="0"
                       allow="autoplay; encrypted-media"
                       allowFullScreen
@@ -196,30 +194,37 @@ class Topic extends React.Component<Props> {
                     />
                   </Grid>
                   <Grid item sm={6} xs={12}>
-                    <iframe
-                      title="procolo-2"
-                      src="https://www.youtube.com/embed/28X2Y3k3NMk"
-                      frameBorder="0"
-                      allow="autoplay; encrypted-media"
-                      allowFullScreen
-                      className={classes.iframe}
+                    <img
+                      src="https://assets.feeles.com/thumbnail/7af083af9079fc370610d0e688c073d3.jpg"
+                      alt="練習用ステージ"
+                      style={{ height: '100%' }}
                     />
                   </Grid>
                 </Grid>
-
+                <Typography type="title" align="left" gutterBottom>
+                  今年のプログラミングコロシアムは、ロックマン©︎とコラボ！
+                </Typography>
                 <Typography type="body1" align="left" gutterBottom>
-                  プログラミングコロシアムは、Scratch や HackforPlay
-                  などを使って行うプログラミングバトルだ。君もプログラミングバトルを体験してみない？まずはくわしい説明を読んでね。
+                  プログラムを使ってロックマン©︎を動かそう。コマンドの一覧は<a
+                    href="https://scrapbox.io/hackforplay/%E3%83%AD%E3%83%83%E3%82%AF%E3%83%9E%E3%83%B3%E3%81%AE%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ここをクリック
+                  </a>すれば見ることができるぞ
+                </Typography>
+                <Typography type="caption" align="left">
+                  ※ロックマンは株式会社カプコンの登録商標です
                 </Typography>
                 <Button
                   color="primary"
                   raised
                   component={Link}
-                  to="/specials/プログラミングコロシアム"
+                  to="/officials/pg-colosseum-2018/training"
                   className={classes.button}
                   style={{ marginTop: 16 }}
                 >
-                  詳しい説明を読む
+                  ゲームスタート
                 </Button>
               </Paper>
             </Grid>
