@@ -120,7 +120,7 @@ class Topic extends React.Component<Props> {
           slidesToShow={1}
           slidesToScroll={1}
           autoplay
-          autoplaySpeed={10000}          
+          autoplaySpeed={10000}
           className={classes.slider}
         >
           <img
@@ -244,37 +244,17 @@ class Topic extends React.Component<Props> {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <Paper elevation={1} className={classes.paper}>
-                <Typography
-                  type="title"
-                  align="center"
-                  gutterBottom
-                  className={classes.title}
-                >
-                  <img src={news} alt="" />
-                  NEWS
-                </Typography>
-                <img src={news1} alt="" style={{ width: '100%' }} />
-                <Typography
-                  type="body1"
-                  align="left"
-                  className={classes.body}
-                  gutterBottom
-                >
-                  千葉テレビとフジテレビKIDSが製作する５分番組「GPリーグ
-                  プログラミングコロシアム」で、子供たちがバトルする競技の最終対決に
-                  HackforPlay を使っていただきました！
-                </Typography>
-                <Button
-                  color="primary"
-                  raised
-                  className={classes.button}
-                  href="https://note.mu/teramotodaiki/n/nee2f10fc6742"
-                  target="_blank"
-                >
-                  もっと読む
-                </Button>
-              </Paper>
+              <iframe
+                title="facebook"
+                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fhackforplay%2F&tabs=timeline&width=380&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=481203238698048"
+                width="408"
+                height="500"
+                style={{ border: 'none', overflow: 'hidden' }}
+                scrolling="no"
+                frameborder="0"
+                allowTransparency="true"
+                allow="encrypted-media"
+              />
             </Grid>
 
             {/* <Grid item xs={12} sm={6}>
