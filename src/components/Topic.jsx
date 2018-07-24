@@ -15,12 +15,10 @@ import WorkList from '../containers/WorkList';
 import beginner from '../resources/beginner.png';
 import diamond_pink from '../resources/diamond_pink.png';
 import mail from '../resources/mail.png';
-import news from '../resources/news.png';
 import dragon from '../resources/dragon.png';
 import facebook from '../resources/facebook.png';
 import twitter from '../resources/twitter.png';
 import logo from '../resources/logo.png';
-import news1 from '../resources/news1.jpg';
 import top1 from '../resources/h4p_top_01.gif';
 import top2 from '../resources/h4p_top_02.gif';
 import top3 from '../resources/h4p_top_03.gif';
@@ -120,7 +118,7 @@ class Topic extends React.Component<Props> {
           slidesToShow={1}
           slidesToScroll={1}
           autoplay
-          autoplaySpeed={10000}          
+          autoplaySpeed={10000}
           className={classes.slider}
         >
           <img
@@ -175,7 +173,7 @@ class Topic extends React.Component<Props> {
                   <img src={dragon} alt="" />
                   <div style={{ marginLeft: 16 }}>
                     <Typography type="title" align="left" gutterBottom>
-                      プログラミングバトルに参加
+                      プログラミングコロシアム特別ステージ
                     </Typography>
                   </div>
                 </div>
@@ -188,7 +186,7 @@ class Topic extends React.Component<Props> {
                   <Grid item sm={6} xs={12}>
                     <iframe
                       title="procolo-1"
-                      src="https://www.youtube.com/embed/3fZl56ybaRk"
+                      src="https://www.youtube.com/embed/viUpCZXjbVc"
                       frameBorder="0"
                       allow="autoplay; encrypted-media"
                       allowFullScreen
@@ -196,30 +194,37 @@ class Topic extends React.Component<Props> {
                     />
                   </Grid>
                   <Grid item sm={6} xs={12}>
-                    <iframe
-                      title="procolo-2"
-                      src="https://www.youtube.com/embed/28X2Y3k3NMk"
-                      frameBorder="0"
-                      allow="autoplay; encrypted-media"
-                      allowFullScreen
-                      className={classes.iframe}
+                    <img
+                      src="https://assets.feeles.com/thumbnail/7af083af9079fc370610d0e688c073d3.jpg"
+                      alt="練習用ステージ"
+                      style={{ height: '100%' }}
                     />
                   </Grid>
                 </Grid>
-
+                <Typography type="title" align="left" gutterBottom>
+                  今年のプログラミングコロシアムは、ロックマン©︎とコラボ！
+                </Typography>
                 <Typography type="body1" align="left" gutterBottom>
-                  プログラミングコロシアムは、Scratch や HackforPlay
-                  などを使って行うプログラミングバトルだ。君もプログラミングバトルを体験してみない？まずはくわしい説明を読んでね。
+                  プログラムを使ってロックマン©︎を動かそう。コマンドの一覧は<a
+                    href="https://scrapbox.io/hackforplay/%E3%83%AD%E3%83%83%E3%82%AF%E3%83%9E%E3%83%B3%E3%81%AE%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ここをクリック
+                  </a>すれば見ることができるぞ
+                </Typography>
+                <Typography type="caption" align="left">
+                  ※ロックマンは株式会社カプコンの登録商標です
                 </Typography>
                 <Button
                   color="primary"
                   raised
                   component={Link}
-                  to="/specials/プログラミングコロシアム"
+                  to="/officials/pg-colosseum-2018/training"
                   className={classes.button}
                   style={{ marginTop: 16 }}
                 >
-                  詳しい説明を読む
+                  ゲームスタート
                 </Button>
               </Paper>
             </Grid>
@@ -244,37 +249,17 @@ class Topic extends React.Component<Props> {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <Paper elevation={1} className={classes.paper}>
-                <Typography
-                  type="title"
-                  align="center"
-                  gutterBottom
-                  className={classes.title}
-                >
-                  <img src={news} alt="" />
-                  NEWS
-                </Typography>
-                <img src={news1} alt="" style={{ width: '100%' }} />
-                <Typography
-                  type="body1"
-                  align="left"
-                  className={classes.body}
-                  gutterBottom
-                >
-                  千葉テレビとフジテレビKIDSが製作する５分番組「GPリーグ
-                  プログラミングコロシアム」で、子供たちがバトルする競技の最終対決に
-                  HackforPlay を使っていただきました！
-                </Typography>
-                <Button
-                  color="primary"
-                  raised
-                  className={classes.button}
-                  href="https://note.mu/teramotodaiki/n/nee2f10fc6742"
-                  target="_blank"
-                >
-                  もっと読む
-                </Button>
-              </Paper>
+              <iframe
+                title="facebook"
+                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fhackforplay%2F&tabs=timeline&width=380&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=481203238698048"
+                width="408"
+                height="500"
+                style={{ border: 'none', overflow: 'hidden' }}
+                scrolling="no"
+                frameborder="0"
+                allowTransparency="true"
+                allow="encrypted-media"
+              />
             </Grid>
 
             {/* <Grid item xs={12} sm={6}>
