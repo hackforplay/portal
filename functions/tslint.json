@@ -72,7 +72,7 @@
     "no-void-expression": [true, "ignore-arrow-function-shorthand"],
 
     // Makes sure result of typeof is compared to correct string values.
-    "typeof-compare": true,
+    "typeof-compare": false,
 
     // Disallow duplicate imports in the same file.
     "no-duplicate-imports": true,
