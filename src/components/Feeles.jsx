@@ -21,7 +21,7 @@ type State = {
 };
 
 const replayClassName = 'replay';
-const rootStyle = (padding: number) => ({
+export const rootStyle = (padding: number) => ({
   [`&.${replayClassName}`]: {
     height: `calc(100vh - ${padding * 2}px)`
   },
