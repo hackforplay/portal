@@ -7,7 +7,7 @@ import * as helpers from './helpers';
 import * as auth from './auth';
 import * as user from './user';
 import type { Statefull } from './helpers';
-import type { Dispatch, GetStore } from './';
+import type { StoreState, ThunkAction } from './';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'user';
@@ -180,9 +180,7 @@ export const updateUser = (uid: string): Action => ({
   uid
 });
 
-export type fetchUserIfNeededType = (
-  uid: string
-) => (dispatch: Dispatch, getStore: GetStore) => void;
+export type fetchUserIfNeededType = (uid: string) => ThunkAction;
 
 export const fetchUserIfNeeded: fetchUserIfNeededType = uid => (
   dispatch,
@@ -210,9 +208,7 @@ export const fetchUserIfNeeded: fetchUserIfNeededType = uid => (
     });
 };
 
-export type editAuthUserType = (
-  editing: EditingUserData
-) => (dispatch: Dispatch, getStore: GetStore) => void;
+export type editAuthUserType = (editing: EditingUserData) => ThunkAction;
 
 export const editAuthUser: editAuthUserType = editing => (
   dispatch,
@@ -227,10 +223,7 @@ export const editAuthUser: editAuthUserType = editing => (
   dispatch(editUser(user.uid, editing));
 };
 
-export type cancelAuthUserEditingType = () => (
-  dispatch: Dispatch,
-  getStore: GetStore
-) => void;
+export type cancelAuthUserEditingType = () => ThunkAction;
 
 export const cancelAuthUserEditing: cancelAuthUserEditingType = () => (
   dispatch,
@@ -245,10 +238,7 @@ export const cancelAuthUserEditing: cancelAuthUserEditingType = () => (
   dispatch(editCancel(user.uid));
 };
 
-export type confirmAuthUserEditingType = () => (
-  dispatch: Dispatch,
-  getStore: GetStore
-) => Promise<void>;
+export type confirmAuthUserEditingType = () => ThunkAction;
 
 export const confirmAuthUserEditing: confirmAuthUserEditingType = () => async (
   dispatch,
@@ -278,10 +268,10 @@ export const confirmAuthUserEditing: confirmAuthUserEditingType = () => async (
 
 // Helpers
 
-export function getUserByUid(store: $Call<GetStore>, uid: string): UserType {
+export function getUserByUid(store: StoreState, uid: string): UserType {
   return getState(store).byUid[uid] || helpers.initialized();
 }
 
-export function getState(store: $Call<GetStore>): State {
+export function getState(store: StoreState): State {
   return store[storeName];
 }
