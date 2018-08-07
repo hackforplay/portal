@@ -1,6 +1,8 @@
 [ignore]
 .*/node_modules/protobufjs/.*
 .*/node_modules/config-chain/.*
+.*/node_modules/jss/.*
+.*/node_modules/material-ui/.*
 
 [include]
 
