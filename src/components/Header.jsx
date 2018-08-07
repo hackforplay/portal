@@ -154,7 +154,7 @@ class Header extends React.Component<Props, State> {
     this.handleClose();
   };
 
-  handleVersionChange = (event: {}) => {
+  handleVersionChange = (event: { target: { value: string } }) => {
     const subDomain = event.target.value;
     const { pathname, search, hash, href } = window.location;
     const url = `https://${subDomain}.hackforplay.xyz${pathname}${search}${hash}`;

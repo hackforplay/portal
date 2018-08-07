@@ -150,7 +150,7 @@ class Work extends React.Component<Props, State> {
   };
 
   // Feeles で実行している iframe から message を受け取った
-  handleMessage = event => {
+  handleMessage = (event: { data: { value: { labelName: string, labelValue: string, href: string } } }) => {
     const { data: { value: { labelName, labelValue, href } } } = event;
     const { make, work } = this.props;
     if (labelName) {
