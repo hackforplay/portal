@@ -1,3 +1,4 @@
+// @flow
 import firebase from 'firebase';
 
 // Initialize Firebase

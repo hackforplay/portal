@@ -1,3 +1,4 @@
+// @flow
 export const searchBarInfo = [
   {
     path: '/contents/kit',

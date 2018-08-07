@@ -1,3 +1,4 @@
+// @flow
 import * as React from 'react';
 import classNames from 'classnames';
 import Dialog from 'material-ui/Dialog/Dialog';

@@ -1,3 +1,4 @@
+// @flow
 import type { WorkData } from './work';
 
 export const data: Array<WorkData> = [

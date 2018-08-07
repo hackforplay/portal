@@ -1,3 +1,4 @@
+// @flow
 import * as React from 'react';
 import pathToRegexp from 'path-to-regexp';
 import type { ContextRouter } from 'react-router-dom';
