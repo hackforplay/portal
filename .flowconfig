@@ -1,5 +1,6 @@
 [ignore]
 .*/node_modules/protobufjs/.*
+.*/node_modules/config-chain/.*
 
 [include]
 
