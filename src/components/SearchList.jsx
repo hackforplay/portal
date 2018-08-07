@@ -4,14 +4,13 @@ import { withStyles } from 'material-ui/styles';
 
 import WorkList from '../containers/WorkList';
 import theme from '../settings/theme';
-import type { WorkCollectionType } from '../ducks/work';
+
+export type OwnProps = *;
 
 type Props = {
-  classes: {
+  classes?: {
     root: string
-  },
-  query: string,
-  result: WorkCollectionType
+  }
 };
 
 @withStyles({
@@ -19,7 +18,7 @@ type Props = {
     padding: theme.spacing.unit * 4
   }
 })
-export default class SearchList extends React.Component<Props> {
+export default class SearchList extends React.Component<OwnProps & Props> {
   render() {
     const { classes, result } = this.props;
 
