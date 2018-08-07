@@ -201,7 +201,7 @@ export const fetchUserIfNeeded: fetchUserIfNeededType = uid => (
     .onSnapshot(snapshot => {
       if (snapshot && snapshot.exists) {
         // ユーザー情報をストアに格納
-        const user = { ...snapshot.data(), uid: snapshot.id };
+        const user = { ...(snapshot.data(): any), uid: snapshot.id };
         dispatch(setUser(user));
       } else {
         // 存在しない UID

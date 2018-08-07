@@ -1,5 +1,6 @@
 // @flow
 import firebase from 'firebase';
+import 'firebase/firestore';
 
 import * as helpers from './helpers';
 import type { Statefull } from './helpers';
@@ -24,7 +25,7 @@ type RecordData = {|
 
 // created_at => createdAt
 const fixData = (snapShot: firebase.firestore.DocumentSnapshot): RecordData => {
-  const { created_at, ...last } = snapShot.data();
+  const { created_at, ...last } = (snapShot.data(): any);
   return { id: snapShot.id, createdAt: created_at, ...last };
 };
 

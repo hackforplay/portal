@@ -456,9 +456,9 @@ export const fetchRecommendedWorks: fetchRecommendedWorksType = () => async (
 
   dispatch(loadList('recommended'));
   try {
-    const works = [];
+    const works: WorkData[] = [];
     // Firestore から取得
-    const querySnapshot = await firebase
+    const querySnapshot: $npm$firebase$firestore$QuerySnapshot = await firebase
       .firestore()
       .collection('works')
       .where('visibility', '==', 'public')
@@ -467,7 +467,7 @@ export const fetchRecommendedWorks: fetchRecommendedWorksType = () => async (
       .get();
     for (const snapshot of querySnapshot.docs) {
       works.push({
-        ...snapshot.data(),
+        ...(snapshot.data(): any),
         id: snapshot.id,
         path: `/works/${snapshot.id}`
       });
@@ -554,7 +554,7 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
   // リクエスト
   dispatch(loadUsers(uid));
   try {
-    const works = [];
+    const works: WorkData[] = [];
     // Firestore から取得
     let query = firebase
       .firestore()
@@ -567,10 +567,10 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
       // 自分ではない
       query = query.where('visibility', '==', 'public');
     }
-    const querySnapshot = await query.get();
+    const querySnapshot: $npm$firebase$firestore$QuerySnapshot = await query.get();
     for (const snapshot of querySnapshot.docs) {
       works.push({
-        ...snapshot.data(),
+        ...(snapshot.data(): any),
         id: snapshot.id,
         path: `/works/${snapshot.id}`
       });
@@ -607,7 +607,7 @@ export const fetchWorkByPath: fetchWorkByPathType = path => async (
   try {
     switch (collection) {
       case 'works':
-        const snapshot = await firebase
+        const snapshot: $npm$firebase$firestore$DocumentSnapshot = await firebase
           .firestore()
           .collection(collection)
           .doc(id)
@@ -615,7 +615,7 @@ export const fetchWorkByPath: fetchWorkByPathType = path => async (
         if (snapshot.exists) {
           dispatch(
             set({
-              ...snapshot.data(),
+              ...(snapshot.data(): any),
               id,
               path
             })
@@ -756,7 +756,7 @@ export const addWorkView: addWorkViewType = path => async (
 
   // ステージの views コレクションにドキュメントを追加
   // works の histories にも自動で追加される
-  const ref = await firebase
+  const ref: any = await firebase
     .firestore()
     .collection(`${path}/views`)
     .add({

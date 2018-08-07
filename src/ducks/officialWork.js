@@ -174,9 +174,9 @@ export const fetchWork = (pathname: string) => async (
       .firestore()
       .collection('officialWorks')
       .doc(key);
-    const documentSnapshot = await query.get();
+    const documentSnapshot = (await query.get(): $npm$firebase$firestore$DocumentSnapshot);
     if (documentSnapshot.exists) {
-      const data: OfficialWorkDocumentType = documentSnapshot.data();
+      const data: any = documentSnapshot.data();
       dispatch(set(makeItem(data)));
     } else {
       dispatch(empty(pathname));

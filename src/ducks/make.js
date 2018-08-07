@@ -41,14 +41,18 @@ export type Metadata = {
   +thumbnailStoragePath?: string
 };
 
+export type FeelesFile = {
+  compose: () => Promise<Object>
+};
+
 export type Action =
   | {|
       +type: 'portal/make/CREATE',
-      +payload: Array<{}>
+      +payload: Array<Object>
     |}
   | {|
       +type: 'portal/make/CHANGE',
-      +payload: Array<{}>
+      +payload: Array<Object>
     |}
   | {|
       +type: 'portal/make/METADATA',
@@ -238,7 +242,7 @@ export const remove: removeType = () => ({
   type: REMOVE
 });
 
-export type changeWorkType = (payload: { files: Array<{}> }) => (
+export type changeWorkType = (payload: { files: FeelesFile[] }) => (
   dispatch: Dispatch,
   getStore: GetStore
 ) => Promise<void>;
@@ -387,9 +391,9 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
         assetStoragePath
       }
     });
-    const snapshot = await uploadedRef.get();
+    const snapshot = (await uploadedRef.get(): $npm$firebase$firestore$DocumentSnapshot);
     const uploadedDoc = {
-      ...snapshot.data(),
+      ...(snapshot.data(): any),
       id: snapshot.id,
       path: `/works/${snapshot.id}`
     };
@@ -473,9 +477,9 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
       .doc(workData.id);
     await ref.update(updated);
 
-    const snapshot = await ref.get();
+    const snapshot = (await ref.get(): $npm$firebase$firestore$DocumentSnapshot);
     const updatedDoc = {
-      ...snapshot.data(),
+      ...(snapshot.data(): any),
       id: snapshot.id,
       path: `/works/${snapshot.id}`
     };
@@ -512,7 +516,7 @@ async function uploadWorkData({ work, uid, metadata }) {
       .collection('works')
       .doc(workData.id);
     await ref.update(updated);
-    return ref;
+    return (ref: $npm$firebase$firestore$DocumentReference);
   } else {
     // 新しく追加
     const appended = {
