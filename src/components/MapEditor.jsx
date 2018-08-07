@@ -33,7 +33,11 @@ class MapEditor extends React.Component<Props, State> {
     tileset: []
   };
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.prepare();
+  }
+
+  async prepare() {
     const rme = await import('react-map-editor');
     const ReactMapEditor = rme.default;
     const response = await fetch(
