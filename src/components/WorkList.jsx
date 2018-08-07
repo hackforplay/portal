@@ -23,6 +23,15 @@ import theme from '../settings/theme';
 import noImage from '../resources/no-image.png';
 import type { WorkCollectionType } from '../ducks/work';
 
+export type OwnProps = {
+  works: WorkCollectionType,
+  title: React.Node,
+  more: boolean,
+  moreLink: string,
+  showVisibility: boolean | void,
+  className?: string
+};
+
 export type Props = {
   classes: {
     root: string,
@@ -38,14 +47,10 @@ export type Props = {
     button: string,
     more: string,
     chip: string
-  },
-  works: WorkCollectionType,
-  title: React.Node,
-  more: boolean,
-  moreLink: string,
-  showVisibility: boolean | void,
-  className?: string
-} & ContextRouter;
+  }
+};
+
+export type State = {};
 
 @withRouter
 @withStyles({
@@ -118,7 +123,9 @@ export type Props = {
   },
   chip: {}
 })
-export default class WorkList extends React.Component<Props> {
+export default class WorkList extends React.Component<
+  Props & OwnProps & ContextRouter
+> {
   static defaultProps = {
     more: false,
     showVisibility: false
