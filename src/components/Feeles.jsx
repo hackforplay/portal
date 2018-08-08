@@ -25,8 +25,12 @@ const classes = {
   })
 };
 
+export type OnMessage = (event: {
+  data: { value: { labelName: string, labelValue: string, href: string } }
+}) => void;
+
 export type OwnProps = {
-  onMessage?: () => {},
+  onMessage: OnMessage,
   src: string | void,
   replay: boolean
 };

@@ -17,6 +17,7 @@ import Feeles from '../containers/Feeles';
 import EditableTitleTextField from '../containers/EditableTitleTextField';
 import ThumbnailDialog from '../containers/ThumbnailDialog';
 import type { StateProps, DispatchProps } from '../containers/Work';
+import type { OnMessage } from '../components/Feeles';
 
 export type Props = StateProps & DispatchProps & ContextRouter;
 
@@ -122,9 +123,7 @@ class Work extends React.Component<Props, State> {
   };
 
   // Feeles で実行している iframe から message を受け取った
-  handleMessage = (event: {
-    data: { value: { labelName: string, labelValue: string, href: string } }
-  }) => {
+  handleMessage: OnMessage = event => {
     const { data: { value: { labelName, labelValue, href } } } = event;
     const { make, work } = this.props;
     if (labelName) {
