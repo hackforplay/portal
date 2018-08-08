@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import type { ContextRouter } from 'react-router-dom';
-import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import { searchWorks } from '../ducks/work';
 import type { WorkCollectionType } from '../ducks/work';
 import type { StoreState } from '../ducks';
@@ -15,10 +14,7 @@ export type StateProps = {
   result: WorkCollectionType
 };
 
-const mapStateToProps: MapStateToProps<StoreState, OwnProps, StateProps> = (
-  state,
-  ownProps
-) => {
+const mapStateToProps = (state: StoreState, ownProps: OwnProps): StateProps => {
   const { query, result } = state.work.search;
 
   return {
@@ -27,16 +23,13 @@ const mapStateToProps: MapStateToProps<StoreState, OwnProps, StateProps> = (
   };
 };
 
-export type DispatchProps = *;
-
-const mapDispatchToProps: MapDispatchToProps<{}, OwnProps, DispatchProps> = (
-  dispatch,
-  ownProps
-) => ({
+const mapDispatchToProps = {
   searchWorks
-});
+};
 
-type Props = OwnProps & StateProps & DispatchProps & ContextRouter;
+type Props = OwnProps &
+  StateProps &
+  typeof mapDispatchToProps & { ...ContextRouter };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   class extends React.Component<Props> {

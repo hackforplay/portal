@@ -4,21 +4,24 @@ import { css } from 'emotion';
 
 import WorkList from '../containers/WorkList';
 import theme from '../settings/theme';
+import { type StateProps } from '../containers/SearchList';
+
+const classes = {
+  root: css({
+    padding: theme.spacing.unit * 4
+  })
+};
 
 export type OwnProps = {};
 
-const rootStyle = css({
-  padding: theme.spacing.unit * 4
-});
+type Props = OwnProps & StateProps;
 
-export default class SearchList extends React.Component<OwnProps> {
-  render() {
-    const { result } = this.props;
+export default (props: Props) => {
+  const { result } = props;
 
-    return (
-      <div className={rootStyle}>
-        <WorkList works={result} title="検索結果" more moreLink="" />
-      </div>
-    );
-  }
-}
+  return (
+    <div className={classes.root}>
+      <WorkList works={result} title="検索結果" more moreLink="" />
+    </div>
+  );
+};
