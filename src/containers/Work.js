@@ -1,10 +1,11 @@
 // @flow
 import * as React from 'react';
+import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import type { ContextRouter } from 'react-router-dom';
+import type { ContextRouter, Match } from 'react-router-dom';
 
-import WrappedWork from '../components/Work';
+import Work from '../components/Work';
 import {
   getWorkByPath,
   fetchWorkByPath,
@@ -40,13 +41,13 @@ export type StateProps = {
   redirect?: string
 };
 
-const getPath = (url: string, params?: { id: string }) => {
+const getPath = (match: Match) => {
+  const { url, params } = match;
   const isWork = url.startsWith('/work');
-  const id = params && params.id;
-  if (!id) {
+  if (!params.id) {
     throw new Error(`Work doesn't have id`);
   }
-  const path = `/${isWork ? 'works' : 'products'}/${id}`;
+  const path = `/${isWork ? 'works' : 'products'}/${params.id}`;
   return path;
 };
 
@@ -54,8 +55,7 @@ const mapStateToProps = (
   state: StoreState,
   ownProps: ContextRouter
 ): StateProps => {
-  const { url, params } = ownProps.match;
-  const path = getPath(url, params);
+  const path = getPath(ownProps.match);
   const replay = isAuthUsersWork(state, path);
   const isPreparing = replay && helpers.isInitialized(state.make.work);
   return {
@@ -87,33 +87,35 @@ export type DispatchProps = typeof mapDispatchToProps;
 
 type Props = StateProps & DispatchProps & ContextRouter;
 
-@withRouter
-@connect(mapStateToProps, mapDispatchToProps)
-export default class Work extends React.Component<Props> {
-  componentDidMount() {
-    const { url, params } = this.props.match;
-    const path = getPath(url, params);
-    // ステージデータがなければ取得
-    this.props.fetchWorkByPath(path).then(() => {
-      // ステージのビューカウントを増やす
-      this.props.addWorkView(path);
-    });
-    if (this.props.replay) {
-      this.props.editExistingWork(this.props.work);
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(
+  class extends React.Component<Props> {
+    componentDidMount() {
+      const path = getPath(this.props.match);
+      // ステージデータがなければ取得
+      this.props.fetchWorkByPath(path).then(() => {
+        // ステージのビューカウントを増やす
+        this.props.addWorkView(path);
+      });
+      if (this.props.replay) {
+        this.props.editExistingWork(this.props.work);
+      }
+    }
+
+    componentWillReceiveProps(nextProps: Props) {
+      if (this.props.replay !== nextProps.replay && nextProps.replay) {
+        this.props.editExistingWork(nextProps.work);
+      }
+    }
+
+    componentWillUnmount() {
+      this.props.trashWork();
+    }
+
+    render() {
+      return <Work {...this.props} />;
     }
   }
-
-  componentWillReceiveProps(nextProps: Props) {
-    if (this.props.replay !== nextProps.replay && nextProps.replay) {
-      this.props.editExistingWork(nextProps.work);
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.trashWork();
-  }
-
-  render() {
-    return <WrappedWork {...this.props} />;
-  }
-}
+);
