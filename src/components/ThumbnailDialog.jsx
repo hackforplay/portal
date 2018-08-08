@@ -9,11 +9,7 @@ import Button from 'material-ui/Button';
 import { css } from 'emotion';
 
 import theme from '../settings/theme';
-import type {
-  saveWorkType,
-  setThumbnailFromDataURLType,
-  State as MakeState
-} from '../ducks/make';
+import type { StateProps, DispatchProps } from '../containers/ThumbnailDialog';
 
 const classes = {
   content: css({
@@ -34,15 +30,16 @@ const classes = {
   })
 };
 
-type Props = {
-  saveWork: saveWorkType,
-  setThumbnailFromDataURL: setThumbnailFromDataURLType,
-  make: MakeState,
-  src?: string
+export type OwnProps = {
+  open: boolean,
+  src?: string,
+  onClose: () => void
 };
 
+type Props = OwnProps & StateProps & DispatchProps;
+
 type State = {
-  selectedIndex: ?number
+  selectedIndex: number | null
 };
 
 export default class ThumbnailDialog extends React.Component<Props, State> {
