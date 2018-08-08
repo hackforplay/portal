@@ -18,13 +18,13 @@ const mapDispatchToProps = {
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class PCRanking extends React.Component {
+export default class PCRanking extends React.Component<any> {
   componentDidMount() {
     const { stage } = this.props.match.params;
     this.props.fetchRecordsByStage(stage);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: any) {
     const { stage } = this.props.match.params;
 
     if (stage !== prevProps.match.params.stage) {
