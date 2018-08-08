@@ -2,15 +2,23 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import { withStyles } from 'material-ui/styles';
-import { rootStyle } from './Feeles';
+import { css } from 'emotion';
+
 import type ReactMapEditorType from 'react-map-editor';
 
-type Props = {
-  classes: {
-    root: string
-  }
-} & ContextRouter;
+const classes = {
+  root: css({
+    height: 'calc(100vh - 56px)',
+    '@media (min-width:0px) and (orientation: landscape)': {
+      height: 'calc(100vh - 48px)'
+    },
+    '@media (min-width:600px)': {
+      height: 'calc(100vh - 64px)'
+    }
+  })
+};
+
+export type OwnProps = {};
 
 type State = {
   ReactMapEditor: ReactMapEditorType | null,
@@ -18,16 +26,7 @@ type State = {
 };
 
 @withRouter
-@withStyles({
-  root: rootStyle(56),
-  '@media (min-width:0px) and (orientation: landscape)': {
-    root: rootStyle(48)
-  },
-  '@media (min-width:600px)': {
-    root: rootStyle(64)
-  }
-})
-class MapEditor extends React.Component<Props, State> {
+class MapEditor extends React.Component<OwnProps & ContextRouter, State> {
   state = {
     ReactMapEditor: null,
     tileset: []
@@ -52,7 +51,6 @@ class MapEditor extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes } = this.props;
     const { ReactMapEditor, tileset } = this.state;
 
     if (!ReactMapEditor) {
