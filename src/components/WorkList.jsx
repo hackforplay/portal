@@ -32,7 +32,7 @@ export type OwnProps = {
   className?: string
 };
 
-export type Props = {
+export type OwnProps = {
   classes: {
     root: string,
     card: string,
@@ -51,6 +51,8 @@ export type Props = {
 };
 
 export type State = {};
+
+type Props = OwnProps & OwnProps & { ...ContextRouter };
 
 @withRouter
 @withStyles({
@@ -123,9 +125,7 @@ export type State = {};
   },
   chip: {}
 })
-export default class WorkList extends React.Component<
-  Props & OwnProps & ContextRouter
-> {
+export default class WorkList extends React.Component<Props> {
   static defaultProps = {
     more: false,
     showVisibility: false

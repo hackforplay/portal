@@ -22,7 +22,7 @@ type Props = {
     button: string
   },
   records: RecordCollectionType
-} & ContextRouter;
+} & { ...ContextRouter };
 
 const playLinks = {
   semi1: '/officials/pg-colosseum/#/stages/semi1/index.html',

@@ -25,8 +25,10 @@ type State = {
   tileset: any[]
 };
 
+type Props = OwnProps & { ...ContextRouter };
+
 @withRouter
-class MapEditor extends React.Component<OwnProps & ContextRouter, State> {
+class MapEditor extends React.Component<Props, State> {
   state = {
     ReactMapEditor: null,
     tileset: []

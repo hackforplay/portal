@@ -26,7 +26,7 @@ const rootStyle = css({
 
 export type OwnProps = *;
 
-class Contents extends React.Component<OwnProps & ContextRouter> {
+class Contents extends React.Component<OwnProps & { ...ContextRouter }> {
   render() {
     const { location } = this.props;
 
@@ -82,7 +82,7 @@ const stageStyle = {
   })
 };
 
-function StageContent(props: ContentType & ContextRouter) {
+function StageContent(props: ContentType & { ...ContextRouter }) {
   return (
     <Grid
       container

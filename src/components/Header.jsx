@@ -42,7 +42,7 @@ type Props = {
   isInOfficialWork: boolean,
   signInWithGoogle: () => {},
   signOut: () => {}
-} & ContextRouter;
+} & { ...ContextRouter };
 
 type State = {
   anchorEl: ?HTMLElement

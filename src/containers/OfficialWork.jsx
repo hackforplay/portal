@@ -69,7 +69,7 @@ const mapDispatchToProps = {
   removeWork
 };
 
-type Props = StateProps & typeof mapDispatchToProps & ContextRouter;
+type Props = StateProps & typeof mapDispatchToProps & { ...ContextRouter };
 
 @withRouter
 @connect(mapStateToProps, mapDispatchToProps)

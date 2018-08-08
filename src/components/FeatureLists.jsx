@@ -20,7 +20,7 @@ export type Props = {
     recommended: WorkCollectionType,
     trending: WorkCollectionType
   }
-} & ContextRouter;
+} & { ...ContextRouter };
 
 @withStyles({
   root: {

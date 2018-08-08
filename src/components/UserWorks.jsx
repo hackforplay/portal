@@ -13,7 +13,7 @@ export type Props = {
     root: string
   },
   works: WorkCollectionType
-} & ContextRouter;
+} & { ...ContextRouter };
 
 @withStyles({
   root: {
