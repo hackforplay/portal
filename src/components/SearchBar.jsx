@@ -110,6 +110,10 @@ class SearchBar extends React.Component<Props, State> {
       return re.exec(location.pathname);
     });
 
+    if (!info) {
+      throw new Error(`No description given in ${location.pathname}`);
+    }
+
     const toPath = pathToRegexp.compile(info.path);
     const url = toPath({ query: query || null });
 

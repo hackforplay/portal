@@ -49,6 +49,10 @@ class NavigationBar extends React.Component<Props, State> {
       return re.exec(location.pathname);
     });
 
+    if (!info) {
+      throw new Error(`No serchBarInfo is given in ${location.pathname}`);
+    }
+
     const keys = [];
     const re = pathToRegexp(info.path, keys);
     const params = re.exec(location.pathname);
