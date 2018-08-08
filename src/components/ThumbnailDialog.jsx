@@ -6,7 +6,7 @@ import { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import GridList from 'material-ui/GridList/GridList';
 import { GridListTile } from 'material-ui/GridList';
 import Button from 'material-ui/Button';
-import { withStyles } from 'material-ui/styles';
+import { css } from 'emotion';
 
 import theme from '../settings/theme';
 import type {
@@ -15,14 +15,28 @@ import type {
   State as MakeState
 } from '../ducks/make';
 
+const classes = {
+  content: css({
+    maxWidth: 600
+  }),
+  gridList: css({
+    margin: 0
+  }),
+  gridItem: css({
+    maxWidth: 184,
+    minWidth: 184,
+    marginBottom: 2 // border が見えるように
+  }),
+  selectedTile: css({
+    borderColor: theme.palette.primary[500],
+    borderStyle: 'solid',
+    borderWidth: 2
+  })
+};
+
 type Props = {
   saveWork: saveWorkType,
   setThumbnailFromDataURL: setThumbnailFromDataURLType,
-  classes: {
-    content: string,
-    gridItem: string,
-    selectedTile: string
-  },
   make: MakeState,
   src?: string
 };
@@ -31,24 +45,6 @@ type State = {
   selectedIndex: ?number
 };
 
-@withStyles({
-  content: {
-    maxWidth: 600
-  },
-  gridList: {
-    margin: 0
-  },
-  gridItem: {
-    maxWidth: 184,
-    minWidth: 184,
-    marginBottom: 2 // border が見えるように
-  },
-  selectedTile: {
-    borderColor: theme.palette.primary[500],
-    borderStyle: 'solid',
-    borderWidth: 2
-  }
-})
 export default class ThumbnailDialog extends React.Component<Props, State> {
   state = {
     // Index of make.thumbnails
@@ -68,7 +64,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, make, open, src, onClose } = this.props;
+    const { make, open, src, onClose } = this.props;
 
     const tiles = make.thumbnails.map((src, i) => (
       <GridListTile
