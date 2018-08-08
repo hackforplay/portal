@@ -304,16 +304,16 @@ export const removeFile: removeFileType = path => async (
 
 export function getStorageByPath(
   store: $Call<GetStore>,
-  path: string
+  path?: string
 ): StorageType {
   return (
-    getState(store)[path] || {
+    (path && getState(store)[path]) || {
       isAvailable: false,
       isUploading: false,
       isDownloading: false,
       isRemoving: false,
       isEmpty: false,
-      path
+      path: ''
     }
   );
 }
