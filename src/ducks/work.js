@@ -55,6 +55,41 @@ export type WorkData = {
   +updatedAt: string | Date | null
 };
 
+type FirestoreWork = {
+  +title: string,
+  +description: string,
+  +author: string,
+  +visibility: VisibilityType,
+  +uid?: string,
+  +thumbnailStoragePath?: string,
+  +assetStoragePath?: string,
+  +viewsNum: number,
+  +clearRate: number,
+  +favsNum: number,
+  +createdAt: FirestoreTimestamp,
+  +updatedAt?: FirestoreTimestamp
+};
+
+export type GetWorkData = (
+  snapshot: $npm$firebase$firestore$DocumentSnapshot
+) => WorkData;
+
+/**
+ * Firestore のデータを変換して扱いやすい WorkData 型にする
+ * @param {$npm$firebase$firestore$DocumentSnapshot} snapshot DocumentSnapshot
+ */
+export const getWorkData: GetWorkData = snapshot => {
+  const data: FirestoreWork = (snapshot.data(): any);
+  const { createdAt, updatedAt, ...workData } = data;
+  return {
+    ...workData,
+    id: snapshot.id,
+    path: `/works/${snapshot.id}`,
+    createdAt: createdAt.toDate(),
+    updatedAt: updatedAt && updatedAt.toDate()
+  };
+};
+
 type migrateType = (old: WorkData) => WorkData;
 const migrate: migrateType = old => ({
   ...old,
@@ -465,13 +500,7 @@ export const fetchRecommendedWorks: fetchRecommendedWorksType = () => async (
       .orderBy('createdAt', 'desc')
       .limit(15)
       .get();
-    for (const snapshot of querySnapshot.docs) {
-      works.push({
-        ...(snapshot.data(): any),
-        id: snapshot.id,
-        path: `/works/${snapshot.id}`
-      });
-    }
+    works.push(...querySnapshot.docs.map(getWorkData));
     // Heroku から取得
     const result = await request({
       sort: 'created_at',
@@ -569,11 +598,7 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
     }
     const querySnapshot: $npm$firebase$firestore$QuerySnapshot = await query.get();
     for (const snapshot of querySnapshot.docs) {
-      works.push({
-        ...(snapshot.data(): any),
-        id: snapshot.id,
-        path: `/works/${snapshot.id}`
-      });
+      works.push(getWorkData(snapshot));
     }
     // Heroku から取得
     const response = await fetch(
@@ -613,13 +638,7 @@ export const fetchWorkByPath: fetchWorkByPathType = path => async (
           .doc(id)
           .get();
         if (snapshot.exists) {
-          dispatch(
-            set({
-              ...(snapshot.data(): any),
-              id,
-              path
-            })
-          );
+          dispatch(set(getWorkData(snapshot)));
         } else {
           dispatch(empty(path));
         }

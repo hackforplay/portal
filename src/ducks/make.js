@@ -14,9 +14,9 @@ import {
   removeFile,
   parseStoragePath
 } from './storage';
-import * as user from './user';
-import * as work from './work';
-import * as auth from './auth';
+import * as userImport from './user';
+import * as workImport from './work';
+import * as authImport from './auth';
 import type { Dispatch, GetStore } from './type';
 import type { WorkItemType, WorkData, VisibilityType } from './work';
 
@@ -293,7 +293,7 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
   getStore
 ) => {
   const { work } = getState(getStore());
-  const { user } = auth.getState(getStore());
+  const { user } = authImport.getState(getStore());
   if (!user) {
     // ログインしていない
     return;
@@ -303,7 +303,7 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
   const [param, base64] = dataURL.split(',');
   const result = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
   if (!result) {
-    throw new Error(`Invalid Data URL: ${param},...`);    
+    throw new Error(`Invalid Data URL: ${param},...`);
   }
   const type = result[1];
   const ext = mime.extension(type);
@@ -341,7 +341,7 @@ export type saveWorkType = () => (
 ) => Promise<void>;
 
 export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
-  const { uid } = auth.getState(getStore()).user || { uid: '' };
+  const { uid } = authImport.getState(getStore()).user || { uid: '' };
   const { files, work, metadata, thumbnails } = getState(getStore());
 
   if (!uid || !files || !canSave(getStore())) {
@@ -362,7 +362,7 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
   // TODO: author を編集する GUI を実装する
   // （仮実装）もし author が設定されていなければ, ログインユーザの DisplayName を author とする
   if (!metadata.author) {
-    const userData = user.getUserByUid(getStore(), uid).data;
+    const userData = userImport.getUserByUid(getStore(), uid).data;
     if (userData && userData.displayName) {
       await dispatch(setMetadata({ author: userData.displayName }));
       // ----> ストアが更新される（はず）
@@ -396,12 +396,7 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
       }
     });
     const snapshot = (await uploadedRef.get(): $npm$firebase$firestore$DocumentSnapshot);
-    const uploadedDoc = {
-      ...(snapshot.data(): any),
-      id: snapshot.id,
-      path: `/works/${snapshot.id}`
-    };
-    dispatch(set(uploadedDoc, files));
+    dispatch(set(workImport.getWorkData(snapshot), files));
     // 古いアセットを削除
     if (work.data && work.data.assetStoragePath) {
       dispatch(removeFile(work.data.assetStoragePath));
@@ -427,7 +422,7 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
   dispatch,
   getStore
 ) => {
-  const { user } = auth.getState(getStore());
+  const { user } = authImport.getState(getStore());
   const { work, files } = getState(getStore());
   const workData = work.data;
   if (!canPublish(getStore()) || !workData || !user || !files) {
@@ -482,13 +477,8 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
     await ref.update(updated);
 
     const snapshot = (await ref.get(): $npm$firebase$firestore$DocumentSnapshot);
-    const updatedDoc = {
-      ...(snapshot.data(): any),
-      id: snapshot.id,
-      path: `/works/${snapshot.id}`
-    };
     // ステージをセット
-    await dispatch(set(updatedDoc, files));
+    await dispatch(set(workImport.getWorkData(snapshot), files));
   } catch (error) {
     // 元に戻す
     console.error(error);
@@ -549,7 +539,7 @@ export const editExistingWork: editExistingWorkType = work => async (
   getStore
 ) => {
   const make = getState(getStore());
-  const { user } = auth.getState(getStore());
+  const { user } = authImport.getState(getStore());
   const workData = work.data;
   if (!workData || !user || workData.uid !== user.uid || make.work.data) {
     // 自分のステージではないか、ログインしていないか、すでに別のものを作り始めている
@@ -603,7 +593,7 @@ export const removeWork: removeWorkType = () => async (dispatch, getStore) => {
     .delete();
   dispatch(trash());
   // その work を空とみなす
-  dispatch(work.empty(data.path));
+  dispatch(workImport.empty(data.path));
 };
 
 export function canSave(state: $Call<GetStore>) {

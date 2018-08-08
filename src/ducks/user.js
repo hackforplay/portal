@@ -26,7 +26,37 @@ type UserData = {
   photoURL: string,
   profileImagePath?: string,
   worksNum: number,
-  createdAt: string
+  createdAt: Date
+};
+
+type FirestoreUser = {|
+  +uid: string,
+  +displayName: string,
+  +email: string,
+  +photoURL: string,
+  +profileImagePath?: string,
+  +worksNum: number,
+  +createdAt: FirestoreTimestamp,
+  +updatedAt?: FirestoreTimestamp
+|};
+
+type GetUserData = (
+  snapshot: $npm$firebase$firestore$DocumentSnapshot
+) => UserData;
+
+/**
+ * Firestore のデータを変換して扱いやすい UserData 型にする
+ * @param {$npm$firebase$firestore$DocumentSnapshot} snapshot DocumentSnapshot
+ */
+const getUserData: GetUserData = snapshot => {
+  const data: FirestoreUser = (snapshot.data(): any);
+  const { createdAt, updatedAt, ...workData } = data;
+  return {
+    ...workData,
+    uid: snapshot.id,
+    createdAt: createdAt.toDate(),
+    updatedAt: updatedAt && updatedAt.toDate()
+  };
 };
 
 export type EditingUserData = {|
@@ -199,8 +229,7 @@ export const fetchUserIfNeeded: fetchUserIfNeededType = uid => (
     .onSnapshot(snapshot => {
       if (snapshot && snapshot.exists) {
         // ユーザー情報をストアに格納
-        const user = { ...(snapshot.data(): any), uid: snapshot.id };
-        dispatch(setUser(user));
+        dispatch(setUser(getUserData(snapshot)));
       } else {
         // 存在しない UID
         dispatch(setUserNotFound(uid));
