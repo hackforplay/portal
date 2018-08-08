@@ -2,8 +2,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import type { ContextRouter } from 'react-router-dom';
 
 import Work from '../components/Work';
+import type { StateProps as WorkStateProps } from '../containers/Work';
 import * as helpers from '../ducks/helpers';
 import { addWorkViewLabel } from '../ducks/work';
 import * as officialWork from '../ducks/officialWork';
@@ -18,9 +20,17 @@ import {
   canRemove,
   removeWork
 } from '../ducks/make';
+
 import type { StoreState } from '../ducks';
 
-const mapStateToProps = (state: StoreState, ownProps) => {
+export type StateProps = WorkStateProps & {
+  renderNull: boolean
+};
+
+const mapStateToProps = (
+  state: StoreState,
+  ownProps: ContextRouter
+): StateProps => {
   const { location } = ownProps;
 
   // 現在表示している URL にふさわしいデータソースを取得する
@@ -59,9 +69,11 @@ const mapDispatchToProps = {
   removeWork
 };
 
+type Props = StateProps & typeof mapDispatchToProps & ContextRouter;
+
 @withRouter
 @connect(mapStateToProps, mapDispatchToProps)
-export default class OfficialWork extends React.Component {
+export default class OfficialWork extends React.Component<Props> {
   componentDidMount() {
     if (helpers.isInitialized(this.props.work)) {
       // 現在のパスからデータを取得する

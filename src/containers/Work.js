@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import type { ContextRouter } from 'react-router-dom';
 
 import WrappedWork from '../components/Work';
 import {
@@ -11,6 +12,7 @@ import {
   addWorkViewLabel,
   isAuthUsersWork
 } from '../ducks/work';
+import type { WorkItemType } from '../ducks/work';
 import {
   trashWork,
   saveWork,
@@ -22,17 +24,36 @@ import {
   canRemove,
   removeWork
 } from '../ducks/make';
+import type { State as MakeState } from '../ducks/make';
+
 import * as helpers from '../ducks/helpers';
 import type { StoreState } from '../ducks';
 
-const getPath = (url: string, params: {}) => {
+export type StateProps = {
+  work: WorkItemType,
+  replay: boolean,
+  canSave: boolean,
+  canPublish: boolean,
+  canRemove: boolean,
+  make: MakeState,
+  isPreparing?: boolean,
+  redirect?: string
+};
+
+const getPath = (url: string, params?: { id: string }) => {
   const isWork = url.startsWith('/work');
   const id = params && params.id;
+  if (!id) {
+    throw new Error(`Work doesn't have id`);
+  }
   const path = `/${isWork ? 'works' : 'products'}/${id}`;
   return path;
 };
 
-const mapStateToProps = (state: StoreState, ownProps): string => {
+const mapStateToProps = (
+  state: StoreState,
+  ownProps: ContextRouter
+): StateProps => {
   const { url, params } = ownProps.match;
   const path = getPath(url, params);
   const replay = isAuthUsersWork(state, path);
@@ -62,9 +83,13 @@ const mapDispatchToProps = {
   removeWork
 };
 
+export type DispatchProps = typeof mapDispatchToProps;
+
+type Props = StateProps & DispatchProps & ContextRouter;
+
 @withRouter
 @connect(mapStateToProps, mapDispatchToProps)
-export default class Work extends React.Component {
+export default class Work extends React.Component<Props> {
   componentDidMount() {
     const { url, params } = this.props.match;
     const path = getPath(url, params);
@@ -78,7 +103,7 @@ export default class Work extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Props) {
     if (this.props.replay !== nextProps.replay && nextProps.replay) {
       this.props.editExistingWork(nextProps.work);
     }
