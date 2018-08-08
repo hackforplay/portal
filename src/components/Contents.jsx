@@ -24,7 +24,7 @@ const rootStyle = css({
   paddingRight: theme.spacing.unit * 4
 });
 
-export type OwnProps = *;
+export type OwnProps = {};
 
 class Contents extends React.Component<OwnProps & { ...ContextRouter }> {
   render() {

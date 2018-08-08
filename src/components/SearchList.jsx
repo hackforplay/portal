@@ -5,7 +5,7 @@ import { css } from 'emotion';
 import WorkList from '../containers/WorkList';
 import theme from '../settings/theme';
 
-export type OwnProps = *;
+export type OwnProps = {};
 
 const rootStyle = css({
   padding: theme.spacing.unit * 4
