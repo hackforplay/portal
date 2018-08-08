@@ -2,7 +2,7 @@
 import firebase from 'firebase';
 
 import { isAuthUser } from './auth';
-import type { Dispatch, GetStore } from './';
+import type { Dispatch, GetStore } from './type';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'storage';

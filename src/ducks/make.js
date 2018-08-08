@@ -17,7 +17,7 @@ import {
 import * as user from './user';
 import * as work from './work';
 import * as auth from './auth';
-import type { Dispatch, GetStore } from './';
+import type { Dispatch, GetStore } from './type';
 import type { WorkItemType, WorkData, VisibilityType } from './work';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前

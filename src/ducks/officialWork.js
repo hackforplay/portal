@@ -3,7 +3,7 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 
 import * as helpers from './helpers';
-import type { Dispatch, GetStore } from './';
+import type { Dispatch, GetStore } from './type';
 import type { WorkItemType } from '../ducks/work';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前

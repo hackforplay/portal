@@ -7,7 +7,7 @@ import * as helpers from './helpers';
 import * as auth from './auth';
 import * as user from './user';
 import type { Statefull } from './helpers';
-import type { StoreState, ThunkAction } from './';
+import type { StoreState, ThunkAction } from './type';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'user';

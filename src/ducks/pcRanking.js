@@ -4,7 +4,7 @@ import 'firebase/firestore';
 
 import * as helpers from './helpers';
 import type { Statefull } from './helpers';
-import type { Dispatch, GetStore } from './';
+import type { Dispatch, GetStore } from './type';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'pcRanking';
