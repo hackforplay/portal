@@ -1,29 +1,22 @@
 // @flow
 import * as React from 'react';
-import { withStyles } from 'material-ui/styles';
+import { css } from 'emotion';
 
 import WorkList from '../containers/WorkList';
 import theme from '../settings/theme';
 
 export type OwnProps = *;
 
-type Props = {
-  classes?: {
-    root: string
-  }
-};
+const rootStyle = css({
+  padding: theme.spacing.unit * 4
+});
 
-@withStyles({
-  root: {
-    padding: theme.spacing.unit * 4
-  }
-})
-export default class SearchList extends React.Component<OwnProps & Props> {
+export default class SearchList extends React.Component<OwnProps> {
   render() {
-    const { classes, result } = this.props;
+    const { result } = this.props;
 
     return (
-      <div className={classes.root}>
+      <div className={rootStyle}>
         <WorkList works={result} title="検索結果" more moreLink="" />
       </div>
     );
