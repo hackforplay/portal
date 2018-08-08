@@ -36,11 +36,17 @@ const enhancer = composeWithDevTools(
 
 const store = createStore(reducer, enhancer);
 
+const app = document.getElementById('app');
+
+if (!app) {
+  throw new Error('#app container is not found');
+}
+
 ReactDOM.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  document.getElementById('app')
+  app
 );
 // registerServiceWorker();
 
