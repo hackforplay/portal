@@ -1,19 +1,16 @@
 // @flow
 import { connect } from 'react-redux';
-import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 
 import Contents from '../components/Contents';
 import type { OwnProps } from '../components/Contents';
+import type { StoreState } from '../ducks';
 
 export type StateProps = {};
 
-const mapStateToProps: MapStateToProps<*, OwnProps, StateProps> = () => ({});
+const mapStateToProps = (state: StoreState, OwnProps: OwnProps): StateProps => {
+  return {};
+};
 
-export type DispatchProps = *;
-
-const mapDispatchToProps: MapDispatchToProps<{}, OwnProps, DispatchProps> = (
-  dispatch,
-  ownProps
-) => ({});
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Contents);
