@@ -3,7 +3,6 @@ import * as React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import pathToRegexp from 'path-to-regexp';
-import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
@@ -13,37 +12,25 @@ import SearchIcon from 'material-ui-icons/Search';
 import ArrowBack from 'material-ui-icons/ArrowBack';
 import { grey } from 'material-ui/colors';
 import { fade } from 'material-ui/styles/colorManipulator';
+import { css } from 'emotion';
 
 import { searchBarInfo } from '../settings/siteMap';
 import theme from '../settings/theme';
-import type { WorkCollectionType } from '../ducks/work';
+import type { StateProps } from '../containers/SearchBar';
 
-type Props = {
-  classes: {
-    toolbar: string,
-    blank: string,
-    icon: string,
-    textField: string
-  },
-  result: WorkCollectionType
-} & ContextRouter;
-
-type State = {};
-
-@withRouter
-@withStyles({
-  toolbar: {
+const classes = {
+  toolbar: css({
     minHeight: 48, // 上下のマージンをなくす
     backgroundColor: grey[50]
-  },
-  blank: {
+  }),
+  blank: css({
     flex: 1
-  },
-  icon: {
+  }),
+  icon: css({
     width: 18,
     marginRight: 12
-  },
-  textField: {
+  }),
+  textField: css({
     flexGrow: 1,
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
@@ -51,8 +38,8 @@ type State = {};
     '&:hover': {
       backgroundColor: grey[500]
     }
-  },
-  wrapper: {
+  }),
+  wrapper: css({
     fontFamily: theme.typography.fontFamily,
     position: 'relative',
     marginRight: theme.spacing.unit * 2,
@@ -69,8 +56,8 @@ type State = {};
         width: 250
       }
     }
-  },
-  search: {
+  }),
+  search: css({
     width: theme.spacing.unit * 9,
     height: '100%',
     position: 'absolute',
@@ -78,8 +65,8 @@ type State = {};
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  input: {
+  }),
+  input: css({
     font: 'inherit',
     padding: `${theme.spacing.unit}px ${theme.spacing.unit}px ${
       theme.spacing.unit
@@ -95,9 +82,14 @@ type State = {};
     '&:focus': {
       outline: 0
     }
-  }
-})
-class SearchBar extends React.Component<Props, State> {
+  })
+};
+
+export type OwnProps = {};
+type Props = OwnProps & StateProps & { ...ContextRouter };
+
+@withRouter
+class SearchBar extends React.Component<Props> {
   // "入力 => ディレイ => 検索" のためのタイマー
   searchTimer = null;
 
@@ -118,21 +110,23 @@ class SearchBar extends React.Component<Props, State> {
     const url = toPath({ query: query || null });
 
     // ディレイを挟んで検索開始
-    clearTimeout(this.searchTimer);
+    if (this.searchTimer) {
+      clearTimeout(this.searchTimer);
+    }
     this.searchTimer = setTimeout(() => {
       history.push(url);
     }, 1000);
   }
 
   handleChangeSearch = (event: SyntheticInputEvent<HTMLInputElement>) => {
-    const query = event.target.value;
+    const query = event.currentTarget.value;
     this.search(query);
   };
 
   handlePressKey = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
     switch (event.key) {
       case 'Enter': {
-        const query = event.target.value;
+        const query = event.currentTarget.value;
         this.search(query);
         break;
       }
@@ -142,7 +136,7 @@ class SearchBar extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, match, location, result } = this.props;
+    const { match, location, result } = this.props;
 
     // 現在表示している URL にふさわしいタブの状態を取得する
     const info = searchBarInfo.find(item => {
