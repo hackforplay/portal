@@ -301,7 +301,11 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
   // data url => base64 string and metadata
   const visibility = work.data ? work.data.visibility : 'private';
   const [param, base64] = dataURL.split(',');
-  const [, type] = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
+  const result = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
+  if (!result) {
+    throw new Error(`Invalid Data URL: ${param},...`);    
+  }
+  const type = result[1];
   const ext = mime.extension(type);
   if (!base64 || !type || !ext) {
     throw new Error(`Invalid Data URL: ${param},...`);
