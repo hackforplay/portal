@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
@@ -13,6 +12,7 @@ import Select from 'material-ui/Select';
 import grey from 'material-ui/colors/grey';
 import Home from 'material-ui-icons/Home';
 import Tooltip from 'material-ui/Tooltip';
+import { css } from 'emotion';
 
 import Avatar from '../containers/Avatar';
 import theme from '../settings/theme';
@@ -21,36 +21,10 @@ import logo from '../resources/logo.png';
 import Beginner from '../icons/Beginner';
 import Play from '../icons/Play';
 import Create from '../icons/Create';
-import type { UserType } from '../ducks/user';
+import type { StateProps, DispatchProps } from '../containers/Header';
 
-type Props = {
-  classes: {
-    root: string,
-    toolbar: string,
-    blank: string,
-    icon: string,
-    avatar: string,
-    title: string,
-    separator: string,
-    select: string,
-    selectIcon: string,
-    tooltip: string,
-    buttonLabel: string
-  },
-  isSignedIn: boolean,
-  user: UserType,
-  isInOfficialWork: boolean,
-  signInWithGoogle: () => {},
-  signOut: () => {}
-} & { ...ContextRouter };
-
-type State = {
-  anchorEl: ?HTMLElement
-};
-
-@withRouter
-@withStyles({
-  root: {
+const classes = {
+  root: css({
     '@media (min-width:0px) and (orientation: landscape)': {
       height: 48
     },
@@ -58,32 +32,32 @@ type State = {
       height: 64
     },
     height: 56
-  },
-  toolbar: {
+  }),
+  toolbar: css({
     backgroundColor: grey[900],
     maxHeight: 64
-  },
-  blank: {
+  }),
+  blank: css({
     flex: 1
-  },
-  icon: {
+  }),
+  icon: css({
     width: 18,
     marginRight: 12
-  },
-  avatar: {
+  }),
+  avatar: css({
     cursor: 'pointer',
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit
-  },
-  title: {
+  }),
+  title: css({
     '@media (max-width:721px)': {
       // 画面幅が一定以下の時はロゴを表示しない
       display: 'none'
     },
     color: 'black',
     filter: 'invert(100%)'
-  },
-  separator: {
+  }),
+  separator: css({
     position: 'relative',
     display: 'inline-flex',
     minHeight: 36,
@@ -99,8 +73,8 @@ type State = {
         height: 36
       }
     }
-  },
-  select: {
+  }),
+  select: css({
     '@media (max-width:561px)': {
       // 画面幅が一定以下の時は切り替えメニューを表示しない
       display: 'none'
@@ -108,23 +82,34 @@ type State = {
     marginLeft: 8,
     marginRight: 8,
     color: 'white'
-  },
-  selectIcon: {
+  }),
+  selectIcon: css({
     color: 'white'
-  },
-  tooltip: {
+  }),
+  tooltip: css({
     '@media (min-width:920px)': {
       // button label が表示されるときは tooltip を表示しない
       display: 'none'
     }
-  },
-  buttonLabel: {
+  }),
+  buttonLabel: css({
     '@media (max-width:921px)': {
       // 画面幅が一定以上の時だけ button label を表示する
       display: 'none'
     }
-  }
-})
+  })
+};
+
+export type OwnProps = {};
+export type Props = OwnProps &
+  StateProps &
+  DispatchProps & { ...ContextRouter };
+
+type State = {
+  anchorEl: ?HTMLElement
+};
+
+@withRouter
 class Header extends React.Component<Props, State> {
   state = {
     anchorEl: null
@@ -165,7 +150,7 @@ class Header extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, user, isSignedIn, isInOfficialWork } = this.props;
+    const { user, isSignedIn, isInOfficialWork } = this.props;
     const { anchorEl } = this.state;
 
     const { hostname } = window.location;
