@@ -85,7 +85,7 @@ const mapDispatchToProps = {
 
 export type DispatchProps = typeof mapDispatchToProps;
 
-type Props = StateProps & DispatchProps & ContextRouter;
+type Props = StateProps & DispatchProps & { ...ContextRouter };
 
 export default compose(
   withRouter,

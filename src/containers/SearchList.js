@@ -28,8 +28,7 @@ const mapDispatchToProps = {
 };
 
 type Props = OwnProps &
-  StateProps &
-  typeof mapDispatchToProps & { ...ContextRouter };
+  StateProps & { ...typeof mapDispatchToProps, ...ContextRouter };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   class extends React.Component<Props> {

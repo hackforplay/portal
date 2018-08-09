@@ -11,7 +11,7 @@ const mapDispatchToProps = {
   initializeAuth
 };
 
-export type DispatchProps = typeof mapDispatchToProps;
+export type DispatchProps = { ...typeof mapDispatchToProps };
 
 type Props = DispatchProps;
 

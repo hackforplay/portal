@@ -31,7 +31,7 @@ const mapDispatchToProps = {
   downloadUrl
 };
 
-type Props = (OwnProps & StateProps & typeof mapDispatchToProps) | any;
+type Props = (OwnProps & StateProps & { ...typeof mapDispatchToProps }) | any;
 
 export default function withFirebaseStorage<T>(
   WrappedComponent: React.ComponentType<T>

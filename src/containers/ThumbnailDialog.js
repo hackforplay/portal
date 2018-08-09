@@ -26,7 +26,7 @@ const mapDispatchToProps = {
   setThumbnailFromDataURL
 };
 
-export type DispatchProps = typeof mapDispatchToProps;
+export type DispatchProps = { ...typeof mapDispatchToProps };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),

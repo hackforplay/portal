@@ -19,7 +19,7 @@ import ThumbnailDialog from '../containers/ThumbnailDialog';
 import type { StateProps, DispatchProps } from '../containers/Work';
 import type { OnMessage } from '../components/Feeles';
 
-export type Props = StateProps & DispatchProps & ContextRouter;
+export type Props = StateProps & DispatchProps & { ...ContextRouter };
 
 export type State = {
   anchorEl: ?HTMLElement,
