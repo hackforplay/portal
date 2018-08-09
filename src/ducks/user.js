@@ -36,8 +36,7 @@ type FirestoreUser = {|
   +photoURL: string,
   +profileImagePath?: string,
   +worksNum: number,
-  +createdAt: FirestoreTimestamp,
-  +updatedAt?: FirestoreTimestamp
+  +createdAt: string
 |};
 
 type GetUserData = (
@@ -50,12 +49,11 @@ type GetUserData = (
  */
 const getUserData: GetUserData = snapshot => {
   const data: FirestoreUser = (snapshot.data(): any);
-  const { createdAt, updatedAt, ...workData } = data;
+  const { createdAt, ...workData } = data;
   return {
     ...workData,
     uid: snapshot.id,
-    createdAt: createdAt.toDate(),
-    updatedAt: updatedAt && updatedAt.toDate()
+    createdAt: new Date(createdAt)
   };
 };
 
