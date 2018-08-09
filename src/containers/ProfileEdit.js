@@ -24,17 +24,20 @@ export type StateProps = {
   editing?: EditingUserData
 };
 
-const mapStateToProps = (state: StoreState, ownProps) => {
+const mapStateToProps = (
+  state: StoreState,
+  ownProps: OwnProps & { ...ContextRouter }
+) => {
   // /users/:id の :id にあたる文字列
   const { id } = ownProps.match.params;
   // ログインユーザーと同じか検証
   const owner = state.auth.user ? state.auth.user.uid === id : false;
   // 編集中のデータを取得
-  const editing = state.user.editingByUid[id];
+  const editing = id ? state.user.editingByUid[id] : null;
 
   return {
     owner,
-    user: owner ? getUserByUid(state, id) : helpers.empty(),
+    user: id && owner ? getUserByUid(state, id) : helpers.empty(),
     editing
   };
 };
