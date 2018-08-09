@@ -8,21 +8,34 @@ import Paper from 'material-ui/Paper';
 import Button from 'material-ui/Button';
 import { CircularProgress } from 'material-ui/Progress';
 import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
 import type { ContextRouter } from 'react-router-dom';
+import { css } from 'emotion';
 
 import theme from '../settings/theme';
-import type { RecordCollectionType } from '../ducks/pcRanking';
+import type { StateProps, DispatchProps } from '../containers/PCRanking';
 
-type Props = {
-  classes: {
-    root: string,
-    progress: string,
-    cell: string,
-    button: string
-  },
-  records: RecordCollectionType
-} & ContextRouter;
+const classes = {
+  root: css({
+    maxWidth: 840,
+    marginLeft: 'auto',
+    marginRight: 'auto'
+  }),
+  progress: css({
+    display: 'block',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    padding: theme.spacing.unit * 6
+  }),
+  button: css({
+    marginTop: theme.spacing.unit * 3,
+    marginBottom: theme.spacing.unit * 3
+  }),
+  cell: css({
+    maxWidth: 200,
+    textOverflow: 'ellipsis',
+    overflow: 'hidden'
+  })
+};
 
 const playLinks = {
   semi1: '/officials/pg-colosseum/#/stages/semi1/index.html',
@@ -38,119 +51,96 @@ const playLinks = {
   grand3: '/officials/pg-colosseum/#/stages/danmaku3/index.html'
 };
 
-@withStyles({
-  root: {
-    maxWidth: 840,
-    marginLeft: 'auto',
-    marginRight: 'auto'
-  },
-  progress: {
-    display: 'block',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    padding: theme.spacing.unit * 6
-  },
-  button: {
-    marginTop: theme.spacing.unit * 3,
-    marginBottom: theme.spacing.unit * 3
-  },
-  cell: {
-    maxWidth: 200,
-    textOverflow: 'ellipsis',
-    overflow: 'hidden'
+const fromNow = (createdAt: string) => {
+  return moment(createdAt, 'ddd MMM DD YYYY hh:mm:ss GMTZ').fromNow();
+};
+
+export type Props = StateProps & DispatchProps & { ...ContextRouter };
+
+export default ({ records, match }: Props) => {
+  const stage = match.params && match.params.stage;
+  if (!stage) {
+    return null;
   }
-})
-export default class PCRanking extends React.Component<Props> {
-  render() {
-    const { classes, records, match } = this.props;
-    const stage = match.params && match.params.stage;
-    if (!stage) {
-      return null;
-    }
 
-    const fromNow = (createdAt: string) => {
-      return moment(createdAt, 'ddd MMM DD YYYY hh:mm:ss GMTZ').fromNow();
-    };
-
-    return (
-      <div className={classes.root}>
-        <h1>ランキング</h1>
-        {records.data ? (
-          <Paper>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell numeric={false} padding="default">
-                    順位
+  return (
+    <div className={classes.root}>
+      <h1>ランキング</h1>
+      {records.data ? (
+        <Paper>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell numeric={false} padding="default">
+                  順位
+                </TableCell>
+                <TableCell numeric={false} padding="default">
+                  名前
+                </TableCell>
+                <TableCell numeric={false} padding="default">
+                  スコア
+                </TableCell>
+                <TableCell numeric={false} padding="default">
+                  残り時間
+                </TableCell>
+                <TableCell numeric={false} padding="default" />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {records.data.map((item, i) => (
+                <TableRow key={item.id}>
+                  <TableCell
+                    numeric={false}
+                    padding="default"
+                    className={classes.cell}
+                  >{`${i + 1}位`}</TableCell>
+                  <TableCell
+                    numeric={false}
+                    padding="default"
+                    className={classes.cell}
+                  >
+                    {item.name}
                   </TableCell>
-                  <TableCell numeric={false} padding="default">
-                    名前
+                  <TableCell
+                    numeric={false}
+                    padding="default"
+                    className={classes.cell}
+                  >
+                    {item.score}
                   </TableCell>
-                  <TableCell numeric={false} padding="default">
-                    スコア
+                  <TableCell
+                    numeric={false}
+                    padding="default"
+                    className={classes.cell}
+                  >{`${item.lastTime}秒`}</TableCell>
+                  <TableCell
+                    numeric={false}
+                    padding="default"
+                    className={classes.cell}
+                  >
+                    {fromNow(item.createdAt)}
                   </TableCell>
-                  <TableCell numeric={false} padding="default">
-                    残り時間
-                  </TableCell>
-                  <TableCell numeric={false} padding="default" />
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {records.data.map((item, i) => (
-                  <TableRow key={item.id}>
-                    <TableCell
-                      numeric={false}
-                      padding="default"
-                      className={classes.cell}
-                    >{`${i + 1}位`}</TableCell>
-                    <TableCell
-                      numeric={false}
-                      padding="default"
-                      className={classes.cell}
-                    >
-                      {item.name}
-                    </TableCell>
-                    <TableCell
-                      numeric={false}
-                      padding="default"
-                      className={classes.cell}
-                    >
-                      {item.score}
-                    </TableCell>
-                    <TableCell
-                      numeric={false}
-                      padding="default"
-                      className={classes.cell}
-                    >{`${item.lastTime}秒`}</TableCell>
-                    <TableCell
-                      numeric={false}
-                      padding="default"
-                      className={classes.cell}
-                    >
-                      {fromNow(item.createdAt)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Paper>
-        ) : records.isEmpty ? (
-          <Typography type="display1">
-            まだ記録がないか、無効なステージです :-(
-          </Typography>
-        ) : (
-          <CircularProgress className={classes.progress} />
-        )}
-        <Button
-          raised
-          color="primary"
-          component={Link}
-          to={playLinks[stage]}
-          className={classes.button}
-        >
-          このステージをプレイする
-        </Button>
-      </div>
-    );
-  }
-}
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      ) : records.isEmpty ? (
+        <Typography type="display1">
+          まだ記録がないか、無効なステージです :-(
+        </Typography>
+      ) : (
+        <CircularProgress className={classes.progress} />
+      )}
+      <Button
+        raised
+        color="primary"
+        component={Link}
+        to={playLinks[stage]}
+        className={classes.button}
+      >
+        このステージをプレイする
+      </Button>
+    </div>
+  );
+};

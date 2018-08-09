@@ -1,8 +1,9 @@
+// @flow
 import type { WorkData } from './work';
 
 export const data: Array<WorkData> = [
   {
-    id: 3087,
+    id: '3087',
     search: 'ks9iEXXkQE7rvJ',
     created_at: '2018-03-28 09:43:40',
     title: '\u52c7\u8005\u306e\u5927\u5192\u967a\u3000\u7b2c\uff11\u7ae0',
@@ -18,7 +19,15 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 4,
     asset_url:
-      'https://assets.feeles.com/json/bimqmcyEZxQ6qtiV9gWNvHdwn417geYc4xwhIC6G.json'
+      'https://assets.feeles.com/json/bimqmcyEZxQ6qtiV9gWNvHdwn417geYc4xwhIC6G.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public'
   },
   {
     id: 'sPbbbvJ7NqV7dYhVPXfAPLYZRDI2',
@@ -27,14 +36,17 @@ export const data: Array<WorkData> = [
     visibility: 'public',
     assetStoragePath:
       'json/public/users/sPbbbvJ7NqV7dYhVPXfAPLYZRDI2/caebb74f-1aba-4f83-bcce-c31dca6c6311.json',
-    favsNum: '0',
+    favsNum: 0,
     uid: 'sPbbbvJ7NqV7dYhVPXfAPLYZRDI2',
-    viewsNum: '11',
+    viewsNum: 11,
     createdAt: '2018-04-06T13:52:43.341Z',
     title: 'FateBattle[1.1]',
     thumbnailStoragePath:
       'image/public/users/sPbbbvJ7NqV7dYhVPXfAPLYZRDI2/dcb598be-eab0-463b-8993-ae4c9050ef4b.jpeg',
-    description: ''
+    description: '',
+
+    clearRate: 0,
+    path: ''
   },
   {
     id: 'w9kkswl31VgOz088b2UrQIM0j1S2',
@@ -46,14 +58,17 @@ export const data: Array<WorkData> = [
     visibility: 'public',
     favsNum: 0,
     uid: 'w9kkswl31VgOz088b2UrQIM0j1S2',
-    viewsNum: '22',
+    viewsNum: 22,
     createdAt: '2018-03-29T05:14:18.705Z',
     title: 'ランダムな動きをする敵',
     thumbnailStoragePath:
-      'image/public/users/w9kkswl31VgOz088b2UrQIM0j1S2/d8090f9a208068b55c65daa77ca660e3.jpeg'
+      'image/public/users/w9kkswl31VgOz088b2UrQIM0j1S2/d8090f9a208068b55c65daa77ca660e3.jpeg',
+
+    clearRate: 0,
+    path: ''
   },
   {
-    id: 2881,
+    id: '2881',
     search: 'zv2A',
     created_at: '2017-12-06 12:03:43',
     title: '\u6575\u3092\u5012\u3057\u307e\u304f\u308b5\u9023\u6226',
@@ -68,10 +83,18 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 46,
     asset_url:
-      'https://assets.feeles.com/json/MZkKYpaNNand6JtbFvMTz0NpHqsic4P5mVwCdRPr.json'
+      'https://assets.feeles.com/json/MZkKYpaNNand6JtbFvMTz0NpHqsic4P5mVwCdRPr.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public'
   },
   {
-    id: 2801,
+    id: '2801',
     search: '4mXnoxccIejCHQ',
     created_at: '2017-11-18 13:24:02',
     title:
@@ -88,10 +111,18 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 139,
     asset_url:
-      'https://assets.feeles.com/json/ejpNQX4OkFhHPpRXIPq9JWRBBYwugA1IqBEPnLS6.json'
+      'https://assets.feeles.com/json/ejpNQX4OkFhHPpRXIPq9JWRBBYwugA1IqBEPnLS6.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public'
   },
   {
-    id: 2778,
+    id: '2778',
     search: '2IGBQHTJspSxOI',
     created_at: '2017-11-10 08:41:40',
     title: '\u82b1\u3092\u98df\u3079\u3088\u3046',
@@ -107,10 +138,18 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 2,
     asset_url:
-      'https://assets.feeles.com/json/iB0lyTfOeMJG4dQm6fxB75beJYE47ooALZCrSOkf.json'
+      'https://assets.feeles.com/json/iB0lyTfOeMJG4dQm6fxB75beJYE47ooALZCrSOkf.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public'
   },
   {
-    id: 2879,
+    id: '2879',
     search: 'VDZHuDxjIlcTE9',
     created_at: '2017-12-01 09:09:23',
     title: '\u30c9\u30af\u30ed\u8ff7\u8def\u306b\u3054\u7528\u5fc3\uff01',
@@ -125,10 +164,18 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 9,
     asset_url:
-      'https://assets.feeles.com/json/HVLdAkE7s8t7fKNv81AOhDSvgMfjrcMNBgTAZPvk.json'
+      'https://assets.feeles.com/json/HVLdAkE7s8t7fKNv81AOhDSvgMfjrcMNBgTAZPvk.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public'
   },
   {
-    id: 2734,
+    id: '2734',
     search: 'XfLLMRkyZSAkQt',
     created_at: '2017-09-29 09:19:28',
     title: 'hackfor\u7121\u53cc',
@@ -144,10 +191,18 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 49,
     asset_url:
-      'https://assets.feeles.com/json/F9KGGtK1epZyM57Sg5393fzMInCmCbXOQoCErgl7.json'
+      'https://assets.feeles.com/json/F9KGGtK1epZyM57Sg5393fzMInCmCbXOQoCErgl7.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public'
   },
   {
-    id: 2929,
+    id: '2929',
     search: 'MuvU',
     created_at: '2018-01-26 19:32:08',
     title: '\u30ab\u30e9\u30d5\u30eb\u30d3\u30fc\u30e0',
@@ -161,10 +216,19 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 30,
     asset_url:
-      'https://assets.feeles.com/json/on9hU1co4vvozDHCh3eU4XM8W41kz9pOdlJfKz4P.json'
+      'https://assets.feeles.com/json/on9hU1co4vvozDHCh3eU4XM8W41kz9pOdlJfKz4P.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public',
+    description: ''
   },
   {
-    id: 2930,
+    id: '2930',
     search: 'CRiS',
     created_at: '2018-01-26 20:17:27',
     title: '\u30eb\u30fc\u30d7\u30ef\u30fc\u30eb\u30c9',
@@ -180,11 +244,19 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 25,
     asset_url:
-      'https://assets.feeles.com/json/LTCF5oCsOVlNhzDJlGWsbgTEbEWpQDei5gZkBFCA.json'
+      'https://assets.feeles.com/json/LTCF5oCsOVlNhzDJlGWsbgTEbEWpQDei5gZkBFCA.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public'
   },
 
   {
-    id: 2726,
+    id: '2726',
     search: 'Ckfdukb0AmmkFO',
     created_at: '2017-09-25 10:37:54',
     title: '15\u79d2\u9593\u9003\u3052\u5207\u308c\uff01(Hard)',
@@ -199,10 +271,18 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 23,
     asset_url:
-      'https://assets.feeles.com/json/XXT3jchIiefwW742hpCuQnc81rL84GQtMZhBpiJm.json'
+      'https://assets.feeles.com/json/XXT3jchIiefwW742hpCuQnc81rL84GQtMZhBpiJm.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public'
   },
   {
-    id: 2728,
+    id: '2728',
     search: 'aE1R9DjRHslou9',
     created_at: '2017-09-27 10:02:32',
     title: '15\u79d2\u9593\u9003\u3052\u5207\u308c\uff01(veryHard)',
@@ -217,10 +297,18 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 58,
     asset_url:
-      'https://assets.feeles.com/json/CzS76iwc9z6LqUCSqVQnf5x3butOrmqmoXMYotOx.json'
+      'https://assets.feeles.com/json/CzS76iwc9z6LqUCSqVQnf5x3butOrmqmoXMYotOx.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public'
   },
   {
-    id: 2569,
+    id: '2569',
     search: 'SFuO7VzBE8jfAz',
     created_at: '2017-07-16 03:44:52',
     title:
@@ -237,10 +325,18 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 42,
     asset_url:
-      'https://assets.feeles.com/json/nixYAYAvNcPed1FGuXcv9VbQyj5Jhzh9yDcMu7po.json'
+      'https://assets.feeles.com/json/nixYAYAvNcPed1FGuXcv9VbQyj5Jhzh9yDcMu7po.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public'
   },
   {
-    id: 2774,
+    id: '2774',
     search: 'NE0Q4ilQuOZIDT',
     created_at: '2017-11-04 02:39:55',
     title: '\u30b9\u30e9\u30a4\u30e0\u306e\u5192\u967a\u5927\u9577\u7de8',
@@ -256,10 +352,18 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 26,
     asset_url:
-      'https://assets.feeles.com/json/O3sxLrZo0m7p2C8Uaqvdn5uii3BoHF0GpztZTtxt.json'
+      'https://assets.feeles.com/json/O3sxLrZo0m7p2C8Uaqvdn5uii3BoHF0GpztZTtxt.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public'
   },
   {
-    id: 2890,
+    id: '2890',
     search: 'zJwQwzixmms2Om',
     created_at: '2017-12-08 09:34:31',
     title: 'hackforVERSUS ver0.2.1',
@@ -275,10 +379,18 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 3,
     asset_url:
-      'https://assets.feeles.com/json/CZtj9Ct5y16dYPV4uzoaTcn4siMOVFfDbZML3svG.json'
+      'https://assets.feeles.com/json/CZtj9Ct5y16dYPV4uzoaTcn4siMOVFfDbZML3svG.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public'
   },
   {
-    id: 2856,
+    id: '2856',
     search: 'F3UExj03FY5Aky',
     created_at: '2017-11-19 07:23:23',
     title: '\u5927\u8ecd\u306e\u9006\u8972',
@@ -294,11 +406,19 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 15,
     asset_url:
-      'https://assets.feeles.com/json/TcoIZUnVISFHiCLbgLSfkNMUmNGl62POnPqSkLNJ.json'
+      'https://assets.feeles.com/json/TcoIZUnVISFHiCLbgLSfkNMUmNGl62POnPqSkLNJ.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public'
   },
 
   {
-    id: 2915,
+    id: '2915',
     search: 'YILDX2oFEuqGe5',
     created_at: '2018-01-06 03:26:54',
     title: '\u9b54\u5973\u306e\u5192\u967a\u7b2c\u4e00\u8a71',
@@ -312,10 +432,19 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 27,
     asset_url:
-      'https://assets.feeles.com/json/i2VsGtpVdr0IK4Inpz0iHhd2UeVvHfuXlSCGA9Ma.json'
+      'https://assets.feeles.com/json/i2VsGtpVdr0IK4Inpz0iHhd2UeVvHfuXlSCGA9Ma.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public',
+    description: ''
   },
   {
-    id: 2926,
+    id: '2926',
     search: 'SOjEOL6gtrbGqm',
     created_at: '2018-01-20 02:41:53',
     title: '\u9b54\u5973\u306e\u5192\u967a\u7b2c2\u8a71',
@@ -328,6 +457,15 @@ export const data: Array<WorkData> = [
     kit_identifier: 'com.feeles.make-rpg',
     views: 20,
     asset_url:
-      'https://assets.feeles.com/json/rApte7YEO68v9znk0YA43UXleMFhSUZLBV42ns1E.json'
+      'https://assets.feeles.com/json/rApte7YEO68v9znk0YA43UXleMFhSUZLBV42ns1E.json',
+
+    createdAt: '2018-02-04 03:52:06',
+    clearRate: 0,
+    favsNum: 0,
+    path: '',
+    updatedAt: '2018-02-04 03:52:06',
+    viewsNum: 0,
+    visibility: 'public',
+    description: ''
   }
 ];

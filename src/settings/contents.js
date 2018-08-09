@@ -1,5 +1,6 @@
 // @flow
 import { Link } from 'react-router-dom';
+import type { Color } from 'material-ui/Button/Button';
 
 import thumbnail from '../resources/stage6.jpeg';
 
@@ -11,7 +12,7 @@ export type ContentType = {
   image: string,
   url?: string,
   buttons: Array<{
-    color?: string,
+    color?: Color,
     children?: string,
     disabled?: boolean,
     disableFocusRipple?: boolean,

@@ -1,9 +1,10 @@
 // @flow
 import firebase from 'firebase';
+import 'firebase/firestore';
 
 import * as helpers from './helpers';
 import type { Statefull } from './helpers';
-import type { Dispatch, GetStore } from './';
+import type { Dispatch, GetStore } from './type';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'pcRanking';
@@ -24,7 +25,7 @@ type RecordData = {|
 
 // created_at => createdAt
 const fixData = (snapShot: firebase.firestore.DocumentSnapshot): RecordData => {
-  const { created_at, ...last } = snapShot.data();
+  const { created_at, ...last } = (snapShot.data(): any);
   return { id: snapShot.id, createdAt: created_at, ...last };
 };
 

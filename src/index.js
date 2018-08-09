@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
@@ -18,6 +19,7 @@ import App from './containers/App';
 // import registerServiceWorker from './registerServiceWorker';
 import reducer from './ducks';
 import './settings/firebase';
+import MaterialUIJssProvider from './MaterialUIJssProvider';
 
 objectFitImages();
 
@@ -35,11 +37,19 @@ const enhancer = composeWithDevTools(
 
 const store = createStore(reducer, enhancer);
 
+const app = document.getElementById('app');
+
+if (!app) {
+  throw new Error('#app container is not found');
+}
+
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <MaterialUIJssProvider>
+      <App />
+    </MaterialUIJssProvider>
   </Provider>,
-  document.getElementById('app')
+  app
 );
 // registerServiceWorker();
 

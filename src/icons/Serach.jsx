@@ -1,7 +1,9 @@
+// @flow
 import React from "react";
+import type { ElementProps } from "react";
 import SvgIcon from "material-ui/SvgIcon";
 
-const Serach = props => (
+const Serach = (props: ElementProps<typeof SvgIcon>) => (
   <SvgIcon {...props}>
     <g fill="currentColor" fillRule="evenodd">
       <path

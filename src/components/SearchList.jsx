@@ -1,31 +1,33 @@
+// @flow
 import * as React from 'react';
-import { withStyles } from 'material-ui/styles';
+import { css } from 'emotion';
 
 import WorkList from '../containers/WorkList';
 import theme from '../settings/theme';
-import type { WorkCollectionType } from '../ducks/work';
+import { type StateProps } from '../containers/SearchList';
 
-type Props = {
-  classes: {
-    root: string
-  },
-  query: string,
-  result: WorkCollectionType
+const classes = {
+  root: css({
+    padding: theme.spacing.unit * 4
+  })
 };
 
-@withStyles({
-  root: {
-    padding: theme.spacing.unit * 4
-  }
-})
-export default class SearchList extends React.Component<Props> {
-  render() {
-    const { classes, result } = this.props;
+export type OwnProps = {};
 
-    return (
-      <div className={classes.root}>
-        <WorkList works={result} title="検索結果" more moreLink="" />
-      </div>
-    );
-  }
-}
+type Props = OwnProps & StateProps;
+
+export default (props: Props) => {
+  const { result } = props;
+
+  return (
+    <div className={classes.root}>
+      <WorkList
+        works={result}
+        title="検索結果"
+        more
+        moreLink=""
+        showVisibility={false}
+      />
+    </div>
+  );
+};

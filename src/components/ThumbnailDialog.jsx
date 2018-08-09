@@ -1,3 +1,4 @@
+// @flow
 import * as React from 'react';
 import classNames from 'classnames';
 import Dialog from 'material-ui/Dialog/Dialog';
@@ -5,49 +6,42 @@ import { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import GridList from 'material-ui/GridList/GridList';
 import { GridListTile } from 'material-ui/GridList';
 import Button from 'material-ui/Button';
-import { withStyles } from 'material-ui/styles';
+import { css } from 'emotion';
 
 import theme from '../settings/theme';
-import type {
-  saveWorkType,
-  setThumbnailFromDataURLType,
-  State as MakeState
-} from '../ducks/make';
+import type { StateProps, DispatchProps } from '../containers/ThumbnailDialog';
 
-type Props = {
-  saveWork: saveWorkType,
-  setThumbnailFromDataURL: setThumbnailFromDataURLType,
-  classes: {
-    content: string,
-    gridItem: string,
-    selectedTile: string
-  },
-  make: MakeState,
-  src?: string
-};
-
-type State = {
-  selectedIndex: ?number
-};
-
-@withStyles({
-  content: {
+const classes = {
+  content: css({
     maxWidth: 600
-  },
-  gridList: {
+  }),
+  gridList: css({
     margin: 0
-  },
-  gridItem: {
+  }),
+  gridItem: css({
     maxWidth: 184,
     minWidth: 184,
     marginBottom: 2 // border が見えるように
-  },
-  selectedTile: {
+  }),
+  selectedTile: css({
     borderColor: theme.palette.primary[500],
     borderStyle: 'solid',
     borderWidth: 2
-  }
-})
+  })
+};
+
+export type OwnProps = {
+  open: boolean,
+  src?: string,
+  onClose: () => void
+};
+
+type Props = OwnProps & StateProps & DispatchProps;
+
+type State = {
+  selectedIndex: number | null
+};
+
 export default class ThumbnailDialog extends React.Component<Props, State> {
   state = {
     // Index of make.thumbnails
@@ -67,7 +61,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, make, open, src, onClose } = this.props;
+    const { make, open, src, onClose } = this.props;
 
     const tiles = make.thumbnails.map((src, i) => (
       <GridListTile

@@ -3,5 +3,6 @@
   "prettier.singleQuote": true,
   "javascript.validate.enable": false,
   "html.format.indentInnerHtml": true,
-  "prettier.eslintIntegration": true
+  "prettier.eslintIntegration": true,
+  "flow.pathToFlow": "./node_modules/.bin/flow"
 }

@@ -1,7 +1,9 @@
+// @flow
 import React from "react";
+import type { ElementProps } from "react";
 import SvgIcon from "material-ui/SvgIcon";
 
-const Google = props => (
+const Google = (props: ElementProps<typeof SvgIcon>) => (
   <SvgIcon {...props}>
     <g fill="none" fillRule="evenodd">
       <path

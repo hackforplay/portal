@@ -3,7 +3,7 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 
 import * as helpers from './helpers';
-import type { Dispatch, GetStore } from './';
+import type { Dispatch, GetStore } from './type';
 import type { WorkItemType } from '../ducks/work';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
@@ -174,9 +174,9 @@ export const fetchWork = (pathname: string) => async (
       .firestore()
       .collection('officialWorks')
       .doc(key);
-    const documentSnapshot = await query.get();
+    const documentSnapshot = (await query.get(): $npm$firebase$firestore$DocumentSnapshot);
     if (documentSnapshot.exists) {
-      const data: OfficialWorkDocumentType = documentSnapshot.data();
+      const data: any = documentSnapshot.data();
       dispatch(set(makeItem(data)));
     } else {
       dispatch(empty(pathname));

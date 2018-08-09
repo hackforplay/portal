@@ -2,8 +2,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import WrappedPickup from '../components/Pickup';
-import { fetchPickupWorks } from '../ducks/work';
+import Pickup, { type Props } from '../components/Pickup';
+import { fetchPickupWorks, type WorkCollectionType } from '../ducks/work';
+
+export type StateProps = {
+  pickup: WorkCollectionType
+};
 
 const mapStateToProps = (state, ownProps) => ({
   pickup: state.work.pickup
@@ -13,13 +17,14 @@ const mapDispatchToProps = {
   fetchPickupWorks
 };
 
-class Pickup extends React.Component<*> {
+export type DispatchProps = { ...typeof mapDispatchToProps };
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class extends React.Component<Props> {
   componentDidMount() {
     this.props.fetchPickupWorks();
   }
   render() {
-    return <WrappedPickup {...this.props} />;
+    return <Pickup {...this.props} />;
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Pickup);

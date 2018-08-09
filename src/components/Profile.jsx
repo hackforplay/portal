@@ -2,68 +2,47 @@
 import * as React from 'react';
 import md5 from 'md5';
 import mime from 'mime-types';
-import { Link } from 'react-router-dom';
-import { withStyles } from 'material-ui/styles';
+import { Link, type ContextRouter } from 'react-router-dom';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import Input from 'material-ui/Input/Input';
 import Photo from 'material-ui-icons/Photo';
+import { css } from 'emotion';
 
 import Avatar from '../containers/Avatar';
 import theme from '../settings/theme';
-import type { UserType, EditingUserData } from '../ducks/user';
+import type { StateProps, DispatchProps } from '../containers/ProfileEdit';
 
-type Props = {
-  classes: {
-    root: string,
-    container: string,
-    avatar: string,
-    button: string,
-    iconButton: string,
-    textFieldRoot: string,
-    textFieldInput: string,
-    fileInput: string
-  },
-  owner: boolean,
-  edit: boolean | void,
-  user: UserType,
-  editing?: EditingUserData,
-  editAuthUser: (editing: EditingUserData) => void,
-  cancelAuthUserEditing: () => {},
-  confirmAuthUserEditing: () => {},
-  uploadBlob: (path: string, file: Blob) => void
-};
-
-@withStyles({
-  root: {
+const classes = {
+  root: css({
     paddingTop: theme.spacing.unit * 8,
     paddingLeft: theme.spacing.unit * 4,
     paddingBottom: theme.spacing.unit * 4,
     backgroundColor: theme.palette.background.appBar
-  },
-  container: {
+  }),
+  container: css({
     maxWidth: 600
-  },
-  avatar: {
+  }),
+  avatar: css({
     width: 80,
     height: 80,
     fontSize: '2.5rem'
-  },
-  button: {
+  }),
+  button: css({
     marginBottom: theme.spacing.unit
-  },
-  iconButton: {
+  }),
+  iconButton: css({
     marginTop: -48
-  },
-  textFieldRoot: {
+  }),
+  textFieldRoot: css({
     padding: 0,
     'label + &': {
       marginTop: theme.spacing.unit * 3
     }
-  },
-  textFieldInput: {
+  }),
+  textFieldInput: css({
     borderRadius: 4,
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
@@ -75,18 +54,23 @@ type Props = {
       borderColor: '#80bdff',
       boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)'
     }
-  },
-  fileInput: {
+  }),
+  fileInput: css({
     display: 'none'
-  }
-})
+  })
+};
+
+export type OwnProps = {
+  edit?: boolean
+};
+
+export type Props = OwnProps &
+  StateProps &
+  DispatchProps & { ...ContextRouter };
+
 export default class Profile extends React.Component<Props> {
   static defaultProps = {
-    edit: false,
-    editAuthUser: () => {},
-    cancelAuthUserEditing: () => {},
-    confirmAuthUserEditing: () => {},
-    uploadBlob: () => {}
+    edit: false
   };
 
   input: ?HTMLInputElement = null;
@@ -132,7 +116,7 @@ export default class Profile extends React.Component<Props> {
   };
 
   render() {
-    const { classes, user, edit, editing, owner } = this.props;
+    const { user, edit, editing, owner } = this.props;
 
     if (user.isEmpty) {
       return (

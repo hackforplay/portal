@@ -10,79 +10,52 @@ import Button from 'material-ui/Button';
 import Popover from 'material-ui/Popover';
 import Chip from 'material-ui/Chip';
 import { MenuItem } from 'material-ui/Menu';
-import { withStyles } from 'material-ui/styles';
+import { css } from 'emotion';
 
 import theme from '../settings/theme';
 import Feeles from '../containers/Feeles';
 import EditableTitleTextField from '../containers/EditableTitleTextField';
 import ThumbnailDialog from '../containers/ThumbnailDialog';
-import type { WorkItemType, addWorkViewLabelType } from '../ducks/work';
-import type {
-  saveWorkType,
-  setWorkVisibilityType,
-  setMetadataType,
-  removeWorkType,
-  State as MakeState
-} from '../ducks/make';
+import type { StateProps, DispatchProps } from '../containers/Work';
+import type { OnMessage } from '../components/Feeles';
 
-type Props = {
-  addWorkViewLabel: addWorkViewLabelType,
-  saveWork: saveWorkType,
-  setWorkVisibility: setWorkVisibilityType,
-  setMetadata: setMetadataType,
-  removeWork: removeWorkType,
-  classes: {
-    chip: string,
-    blank: string,
-    caption: string,
-    noTitle: string,
-    title: string,
-    underline: string
-  },
-  work: WorkItemType,
-  replay: boolean,
-  canSave: boolean,
-  canPublish: boolean,
-  canRemove: boolean,
-  make: MakeState,
-  isPreparing: boolean | void,
-  redirect?: string
-} & ContextRouter;
+export type Props = StateProps & DispatchProps & { ...ContextRouter };
 
-type State = {
+export type State = {
   anchorEl: ?HTMLElement,
   open: boolean
 };
 
-@withRouter
-@withStyles({
-  chip: {
+const classes = {
+  chip: css({
     marginRight: theme.spacing.unit * 2
-  },
-  blank: {
+  }),
+  blank: css({
     flex: 1
-  },
-  caption: {
+  }),
+  caption: css({
     marginLeft: theme.spacing.unit * 2,
     marginRight: theme.spacing.unit * 2
-  },
-  noTitle: {
+  }),
+  noTitle: css({
     fontStyle: 'italic'
-  },
-  title: {
+  }),
+  title: css({
     ...theme.typography.title,
     maxWidth: 500,
     flexGrow: 1,
     flexShrink: 10000
-  },
-  underline: {
+  }),
+  underline: css({
     '&:before': {
       // focus も hover もされていないときの underline を消去
       height: 0
     }
-  }
-})
-class Work extends React.Component<Props, State> {
+  })
+};
+
+@withRouter
+export default class Work extends React.Component<Props, State> {
   static defaultProps = {
     replay: false,
     isPreparing: false,
@@ -150,7 +123,7 @@ class Work extends React.Component<Props, State> {
   };
 
   // Feeles で実行している iframe から message を受け取った
-  handleMessage = event => {
+  handleMessage: OnMessage = event => {
     const { data: { value: { labelName, labelValue, href } } } = event;
     const { make, work } = this.props;
     if (labelName) {
@@ -183,7 +156,6 @@ class Work extends React.Component<Props, State> {
 
   render() {
     const {
-      classes,
       work,
       canSave,
       canPublish,
@@ -331,5 +303,3 @@ class Work extends React.Component<Props, State> {
     );
   }
 }
-
-export default Work;

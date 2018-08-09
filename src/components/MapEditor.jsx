@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Button from 'material-ui/Button';
@@ -13,13 +12,31 @@ import DialogTitle from 'material-ui/Dialog/DialogTitle';
 import DialogContent from 'material-ui/Dialog/DialogContent';
 import DialogContentText from 'material-ui/Dialog/DialogContentText';
 import type ReactMapEditorType from 'react-map-editor';
+import { css } from 'emotion';
 
-type Props = {
-  classes: {
-    root: string,
-    flex: string
-  }
-} & ContextRouter;
+const classes = {
+  root: css({
+    height: 'calc(100vh - 56px)',
+    '@media (min-width:0px) and (orientation: landscape)': {
+      height: 'calc(100vh - 48px)'
+    },
+    '@media (min-width:600px)': {
+      height: 'calc(100vh - 64px)'
+    }
+  }),
+  flex: css({
+    flexGrow: 1
+  }),
+  code: css({
+    height: '5rem',
+    width: '100%',
+    fontFamily: `Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace`,
+    overflow: 'scroll',
+    backgroundColor: 'lightgrey',
+    padding: 20,
+    borderRadius: 2
+  })
+};
 
 type State = {
   ReactMapEditor: ReactMapEditorType | null,
@@ -28,21 +45,10 @@ type State = {
   code: string
 };
 
+export type OwnProps = {};
+type Props = OwnProps & { ...ContextRouter };
+
 @withRouter
-@withStyles({
-  root: {
-    height: `calc(100vh - ${56 * 2}px)`,
-    '@media (min-width:0px) and (orientation: landscape)': {
-      height: `calc(100vh - ${48 * 2}px)`
-    },
-    '@media (min-width:600px)': {
-      height: `calc(100vh - ${64 * 2}px)`
-    }
-  },
-  flex: {
-    flexGrow: 1
-  }
-})
 class MapEditor extends React.Component<Props, State> {
   state = {
     ReactMapEditor: null,
@@ -51,7 +57,11 @@ class MapEditor extends React.Component<Props, State> {
     code: ''
   };
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.prepare();
+  }
+
+  async prepare() {
     const rme = await import('react-map-editor');
     const ReactMapEditor = rme.default;
     const response = await fetch(
@@ -87,7 +97,6 @@ await Hack.parseMapJson(
   };
 
   render() {
-    const { classes } = this.props;
     const { ReactMapEditor, tileset } = this.state;
 
     if (!ReactMapEditor) {
@@ -155,24 +164,9 @@ function defaultMap() {
 type CodeDialogProps = {
   open: boolean,
   code: string,
-  requestClose: () => void,
-  requestCopy: () => void,
-  classes?: {
-    code: string
-  }
+  requestClose: () => void
 };
 
-@withStyles({
-  code: {
-    height: '5rem',
-    width: '100%',
-    fontFamily: `Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace`,
-    overflow: 'scroll',
-    backgroundColor: 'lightgrey',
-    padding: 20,
-    borderRadius: 2
-  }
-})
 export class CodeDialog extends React.Component<CodeDialogProps> {
   copyCode = () => {
     if (this.textarea) {
@@ -185,8 +179,6 @@ export class CodeDialog extends React.Component<CodeDialogProps> {
   textarea: HTMLTextAreaElement | null = null;
 
   render() {
-    const { classes } = this.props;
-
     return (
       <Dialog open={this.props.open} onClose={this.props.requestClose}>
         <DialogTitle id="alert-dialog-title">
