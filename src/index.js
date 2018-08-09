@@ -19,6 +19,7 @@ import App from './containers/App';
 // import registerServiceWorker from './registerServiceWorker';
 import reducer from './ducks';
 import './settings/firebase';
+import MaterialUIJssProvider from './MaterialUIJssProvider';
 
 objectFitImages();
 
@@ -44,7 +45,9 @@ if (!app) {
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <MaterialUIJssProvider>
+      <App />
+    </MaterialUIJssProvider>
   </Provider>,
   app
 );
