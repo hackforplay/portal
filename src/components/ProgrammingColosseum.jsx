@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
-import { withStyles } from 'material-ui/styles';
+import { css } from 'emotion';
 
 import theme from '../settings/theme';
 import attention from '../resources/attention.png';
@@ -14,18 +14,8 @@ import no03 from '../resources/no03.png';
 
 const reference = `https://firebasestorage.googleapis.com/v0/b/hackforplay-production.appspot.com/o/specials%2Freference.pdf?alt=media&token=22b71ece-3b6b-4d35-bb62-59e5223b3dad`;
 
-type Props = {
-  classes: {
-    root: string,
-    paper: string,
-    paragraph: string,
-    img: string,
-    button: string
-  }
-};
-
-@withStyles({
-  root: {
+const classes = {
+  root: css({
     maxWidth: 840,
     paddingTop: theme.spacing.unit * 4,
     boxSizing: 'border-box',
@@ -33,8 +23,8 @@ type Props = {
     marginRight: 'auto',
     flexWrap: 'wrap',
     alignItems: 'center'
-  },
-  paper: {
+  }),
+  paper: css({
     width: '100%',
     boxSizing: 'border-box',
     padding: theme.spacing.unit * 6,
@@ -45,21 +35,22 @@ type Props = {
       whiteSpace: 'pre',
       marginBottom: theme.spacing.unit * -6
     }
-  },
-  paragraph: {
+  }),
+  paragraph: css({
     display: 'flex',
     alignItems: 'center',
     marginBottom: theme.spacing.unit * 6
-  },
-  img: {
+  }),
+  img: css({
     alignSelf: 'flex-start',
     marginRight: theme.spacing.unit * 5
-  },
-  button: {
+  }),
+  button: css({
     marginRight: theme.spacing.unit * 2
-  }
-})
-export default class ProgrammingColosseum extends React.Component<Props> {
+  })
+};
+
+export default class ProgrammingColosseum extends React.Component<{}> {
   componentDidMount() {
     // async のテスト
     try {
@@ -73,7 +64,6 @@ export default class ProgrammingColosseum extends React.Component<Props> {
   }
 
   render() {
-    const { classes } = this.props;
     return (
       <div className={classes.root}>
         <Paper elevation={1} className={classes.paper}>

@@ -14,86 +14,62 @@ import Grid from 'material-ui/Grid';
 import IconButton from 'material-ui/IconButton';
 import { CircularProgress } from 'material-ui/Progress';
 import Collapse from 'material-ui/transitions/Collapse';
-import { withStyles } from 'material-ui/styles';
 import { grey } from 'material-ui/colors';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
+import { css } from 'emotion';
 
+import { type StateProps } from '../containers/WorkList';
 import CardMedia from '../containers/CardMedia';
 import theme from '../settings/theme';
 import noImage from '../resources/no-image.png';
 import type { WorkCollectionType } from '../ducks/work';
 
-export type Props = {
-  classes: {
-    root: string,
-    card: string,
-    card_private: string,
-    media: string,
-    headline: string,
-    title: string,
-    noTitle: string,
-    subheader: string,
-    authorName: string,
-    noAuthorName: string,
-    button: string,
-    more: string,
-    chip: string
-  },
-  works: WorkCollectionType,
-  title: React.Node,
-  more: boolean,
-  moreLink: string,
-  showVisibility: boolean | void,
-  className?: string
-} & ContextRouter;
-
-@withRouter
-@withStyles({
-  root: {
+const classes = {
+  root: css({
     padding: theme.spacing.unit * 6
-  },
-  card: {
+  }),
+  card: css({
     minWidth: 240,
     maxWidth: 240,
     cursor: 'pointer',
     textAlign: 'left'
-  },
-  card_private: {
+  }),
+  card_private: css({
     filter: `brightness(90%)`
-  },
-  media: {
+  }),
+  media: css({
     minHeight: 160,
     maxHeight: 160,
     objectFit: 'cover',
     // https://github.com/bfred-it/object-fit-images/
     fontFamily: "'object-fit: contain;'"
-  },
-  headline: {
+  }),
+  headline: css({
     marginBottom: theme.spacing.unit * 4
-  },
-  title: {
+  }),
+  title: css({
     maxHeight: 48,
     overflow: 'hidden'
-  },
-  noTitle: {
+  }),
+  noTitle: css({
     fontStyle: 'italic'
-  },
-  subheader: {
+  }),
+  subheader: css({
     maxWidth: 176,
     overflow: 'hidden',
     textOverflow: 'ellipsis'
-  },
-  authorName: {
+  }),
+  authorName: css({
     color: grey[500],
     '&:hover': {
       color: grey[900]
     }
-  },
-  noAuthorName: {
+  }),
+  noAuthorName: css({
     color: grey[500],
     fontStyle: 'italic'
-  },
-  more: {
+  }),
+  more: css({
     width: '100%',
     position: 'relative',
     textAlign: 'center',
@@ -107,23 +83,32 @@ export type Props = {
       height: 16,
       background: 'linear-gradient(to bottom, transparent, white)'
     }
-  },
-  button: {
+  }),
+  button: css({
     fontSize: 'large',
     marginTop: theme.spacing.unit * 2,
     paddingTop: theme.spacing.unit * 2,
     paddingRight: theme.spacing.unit * 4,
     paddingBottom: theme.spacing.unit * 2,
     paddingLeft: theme.spacing.unit * 4
-  },
-  chip: {}
-})
-export default class WorkList extends React.Component<Props> {
-  static defaultProps = {
-    more: false,
-    showVisibility: false
-  };
+  })
+};
 
+export type OwnProps = {
+  works: WorkCollectionType,
+  title: React.Node,
+  more: boolean,
+  moreLink: string,
+  showVisibility: boolean,
+  className?: string
+};
+
+export type State = {};
+
+export type Props = OwnProps & StateProps & { ...ContextRouter };
+
+@withRouter
+export default class WorkList extends React.Component<Props> {
   link(to: string) {
     const { history } = this.props;
     return (event: SyntheticMouseEvent<HTMLButtonElement>) => {
@@ -144,14 +129,7 @@ export default class WorkList extends React.Component<Props> {
   }
 
   render() {
-    const {
-      classes,
-      works,
-      title,
-      more,
-      moreLink,
-      showVisibility
-    } = this.props;
+    const { works, title, more, moreLink, showVisibility } = this.props;
 
     return (
       <Paper className={classNames(classes.root, this.props.className)}>
@@ -162,7 +140,7 @@ export default class WorkList extends React.Component<Props> {
         ) : (
           title
         )}
-        <Collapse collapsedHeight="284px" in={more}>
+        <Collapse collapsedHeight="284px" in={more || false}>
           <Grid container justify="center">
             {works.data ? (
               works.data.map(item => (

@@ -14,10 +14,10 @@ import {
   removeFile,
   parseStoragePath
 } from './storage';
-import * as user from './user';
-import * as work from './work';
-import * as auth from './auth';
-import type { Dispatch, GetStore } from './';
+import * as userImport from './user';
+import * as workImport from './work';
+import * as authImport from './auth';
+import type { Dispatch, GetStore } from './type';
 import type { WorkItemType, WorkData, VisibilityType } from './work';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
@@ -41,14 +41,18 @@ export type Metadata = {
   +thumbnailStoragePath?: string
 };
 
+export type FeelesFile = {
+  compose: () => Promise<Object>
+};
+
 export type Action =
   | {|
       +type: 'portal/make/CREATE',
-      +payload: Array<{}>
+      +payload: Array<Object>
     |}
   | {|
       +type: 'portal/make/CHANGE',
-      +payload: Array<{}>
+      +payload: Array<Object>
     |}
   | {|
       +type: 'portal/make/METADATA',
@@ -197,7 +201,7 @@ export const metadata: metadataType = payload => ({
   payload
 });
 
-type thumbnailType = (thumbnail: string) => Action;
+export type thumbnailType = (thumbnail: string) => Action;
 
 export const thumbnail: thumbnailType = payload => ({
   type: THUMBNAIL,
@@ -238,7 +242,7 @@ export const remove: removeType = () => ({
   type: REMOVE
 });
 
-export type changeWorkType = (payload: { files: Array<{}> }) => (
+export type changeWorkType = (payload: { files: FeelesFile[] }) => (
   dispatch: Dispatch,
   getStore: GetStore
 ) => Promise<void>;
@@ -289,7 +293,7 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
   getStore
 ) => {
   const { work } = getState(getStore());
-  const { user } = auth.getState(getStore());
+  const { user } = authImport.getState(getStore());
   if (!user) {
     // ログインしていない
     return;
@@ -297,7 +301,11 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
   // data url => base64 string and metadata
   const visibility = work.data ? work.data.visibility : 'private';
   const [param, base64] = dataURL.split(',');
-  const [, type] = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
+  const result = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
+  if (!result) {
+    throw new Error(`Invalid Data URL: ${param},...`);
+  }
+  const type = result[1];
   const ext = mime.extension(type);
   if (!base64 || !type || !ext) {
     throw new Error(`Invalid Data URL: ${param},...`);
@@ -333,7 +341,7 @@ export type saveWorkType = () => (
 ) => Promise<void>;
 
 export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
-  const { uid } = auth.getState(getStore()).user || { uid: '' };
+  const { uid } = authImport.getState(getStore()).user || { uid: '' };
   const { files, work, metadata, thumbnails } = getState(getStore());
 
   if (!uid || !files || !canSave(getStore())) {
@@ -354,7 +362,7 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
   // TODO: author を編集する GUI を実装する
   // （仮実装）もし author が設定されていなければ, ログインユーザの DisplayName を author とする
   if (!metadata.author) {
-    const userData = user.getUserByUid(getStore(), uid).data;
+    const userData = userImport.getUserByUid(getStore(), uid).data;
     if (userData && userData.displayName) {
       await dispatch(setMetadata({ author: userData.displayName }));
       // ----> ストアが更新される（はず）
@@ -387,13 +395,8 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
         assetStoragePath
       }
     });
-    const snapshot = await uploadedRef.get();
-    const uploadedDoc = {
-      ...snapshot.data(),
-      id: snapshot.id,
-      path: `/works/${snapshot.id}`
-    };
-    dispatch(set(uploadedDoc, files));
+    const snapshot = (await uploadedRef.get(): $npm$firebase$firestore$DocumentSnapshot);
+    dispatch(set(workImport.getWorkData(snapshot), files));
     // 古いアセットを削除
     if (work.data && work.data.assetStoragePath) {
       dispatch(removeFile(work.data.assetStoragePath));
@@ -419,7 +422,7 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
   dispatch,
   getStore
 ) => {
-  const { user } = auth.getState(getStore());
+  const { user } = authImport.getState(getStore());
   const { work, files } = getState(getStore());
   const workData = work.data;
   if (!canPublish(getStore()) || !workData || !user || !files) {
@@ -473,14 +476,9 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
       .doc(workData.id);
     await ref.update(updated);
 
-    const snapshot = await ref.get();
-    const updatedDoc = {
-      ...snapshot.data(),
-      id: snapshot.id,
-      path: `/works/${snapshot.id}`
-    };
+    const snapshot = (await ref.get(): $npm$firebase$firestore$DocumentSnapshot);
     // ステージをセット
-    await dispatch(set(updatedDoc, files));
+    await dispatch(set(workImport.getWorkData(snapshot), files));
   } catch (error) {
     // 元に戻す
     console.error(error);
@@ -512,7 +510,7 @@ async function uploadWorkData({ work, uid, metadata }) {
       .collection('works')
       .doc(workData.id);
     await ref.update(updated);
-    return ref;
+    return (ref: $npm$firebase$firestore$DocumentReference);
   } else {
     // 新しく追加
     const appended = {
@@ -541,7 +539,7 @@ export const editExistingWork: editExistingWorkType = work => async (
   getStore
 ) => {
   const make = getState(getStore());
-  const { user } = auth.getState(getStore());
+  const { user } = authImport.getState(getStore());
   const workData = work.data;
   if (!workData || !user || workData.uid !== user.uid || make.work.data) {
     // 自分のステージではないか、ログインしていないか、すでに別のものを作り始めている
@@ -595,7 +593,7 @@ export const removeWork: removeWorkType = () => async (dispatch, getStore) => {
     .delete();
   dispatch(trash());
   // その work を空とみなす
-  dispatch(work.empty(data.path));
+  dispatch(workImport.empty(data.path));
 };
 
 export function canSave(state: $Call<GetStore>) {

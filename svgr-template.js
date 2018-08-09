@@ -11,10 +11,15 @@ module.exports = (opts = {}) => {
     props = '{svgRef}';
   }
 
-  return (code, state) => `import React from 'react'
-  import SvgIcon from 'material-ui/SvgIcon'
+  return (code, state) => `
+  // @flow
+  import React from 'react';
+  import type { ElementProps } from 'react';
+  import SvgIcon from 'material-ui/SvgIcon';
   
-  const ${state.componentName} = (${props}) => ${code
+  const ${
+    state.componentName
+  } = (${props}: ElementProps<typeof SvgIcon>) => ${code
     .replace(/<svg /, '<SvgIcon ')
     .replace(/<\/svg>/, '</SvgIcon>')}
     

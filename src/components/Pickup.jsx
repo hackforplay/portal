@@ -1,36 +1,31 @@
 // @flow
 import * as React from 'react';
-import { withStyles } from 'material-ui/styles';
+import { css } from 'emotion';
 
 import theme from '../settings/theme';
 import WorkList from '../containers/WorkList';
-import type { WorkCollectionType } from '../ducks/work';
+import type { StateProps, DispatchProps } from '../containers/Pickup';
 
-export type Props = {
-  classes: {
-    root: string
-  },
-  pickup: WorkCollectionType
+const classes = {
+  root: css({
+    padding: theme.spacing.unit * 4
+  })
 };
 
-@withStyles({
-  root: {
-    padding: theme.spacing.unit * 4
-  }
-})
-export default class Pickup extends React.Component<Props> {
-  render() {
-    const { classes, pickup } = this.props;
+export type Props = StateProps & DispatchProps;
 
-    return (
-      <div className={classes.root}>
-        <WorkList
-          works={pickup}
-          title="ピックアップステージ"
-          more
-          moreLink=""
-        />
-      </div>
-    );
-  }
-}
+export default (props: Props) => {
+  const { pickup } = props;
+
+  return (
+    <div className={classes.root}>
+      <WorkList
+        works={pickup}
+        title="ピックアップステージ"
+        more
+        moreLink=""
+        showVisibility={false}
+      />
+    </div>
+  );
+};

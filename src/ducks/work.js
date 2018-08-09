@@ -7,7 +7,7 @@ import * as helpers from './helpers';
 import * as auth from './auth';
 import type { Statefull } from './helpers';
 import type { UserType } from './user';
-import type { Dispatch, GetStore } from './';
+import type { Dispatch, GetStore } from './type';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'work';
@@ -53,6 +53,41 @@ export type WorkData = {
   +favsNum: number,
   +createdAt: string | Date,
   +updatedAt: string | Date | null
+};
+
+type FirestoreWork = {
+  +title: string,
+  +description: string,
+  +author: string,
+  +visibility: VisibilityType,
+  +uid?: string,
+  +thumbnailStoragePath?: string,
+  +assetStoragePath?: string,
+  +viewsNum: number,
+  +clearRate: number,
+  +favsNum: number,
+  +createdAt: FirestoreTimestamp,
+  +updatedAt?: FirestoreTimestamp
+};
+
+export type GetWorkData = (
+  snapshot: $npm$firebase$firestore$DocumentSnapshot
+) => WorkData;
+
+/**
+ * Firestore のデータを変換して扱いやすい WorkData 型にする
+ * @param {$npm$firebase$firestore$DocumentSnapshot} snapshot DocumentSnapshot
+ */
+export const getWorkData: GetWorkData = snapshot => {
+  const data: FirestoreWork = (snapshot.data(): any);
+  const { createdAt, updatedAt, ...workData } = data;
+  return {
+    ...workData,
+    id: snapshot.id,
+    path: `/works/${snapshot.id}`,
+    createdAt: createdAt.toDate(),
+    updatedAt: updatedAt && updatedAt.toDate()
+  };
 };
 
 type migrateType = (old: WorkData) => WorkData;
@@ -456,22 +491,16 @@ export const fetchRecommendedWorks: fetchRecommendedWorksType = () => async (
 
   dispatch(loadList('recommended'));
   try {
-    const works = [];
+    const works: WorkData[] = [];
     // Firestore から取得
-    const querySnapshot = await firebase
+    const querySnapshot: $npm$firebase$firestore$QuerySnapshot = await firebase
       .firestore()
       .collection('works')
       .where('visibility', '==', 'public')
       .orderBy('createdAt', 'desc')
       .limit(15)
       .get();
-    for (const snapshot of querySnapshot.docs) {
-      works.push({
-        ...snapshot.data(),
-        id: snapshot.id,
-        path: `/works/${snapshot.id}`
-      });
-    }
+    works.push(...querySnapshot.docs.map(getWorkData));
     // Heroku から取得
     const result = await request({
       sort: 'created_at',
@@ -554,7 +583,7 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
   // リクエスト
   dispatch(loadUsers(uid));
   try {
-    const works = [];
+    const works: WorkData[] = [];
     // Firestore から取得
     let query = firebase
       .firestore()
@@ -567,13 +596,9 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
       // 自分ではない
       query = query.where('visibility', '==', 'public');
     }
-    const querySnapshot = await query.get();
+    const querySnapshot: $npm$firebase$firestore$QuerySnapshot = await query.get();
     for (const snapshot of querySnapshot.docs) {
-      works.push({
-        ...snapshot.data(),
-        id: snapshot.id,
-        path: `/works/${snapshot.id}`
-      });
+      works.push(getWorkData(snapshot));
     }
     // Heroku から取得
     const response = await fetch(
@@ -607,19 +632,13 @@ export const fetchWorkByPath: fetchWorkByPathType = path => async (
   try {
     switch (collection) {
       case 'works':
-        const snapshot = await firebase
+        const snapshot: $npm$firebase$firestore$DocumentSnapshot = await firebase
           .firestore()
           .collection(collection)
           .doc(id)
           .get();
         if (snapshot.exists) {
-          dispatch(
-            set({
-              ...snapshot.data(),
-              id,
-              path
-            })
-          );
+          dispatch(set(getWorkData(snapshot)));
         } else {
           dispatch(empty(path));
         }
@@ -756,7 +775,7 @@ export const addWorkView: addWorkViewType = path => async (
 
   // ステージの views コレクションにドキュメントを追加
   // works の histories にも自動で追加される
-  const ref = await firebase
+  const ref: any = await firebase
     .firestore()
     .collection(`${path}/views`)
     .add({

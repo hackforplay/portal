@@ -7,7 +7,7 @@ import * as helpers from './helpers';
 import * as auth from './auth';
 import * as user from './user';
 import type { Statefull } from './helpers';
-import type { Dispatch, GetStore } from './';
+import type { StoreState, ThunkAction } from './type';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'user';
@@ -26,7 +26,37 @@ type UserData = {
   photoURL: string,
   profileImagePath?: string,
   worksNum: number,
-  createdAt: string
+  createdAt: Date
+};
+
+type FirestoreUser = {|
+  +uid: string,
+  +displayName: string,
+  +email: string,
+  +photoURL: string,
+  +profileImagePath?: string,
+  +worksNum: number,
+  +createdAt: FirestoreTimestamp,
+  +updatedAt?: FirestoreTimestamp
+|};
+
+type GetUserData = (
+  snapshot: $npm$firebase$firestore$DocumentSnapshot
+) => UserData;
+
+/**
+ * Firestore のデータを変換して扱いやすい UserData 型にする
+ * @param {$npm$firebase$firestore$DocumentSnapshot} snapshot DocumentSnapshot
+ */
+const getUserData: GetUserData = snapshot => {
+  const data: FirestoreUser = (snapshot.data(): any);
+  const { createdAt, updatedAt, ...workData } = data;
+  return {
+    ...workData,
+    uid: snapshot.id,
+    createdAt: createdAt.toDate(),
+    updatedAt: updatedAt && updatedAt.toDate()
+  };
 };
 
 export type EditingUserData = {|
@@ -180,9 +210,7 @@ export const updateUser = (uid: string): Action => ({
   uid
 });
 
-export type fetchUserIfNeededType = (
-  uid: string
-) => (dispatch: Dispatch, getStore: GetStore) => void;
+export type fetchUserIfNeededType = (uid: string) => ThunkAction;
 
 export const fetchUserIfNeeded: fetchUserIfNeededType = uid => (
   dispatch,
@@ -201,8 +229,7 @@ export const fetchUserIfNeeded: fetchUserIfNeededType = uid => (
     .onSnapshot(snapshot => {
       if (snapshot && snapshot.exists) {
         // ユーザー情報をストアに格納
-        const user = { ...snapshot.data(), uid: snapshot.id };
-        dispatch(setUser(user));
+        dispatch(setUser(getUserData(snapshot)));
       } else {
         // 存在しない UID
         dispatch(setUserNotFound(uid));
@@ -210,9 +237,7 @@ export const fetchUserIfNeeded: fetchUserIfNeededType = uid => (
     });
 };
 
-export type editAuthUserType = (
-  editing: EditingUserData
-) => (dispatch: Dispatch, getStore: GetStore) => void;
+export type editAuthUserType = (editing: EditingUserData) => ThunkAction;
 
 export const editAuthUser: editAuthUserType = editing => (
   dispatch,
@@ -227,10 +252,7 @@ export const editAuthUser: editAuthUserType = editing => (
   dispatch(editUser(user.uid, editing));
 };
 
-export type cancelAuthUserEditingType = () => (
-  dispatch: Dispatch,
-  getStore: GetStore
-) => void;
+export type cancelAuthUserEditingType = () => ThunkAction;
 
 export const cancelAuthUserEditing: cancelAuthUserEditingType = () => (
   dispatch,
@@ -245,10 +267,7 @@ export const cancelAuthUserEditing: cancelAuthUserEditingType = () => (
   dispatch(editCancel(user.uid));
 };
 
-export type confirmAuthUserEditingType = () => (
-  dispatch: Dispatch,
-  getStore: GetStore
-) => Promise<void>;
+export type confirmAuthUserEditingType = () => ThunkAction;
 
 export const confirmAuthUserEditing: confirmAuthUserEditingType = () => async (
   dispatch,
@@ -278,10 +297,10 @@ export const confirmAuthUserEditing: confirmAuthUserEditingType = () => async (
 
 // Helpers
 
-export function getUserByUid(store: $Call<GetStore>, uid: string): UserType {
+export function getUserByUid(store: StoreState, uid: string): UserType {
   return getState(store).byUid[uid] || helpers.initialized();
 }
 
-export function getState(store: $Call<GetStore>): State {
+export function getState(store: StoreState): State {
   return store[storeName];
 }

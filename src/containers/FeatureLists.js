@@ -2,12 +2,23 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import WrappedFeatureLists from '../components/FeatureLists';
-import type { Props as FeatureListsProps } from '../components/FeatureLists';
+import FeatureLists from '../components/FeatureLists';
+import type { OwnProps, Props } from '../components/FeatureLists';
 import type { StoreState } from '../ducks';
-import { fetchRecommendedWorks, fetchTrendingWorks } from '../ducks/work';
+import {
+  fetchRecommendedWorks,
+  fetchTrendingWorks,
+  type WorkCollectionType
+} from '../ducks/work';
 
-const mapStateToProps = (state: StoreState, ownProps: FeatureListsProps) => {
+export type StateProps = {
+  lists: {
+    recommended: WorkCollectionType,
+    trending: WorkCollectionType
+  }
+};
+
+const mapStateToProps = (state: StoreState, ownProps: OwnProps): StateProps => {
   return {
     lists: {
       recommended: state.work.recommended,
@@ -21,14 +32,16 @@ const mapDispatchToProps = {
   fetchTrendingWorks
 };
 
+export type DispatchProps = { ...typeof mapDispatchToProps };
+
 @connect(mapStateToProps, mapDispatchToProps)
-export default class FeatureLists extends React.Component<*> {
+export default class extends React.Component<Props> {
   componentDidMount() {
     this.props.fetchRecommendedWorks();
     this.props.fetchTrendingWorks();
   }
 
   render() {
-    return <WrappedFeatureLists {...this.props} />;
+    return <FeatureLists {...this.props} />;
   }
 }

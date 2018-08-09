@@ -1,18 +1,38 @@
+// @flow
 import * as React from 'react';
 import classNames from 'classnames';
-import { withStyles } from 'material-ui/styles';
+import { css } from 'emotion';
 
-import type { changeWorkType, thumbnailType } from '../ducks/make';
+import type { StateProps, DispatchProps } from '../containers/Feeles';
 
-type Props = {
-  onMessage?: () => {},
-  changeWork: changeWorkType,
-  thumbnail: thumbnailType,
+const replayClassName = 'replay';
+const rootStyle = (padding: number) => ({
+  [`&.${replayClassName}`]: {
+    height: `calc(100vh - ${padding * 2}px)`
+  },
+  height: `calc(100vh - ${padding}px)`
+});
+
+const classes = {
+  root: css({
+    ...rootStyle(56),
+    '@media (min-width:0px) and (orientation: landscape)': {
+      ...rootStyle(48)
+    },
+    '@media (min-width:600px)': {
+      ...rootStyle(64)
+    }
+  })
+};
+
+export type OnMessage = (event: {
+  data: { value: { labelName: string, labelValue: string, href: string } }
+}) => void;
+
+export type OwnProps = {
+  onMessage: OnMessage,
   src: string | void,
-  replay: boolean,
-  classes: {
-    root: string
-  }
+  replay: boolean
 };
 
 type State = {
@@ -20,23 +40,8 @@ type State = {
   loading: boolean
 };
 
-const replayClassName = 'replay';
-export const rootStyle = (padding: number) => ({
-  [`&.${replayClassName}`]: {
-    height: `calc(100vh - ${padding * 2}px)`
-  },
-  height: `calc(100vh - ${padding}px)`
-});
+type Props = OwnProps & StateProps & DispatchProps;
 
-@withStyles({
-  root: rootStyle(56),
-  '@media (min-width:0px) and (orientation: landscape)': {
-    root: rootStyle(48)
-  },
-  '@media (min-width:600px)': {
-    root: rootStyle(64)
-  }
-})
 export default class Feeles extends React.Component<Props, State> {
   static defaultProps = {
     onMessage: () => {},
@@ -68,7 +73,7 @@ export default class Feeles extends React.Component<Props, State> {
     const { src, replay } = this.props;
     if (this.state.loading && this.state.rootEl && src) {
       this.setState({ loading: false }, () => {
-        const props = {
+        const props: any = {
           rootElement: this.state.rootEl,
           jsonURL: src
         };
@@ -96,7 +101,7 @@ export default class Feeles extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes, replay } = this.props;
+    const { replay } = this.props;
 
     const root = classNames(classes.root, {
       [replayClassName]: replay

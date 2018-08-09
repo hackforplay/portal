@@ -1,6 +1,8 @@
 // @flow
 import * as React from 'react';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter, type ContextRouter } from 'react-router-dom';
 
 import type { StoreState } from '../ducks';
 import {
@@ -8,23 +10,34 @@ import {
   getUserByUid,
   editAuthUser,
   cancelAuthUserEditing,
-  confirmAuthUserEditing
+  confirmAuthUserEditing,
+  type UserType,
+  type EditingUserData
 } from '../ducks/user';
 import { uploadBlob } from '../ducks/storage';
-import Profile from '../components/Profile';
+import Profile, { type OwnProps, type Props } from '../components/Profile';
 import * as helpers from '../ducks/helpers';
 
-const mapStateToProps = (state: StoreState, ownProps) => {
+export type StateProps = {
+  owner: boolean,
+  user: UserType,
+  editing?: EditingUserData
+};
+
+const mapStateToProps = (
+  state: StoreState,
+  ownProps: OwnProps & { ...ContextRouter }
+) => {
   // /users/:id の :id にあたる文字列
   const { id } = ownProps.match.params;
   // ログインユーザーと同じか検証
   const owner = state.auth.user ? state.auth.user.uid === id : false;
   // 編集中のデータを取得
-  const editing = state.user.editingByUid[id];
+  const editing = id ? state.user.editingByUid[id] : null;
 
   return {
     owner,
-    user: owner ? getUserByUid(state, id) : helpers.empty(),
+    user: id && owner ? getUserByUid(state, id) : helpers.empty(),
     editing
   };
 };
@@ -37,19 +50,25 @@ const mapDispatchToProps = {
   uploadBlob
 };
 
-@connect(mapStateToProps, mapDispatchToProps)
-export default class ProfileEdit extends React.Component<*> {
-  componentDidMount() {
-    // /users/:id の :id にあたる文字列
-    const { id } = this.props.match.params;
-    this.props.fetchUserIfNeeded(id);
-  }
+export type DispatchProps = { ...typeof mapDispatchToProps };
 
-  componentWillUnmount() {
-    this.props.cancelAuthUserEditing();
-  }
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(
+  class extends React.Component<Props> {
+    componentDidMount() {
+      // /users/:id の :id にあたる文字列
+      const { id } = this.props.match.params;
+      this.props.fetchUserIfNeeded(id);
+    }
 
-  render() {
-    return <Profile {...this.props} edit />;
+    componentWillUnmount() {
+      this.props.cancelAuthUserEditing();
+    }
+
+    render() {
+      return <Profile {...this.props} edit />;
+    }
   }
-}
+);

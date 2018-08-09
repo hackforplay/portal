@@ -1,45 +1,41 @@
+// @flow
 import * as React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import pathToRegexp from 'path-to-regexp';
-import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
-import Tabs, { Tab } from 'material-ui/Tabs';
+import Tabs from 'material-ui/Tabs/Tabs';
+import Tab from 'material-ui/Tabs/Tab';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import SearchIcon from 'material-ui-icons/Search';
 import ArrowBack from 'material-ui-icons/ArrowBack';
 import { grey } from 'material-ui/colors';
+import { css } from 'emotion';
 
 import { searchBarInfo } from '../settings/siteMap';
 
-type Props = {
-  classes: {
-    toolbar: string,
-    blank: string,
-    icon: string
-  }
-} & ContextRouter;
-
-type State = {};
-
-@withRouter
-@withStyles({
-  toolbar: {
+const classes = {
+  toolbar: css({
     minHeight: 48, // 上下のマージンをなくす
     backgroundColor: grey[50]
-  },
-  blank: {
+  }),
+  blank: css({
     flex: 1
-  },
-  icon: {
+  }),
+  icon: css({
     width: 18,
     marginRight: 12
-  }
-})
-class NavigationBar extends React.Component<Props, State> {
-  handleChangeTab = (event, value: string) => {
+  })
+};
+
+export type OwnProps = {};
+type Props = OwnProps & { ...ContextRouter };
+
+@withRouter
+class NavigationBar extends React.Component<Props> {
+  handleChangeTab = (event: SyntheticEvent<any>, value: string) => {
     const { location, history } = this.props;
 
     // 現在表示している URL にふさわしいタブの状態を取得する
@@ -47,6 +43,10 @@ class NavigationBar extends React.Component<Props, State> {
       const re = pathToRegexp(item.path);
       return re.exec(location.pathname);
     });
+
+    if (!info) {
+      throw new Error(`No serchBarInfo is given in ${location.pathname}`);
+    }
 
     const keys = [];
     const re = pathToRegexp(info.path, keys);
@@ -62,7 +62,7 @@ class NavigationBar extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, location } = this.props;
+    const { location } = this.props;
 
     // 現在表示している URL にふさわしいタブの状態を取得する
     const info = searchBarInfo.find(item => {

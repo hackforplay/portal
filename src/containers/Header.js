@@ -1,13 +1,28 @@
 // @flow
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { withRouter, type ContextRouter } from 'react-router-dom';
 
-import WrappedHeader from '../components/Header';
-import { signInWithGoogle, signOut } from '../ducks/auth';
-import { fetchUserIfNeeded, getUserByUid } from '../ducks/user';
+import Header, { type OwnProps, type Props } from '../components/Header';
+import {
+  signInWithGoogle,
+  signOut,
+  type State as AuthState
+} from '../ducks/auth';
+import { fetchUserIfNeeded, getUserByUid, type UserType } from '../ducks/user';
 import type { StoreState } from '../ducks';
 
-const mapStateToProps = (state: StoreState, ownProps) => {
+export type StateProps = {
+  isSignedIn: boolean,
+  auth: AuthState,
+  user: UserType,
+  isInOfficialWork: boolean
+};
+
+const mapStateToProps = (
+  state: StoreState,
+  ownProps: OwnProps & { ...ContextRouter }
+): StateProps => {
   // サインインユーザー
   const { auth } = state;
   const id = auth.user && auth.user.uid;
@@ -28,8 +43,11 @@ const mapDispatchToProps = {
   fetchUserIfNeeded
 };
 
+export type DispatchProps = { ...typeof mapDispatchToProps };
+
+@withRouter
 @connect(mapStateToProps, mapDispatchToProps)
-class Header extends React.Component<*> {
+export default class extends React.Component<Props> {
   componentDidMount() {
     // サインインユーザー
     const { auth } = this.props;
@@ -39,7 +57,7 @@ class Header extends React.Component<*> {
     }
   }
 
-  componentDidUpdate(prevProps: *) {
+  componentDidUpdate(prevProps: Props) {
     const { auth } = this.props;
     if (auth !== prevProps.auth && auth.user) {
       this.props.fetchUserIfNeeded(auth.user.uid);
@@ -47,8 +65,6 @@ class Header extends React.Component<*> {
   }
 
   render() {
-    return <WrappedHeader {...this.props} />;
+    return <Header {...this.props} />;
   }
 }
-
-export default Header;

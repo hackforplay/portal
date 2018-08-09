@@ -1,8 +1,11 @@
+// @flow
 import * as React from 'react';
+import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import type { ContextRouter, Match } from 'react-router-dom';
 
-import WrappedWork from '../components/Work';
+import Work from '../components/Work';
 import {
   getWorkByPath,
   fetchWorkByPath,
@@ -10,6 +13,7 @@ import {
   addWorkViewLabel,
   isAuthUsersWork
 } from '../ducks/work';
+import type { WorkItemType } from '../ducks/work';
 import {
   trashWork,
   saveWork,
@@ -21,19 +25,37 @@ import {
   canRemove,
   removeWork
 } from '../ducks/make';
+import type { State as MakeState } from '../ducks/make';
+
 import * as helpers from '../ducks/helpers';
 import type { StoreState } from '../ducks';
 
-const getPath = (url: string, params: {}) => {
+export type StateProps = {
+  work: WorkItemType,
+  replay: boolean,
+  canSave: boolean,
+  canPublish: boolean,
+  canRemove: boolean,
+  make: MakeState,
+  isPreparing?: boolean,
+  redirect?: string
+};
+
+const getPath = (match: Match) => {
+  const { url, params } = match;
   const isWork = url.startsWith('/work');
-  const id = params && params.id;
-  const path = `/${isWork ? 'works' : 'products'}/${id}`;
+  if (!params.id) {
+    throw new Error(`Work doesn't have id`);
+  }
+  const path = `/${isWork ? 'works' : 'products'}/${params.id}`;
   return path;
 };
 
-const mapStateToProps = (state: StoreState, ownProps): string => {
-  const { url, params } = ownProps.match;
-  const path = getPath(url, params);
+const mapStateToProps = (
+  state: StoreState,
+  ownProps: ContextRouter
+): StateProps => {
+  const path = getPath(ownProps.match);
   const replay = isAuthUsersWork(state, path);
   const isPreparing = replay && helpers.isInitialized(state.make.work);
   return {
@@ -61,33 +83,39 @@ const mapDispatchToProps = {
   removeWork
 };
 
-@withRouter
-@connect(mapStateToProps, mapDispatchToProps)
-export default class Work extends React.Component {
-  componentDidMount() {
-    const { url, params } = this.props.match;
-    const path = getPath(url, params);
-    // ステージデータがなければ取得
-    this.props.fetchWorkByPath(path).then(() => {
-      // ステージのビューカウントを増やす
-      this.props.addWorkView(path);
-    });
-    if (this.props.replay) {
-      this.props.editExistingWork(this.props.work);
+export type DispatchProps = { ...typeof mapDispatchToProps };
+
+type Props = StateProps & DispatchProps & { ...ContextRouter };
+
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(
+  class extends React.Component<Props> {
+    componentDidMount() {
+      const path = getPath(this.props.match);
+      // ステージデータがなければ取得
+      this.props.fetchWorkByPath(path).then(() => {
+        // ステージのビューカウントを増やす
+        this.props.addWorkView(path);
+      });
+      if (this.props.replay) {
+        this.props.editExistingWork(this.props.work);
+      }
+    }
+
+    componentWillReceiveProps(nextProps) {
+      if (this.props.replay !== nextProps.replay && nextProps.replay) {
+        this.props.editExistingWork(nextProps.work);
+      }
+    }
+
+    componentWillUnmount() {
+      this.props.trashWork();
+    }
+
+    render() {
+      return <Work {...this.props} />;
     }
   }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.replay !== nextProps.replay && nextProps.replay) {
-      this.props.editExistingWork(nextProps.work);
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.trashWork();
-  }
-
-  render() {
-    return <WrappedWork {...this.props} />;
-  }
-}
+);

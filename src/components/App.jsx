@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { MuiThemeProvider, withStyles } from 'material-ui/styles';
+import { MuiThemeProvider } from 'material-ui/styles';
 import {
   BrowserRouter as Router,
   Route,
@@ -30,7 +30,7 @@ import MapEditor from '../containers/MapEditor';
 
 const sp1 = `/specials/プログラミングコロシアム`;
 
-function App() {
+export default function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <Router>
@@ -79,5 +79,3 @@ function GoogleTagManager({ location }) {
   }
   return null;
 }
-
-export default withStyles({})(App);

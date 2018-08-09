@@ -1,39 +1,34 @@
+// @flow
 import * as React from 'react';
 import pathToRegexp from 'path-to-regexp';
 import type { ContextRouter } from 'react-router-dom';
-import { withRouter } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
+import { css } from 'emotion';
 
 import theme from '../settings/theme';
 import contents from '../settings/contents';
 import type { ContentType } from '../settings/contents';
 
-type Props = {
-  classes: {
-    root: string
-  }
-} & ContextRouter;
+const rootStyle = css({
+  maxWidth: 840,
+  boxSizing: 'border-box',
+  marginTop: theme.spacing.unit * 4,
+  marginBottom: theme.spacing.unit * 4,
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  paddingLeft: theme.spacing.unit * 4,
+  paddingRight: theme.spacing.unit * 4
+});
 
-@withStyles({
-  root: {
-    maxWidth: 840,
-    boxSizing: 'border-box',
-    marginTop: theme.spacing.unit * 4,
-    marginBottom: theme.spacing.unit * 4,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    paddingLeft: theme.spacing.unit * 4,
-    paddingRight: theme.spacing.unit * 4
-  }
-})
-class Contents extends React.Component<Props> {
+export type OwnProps = {};
+
+class Contents extends React.Component<OwnProps & { ...ContextRouter }> {
   render() {
-    const { classes, location } = this.props;
+    const { location } = this.props;
 
     // 現在表示している URL にふさわしいデータソースを取得する
     const source = contents.find(item => {
@@ -50,9 +45,9 @@ class Contents extends React.Component<Props> {
     for (const item of source.items) {
       children.push(
         item.type === 'youtube' ? (
-          <YouTubeContent key={item.title} {...item} />
+          <YouTubeContent key={item.title} {...this.props} {...item} />
         ) : item.type === 'stage' ? (
-          <StageContent key={item.title} {...item} />
+          <StageContent key={item.title} {...this.props} {...item} />
         ) : null,
         <Divider key={item.title + '-divider'} />
       );
@@ -61,123 +56,93 @@ class Contents extends React.Component<Props> {
 
     return (
       <div>
-        <Paper className={classes.root}>{children}</Paper>
+        <Paper className={rootStyle}>{children}</Paper>
       </div>
     );
   }
 }
 
-type StageContentProps = {
-  classes: {
-    item: string,
-    alignMiddle: string,
-    img: string,
-    button: string
-  },
-  image: string,
-  title: string,
-  description: string,
-  buttons: Array<{}>
-} & ContentType;
-
-@withRouter
-@withStyles({
-  item: {
+const stageStyle = {
+  item: css({
     paddingTop: theme.spacing.unit * 4,
     paddingBottom: theme.spacing.unit * 4
-  },
-  alignMiddle: {
+  }),
+  alignMiddle: css({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between'
-  },
-  img: {
+  }),
+  img: css({
     width: '100%',
     paddingRight: theme.spacing.unit * 2
-  },
-  button: {
+  }),
+  button: css({
     marginRight: theme.spacing.unit * 2,
     marginBottom: theme.spacing.unit * 2
-  }
-})
-export class StageContent extends React.Component<StageContentProps> {
-  stopPropagation(event: SyntheticEvent<HTMLButtonElement>) {
-    event.stopPropagation();
-  }
+  })
+};
 
-  handleClick = () => {
-    if (this.props.url) {
-      this.props.history.push(this.props.url);
-    }
-  };
-
-  render() {
-    const { classes } = this.props;
-
-    return (
-      <Grid
-        container
-        spacing={16}
-        className={classes.item}
-        onClick={this.handleClick}
-      >
-        <Grid item xs={6}>
-          <img src={this.props.image} alt="" className={classes.img} />
-        </Grid>
-        <Grid
-          item
-          xs={6}
-          className={classes.alignMiddle}
-          style={{ padding: 32 }}
-        >
-          <div />
-          <div>
-            <Typography type="title" align="left" gutterBottom>
-              {this.props.title}
-            </Typography>
-            <Typography type="caption" align="left">
-              {this.props.description}
-            </Typography>
-          </div>
-          <div>
-            {this.props.buttons.map((item, i) => (
-              <Button
-                {...item}
-                key={i}
-                className={classes.button}
-                onClick={this.stopPropagation}
-              />
-            ))}
-          </div>
-        </Grid>
+function StageContent(props: ContentType & { ...ContextRouter }) {
+  return (
+    <Grid
+      container
+      spacing={16}
+      className={stageStyle.item}
+      onClick={() => {
+        if (props.url) {
+          props.history.push(props.url);
+        }
+      }}
+    >
+      <Grid item xs={6}>
+        <img src={props.image} alt="" className={stageStyle.img} />
       </Grid>
-    );
-  }
+      <Grid
+        item
+        xs={6}
+        className={stageStyle.alignMiddle}
+        style={{ padding: 32 }}
+      >
+        <div />
+        <div>
+          <Typography type="title" align="left" gutterBottom>
+            {props.title}
+          </Typography>
+          <Typography type="caption" align="left">
+            {props.description}
+          </Typography>
+        </div>
+        <div>
+          {props.buttons.map((item, i) => (
+            <Button
+              {...item}
+              key={i}
+              className={stageStyle.button}
+              onClick={event => event.stopPropagation()}
+            >
+              {item.children}
+            </Button>
+          ))}
+        </div>
+      </Grid>
+    </Grid>
+  );
 }
 
-type YouTubeContentProps = {
-  classes: {
-    item: string,
-    alignMiddle: string,
-    button: string,
-    responsive: string
-  }
-} & ContentType;
-
-@withStyles({
-  item: {
+const youtubeStyle = {
+  item: css({
     paddingTop: theme.spacing.unit * 4,
     paddingBottom: theme.spacing.unit * 4
-  },
-  alignMiddle: {
+  }),
+  alignMiddle: css({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between'
-  },
-  button: {
+  }),
+  button: css({
     marginRight: theme.spacing.unit * 2
-  },
-  responsive: {
+  }),
+  responsive: css({
     position: 'relative',
     paddingBottom: '56.25%',
     height: 0,
@@ -190,47 +155,42 @@ type YouTubeContentProps = {
       width: '100%',
       height: '100%'
     }
-  }
-})
-class YouTubeContent extends React.Component<YouTubeContentProps> {
-  stopPropagation(event: SyntheticMouseEvent<HTMLButtonElement>) {
-    event.stopPropagation();
-  }
+  })
+};
 
-  render() {
-    const { classes } = this.props;
-
-    return (
-      <Grid container spacing={16} className={classes.item}>
-        <Grid item xs={6}>
-          <div className={classes.responsive}>
-            <iframe
-              title={this.props.title}
-              src={this.props.url}
-              frameBorder="0"
-              allowFullScreen
-            />
-          </div>
-        </Grid>
-        <Grid item xs={6} className={classes.alignMiddle}>
-          <div />
-          <div>
-            <Typography type="title" align="left">
-              {this.props.title}
-            </Typography>
-            <Typography type="caption" align="left">
-              {this.props.description}
-            </Typography>
-          </div>
-          <div>
-            {this.props.buttons.map((item, i) => (
-              <Button {...item} key={i} className={classes.button} />
-            ))}
-          </div>
-        </Grid>
+function YouTubeContent(props: ContentType) {
+  return (
+    <Grid container spacing={16} className={youtubeStyle.item}>
+      <Grid item xs={6}>
+        <div className={youtubeStyle.responsive}>
+          <iframe
+            title={props.title}
+            src={props.url}
+            frameBorder="0"
+            allowFullScreen
+          />
+        </div>
       </Grid>
-    );
-  }
+      <Grid item xs={6} className={youtubeStyle.alignMiddle}>
+        <div />
+        <div>
+          <Typography type="title" align="left">
+            {props.title}
+          </Typography>
+          <Typography type="caption" align="left">
+            {props.description}
+          </Typography>
+        </div>
+        <div>
+          {props.buttons.map((item, i) => (
+            <Button {...item} key={i} className={youtubeStyle.button}>
+              {item.children}
+            </Button>
+          ))}
+        </div>
+      </Grid>
+    </Grid>
+  );
 }
 
 export default Contents;
