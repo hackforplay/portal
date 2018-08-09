@@ -18,6 +18,7 @@ import { grey } from 'material-ui/colors';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import { css } from 'emotion';
 
+import { type StateProps } from '../containers/WorkList';
 import CardMedia from '../containers/CardMedia';
 import theme from '../settings/theme';
 import noImage from '../resources/no-image.png';
@@ -98,21 +99,16 @@ export type OwnProps = {
   title: React.Node,
   more: boolean,
   moreLink: string,
-  showVisibility: boolean | void,
+  showVisibility: boolean,
   className?: string
 };
 
 export type State = {};
 
-type Props = OwnProps & { ...ContextRouter };
+export type Props = OwnProps & StateProps & { ...ContextRouter };
 
 @withRouter
 export default class WorkList extends React.Component<Props> {
-  static defaultProps = {
-    more: false,
-    showVisibility: false
-  };
-
   link(to: string) {
     const { history } = this.props;
     return (event: SyntheticMouseEvent<HTMLButtonElement>) => {
@@ -144,7 +140,7 @@ export default class WorkList extends React.Component<Props> {
         ) : (
           title
         )}
-        <Collapse collapsedHeight="284px" in={more}>
+        <Collapse collapsedHeight="284px" in={more || false}>
           <Grid container justify="center">
             {works.data ? (
               works.data.map(item => (

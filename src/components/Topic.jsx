@@ -243,8 +243,10 @@ class Topic extends React.Component<Props> {
                     人気のステージ
                   </Typography>
                 }
+                more={false}
                 moreLink="/lists/trending"
                 className={classes.workList}
+                showVisibility={false}
               />
             </Grid>
 

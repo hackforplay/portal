@@ -50,6 +50,7 @@ export default class FeatureLists extends React.Component<Props> {
             }
             more={more === 'trending'}
             moreLink="/lists/trending"
+            showVisibility={false}
           />
         </Grid>
         <Grid item xs={12}>
@@ -63,6 +64,7 @@ export default class FeatureLists extends React.Component<Props> {
             }
             more={more === 'recommended'}
             moreLink="/lists/recommended"
+            showVisibility={false}
           />
         </Grid>
       </Grid>

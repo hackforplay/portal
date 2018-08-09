@@ -21,7 +21,13 @@ export default (props: Props) => {
 
   return (
     <div className={classes.root}>
-      <WorkList works={result} title="検索結果" more moreLink="" />
+      <WorkList
+        works={result}
+        title="検索結果"
+        more
+        moreLink=""
+        showVisibility={false}
+      />
     </div>
   );
 };

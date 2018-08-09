@@ -29,6 +29,7 @@ export default class Pickup extends React.Component<Props> {
           title="ピックアップステージ"
           more
           moreLink=""
+          showVisibility={false}
         />
       </div>
     );
