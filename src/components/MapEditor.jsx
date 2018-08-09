@@ -2,9 +2,17 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import { css } from 'emotion';
-
+import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
+import Button from 'material-ui/Button';
+import Typography from 'material-ui/Typography';
+import Dialog from 'material-ui/Dialog/Dialog';
+import DialogActions from 'material-ui/Dialog/DialogActions';
+import DialogTitle from 'material-ui/Dialog/DialogTitle';
+import DialogContent from 'material-ui/Dialog/DialogContent';
+import DialogContentText from 'material-ui/Dialog/DialogContentText';
 import type ReactMapEditorType from 'react-map-editor';
+import { css } from 'emotion';
 
 const classes = {
   root: css({
@@ -15,23 +23,30 @@ const classes = {
     '@media (min-width:600px)': {
       height: 'calc(100vh - 64px)'
     }
+  }),
+  flex: css({
+    flexGrow: 1
   })
 };
 
-export type OwnProps = {};
 
 type State = {
   ReactMapEditor: ReactMapEditorType | null,
-  tileset: any[]
+  tileset: any[],
+  open: boolean,
+  code: string
 };
 
+export type OwnProps = {};
 type Props = OwnProps & { ...ContextRouter };
 
 @withRouter
 class MapEditor extends React.Component<Props, State> {
   state = {
     ReactMapEditor: null,
-    tileset: []
+    tileset: [],
+    open: false,
+    code: ''
   };
 
   componentDidMount() {
@@ -52,6 +67,27 @@ class MapEditor extends React.Component<Props, State> {
     });
   }
 
+  showCode = () => {
+    let code;
+    try {
+      code = `
+await Hack.parseMapJson(
+  'map1',
+  \`${JSON.stringify(window.root.export().map)}\`
+);`.trim();
+    } catch (e) {
+      code = `申し訳ございません。コードの生成に失敗しました😭 ${e.name}: ${
+        e.message
+      }`;
+      console.error(e);
+    }
+    this.setState({ open: true, code });
+  };
+
+  closeCode = () => {
+    this.setState({ open: false });
+  };
+
   render() {
     const { ReactMapEditor, tileset } = this.state;
 
@@ -61,10 +97,24 @@ class MapEditor extends React.Component<Props, State> {
 
     return (
       <div className={classes.root}>
+        <AppBar position="static" color="default" elevation={0}>
+          <Toolbar>
+            <Typography variant="title" color="inherit">
+              マップエディタ（β版）
+            </Typography>
+            <div className={classes.flex} />
+            <Button onClick={this.showCode}>ステージに移す</Button>
+          </Toolbar>
+        </AppBar>
         <ReactMapEditor
           ref={ref => (window.root = ref)}
           tileset={tileset}
           map={defaultMap()}
+        />
+        <CodeDialog
+          open={this.state.open}
+          code={this.state.code}
+          requestClose={this.closeCode}
         />
       </div>
     );
@@ -101,4 +151,70 @@ function defaultMap() {
       }
     ]
   };
+}
+
+type CodeDialogProps = {
+  open: boolean,
+  code: string,
+  requestClose: () => void,
+  requestCopy: () => void,
+  classes?: {
+    code: string
+  }
+};
+
+@withStyles({
+  code: {
+    height: '5rem',
+    width: '100%',
+    fontFamily: `Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace`,
+    overflow: 'scroll',
+    backgroundColor: 'lightgrey',
+    padding: 20,
+    borderRadius: 2
+  }
+})
+export class CodeDialog extends React.Component<CodeDialogProps> {
+  copyCode = () => {
+    if (this.textarea) {
+      this.textarea.select();
+      document.execCommand('copy');
+      alert('コピーされました！');
+    }
+  };
+
+  textarea: HTMLTextAreaElement | null = null;
+
+  render() {
+    const { classes } = this.props;
+
+    return (
+      <Dialog open={this.props.open} onClose={this.props.requestClose}>
+        <DialogTitle id="alert-dialog-title">
+          {'マップをコードに変換しました'}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            このコードをコピーして、「Hack.changeMap('map1');」のすぐ上に書き足して下さい
+          </DialogContentText>
+          <textarea
+            className={classes && classes.code}
+            readOnly
+            ref={ref => (this.textarea = ref)}
+            wrap="off"
+          >
+            {this.props.code}
+          </textarea>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.copyCode} color="primary">
+            コピー
+          </Button>
+          <Button onClick={this.props.requestClose} color="primary" autoFocus>
+            閉じる
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
 }
