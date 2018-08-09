@@ -201,7 +201,7 @@ export const metadata: metadataType = payload => ({
   payload
 });
 
-type thumbnailType = (thumbnail: string) => Action;
+export type thumbnailType = (thumbnail: string) => Action;
 
 export const thumbnail: thumbnailType = payload => ({
   type: THUMBNAIL,
