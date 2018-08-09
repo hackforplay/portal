@@ -1,12 +1,26 @@
 // @flow
 import * as React from 'react';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter, type ContextRouter } from 'react-router-dom';
 
 import type { StoreState } from '../ducks';
-import { fetchUserIfNeeded, getUserByUid } from '../ducks/user';
-import WrappedProfile from '../components/Profile';
+import {
+  fetchUserIfNeeded,
+  getUserByUid,
+  editAuthUser,
+  cancelAuthUserEditing,
+  confirmAuthUserEditing
+} from '../ducks/user';
+import { uploadBlob } from '../ducks/storage';
+import Profile, { type OwnProps, type Props } from '../components/Profile';
+import type { StateProps, DispatchProps } from './ProfileEdit';
+import * as helpers from '../ducks/helpers';
 
-const mapStateToProps = (state: StoreState, ownProps) => {
+const mapStateToProps = (
+  state: StoreState,
+  ownProps: OwnProps & { ...ContextRouter }
+): StateProps => {
   // /users/:id の :id にあたる文字列
   const { id } = ownProps.match.params;
   // 自分かどうか
@@ -14,25 +28,31 @@ const mapStateToProps = (state: StoreState, ownProps) => {
 
   return {
     owner,
-    user: getUserByUid(state, id)
+    user: id ? getUserByUid(state, id) : helpers.empty()
   };
 };
 
-const mapDispatchToProps = {
-  fetchUserIfNeeded
+const mapDispatchToProps: DispatchProps = {
+  fetchUserIfNeeded,
+  editAuthUser,
+  cancelAuthUserEditing,
+  confirmAuthUserEditing,
+  uploadBlob
 };
 
-@connect(mapStateToProps, mapDispatchToProps)
-class Profile extends React.Component<*> {
-  componentDidMount() {
-    // /users/:id の :id にあたる文字列
-    const { id } = this.props.match.params;
-    this.props.fetchUserIfNeeded(id);
-  }
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(
+  class extends React.Component<Props> {
+    componentDidMount() {
+      // /users/:id の :id にあたる文字列
+      const { id } = this.props.match.params;
+      this.props.fetchUserIfNeeded(id);
+    }
 
-  render() {
-    return <WrappedProfile {...this.props} />;
+    render() {
+      return <Profile {...this.props} />;
+    }
   }
-}
-
-export default Profile;
+);
