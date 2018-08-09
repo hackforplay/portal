@@ -2,10 +2,18 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import WrappedPCRanking from '../components/PCRanking';
-import { fetchRecordsByStage, getRecordsByStage } from '../ducks/pcRanking';
+import WrappedPCRanking, { type Props } from '../components/PCRanking';
+import {
+  fetchRecordsByStage,
+  getRecordsByStage,
+  type RecordCollectionType
+} from '../ducks/pcRanking';
 
-const mapStateToProps = (state, ownProps) => {
+export type StateProps = {
+  records: RecordCollectionType
+};
+
+const mapStateToProps = (state, ownProps): StateProps => {
   const { stage } = ownProps.match.params;
 
   return {
@@ -17,8 +25,10 @@ const mapDispatchToProps = {
   fetchRecordsByStage
 };
 
+export type DispatchProps = { ...typeof mapDispatchToProps };
+
 @connect(mapStateToProps, mapDispatchToProps)
-export default class PCRanking extends React.Component<any> {
+export default class PCRanking extends React.Component<Props> {
   componentDidMount() {
     const { stage } = this.props.match.params;
     this.props.fetchRecordsByStage(stage);
