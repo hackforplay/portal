@@ -83,7 +83,7 @@ const mapDispatchToProps = {
   removeWork
 };
 
-export type DispatchProps = typeof mapDispatchToProps;
+export type DispatchProps = { ...typeof mapDispatchToProps };
 
 type Props = StateProps & DispatchProps & { ...ContextRouter };
 
@@ -104,7 +104,7 @@ export default compose(
       }
     }
 
-    componentWillReceiveProps(nextProps: Props) {
+    componentWillReceiveProps(nextProps) {
       if (this.props.replay !== nextProps.replay && nextProps.replay) {
         this.props.editExistingWork(nextProps.work);
       }

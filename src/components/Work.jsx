@@ -55,7 +55,7 @@ const classes = {
 };
 
 @withRouter
-class Work extends React.Component<Props, State> {
+export default class Work extends React.Component<Props, State> {
   static defaultProps = {
     replay: false,
     isPreparing: false,
@@ -303,5 +303,3 @@ class Work extends React.Component<Props, State> {
     );
   }
 }
-
-export default Work;
