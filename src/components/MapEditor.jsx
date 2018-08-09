@@ -26,9 +26,17 @@ const classes = {
   }),
   flex: css({
     flexGrow: 1
+  }),
+  code: css({
+    height: '5rem',
+    width: '100%',
+    fontFamily: `Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace`,
+    overflow: 'scroll',
+    backgroundColor: 'lightgrey',
+    padding: 20,
+    borderRadius: 2
   })
 };
-
 
 type State = {
   ReactMapEditor: ReactMapEditorType | null,
@@ -156,24 +164,9 @@ function defaultMap() {
 type CodeDialogProps = {
   open: boolean,
   code: string,
-  requestClose: () => void,
-  requestCopy: () => void,
-  classes?: {
-    code: string
-  }
+  requestClose: () => void
 };
 
-@withStyles({
-  code: {
-    height: '5rem',
-    width: '100%',
-    fontFamily: `Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace`,
-    overflow: 'scroll',
-    backgroundColor: 'lightgrey',
-    padding: 20,
-    borderRadius: 2
-  }
-})
 export class CodeDialog extends React.Component<CodeDialogProps> {
   copyCode = () => {
     if (this.textarea) {
@@ -186,8 +179,6 @@ export class CodeDialog extends React.Component<CodeDialogProps> {
   textarea: HTMLTextAreaElement | null = null;
 
   render() {
-    const { classes } = this.props;
-
     return (
       <Dialog open={this.props.open} onClose={this.props.requestClose}>
         <DialogTitle id="alert-dialog-title">
