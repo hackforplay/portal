@@ -1,32 +1,37 @@
 // @flow
 import * as React from 'react';
-import classNames from 'classnames';
 import Dialog from 'material-ui/Dialog/Dialog';
 import { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
-import GridList from 'material-ui/GridList/GridList';
-import { GridListTile } from 'material-ui/GridList';
 import Button from 'material-ui/Button';
-import { css } from 'emotion';
+import { css, cx } from 'emotion';
 
 import theme from '../settings/theme';
 import type { StateProps, DispatchProps } from '../containers/ThumbnailDialog';
+import * as WorkList from './WorkList';
 
 const classes = {
+  root: css({
+    backgroundColor: 'red',
+    maxWidth: '100vw'
+  }),
   content: css({
-    maxWidth: 600
+    maxWidth: '80vw'
   }),
-  gridList: css({
-    margin: 0
+  wrapper: css({
+    display: 'flex',
+    flexWrap: 'wrap'
   }),
-  gridItem: css({
-    maxWidth: 184,
-    minWidth: 184,
-    marginBottom: 2 // border が見えるように
-  }),
-  selectedTile: css({
-    borderColor: theme.palette.primary[500],
+  border: css({
+    margin: 2,
     borderStyle: 'solid',
-    borderWidth: 2
+    borderWidth: 2,
+    borderColor: 'transparent',
+    '&.selected': {
+      borderColor: theme.palette.primary[500]
+    }
+  }),
+  item: css({
+    height: 160
   })
 };
 
@@ -63,63 +68,54 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
   render() {
     const { make, open, src, onClose } = this.props;
 
-    const tiles = make.thumbnails.map((src, i) => (
-      <GridListTile
-        key={src}
-        cols={1}
-        classes={{
-          root: classes.gridItem,
-          tile: classNames({
-            [classes.selectedTile]: this.state.selectedIndex === i
-          })
-        }}
-        onClick={() => {
-          this.setState({
-            selectedIndex: i
-          });
-        }}
-      >
-        <img src={src} alt={src.substr(0, 10)} />
-      </GridListTile>
-    ));
-
-    if (src) {
-      tiles.unshift(
-        <GridListTile
-          key={src}
-          cols={1}
-          classes={{
-            root: classes.gridItem,
-            tile: classNames({
-              [classes.selectedTile]: this.state.selectedIndex === null
-            })
-          }}
-          onClick={() => {
-            this.setState({
-              selectedIndex: null
-            });
-          }}
-        >
-          <img src={src} alt="Current" />
-        </GridListTile>
-      );
-    }
-
-    // タイルの数が少なければ column も減らす
-    const cols = Math.min(3, tiles.length);
-
     return (
-      <Dialog open={open} onClose={onClose}>
+      <Dialog open={open} onClose={onClose} maxWidth="md">
         <DialogTitle>カバー画像をセットしよう</DialogTitle>
         <DialogContent className={classes.content}>
-          <GridList cols={cols} className={classes.gridList}>
-            {tiles}
-          </GridList>
+          {src ? (
+            // 現在のサムネイル
+            <div
+              className={cx(
+                classes.border,
+                this.state.selectedIndex === null && 'selected'
+              )}
+              onClick={() => {
+                this.setState({
+                  selectedIndex: null
+                });
+              }}
+            >
+              <div className={cx(WorkList.classes.thumbnail, classes.item)}>
+                <img src={src} alt="今のサムネイル" />
+              </div>
+            </div>
+          ) : null}
+          <div className={classes.wrapper}>
+            {make.thumbnails.map((src, i) => (
+              <div
+                key={i}
+                className={cx(
+                  classes.border,
+                  this.state.selectedIndex === i && 'selected'
+                )}
+                onClick={() => {
+                  this.setState({
+                    selectedIndex: i
+                  });
+                }}
+              >
+                <div className={cx(WorkList.classes.thumbnail, classes.item)}>
+                  <img src={src} alt="サムネイル" />
+                </div>
+              </div>
+            ))}
+          </div>
         </DialogContent>
         <DialogActions>
           <Button
             raised
             color="primary"
+            size="large"
             disabled={this.state.selectedIndex === null}
             onClick={this.handleSetThumbnail}
           >

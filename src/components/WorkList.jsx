@@ -16,7 +16,7 @@ import { CircularProgress } from 'material-ui/Progress';
 import Collapse from 'material-ui/transitions/Collapse';
 import { grey } from 'material-ui/colors';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
-import { css } from 'emotion';
+import { css, cx } from 'emotion';
 
 import { type StateProps } from '../containers/WorkList';
 import CardMedia from '../containers/CardMedia';
@@ -24,25 +24,26 @@ import theme from '../settings/theme';
 import noImage from '../resources/no-image.png';
 import type { WorkCollectionType } from '../ducks/work';
 
-const classes = {
+export const classes = {
   root: css({
     padding: theme.spacing.unit * 6
   }),
   card: css({
-    minWidth: 240,
-    maxWidth: 240,
     cursor: 'pointer',
     textAlign: 'left'
   }),
+  thumbnail: css({
+    width: 240,
+    '&>img': {
+      minHeight: 160,
+      maxHeight: 160,
+      objectFit: 'cover',
+      // https://github.com/bfred-it/object-fit-images/
+      fontFamily: "'object-fit: contain;'"
+    }
+  }),
   card_private: css({
     filter: `brightness(90%)`
-  }),
-  media: css({
-    minHeight: 160,
-    maxHeight: 160,
-    objectFit: 'cover',
-    // https://github.com/bfred-it/object-fit-images/
-    fontFamily: "'object-fit: contain;'"
   }),
   headline: css({
     marginBottom: theme.spacing.unit * 4
@@ -147,13 +148,14 @@ export default class WorkList extends React.Component<Props> {
                 <Grid item key={item.path}>
                   <Card
                     elevation={0}
-                    className={classNames(classes.card, {
-                      [classes.card_private]: item.visibility === 'private'
-                    })}
+                    className={cx(
+                      classes.card,
+                      classes.thumbnail,
+                      item.visibility === 'private' && classes.card_private
+                    )}
                     onClick={this.link(item.path)}
                   >
                     <CardMedia
-                      className={classes.media}
                       component="img"
                       src={item.image || noImage}
                       title={item.title}
