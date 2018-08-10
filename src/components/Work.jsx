@@ -122,6 +122,19 @@ export default class Work extends React.Component<Props, State> {
     }
   };
 
+  handleShareTwitter = () => {
+    const text = `ステージを作りました！ ${window.location.href} #hackforplay`;
+    const width = 550;
+    const height = 420;
+    const left = Math.max(Math.round(window.screen.width / 2 - width / 2), 0);
+    const top = Math.max(Math.round(window.screen.height / 2 - height / 2), 0);
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`,
+      'intent',
+      `scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=${width},height=${height},left=${left},top=${top}`
+    );
+  };
+
   // Feeles で実行している iframe から message を受け取った
   handleMessage: OnMessage = event => {
     const { data: { value: { labelName, labelValue, href } } } = event;
@@ -259,6 +272,11 @@ export default class Work extends React.Component<Props, State> {
                 >
                   カバー画像をセットする
                 </MenuItem>
+                {makeWorkData && makeWorkData.visibility === 'public' ? (
+                  <MenuItem onClick={this.handleShareTwitter}>
+                    Twitter でシェア
+                  </MenuItem>
+                ) : null}
                 {makeWorkData && makeWorkData.visibility !== 'private' ? (
                   <MenuItem
                     disabled={!canPublish}
