@@ -36,7 +36,10 @@ type Props = (OwnProps & StateProps & { ...typeof mapDispatchToProps }) | any;
 export default function withFirebaseStorage<T>(
   WrappedComponent: React.ComponentType<T>
 ) {
-  @connect(mapStateToProps, mapDispatchToProps)
+  @connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
   class Component extends React.Component<T & Props> {
     componentDidMount() {
       if (this.props.storagePath) {
@@ -55,6 +58,7 @@ export default function withFirebaseStorage<T>(
 
     render() {
       // 余分な props を削除する
+      // eslint-disable-next-line
       const { storagePath, downloadUrl, src, ...props } = this.props;
       if (src) {
         // イメージ
