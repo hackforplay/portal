@@ -32,6 +32,11 @@ const classes = {
   }),
   item: css({
     height: 160
+  }),
+  largeButton: css({
+    fontSize: '1.6rem',
+    paddingLeft: 26,
+    paddingRight: 26
   })
 };
 
@@ -115,9 +120,9 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
           <Button
             raised
             color="primary"
-            size="large"
             disabled={this.state.selectedIndex === null}
             onClick={this.handleSetThumbnail}
+            className={classes.largeButton}
           >
             OK
           </Button>
