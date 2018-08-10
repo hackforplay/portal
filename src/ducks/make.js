@@ -139,7 +139,7 @@ export default (state: State = initialState, action: Action): State => {
     case THUMBNAIL:
       return {
         ...state,
-        thumbnails: [...state.thumbnails, action.payload]
+        thumbnails: [...state.thumbnails.slice(0, 11), action.payload]
       };
     case TRASH:
       return {
