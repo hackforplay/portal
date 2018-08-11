@@ -8,6 +8,7 @@ import * as auth from './auth';
 import type { Statefull } from './helpers';
 import type { UserType } from './user';
 import type { Dispatch, GetStore } from './type';
+import * as storageAction from './storage';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'work';
@@ -868,6 +869,31 @@ export const addWorkViewLabel: addWorkViewLabelType = (
       updatedAt: new Date()
     });
   dispatch(view(currentView.id, path, { [name]: value }));
+};
+
+export type RemoveWork = (
+  payload: WorkData
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<*>;
+
+export const removeWork: RemoveWork = payload => async (dispatch, getState) => {
+  try {
+    // ストレージからデータを削除
+    if (payload.assetStoragePath) {
+      await dispatch(storageAction.removeFile(payload.assetStoragePath));
+    }
+    if (payload.thumbnailStoragePath) {
+      await dispatch(storageAction.removeFile(payload.thumbnailStoragePath));
+    }
+    // DB から削除
+    await firebase
+      .firestore()
+      .doc(payload.path)
+      .delete();
+    // その work を空とみなす
+    dispatch(empty(payload.path));
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export function getWorksByUserId(
