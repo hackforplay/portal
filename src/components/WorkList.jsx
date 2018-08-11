@@ -13,16 +13,19 @@ import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import IconButton from 'material-ui/IconButton';
 import { CircularProgress } from 'material-ui/Progress';
+import Menu from 'material-ui/Menu/Menu';
+import { MenuItem } from 'material-ui/Menu';
 import Collapse from 'material-ui/transitions/Collapse';
 import { grey } from 'material-ui/colors';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import { css, cx } from 'emotion';
 
-import { type StateProps } from '../containers/WorkList';
+import { type StateProps, type DispatchProps } from '../containers/WorkList';
 import CardMedia from '../containers/CardMedia';
 import theme from '../settings/theme';
 import noImage from '../resources/no-image.png';
-import type { WorkCollectionType } from '../ducks/work';
+import { type WorkCollectionType, type WorkData } from '../ducks/work';
+import { removeMessage } from './Work';
 
 export const classes = {
   root: css({
@@ -104,12 +107,22 @@ export type OwnProps = {
   className?: string
 };
 
-export type State = {};
+export type State = {
+  anchor: HTMLElement | null,
+  item: WorkData | null
+};
 
-export type Props = OwnProps & StateProps & { ...ContextRouter };
+export type Props = OwnProps &
+  StateProps &
+  DispatchProps & { ...ContextRouter };
 
 @withRouter
-export default class WorkList extends React.Component<Props> {
+export default class WorkList extends React.Component<Props, State> {
+  state = {
+    anchor: null,
+    item: null
+  };
+
   link(to: string) {
     const { history } = this.props;
     return (event: SyntheticMouseEvent<HTMLButtonElement>) => {
@@ -129,8 +142,38 @@ export default class WorkList extends React.Component<Props> {
       .fromNow();
   }
 
+  handleOpen = (item: WorkData) => (event: SyntheticEvent<HTMLElement>) => {
+    event.stopPropagation(); // 遷移しないように
+    this.setState({
+      anchor: event.currentTarget,
+      item
+    });
+  };
+
+  handleClose = () => {
+    this.setState({
+      anchor: null,
+      item: null
+    });
+  };
+
+  handleRemove = () => {
+    if (!window.confirm(removeMessage)) return;
+    const { item } = this.state;
+    this.handleClose();
+    this.props.removeWork(item);
+  };
+
   render() {
-    const { works, title, more, moreLink, showVisibility } = this.props;
+    const {
+      works,
+      title,
+      more,
+      moreLink,
+      showVisibility,
+      authUser
+    } = this.props;
+    const { anchor } = this.state;
 
     return (
       <Paper className={classNames(classes.root, this.props.className)}>
@@ -163,9 +206,11 @@ export default class WorkList extends React.Component<Props> {
                     />
                     <CardHeader
                       action={
-                        <IconButton onClick={e => e.stopPropagation()}>
-                          <MoreVertIcon />
-                        </IconButton>
+                        authUser && authUser.uid === item.uid ? (
+                          <IconButton onClick={this.handleOpen(item)}>
+                            <MoreVertIcon />
+                          </IconButton>
+                        ) : null
                       }
                       title={
                         <Typography
@@ -257,6 +302,13 @@ export default class WorkList extends React.Component<Props> {
             </Button>
           </div>
         )}
+        <Menu
+          anchorEl={anchor}
+          open={Boolean(anchor)}
+          onClose={this.handleClose}
+        >
+          <MenuItem onClick={this.handleRemove}>削除する</MenuItem>
+        </Menu>
       </Paper>
     );
   }

@@ -19,6 +19,8 @@ import ThumbnailDialog from '../containers/ThumbnailDialog';
 import type { StateProps, DispatchProps } from '../containers/Work';
 import type { OnMessage } from '../components/Feeles';
 
+export const removeMessage = `削除すると、二度と復元はできません。本当に削除しますか？`;
+
 export type Props = StateProps & DispatchProps & { ...ContextRouter };
 
 export type State = {
@@ -115,8 +117,7 @@ export default class Work extends React.Component<Props, State> {
   };
 
   handleRemove = () => {
-    const message = `削除すると、二度と復元はできません。本当に削除しますか？`;
-    if (window.confirm(message)) {
+    if (window.confirm(removeMessage)) {
       this.props.removeWork();
       this.handleClose();
     }
