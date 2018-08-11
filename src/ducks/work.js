@@ -879,10 +879,10 @@ export const removeWork: RemoveWork = payload => async (dispatch, getState) => {
   try {
     // ストレージからデータを削除
     if (payload.assetStoragePath) {
-      await dispatch(storageAction.removeFile(payload.assetStoragePath));
+      dispatch(storageAction.removeFile(payload.assetStoragePath));
     }
     if (payload.thumbnailStoragePath) {
-      await dispatch(storageAction.removeFile(payload.thumbnailStoragePath));
+      dispatch(storageAction.removeFile(payload.thumbnailStoragePath));
     }
     // DB から削除
     await firebase
