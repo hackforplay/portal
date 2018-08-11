@@ -19,7 +19,7 @@ const EMPTY = 'portal/work/EMPTY';
 const INVALID = 'portal/work/INVALID';
 const VIEW = 'portal/work/VIEW';
 
-// Heroku にあるデータ
+// Heroku にもあるデータ（両方にアクセス）
 const LOAD_LIST = 'portal/work/LOAD_LIST';
 const SET_LIST = 'portal/work/SET_LIST';
 const INVALID_LIST = 'portal/work/INVALID_LIST';
@@ -589,13 +589,10 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
       .firestore()
       .collection('works')
       .where('uid', '==', uid)
-      .orderBy('createdAt', 'desc');
-    // 自分かどうか
-    const authUser = auth.getState(getStore()).user;
-    if (!authUser || authUser.uid !== userData.uid) {
-      // 自分ではない
-      query = query.where('visibility', '==', 'public');
-    }
+      .where('visibility', '==', 'public')
+      .orderBy('createdAt', 'desc')
+      .limit(12); // TODO: もっと遡れるようにパラメータ化
+
     const querySnapshot: $npm$firebase$firestore$QuerySnapshot = await query.get();
     for (const snapshot of querySnapshot.docs) {
       works.push(getWorkData(snapshot));
@@ -609,6 +606,61 @@ export const fetchWorksByUser: fetchWorksByUserType = user => async (
     works.push(...results.map(migrate));
     // マージしてセット
     dispatch(setUsers(uid, works));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export type StartObserveOwnWorks = () => (
+  dispatch: Dispatch,
+  getStore: GetStore
+) => Promise<void>;
+
+export const startObserveOwnWorks: StartObserveOwnWorks = () => async (
+  dispatch,
+  getStore
+) => {
+  const authUser = auth.getState(getStore()).user;
+  if (!authUser) {
+    // ログインしていない
+    return;
+  }
+  const { uid, email } = authUser;
+
+  // 今の状態
+  const works = getWorksByUserId(getStore(), uid);
+  if (!helpers.isFetchNeeded(works)) return; // TODO: isObserved プロパティを追加してチェックする
+
+  // リクエスト (Heroku)
+  let herokuWorks: WorkData;
+  if (email) {
+    dispatch(loadUsers(uid));
+    try {
+      // Heroku から取得
+      const response = await fetch(
+        `${endpoint}/productsByEmail?email=${encodeURIComponent(email)}`
+      );
+      const json = await response.text();
+      const results = JSON.parse(json);
+      herokuWorks = results.map(migrate);
+      dispatch(setUsers(uid, herokuWorks));
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // リクエスト (Firestore)
+  try {
+    firebase
+      .firestore()
+      .collection('works')
+      .where('uid', '==', uid)
+      .orderBy('createdAt', 'desc')
+      .limit(50) // TODO: もっと遡れるように, パラメータ化
+      .onSnapshot(querySnapshot => {
+        const works = querySnapshot.docs.map(getWorkData);
+        dispatch(setUsers(uid, works.concat(herokuWorks)));
+      });
   } catch (error) {
     console.error(error);
   }
