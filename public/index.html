@@ -12,11 +12,6 @@
 
         gtag('config', '<%= process.env.REACT_APP_GA_TRACKING_ID %>');
       </script>
-      <!-- Slaask widget -->
-      <script src='https://cdn.slaask.com/chat.js'></script>
-      <script>
-        _slaask.init('93cda018cfef4817b1b6a94694c246db');
-      </script>
       <!-- Begin SessionStack code -->
       <script>
         (function (a, b) {
@@ -80,6 +75,18 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <!-- Slaask widget -->
+    <script>
+      !function () {
+        var x = document.createElement("script"); x.src = "https://cdn.slaask.com/chat.js", x.type = "text/javascript", x.async = "true", x.onload = x.onreadystatechange = function () {
+          var x = this.readyState; if (!x || "complete" == x || "loaded" == x) try {
+
+            _slaask.init('93cda018cfef4817b1b6a94694c246db');
+
+          } catch (x) { }
+        }; var t = document.getElementsByTagName("script")[0]; t.parentNode.insertBefore(x, t)
+      }();
+    </script>
   </body>
 
 </html>
