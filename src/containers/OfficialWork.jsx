@@ -24,7 +24,8 @@ import {
 import type { StoreState } from '../ducks';
 
 export type StateProps = WorkStateProps & {
-  renderNull: boolean
+  renderNull: boolean,
+  slaask: boolean
 };
 
 const mapStateToProps = (
@@ -54,7 +55,9 @@ const mapStateToProps = (
       makeWorkData && makeWorkData.id ? `/works/${makeWorkData.id}` : '',
     // URL が間違っているとき null を render する
     // replay かどうかを確かめるために onAuthStateChanged を待つ
-    renderNull: !state.auth.initialized
+    renderNull: !state.auth.initialized,
+    // slaask widget を表示するかどうかを決めるフラグ
+    slaask: source.slaask
   };
 };
 
@@ -79,6 +82,13 @@ export default class OfficialWork extends React.Component<Props> {
       // 現在のパスからデータを取得する
       const { pathname } = this.props.location;
       this.props.fetchWork(pathname);
+    }
+    // Slaask の非表示
+    if (this.props.slaask === false) {
+      const _slaask = (window._slaask: any);
+      if (_slaask) {
+        _slaask.close();
+      }
     }
   }
 
