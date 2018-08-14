@@ -83,17 +83,25 @@ export default class OfficialWork extends React.Component<Props> {
       const { pathname } = this.props.location;
       this.props.fetchWork(pathname);
     }
-    // Slaask の非表示
-    if (this.props.slaask === false) {
-      const _slaask = (window._slaask: any);
-      if (_slaask) {
-        _slaask.close();
-      }
+  }
+
+  toggleSlaask(showing: boolean) {
+    const slaaskButton = document.querySelector('#slaask-button');
+    if (slaaskButton) {
+      slaaskButton.style.display = showing ? 'block' : 'none';
+    }
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.props.slaask !== nextProps.slaask) {
+      // Slaask の表示・非表示
+      this.toggleSlaask(nextProps.slaask);
     }
   }
 
   componentWillUnmount() {
     this.props.trashWork();
+    this.toggleSlaask(true);
   }
 
   render() {
