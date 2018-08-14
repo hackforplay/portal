@@ -10,7 +10,7 @@ import type { StateProps, DispatchProps } from '../containers/ThumbnailDialog';
 import * as WorkList from './WorkList';
 import * as xlasses from '../utils/xlasses';
 
-export const classes = {
+const classes = {
   root: css({
     backgroundColor: 'red',
     maxWidth: '100vw'
