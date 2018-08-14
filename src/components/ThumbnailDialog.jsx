@@ -8,8 +8,9 @@ import { css, cx } from 'emotion';
 import theme from '../settings/theme';
 import type { StateProps, DispatchProps } from '../containers/ThumbnailDialog';
 import * as WorkList from './WorkList';
+import * as xlasses from '../utils/xlasses';
 
-const classes = {
+export const classes = {
   root: css({
     backgroundColor: 'red',
     maxWidth: '100vw'
@@ -32,11 +33,6 @@ const classes = {
   }),
   item: css({
     height: 160
-  }),
-  largeButton: css({
-    fontSize: '1.6rem',
-    paddingLeft: 26,
-    paddingRight: 26
   })
 };
 
@@ -122,7 +118,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
             color="primary"
             disabled={this.state.selectedIndex === null}
             onClick={this.handleSetThumbnail}
-            className={classes.largeButton}
+            className={xlasses.largeButton}
           >
             OK
           </Button>
