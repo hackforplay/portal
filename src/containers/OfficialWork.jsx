@@ -83,6 +83,7 @@ export default class OfficialWork extends React.Component<Props> {
       const { pathname } = this.props.location;
       this.props.fetchWork(pathname);
     }
+    this.toggleSlaask(this.props.slaask);
   }
 
   toggleSlaask(showing: boolean) {
