@@ -73,25 +73,25 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
       <Dialog open={open} onClose={onClose} maxWidth="md">
         <DialogTitle>カバー画像をセットしよう</DialogTitle>
         <DialogContent className={classes.content}>
-          {src ? (
-            // 現在のサムネイル
-            <div
-              className={cx(
-                classes.border,
-                this.state.selectedIndex === null && 'selected'
-              )}
-              onClick={() => {
-                this.setState({
-                  selectedIndex: null
-                });
-              }}
-            >
-              <div className={cx(WorkList.classes.thumbnail, classes.item)}>
-                <img src={src} alt="今のサムネイル" />
-              </div>
-            </div>
-          ) : null}
           <div className={classes.wrapper}>
+            {src ? (
+              // 現在のサムネイル
+              <div
+                className={cx(
+                  classes.border,
+                  this.state.selectedIndex === null && 'selected'
+                )}
+                onClick={() => {
+                  this.setState({
+                    selectedIndex: null
+                  });
+                }}
+              >
+                <div className={cx(WorkList.classes.thumbnail, classes.item)}>
+                  <img src={src} alt="今のサムネイル" />
+                </div>
+              </div>
+            ) : null}
             {make.thumbnails.map((src, i) => (
               <div
                 key={i}
