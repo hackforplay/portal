@@ -24,7 +24,8 @@ import {
 import type { StoreState } from '../ducks';
 
 export type StateProps = WorkStateProps & {
-  renderNull: boolean
+  renderNull: boolean,
+  slaask: boolean
 };
 
 const mapStateToProps = (
@@ -54,7 +55,9 @@ const mapStateToProps = (
       makeWorkData && makeWorkData.id ? `/works/${makeWorkData.id}` : '',
     // URL が間違っているとき null を render する
     // replay かどうかを確かめるために onAuthStateChanged を待つ
-    renderNull: !state.auth.initialized
+    renderNull: !state.auth.initialized,
+    // slaask widget を表示するかどうかを決めるフラグ
+    slaask: source.slaask
   };
 };
 
@@ -80,10 +83,26 @@ export default class OfficialWork extends React.Component<Props> {
       const { pathname } = this.props.location;
       this.props.fetchWork(pathname);
     }
+    this.toggleSlaask(this.props.slaask);
+  }
+
+  toggleSlaask(showing: boolean) {
+    const slaaskButton = document.querySelector('#slaask-button');
+    if (slaaskButton) {
+      slaaskButton.style.display = showing ? 'block' : 'none';
+    }
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.props.slaask !== nextProps.slaask) {
+      // Slaask の表示・非表示
+      this.toggleSlaask(nextProps.slaask);
+    }
   }
 
   componentWillUnmount() {
     this.props.trashWork();
+    this.toggleSlaask(true);
   }
 
   render() {

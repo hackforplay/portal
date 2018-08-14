@@ -17,12 +17,14 @@ const isEarlybird =
 type OfficialWorkType = {|
   pathname: string,
   replayable: boolean,
+  slaask: boolean,
   work: WorkItemType
 |};
 
 type OfficialWorkDocumentType = {|
   pathname: string,
   replayable: boolean,
+  slaask: boolean,
   workJsonUrl: string,
   earlybirdWorkJsonUrl: string
 |};
@@ -32,6 +34,7 @@ const makeItem = (
 ): OfficialWorkType => ({
   pathname: documentData.pathname,
   replayable: documentData.replayable,
+  slaask: documentData.slaask,
   work: helpers.has({
     id: '', // Document ID
     path: '', // Page path
@@ -95,6 +98,7 @@ export default (state: State = initialState, action: Action): State => {
           [action.pathname]: {
             pathname: action.pathname,
             replayable: false,
+            slaask: false,
             work: helpers.processing()
           }
         }
@@ -115,6 +119,7 @@ export default (state: State = initialState, action: Action): State => {
           [action.pathname]: {
             pathname: action.pathname,
             replayable: false,
+            slaask: false,
             work: helpers.empty()
           }
         }
@@ -127,6 +132,7 @@ export default (state: State = initialState, action: Action): State => {
           [action.pathname]: {
             pathname: action.pathname,
             replayable: false,
+            slaask: false,
             work: helpers.invalid(action.error)
           }
         }
@@ -197,6 +203,7 @@ export function get(
     state.byPathname[pathname] || {
       pathname,
       replayable: false,
+      slaask: false,
       work: helpers.initialized()
     }
   );
