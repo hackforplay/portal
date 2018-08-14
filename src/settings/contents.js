@@ -148,12 +148,6 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
             children: 'ステージをつくる',
             component: Link,
             to: '/officials/make-rpg'
-          },
-          {
-            raised: true,
-            children: 'ドキュメント',
-            href: 'https://github.com/Feeles/RPG/wiki',
-            target: '_blank'
           }
         ]
       },

@@ -119,8 +119,8 @@ export default class Work extends React.Component<Props, State> {
   handleRemove = () => {
     if (window.confirm(removeMessage)) {
       this.props.removeWork();
-      this.handleClose();
     }
+    this.handleClose();
   };
 
   handleShareTwitter = () => {

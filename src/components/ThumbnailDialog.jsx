@@ -8,6 +8,7 @@ import { css, cx } from 'emotion';
 import theme from '../settings/theme';
 import type { StateProps, DispatchProps } from '../containers/ThumbnailDialog';
 import * as WorkList from './WorkList';
+import * as xlasses from '../utils/xlasses';
 
 const classes = {
   root: css({
@@ -32,11 +33,6 @@ const classes = {
   }),
   item: css({
     height: 160
-  }),
-  largeButton: css({
-    fontSize: '1.6rem',
-    paddingLeft: 26,
-    paddingRight: 26
   })
 };
 
@@ -77,25 +73,25 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
       <Dialog open={open} onClose={onClose} maxWidth="md">
         <DialogTitle>カバー画像をセットしよう</DialogTitle>
         <DialogContent className={classes.content}>
-          {src ? (
-            // 現在のサムネイル
-            <div
-              className={cx(
-                classes.border,
-                this.state.selectedIndex === null && 'selected'
-              )}
-              onClick={() => {
-                this.setState({
-                  selectedIndex: null
-                });
-              }}
-            >
-              <div className={cx(WorkList.classes.thumbnail, classes.item)}>
-                <img src={src} alt="今のサムネイル" />
-              </div>
-            </div>
-          ) : null}
           <div className={classes.wrapper}>
+            {src ? (
+              // 現在のサムネイル
+              <div
+                className={cx(
+                  classes.border,
+                  this.state.selectedIndex === null && 'selected'
+                )}
+                onClick={() => {
+                  this.setState({
+                    selectedIndex: null
+                  });
+                }}
+              >
+                <div className={cx(WorkList.classes.thumbnail, classes.item)}>
+                  <img src={src} alt="今のサムネイル" />
+                </div>
+              </div>
+            ) : null}
             {make.thumbnails.map((src, i) => (
               <div
                 key={i}
@@ -122,7 +118,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
             color="primary"
             disabled={this.state.selectedIndex === null}
             onClick={this.handleSetThumbnail}
-            className={classes.largeButton}
+            className={xlasses.largeButton}
           >
             OK
           </Button>

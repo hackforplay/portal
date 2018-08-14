@@ -23,6 +23,7 @@ import top1 from '../resources/h4p_top_01.gif';
 import top2 from '../resources/h4p_top_02.gif';
 import top3 from '../resources/h4p_top_03.gif';
 import type { StateProps, DispatchProps } from '../containers/Topic';
+import * as xlasses from '../utils/xlasses';
 
 const classes = {
   root: css({
@@ -53,13 +54,6 @@ const classes = {
   }),
   workList: css({
     textAlign: 'center'
-  }),
-  button: css({
-    fontSize: 'large',
-    paddingTop: theme.spacing.unit * 2,
-    paddingRight: theme.spacing.unit * 4,
-    paddingBottom: theme.spacing.unit * 2,
-    paddingLeft: theme.spacing.unit * 4
   }),
   paper: css({
     flex: '0 1 100%',
@@ -143,7 +137,7 @@ export default (props: Props) => {
                 raised
                 component={Link}
                 to="/officials/hack-rpg"
-                className={classes.button}
+                className={xlasses.largeButton}
                 style={{ marginTop: 16 }}
               >
                 ゲームスタート
@@ -206,7 +200,7 @@ export default (props: Props) => {
                 raised
                 component={Link}
                 to="/officials/pg-colosseum-2018/training"
-                className={classes.button}
+                className={xlasses.largeButton}
                 style={{ marginTop: 16 }}
               >
                 ゲームスタート
@@ -317,7 +311,6 @@ export default (props: Props) => {
                 raised
                 href="https://goo.gl/forms/S655BeMUpNHjmAtg1"
                 target="_blank"
-                className={classes.button}
               >
                 お問い合わせはこちら
               </Button>

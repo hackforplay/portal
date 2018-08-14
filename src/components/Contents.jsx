@@ -12,6 +12,7 @@ import { css } from 'emotion';
 import theme from '../settings/theme';
 import contents from '../settings/contents';
 import type { ContentType } from '../settings/contents';
+import * as xlasses from '../utils/xlasses';
 
 const rootStyle = css({
   maxWidth: 840,
@@ -75,10 +76,6 @@ const stageStyle = {
   img: css({
     width: '100%',
     paddingRight: theme.spacing.unit * 2
-  }),
-  button: css({
-    marginRight: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit * 2
   })
 };
 
@@ -117,7 +114,7 @@ function StageContent(props: ContentType & { ...ContextRouter }) {
             <Button
               {...item}
               key={i}
-              className={stageStyle.button}
+              className={xlasses.largeButton}
               onClick={event => event.stopPropagation()}
             >
               {item.children}

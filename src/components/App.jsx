@@ -36,6 +36,7 @@ export default function App() {
       <Router>
         <div>
           <Route component={GoogleTagManager} />
+          <Route component={Slaask} />
           <Route component={Header} />
           <Switch>
             <Route path="/users/:id/edit" component={ProfileEdit} />
@@ -75,6 +76,16 @@ function GoogleTagManager({ location }) {
   if (window.gtag) {
     window.gtag('config', process.env.REACT_APP_GA_TRACKING_ID, {
       page_path: location.pathname
+    });
+  }
+  return null;
+}
+
+// Send current page to Slaask
+function Slaask({ location }) {
+  if (window._slaask) {
+    window._slaask.updateVisitorInfos({
+      current_page: window.location.origin + location.pathname + location.hash
     });
   }
   return null;
