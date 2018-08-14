@@ -19,6 +19,8 @@ import ThumbnailDialog from '../containers/ThumbnailDialog';
 import type { StateProps, DispatchProps } from '../containers/Work';
 import type { OnMessage } from '../components/Feeles';
 
+export const removeMessage = `削除すると、二度と復元はできません。本当に削除しますか？`;
+
 export type Props = StateProps & DispatchProps & { ...ContextRouter };
 
 export type State = {
@@ -115,11 +117,23 @@ export default class Work extends React.Component<Props, State> {
   };
 
   handleRemove = () => {
-    const message = `削除すると、二度と復元はできません。本当に削除しますか？`;
-    if (window.confirm(message)) {
+    if (window.confirm(removeMessage)) {
       this.props.removeWork();
       this.handleClose();
     }
+  };
+
+  handleShareTwitter = () => {
+    const text = `ステージを作りました！ ${window.location.href} #hackforplay`;
+    const width = 550;
+    const height = 420;
+    const left = Math.max(Math.round(window.screen.width / 2 - width / 2), 0);
+    const top = Math.max(Math.round(window.screen.height / 2 - height / 2), 0);
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`,
+      'intent',
+      `scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=${width},height=${height},left=${left},top=${top}`
+    );
   };
 
   // Feeles で実行している iframe から message を受け取った
@@ -259,6 +273,11 @@ export default class Work extends React.Component<Props, State> {
                 >
                   カバー画像をセットする
                 </MenuItem>
+                {makeWorkData && makeWorkData.visibility === 'public' ? (
+                  <MenuItem onClick={this.handleShareTwitter}>
+                    Twitter でシェア
+                  </MenuItem>
+                ) : null}
                 {makeWorkData && makeWorkData.visibility !== 'private' ? (
                   <MenuItem
                     disabled={!canPublish}

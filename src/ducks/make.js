@@ -139,7 +139,7 @@ export default (state: State = initialState, action: Action): State => {
     case THUMBNAIL:
       return {
         ...state,
-        thumbnails: [...state.thumbnails, action.payload]
+        thumbnails: [...state.thumbnails.slice(0, 11), action.payload]
       };
     case TRASH:
       return {
@@ -579,21 +579,9 @@ export const removeWork: removeWorkType = () => async (dispatch, getStore) => {
     return;
   }
   dispatch(remove());
-  // ストレージからデータを削除
-  if (data.assetStoragePath) {
-    await dispatch(removeFile(data.assetStoragePath));
-  }
-  if (data.thumbnailStoragePath) {
-    await dispatch(removeFile(data.thumbnailStoragePath));
-  }
-  // DB から削除
-  await firebase
-    .firestore()
-    .doc(data.path)
-    .delete();
+  // DB から削除する
+  await dispatch(workImport.removeWork(data));
   dispatch(trash());
-  // その work を空とみなす
-  dispatch(workImport.empty(data.path));
 };
 
 export function canSave(state: $Call<GetStore>) {

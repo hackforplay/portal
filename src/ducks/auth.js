@@ -9,7 +9,7 @@ export const storeName: string = 'auth';
 const INIT = 'portal/auth/INIT';
 const SIGNED_IN = 'portal/auth/SIGNED_IN';
 
-type User = $npm$firebase$auth$User;
+export type AuthUser = $npm$firebase$auth$User;
 
 export type Action =
   | {|
@@ -17,12 +17,12 @@ export type Action =
     |}
   | {|
       type: typeof SIGNED_IN,
-      user: User
+      user: AuthUser
     |};
 
 export type State = {
   initialized: boolean,
-  user?: User
+  user?: AuthUser
 };
 
 const initialState: State = {
@@ -53,7 +53,7 @@ export const initialize = (): Action => ({
   type: INIT
 });
 
-export const signedIn = (user: User): Action => ({
+export const signedIn = (user: AuthUser): Action => ({
   type: SIGNED_IN,
   user
 });
@@ -113,7 +113,7 @@ export const signOut = () => () => {
   return firebase.auth().signOut();
 };
 
-function connectExternalService(user: User) {
+function connectExternalService(user: AuthUser) {
   ((...args) => {
     for (const func of args) {
       try {
