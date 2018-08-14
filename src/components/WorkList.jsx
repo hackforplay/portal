@@ -158,10 +158,10 @@ export default class WorkList extends React.Component<Props, State> {
   };
 
   handleRemove = () => {
-    if (!window.confirm(removeMessage)) return;
-    const { item } = this.state;
+    if (window.confirm(removeMessage)) {
+      this.props.removeWork(this.state.item);
+    }
     this.handleClose();
-    this.props.removeWork(item);
   };
 
   render() {
