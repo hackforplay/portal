@@ -16,12 +16,12 @@ import { css } from 'emotion';
 
 const classes = {
   root: css({
-    height: 'calc(100vh - 56px)',
+    height: `calc(100vh - ${56 * 2}px)`,
     '@media (min-width:0px) and (orientation: landscape)': {
-      height: 'calc(100vh - 48px)'
+      height: `calc(100vh - ${48 * 2}px)`
     },
     '@media (min-width:600px)': {
-      height: 'calc(100vh - 64px)'
+      height: `calc(100vh - ${64 * 2}px)`
     }
   }),
   flex: css({
