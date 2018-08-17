@@ -158,10 +158,10 @@ export default class WorkList extends React.Component<Props, State> {
   };
 
   handleRemove = () => {
-    if (!window.confirm(removeMessage)) return;
-    const { item } = this.state;
+    if (window.confirm(removeMessage)) {
+      this.props.removeWork(this.state.item);
+    }
     this.handleClose();
-    this.props.removeWork(item);
   };
 
   render() {
@@ -244,12 +244,9 @@ export default class WorkList extends React.Component<Props, State> {
                     />
                     <CardContent>
                       <Typography type="caption">
-                        {item.viewsNum
-                          ? `プレイ回数 ${item.viewsNum} 回`
+                        {item.viewsNum > 0
+                          ? this.fromNow(item.createdAt)
                           : 'NEW!'}
-                        {item.createdAt
-                          ? `・${this.fromNow(item.createdAt)}`
-                          : ''}
                         {showVisibility
                           ? {
                               public: '・公開中',

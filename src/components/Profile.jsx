@@ -7,7 +7,7 @@ import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
-import Input from 'material-ui/Input/Input';
+import TextField from 'material-ui/TextField';
 import Photo from 'material-ui-icons/Photo';
 import { css } from 'emotion';
 
@@ -177,18 +177,21 @@ export default class Profile extends React.Component<Props> {
           </Grid>
           <Grid item xs={5}>
             {edit ? (
-              <Input
+              <TextField
                 id="name"
-                disableUnderline
-                classes={{
-                  root: classes.textFieldRoot,
-                  input: classes.textFieldInput
+                InputProps={{
+                  disableUnderline: true,
+                  classes: {
+                    root: classes.textFieldRoot,
+                    input: classes.textFieldInput
+                  }
                 }}
                 autoFocus
                 value={userData.displayName}
                 onChange={event =>
                   this.props.editAuthUser({ displayName: event.target.value })
                 }
+                helperText="本名(ほんみょう)は かかないで！"
               />
             ) : (
               <Typography type="headline">{userData.displayName}</Typography>
