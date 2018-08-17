@@ -5,3 +5,7 @@ body {
 a {
   text-decoration: none;
 }
+
+#slaask-button {
+  opacity: 0.7;
+}
