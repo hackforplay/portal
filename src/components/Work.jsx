@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import classNames from 'classnames';
-import { Redirect, withRouter, type LocationShape } from 'react-router-dom';
+import { withRouter, type LocationShape } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -80,11 +80,18 @@ export default class Work extends React.Component<Props, State> {
     this.setState({ unblock });
   }
 
+  componentDidUpdate(prevProps: Props) {
+    const { redirect } = this.props;
+    if (prevProps.redirect !== redirect && redirect) {
+      this.moveTo(redirect);
+    }
+  }
+
   componentWillUnmount() {
     this.state.unblock();
   }
 
-  moveTo(location: LocationShape) {
+  moveTo(location: LocationShape | string) {
     this.state.unblock();
     this.props.history.push(location);
   }
@@ -196,8 +203,7 @@ export default class Work extends React.Component<Props, State> {
       canRemove,
       replay,
       make,
-      isPreparing,
-      redirect
+      isPreparing
     } = this.props;
     const { anchorEl } = this.state;
 
@@ -329,7 +335,6 @@ export default class Work extends React.Component<Props, State> {
           replay={replay}
           onMessage={this.handleMessage}
         />
-        {redirect && <Redirect to={redirect} />}
         <ThumbnailDialog open={this.state.open} onClose={this.handleClose} />
       </div>
     );
