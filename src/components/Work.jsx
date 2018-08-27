@@ -54,6 +54,9 @@ const classes = {
       // focus も hover もされていないときの underline を消去
       height: 0
     }
+  }),
+  error: css({
+    color: 'red'
   })
 };
 
@@ -224,6 +227,7 @@ export default class Work extends React.Component<Props, State> {
     const src = work.data.asset_url || '';
     const storagePath = work.data.assetStoragePath || '';
     const makeWorkData = make.work.data;
+    const hasError = make.error !== null;
 
     // portal 側でプロジェクトの中身を取得できるまで render しない
     // (onChange によって Store が書き換えられると saved: false になるため)
@@ -264,6 +268,9 @@ export default class Work extends React.Component<Props, State> {
                 <Typography type="title">{title}</Typography>
               )}
               <div className={classes.blank} />
+              {hasError ? (
+                <span className={classes.error}>エラーがおきたようです</span>
+              ) : null}
               {makeWorkData && makeWorkData.visibility !== 'public' ? (
                 <Button disabled={!canPublish} onClick={this.handleSetPublic}>
                   {`公開する`}
