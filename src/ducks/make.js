@@ -4,7 +4,7 @@ import 'firebase/firestore';
 import md5 from 'md5';
 import mime from 'mime-types';
 import uuid from 'uuid/v4';
-import { actionCreatorFactory } from 'typescript-fsa';
+import { actionCreatorFactory, type ActionCreator } from 'typescript-fsa';
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
 
 import * as helpers from './helpers';
@@ -37,7 +37,7 @@ const actionCreator = actionCreatorFactory('portal/make');
 export const actions = {
   create: actionCreator('CREATE'),
   change: actionCreator('CHANGE'),
-  metadata: actionCreator('METADATA'),
+  metadata: (actionCreator('METADATA'): ActionCreator<Metadata>),
   thumbnail: actionCreator('THUMBNAIL'),
   trash: actionCreator('TRASH'),
   push: actionCreator.async('PUSH'),
