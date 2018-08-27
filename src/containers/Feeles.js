@@ -3,7 +3,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 
 import withFirebaseStorage from '../decorators/withFirebaseStorage';
-import { changeWork, setMetadata, thumbnail } from '../ducks/make';
+import { changeWork, actions } from '../ducks/make';
 import Feeles from '../components/Feeles';
 import type { OwnProps } from '../components/Feeles';
 
@@ -13,8 +13,8 @@ const mapStateToProps = (state, ownProps: OwnProps): StateProps => ({});
 
 const mapDispatchToProps = {
   changeWork,
-  setMetadata,
-  thumbnail
+  setMetadata: metadata => dispatch => dispatch(actions.metadata(metadata)),
+  thumbnail: dataUrl => dispatch => dispatch(actions.thumbnail(dataUrl))
 };
 
 export type DispatchProps = { ...typeof mapDispatchToProps };
