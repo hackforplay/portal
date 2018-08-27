@@ -399,7 +399,6 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
         error
       })
     );
-    debugger;
   }
 };
 
@@ -598,14 +597,14 @@ export const removeWork: removeWorkType = () => async (dispatch, getStore) => {
 
 export function canSave(state: $Call<GetStore>) {
   const {
-    make: { files, hashOfFiles, saved, work, metadata, thumbnails },
+    make: { files, hashOfFiles, saved, uploading, work, metadata, thumbnails },
     auth: { user }
   } = state;
 
   // サムネイルが設定されているか、撮影されたものがある (設定することができる)
   const hasThumbnail = metadata.thumbnailStoragePath || thumbnails.length > 0;
-  if (!files || !hashOfFiles || saved || !user || !hasThumbnail) {
-    // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていない
+  if (!files || !hashOfFiles || saved || !user || !hasThumbnail || uploading) {
+    // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていないか、サムネイルをアップロード中
     return false;
   }
   return work.isEmpty || work.isAvailable;
