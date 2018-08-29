@@ -218,7 +218,16 @@ export default class Work extends React.Component<Props, State> {
         return <div>ステージが見つかりませんでした</div>;
       }
       if (work.isInvalid) {
-        return <div>権限がありません</div>;
+        switch (work.error) {
+          case 'not-found':
+            return <div>ステージが見つかりません</div>;
+          case 'unavailable':
+            return <div>サービスが一時的に利用できません</div>;
+          case 'permission-denied':
+            return <div>権限がありません</div>;
+          default:
+            return <div>エラー</div>;
+        }
       }
       return null;
     }
