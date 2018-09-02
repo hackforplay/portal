@@ -21,7 +21,8 @@ const classes = {
     },
     '@media (min-width:600px)': {
       ...rootStyle(64)
-    }
+    },
+    overflow: 'hidden'
   })
 };
 
@@ -32,7 +33,8 @@ export type OnMessage = (event: {
 export type OwnProps = {
   onMessage: OnMessage,
   src: string | void,
-  replay: boolean
+  replay: boolean,
+  openSidebar: boolean
 };
 
 type State = {
@@ -108,7 +110,14 @@ export default class Feeles extends React.Component<Props, State> {
         className={root}
         ref={rootEl => this.state.rootEl || this.setState({ rootEl })}
       >
-        {rootEl && Feeles ? <Feeles {...props} rootElement={rootEl} /> : null}
+        {rootEl && Feeles ? (
+          <Feeles
+            {...props}
+            mini={this.props.replay}
+            openSidebar={this.props.openSidebar}
+            rootElement={rootEl}
+          />
+        ) : null}
       </div>
     );
   }
