@@ -1,10 +1,17 @@
 // @flow
 import firebase from 'firebase';
-import 'firebase/firestore';
+import { typeof FirestoreError as FirestoreErrorCode } from 'firebase/firestore';
 
 import * as helpers from './helpers';
 import type { Dispatch, GetStore } from './type';
 import type { WorkItemType } from '../ducks/work';
+
+type FirestoreError = {
+  code: FirestoreErrorCode,
+  message: string,
+  name: string,
+  stack?: string
+};
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'officialWork';
@@ -188,7 +195,8 @@ export const fetchWork = (pathname: string) => async (
       dispatch(empty(pathname));
     }
   } catch (error) {
-    dispatch(invalid(pathname, error));
+    const code = (error: FirestoreError).code;
+    dispatch(invalid(pathname, code));
     console.error(error);
   }
   return;

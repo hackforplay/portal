@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import classNames from 'classnames';
-import { Prompt, Redirect, withRouter } from 'react-router-dom';
+import { withRouter, type LocationShape } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -29,7 +29,8 @@ export type Props = StateProps & DispatchProps & { ...ContextRouter };
 export type State = {
   anchorEl: ?HTMLElement,
   open: boolean,
-  openSidebar: boolean
+  openSidebar: boolean,
+  unblock: () => void
 };
 
 const classes = {
@@ -61,6 +62,9 @@ const classes = {
   iconButton: css({
     marginLeft: 4,
     marginRight: 4
+  }),
+  error: css({
+    color: 'red'
   })
 };
 
@@ -75,8 +79,34 @@ export default class Work extends React.Component<Props, State> {
   state = {
     anchorEl: null,
     open: false,
-    openSidebar: false
+    openSidebar: false,
+    unblock: () => {}
   };
+
+  componentDidMount() {
+    const { location, history } = this.props;
+    const unblock = history.block((nextLocation, action) => {
+      if (location.pathname === nextLocation.pathname) return false;
+      return 'このページを はなれますか？';
+    });
+    this.setState({ unblock });
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const { redirect } = this.props;
+    if (prevProps.redirect !== redirect && redirect) {
+      this.moveTo(redirect);
+    }
+  }
+
+  componentWillUnmount() {
+    this.state.unblock();
+  }
+
+  moveTo(location: LocationShape | string) {
+    this.state.unblock();
+    this.props.history.push(location);
+  }
 
   handleClick = (event: SyntheticEvent<HTMLButtonElement>) => {
     this.setState({ anchorEl: event.currentTarget });
@@ -169,7 +199,7 @@ export default class Work extends React.Component<Props, State> {
         return;
       }
       // react-router で遷移
-      this.props.history.push({
+      this.moveTo({
         hash: a.hash,
         pathname: a.pathname,
         search: a.search
@@ -185,8 +215,7 @@ export default class Work extends React.Component<Props, State> {
       canRemove,
       replay,
       make,
-      isPreparing,
-      redirect
+      isPreparing
     } = this.props;
     const { anchorEl } = this.state;
 
@@ -198,7 +227,16 @@ export default class Work extends React.Component<Props, State> {
         return <div>ステージが見つかりませんでした</div>;
       }
       if (work.isInvalid) {
-        return <div>権限がありません</div>;
+        switch (work.error) {
+          case 'not-found':
+            return <div>ステージが見つかりません</div>;
+          case 'unavailable':
+            return <div>サービスが一時的に利用できません</div>;
+          case 'permission-denied':
+            return <div>権限がありません</div>;
+          default:
+            return <div>エラー</div>;
+        }
       }
       return null;
     }
@@ -207,6 +245,7 @@ export default class Work extends React.Component<Props, State> {
     const src = work.data.asset_url || '';
     const storagePath = work.data.assetStoragePath || '';
     const makeWorkData = make.work.data;
+    const hasError = make.error !== null;
 
     // portal 側でプロジェクトの中身を取得できるまで render しない
     // (onChange によって Store が書き換えられると saved: false になるため)
@@ -255,6 +294,9 @@ export default class Work extends React.Component<Props, State> {
                 <Typography type="title">{title}</Typography>
               )}
               <div className={classes.blank} />
+              {hasError ? (
+                <span className={classes.error}>エラーがおきたようです</span>
+              ) : null}
               {makeWorkData && makeWorkData.visibility !== 'public' ? (
                 <Button disabled={!canPublish} onClick={this.handleSetPublic}>
                   {`公開する`}
@@ -327,14 +369,6 @@ export default class Work extends React.Component<Props, State> {
           onMessage={this.handleMessage}
           openSidebar={this.state.openSidebar}
         />
-        <Prompt
-          when={!redirect}
-          message={next =>
-            next.pathname === window.location.pathname ||
-            'このページを はなれますか？'
-          }
-        />
-        {redirect && <Redirect to={redirect} />}
         <ThumbnailDialog open={this.state.open} onClose={this.handleClose} />
       </div>
     );

@@ -10,11 +10,10 @@ import * as helpers from '../ducks/helpers';
 import { addWorkViewLabel } from '../ducks/work';
 import * as officialWork from '../ducks/officialWork';
 import {
+  actions,
   changeWork,
-  trashWork,
   saveWork,
   setWorkVisibility,
-  setMetadata,
   canSave,
   canPublish,
   canRemove,
@@ -65,10 +64,10 @@ const mapDispatchToProps = {
   fetchWork: officialWork.fetchWork,
   addWorkViewLabel,
   changeWork,
-  trashWork,
+  trashWork: () => dispatch => dispatch(actions.trash()),
   saveWork,
   setWorkVisibility,
-  setMetadata,
+  setMetadata: () => dispatch => dispatch(actions.metadata()),
   removeWork
 };
 

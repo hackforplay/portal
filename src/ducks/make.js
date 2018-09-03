@@ -4,6 +4,8 @@ import 'firebase/firestore';
 import md5 from 'md5';
 import mime from 'mime-types';
 import uuid from 'uuid/v4';
+import { actionCreatorFactory, type ActionCreator } from 'typescript-fsa';
+import { reducerWithInitialState } from 'typescript-fsa-reducers';
 
 import * as helpers from './helpers';
 import {
@@ -18,20 +20,10 @@ import * as userImport from './user';
 import * as workImport from './work';
 import * as authImport from './auth';
 import type { Dispatch, GetStore } from './type';
-import type { WorkItemType, WorkData, VisibilityType } from './work';
+import type { WorkItemType, VisibilityType } from './work';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'make';
-
-const CREATE = 'portal/make/CREATE';
-const CHANGE = 'portal/make/CHANGE';
-const METADATA = 'portal/make/METADATA';
-const THUMBNAIL = 'portal/make/THUMBNAIL';
-const TRASH = 'portal/make/TRASH';
-const PUSH = 'portal/make/PUSH';
-const PULL = 'portal/make/PULL';
-const SET = 'portal/make/SET';
-const REMOVE = 'portal/make/REMOVE';
 
 export type Metadata = {
   +title?: string,
@@ -41,51 +33,32 @@ export type Metadata = {
   +thumbnailStoragePath?: string
 };
 
+const actionCreator = actionCreatorFactory('portal/make');
+export const actions = {
+  create: actionCreator('CREATE'),
+  change: actionCreator('CHANGE'),
+  metadata: (actionCreator('METADATA'): ActionCreator<Metadata>),
+  thumbnail: actionCreator('THUMBNAIL'),
+  trash: actionCreator('TRASH'),
+  push: actionCreator.async('PUSH'),
+  pull: actionCreator.async('PULL'),
+  remove: actionCreator.async('REMOVE'),
+  upload: actionCreator.async('UPLOAD')
+};
+
 export type FeelesFile = {
   compose: () => Promise<Object>
 };
 
-export type Action =
-  | {|
-      +type: 'portal/make/CREATE',
-      +payload: Array<Object>
-    |}
-  | {|
-      +type: 'portal/make/CHANGE',
-      +payload: Array<Object>
-    |}
-  | {|
-      +type: 'portal/make/METADATA',
-      +payload: Metadata
-    |}
-  | {|
-      +type: 'portal/make/THUMBNAIL',
-      +payload: string
-    |}
-  | {|
-      +type: 'portal/make/TRASH'
-    |}
-  | {|
-      +type: 'portal/make/PUSH'
-    |}
-  | {|
-      +type: 'portal/make/PULL'
-    |}
-  | {|
-      +type: 'portal/make/SET',
-      +payload: {
-        workData: WorkData,
-        files: Array<{}>
-      }
-    |}
-  | {|
-      +type: 'portal/make/REMOVE'
-    |};
+// redux-thunk and flow-type compat
+export type Action = {};
 
 export type State = {
   work: WorkItemType,
   saved: boolean, // 現時点での files が保存されているか
+  uploading: boolean,
   changed: boolean, // 起動時から一度でもファイルが変更されたか
+  error: null | Error,
   metadata: Metadata,
   thumbnails: Array<string>,
   files?: Array<{}>,
@@ -95,73 +68,106 @@ export type State = {
 const initialState: State = {
   work: helpers.initialized(),
   saved: false,
+  uploading: false,
   changed: false,
+  error: null,
   metadata: {},
   thumbnails: [],
   hashOfFiles: ''
 };
 
 // Root Reducer
-export default (state: State = initialState, action: Action): State => {
-  switch (action.type) {
-    case CREATE:
-      return {
-        work: helpers.empty(),
-        saved: false,
-        changed: false,
-        files: action.payload,
-        metadata: {},
-        thumbnails: [],
-        // JSON 文字列から MD5 ハッシュを計算
-        hashOfFiles: hashFiles(action.payload)
-      };
-    case CHANGE:
-      if (hashFiles(action.payload) === state.hashOfFiles) {
-        return state; // 変更なし
+export default reducerWithInitialState(initialState)
+  .case(actions.create, (state, files) => {
+    const next: State = {
+      work: helpers.empty(),
+      saved: false,
+      uploading: false,
+      changed: false,
+      error: null,
+      files,
+      metadata: {},
+      thumbnails: [],
+      // JSON 文字列から MD5 ハッシュを計算
+      hashOfFiles: hashFiles(files)
+    };
+    return next;
+  })
+  .case(actions.change, (state, files) => {
+    if (hashFiles(files) === state.hashOfFiles) {
+      return state; // 変更なし
+    }
+    const next: State = {
+      ...state,
+      saved: false,
+      changed: true,
+      files,
+      // JSON 文字列から MD5 ハッシュを計算
+      hashOfFiles: hashFiles(files)
+    };
+    return next;
+  })
+  .case(actions.metadata, (state, metadata) => {
+    const next: State = {
+      ...state,
+      metadata: {
+        ...state.metadata,
+        ...metadata
       }
-      return {
+    };
+    return next;
+  })
+  .case(actions.thumbnail, (state, dataUrl) => {
+    const next: State = {
+      ...state,
+      thumbnails: [...state.thumbnails.slice(0, 11), dataUrl]
+    };
+    return next;
+  })
+  .cases([actions.trash, actions.remove.done], state => {
+    const next: State = {
+      work: helpers.initialized(),
+      saved: false,
+      uploading: false,
+      changed: false,
+      error: null,
+      metadata: {},
+      thumbnails: [],
+      hashOfFiles: ''
+    };
+    return next;
+  })
+  .case(actions.remove.failed, (state, { error }) => {
+    const next: State = {
+      work: helpers.invalid(error),
+      saved: false,
+      uploading: false,
+      changed: false,
+      error,
+      metadata: {},
+      thumbnails: [],
+      hashOfFiles: ''
+    };
+    return next;
+  })
+  .cases(
+    [actions.push.started, actions.pull.started, actions.remove.started],
+    state => {
+      const next: State = {
         ...state,
-        saved: false,
-        changed: true,
-        files: action.payload,
-        // JSON 文字列から MD5 ハッシュを計算
-        hashOfFiles: hashFiles(action.payload)
-      };
-    case METADATA:
-      return {
-        ...state,
-        saved: false,
-        metadata: {
-          ...state.metadata,
-          ...action.payload
-        }
-      };
-    case THUMBNAIL:
-      return {
-        ...state,
-        thumbnails: [...state.thumbnails.slice(0, 11), action.payload]
-      };
-    case TRASH:
-      return {
-        work: helpers.initialized(),
-        saved: false,
-        changed: false,
-        metadata: {},
-        thumbnails: [],
-        hashOfFiles: ''
-      };
-    case PUSH:
-    case PULL:
-    case REMOVE:
-      return {
-        ...state,
+        error: null,
         work: helpers.processing(),
         saved: false
       };
-    case SET:
-      const { workData, files } = action.payload;
-      return {
+      return next;
+    }
+  )
+  .cases(
+    [actions.push.done, actions.pull.done],
+    (state, { result: { workData, files } }) => {
+      const next: State = {
         ...state,
+        error: null,
         work: helpers.has(workData),
         saved: true,
         files,
@@ -175,72 +181,52 @@ export default (state: State = initialState, action: Action): State => {
           thumbnailStoragePath: workData.thumbnailStoragePath
         }
       };
-    default:
-      return state;
-  }
-};
-
-type createType = (payload: Array<{}>) => Action;
-
-export const create: createType = payload => ({
-  type: CREATE,
-  payload
-});
-
-type changeType = (payload: Array<{}>) => Action;
-
-export const change: changeType = payload => ({
-  type: CHANGE,
-  payload
-});
-
-type metadataType = (metadata: Metadata) => Action;
-
-export const metadata: metadataType = payload => ({
-  type: METADATA,
-  payload
-});
-
-export type thumbnailType = (thumbnail: string) => Action;
-
-export const thumbnail: thumbnailType = payload => ({
-  type: THUMBNAIL,
-  payload
-});
-
-type trashType = () => Action;
-
-export const trash: trashType = () => ({
-  type: TRASH
-});
-
-type pushType = () => Action;
-
-export const push: pushType = () => ({
-  type: PUSH
-});
-
-type pullType = () => Action;
-
-export const pull: pullType = () => ({
-  type: PULL
-});
-
-type setType = (workData: WorkData, files: Array<{}>) => Action;
-
-export const set: setType = (workData, files) => ({
-  type: SET,
-  payload: {
-    workData,
-    files
-  }
-});
-
-type removeType = () => Action;
-
-export const remove: removeType = () => ({
-  type: REMOVE
-});
+      return next;
+    }
+  )
+  .case(actions.push.failed, (state, { params, error }) => {
+    const next: State = {
+      ...state,
+      error,
+      work: helpers.has(params.workData)
+    };
+    return next;
+  })
+  .case(actions.pull.failed, (state, { error }) => {
+    const next: State = {
+      ...state,
+      error,
+      work: helpers.invalid(error)
+    };
+    return next;
+  })
+  .case(actions.upload.started, state => {
+    const next: State = {
+      ...state,
+      error: null,
+      uploading: true
+    };
+    return next;
+  })
+  .case(actions.upload.done, (state, { result }) => {
+    const next: State = {
+      ...state,
+      uploading: false,
+      metadata: {
+        ...state.metadata,
+        ...result
+      }
+    };
+    return next;
+  })
+  .case(actions.upload.failed, (state, { error }) => {
+    const next: State = {
+      ...state,
+      error,
+      uploading: false
+    };
+    return next;
+  });
 
 export type changeWorkType = (payload: { files: FeelesFile[] }) => (
   dispatch: Dispatch,
@@ -266,22 +252,11 @@ export const changeWork: changeWorkType = payload => async (
   }
   if (!hasLocalProject) {
     // 新しく local project を作る
-    dispatch(create(project));
+    dispatch(actions.create(project));
   } else {
     // データだけ上書きする
-    dispatch(change(project));
+    dispatch(actions.change(project));
   }
-};
-
-export type setMetadataType = (
-  payload: Metadata
-) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
-
-export const setMetadata: setMetadataType = payload => async (
-  dispatch,
-  getStore
-) => {
-  dispatch(metadata(payload));
 };
 
 export type setThumbnailFromDataURLType = (
@@ -320,19 +295,16 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
   const thumbnailStoragePath = `image/${visibility}/users/${
     user.uid
   }/${uuid()}.${ext}`;
-  // Upload to storage
-  await dispatch(uploadBlob(thumbnailStoragePath, blob));
-  // Set to redux store
-  await dispatch(setMetadata({ thumbnailStoragePath }));
-};
-
-export type trashWorkType = () => (
-  dispatch: Dispatch,
-  getStore: GetStore
-) => Promise<void>;
-
-export const trashWork: trashWorkType = () => async (dispatch, getStore) => {
-  await dispatch(trash());
+  try {
+    dispatch(actions.upload.started());
+    // Upload to storage
+    await dispatch(uploadBlob(thumbnailStoragePath, blob));
+    // Set to redux store
+    dispatch(actions.upload.done({ result: { thumbnailStoragePath } }));
+  } catch (error) {
+    dispatch(actions.upload.failed({ error }));
+    console.error(error);
+  }
 };
 
 export type saveWorkType = () => (
@@ -364,15 +336,15 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
   if (!metadata.author) {
     const userData = userImport.getUserByUid(getStore(), uid).data;
     if (userData && userData.displayName) {
-      await dispatch(setMetadata({ author: userData.displayName }));
+      await dispatch(actions.metadata({ author: userData.displayName }));
       // ----> ストアが更新される（はず）
       return dispatch(saveWork());
     }
   }
 
-  dispatch(push());
-
   try {
+    dispatch(actions.push.started({ params: { workData: work.data } }));
+
     // visibility を取得
     const visibility = work.data ? work.data.visibility : 'private';
     // プロジェクトを JSON に書き出し
@@ -396,7 +368,17 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
       }
     });
     const snapshot = (await uploadedRef.get(): $npm$firebase$firestore$DocumentSnapshot);
-    dispatch(set(workImport.getWorkData(snapshot), files));
+    const result = {
+      workData: workImport.getWorkData(snapshot),
+      files
+    };
+    dispatch(
+      actions.push.done({
+        params: { workData: work.data },
+        result
+      })
+    );
+
     // 古いアセットを削除
     if (work.data && work.data.assetStoragePath) {
       dispatch(removeFile(work.data.assetStoragePath));
@@ -410,7 +392,13 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
       dispatch(removeFile(work.data.thumbnailStoragePath));
     }
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
+    dispatch(
+      actions.push.failed({
+        params: { workData: work.data },
+        error
+      })
+    );
   }
 };
 
@@ -445,9 +433,8 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
     user.uid
   }/${uuid()}.${parseStoragePath(thumbnailStoragePath).extention}`;
 
-  dispatch(push());
-
   try {
+    dispatch(actions.push.started());
     // asset を移す
     await dispatch(moveFile(assetStoragePath, nextAssetStoragePath));
     await dispatch(downloadUrl(nextAssetStoragePath));
@@ -478,7 +465,14 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
 
     const snapshot = (await ref.get(): $npm$firebase$firestore$DocumentSnapshot);
     // ステージをセット
-    await dispatch(set(workImport.getWorkData(snapshot), files));
+    await dispatch(
+      actions.push.done({
+        result: {
+          workData: workImport.getWorkData(snapshot),
+          files
+        }
+      })
+    );
   } catch (error) {
     // 元に戻す
     console.error(error);
@@ -492,7 +486,14 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
     ) {
       await dispatch(moveFile(nextThumbnailStoragePath, thumbnailStoragePath));
     }
-    await dispatch(set(workData, files));
+    await dispatch(
+      actions.push.done({
+        result: {
+          workData,
+          files
+        }
+      })
+    );
   }
 };
 
@@ -545,27 +546,33 @@ export const editExistingWork: editExistingWorkType = work => async (
     // 自分のステージではないか、ログインしていないか、すでに別のものを作り始めている
     return;
   }
-  const { assetStoragePath, asset_url } = workData;
-  let url;
-  if (assetStoragePath) {
-    // アセットをダウンロード
-    await dispatch(downloadUrl(assetStoragePath));
-    const storage = getStorageByPath(getStore(), assetStoragePath);
-    if (!storage.url) {
+  try {
+    dispatch(actions.pull.started());
+    const { assetStoragePath, asset_url } = workData;
+    let url;
+    if (assetStoragePath) {
+      // アセットをダウンロード
+      await dispatch(downloadUrl(assetStoragePath));
+      const storage = getStorageByPath(getStore(), assetStoragePath);
+      if (!storage.url) {
+        return;
+      }
+      url = storage.url;
+    } else if (asset_url) {
+      url = asset_url;
+    } else {
+      // どちらもない
       return;
     }
-    url = storage.url;
-  } else if (asset_url) {
-    url = asset_url;
-  } else {
-    // どちらもない
-    return;
+    const response = await fetch(url);
+    const text = await response.text();
+    const files = JSON.parse(text); // : Array<{}>
+    // ステージをセット
+    await dispatch(actions.pull.done({ result: { workData, files } }));
+  } catch (error) {
+    console.error(error);
+    await dispatch(actions.pull.failed({ error }));
   }
-  const response = await fetch(url);
-  const text = await response.text();
-  const files = JSON.parse(text); // : Array<{}>
-  // ステージをセット
-  await dispatch(set(workData, files));
 };
 
 export type removeWorkType = () => (
@@ -578,22 +585,26 @@ export const removeWork: removeWorkType = () => async (dispatch, getStore) => {
   if (!canRemove(getStore()) || !data) {
     return;
   }
-  dispatch(remove());
-  // DB から削除する
-  await dispatch(workImport.removeWork(data));
-  dispatch(trash());
+  try {
+    dispatch(actions.remove.started());
+    // DB から削除する
+    await dispatch(workImport.removeWork(data));
+    dispatch(actions.remove.done());
+  } catch (error) {
+    actions.remove.failed({ error });
+  }
 };
 
 export function canSave(state: $Call<GetStore>) {
   const {
-    make: { files, hashOfFiles, saved, work, metadata, thumbnails },
+    make: { files, hashOfFiles, saved, uploading, work, metadata, thumbnails },
     auth: { user }
   } = state;
 
   // サムネイルが設定されているか、撮影されたものがある (設定することができる)
   const hasThumbnail = metadata.thumbnailStoragePath || thumbnails.length > 0;
-  if (!files || !hashOfFiles || saved || !user || !hasThumbnail) {
-    // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていない
+  if (!files || !hashOfFiles || saved || !user || !hasThumbnail || uploading) {
+    // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていないか、サムネイルをアップロード中
     return false;
   }
   return work.isEmpty || work.isAvailable;
