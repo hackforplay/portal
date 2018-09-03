@@ -69,7 +69,7 @@ declare module "react-router-dom" {
     goForward(): void,
     canGo?: (n: number) => boolean,
     block(
-      callback: (location: Location, action: HistoryAction) => boolean
+      callback: (location: Location, action: HistoryAction) => boolean | string
     ): void,
     // createMemoryHistory
     index?: number,

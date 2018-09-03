@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import classNames from 'classnames';
-import { Prompt, Redirect, withRouter } from 'react-router-dom';
+import { withRouter, type LocationShape } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -25,7 +25,8 @@ export type Props = StateProps & DispatchProps & { ...ContextRouter };
 
 export type State = {
   anchorEl: ?HTMLElement,
-  open: boolean
+  open: boolean,
+  unblock: () => void
 };
 
 const classes = {
@@ -66,8 +67,34 @@ export default class Work extends React.Component<Props, State> {
 
   state = {
     anchorEl: null,
-    open: false
+    open: false,
+    unblock: () => {}
   };
+
+  componentDidMount() {
+    const { location, history } = this.props;
+    const unblock = history.block((nextLocation, action) => {
+      if (location.pathname === nextLocation.pathname) return false;
+      return 'このページを はなれますか？';
+    });
+    this.setState({ unblock });
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const { redirect } = this.props;
+    if (prevProps.redirect !== redirect && redirect) {
+      this.moveTo(redirect);
+    }
+  }
+
+  componentWillUnmount() {
+    this.state.unblock();
+  }
+
+  moveTo(location: LocationShape | string) {
+    this.state.unblock();
+    this.props.history.push(location);
+  }
 
   handleClick = (event: SyntheticEvent<HTMLButtonElement>) => {
     this.setState({ anchorEl: event.currentTarget });
@@ -160,7 +187,7 @@ export default class Work extends React.Component<Props, State> {
         return;
       }
       // react-router で遷移
-      this.props.history.push({
+      this.moveTo({
         hash: a.hash,
         pathname: a.pathname,
         search: a.search
@@ -176,8 +203,7 @@ export default class Work extends React.Component<Props, State> {
       canRemove,
       replay,
       make,
-      isPreparing,
-      redirect
+      isPreparing
     } = this.props;
     const { anchorEl } = this.state;
 
@@ -309,14 +335,6 @@ export default class Work extends React.Component<Props, State> {
           replay={replay}
           onMessage={this.handleMessage}
         />
-        <Prompt
-          when={!redirect}
-          message={next =>
-            next.pathname === window.location.pathname ||
-            'このページを はなれますか？'
-          }
-        />
-        {redirect && <Redirect to={redirect} />}
         <ThumbnailDialog open={this.state.open} onClose={this.handleClose} />
       </div>
     );
