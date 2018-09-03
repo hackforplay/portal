@@ -15,11 +15,10 @@ import {
 } from '../ducks/work';
 import type { WorkItemType } from '../ducks/work';
 import {
-  trashWork,
+  actions,
   saveWork,
   editExistingWork,
   setWorkVisibility,
-  setMetadata,
   canSave,
   canPublish,
   canRemove,
@@ -72,14 +71,14 @@ const mapStateToProps = (
 };
 
 const mapDispatchToProps = {
-  trashWork,
+  trashWork: () => dispatch => dispatch(actions.trash()),
   fetchWorkByPath,
   addWorkView,
   addWorkViewLabel,
   saveWork,
   editExistingWork,
   setWorkVisibility,
-  setMetadata,
+  setMetadata: () => dispatch => dispatch(actions.metadata()),
   removeWork
 };
 
