@@ -10,7 +10,10 @@ import Button from 'material-ui/Button';
 import Popover from 'material-ui/Popover';
 import Chip from 'material-ui/Chip';
 import { MenuItem } from 'material-ui/Menu';
+import IconButton from 'material-ui/IconButton';
 import { css } from 'emotion';
+import Menu from 'material-ui-icons/Menu';
+import Close from 'material-ui-icons/Close';
 
 import theme from '../settings/theme';
 import Feeles from '../containers/Feeles';
@@ -26,6 +29,7 @@ export type Props = StateProps & DispatchProps & { ...ContextRouter };
 export type State = {
   anchorEl: ?HTMLElement,
   open: boolean,
+  openSidebar: boolean,
   unblock: () => void
 };
 
@@ -55,6 +59,10 @@ const classes = {
       height: 0
     }
   }),
+  iconButton: css({
+    marginLeft: 4,
+    marginRight: 4
+  }),
   error: css({
     color: 'red'
   })
@@ -71,6 +79,7 @@ export default class Work extends React.Component<Props, State> {
   state = {
     anchorEl: null,
     open: false,
+    openSidebar: false,
     unblock: () => {}
   };
 
@@ -248,7 +257,15 @@ export default class Work extends React.Component<Props, State> {
       <div>
         {replay ? (
           <AppBar position="static" color="default" elevation={0}>
-            <Toolbar>
+            <Toolbar disableGutters>
+              <IconButton
+                onClick={() => {
+                  this.setState({ openSidebar: !this.state.openSidebar });
+                }}
+                className={classes.iconButton}
+              >
+                {this.state.openSidebar ? <Close /> : <Menu />}
+              </IconButton>
               {makeWorkData ? (
                 <Chip
                   label={
@@ -350,6 +367,7 @@ export default class Work extends React.Component<Props, State> {
           storagePath={storagePath}
           replay={replay}
           onMessage={this.handleMessage}
+          openSidebar={this.state.openSidebar}
         />
         <ThumbnailDialog open={this.state.open} onClose={this.handleClose} />
       </div>
