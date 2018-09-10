@@ -29,8 +29,8 @@ export type Props = StateProps & DispatchProps & { ...ContextRouter };
 export type State = {
   anchorEl: ?HTMLElement,
   open: boolean,
-  unblock: () => void,
-  openSidebar: boolean
+  openSidebar: boolean,
+  unblock: () => void
 };
 
 const classes = {
@@ -59,12 +59,12 @@ const classes = {
       height: 0
     }
   }),
-  error: css({
-    color: 'red'
-  }),
   iconButton: css({
     marginLeft: 4,
     marginRight: 4
+  }),
+  error: css({
+    color: 'red'
   })
 };
 
@@ -79,8 +79,8 @@ export default class Work extends React.Component<Props, State> {
   state = {
     anchorEl: null,
     open: false,
-    unblock: () => {},
-    openSidebar: false
+    openSidebar: false,
+    unblock: () => {}
   };
 
   componentDidMount() {
