@@ -158,11 +158,11 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         description:
           'オリジナルゲームを作って投稿することができます。まずは始め方を解説します',
         image: '',
-        url: 'https://www.youtube.com/embed/q4QgA2G63h0',
+        url: 'https://www.youtube.com/embed/cXJj6X8gnFc',
         buttons: [
           {
             children: 'YouTube で見る',
-            href: 'https://youtu.be/q4QgA2G63h0',
+            href: 'https://youtu.be/cXJj6X8gnFc',
             target: '_blank'
           }
         ]
@@ -212,23 +212,23 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
             target: '_blank'
           }
         ]
-      },
-      {
-        type: 'youtube',
-        title: 'ゲームを公開してみよう！',
-        author: null,
-        description:
-          'ゲームを公開すれば世界中の人がそのゲームを遊べるようになります',
-        image: '',
-        url: 'https://www.youtube.com/embed/UvTzW4OmOko',
-        buttons: [
-          {
-            children: 'YouTube で見る',
-            href: 'https://youtu.be/UvTzW4OmOko',
-            target: '_blank'
-          }
-        ]
       }
+      // {
+      //   type: 'youtube',
+      //   title: 'ゲームを公開してみよう！',
+      //   author: null,
+      //   description:
+      //     'ゲームを公開すれば世界中の人がそのゲームを遊べるようになります',
+      //   image: '',
+      //   url: 'https://www.youtube.com/embed/UvTzW4OmOko',
+      //   buttons: [
+      //     {
+      //       children: 'YouTube で見る',
+      //       href: 'https://youtu.be/UvTzW4OmOko',
+      //       target: '_blank'
+      //     }
+      //   ]
+      // }
       // {
       //   title: 'モノの動きシミュレータ',
       //   author: null,
