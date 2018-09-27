@@ -199,11 +199,11 @@ export default (props: Props) => {
                 color="primary"
                 raised
                 component={Link}
-                to="/officials/pg-colosseum-2018/training"
+                to="/specials/プログラミングコロシアム2018"
                 className={xlasses.largeButton}
                 style={{ marginTop: 16 }}
               >
-                ゲームスタート
+                今すぐプレイ
               </Button>
             </Paper>
           </Grid>
