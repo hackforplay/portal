@@ -22,6 +22,7 @@ import logo from '../resources/logo.png';
 import top1 from '../resources/h4p_top_01.gif';
 import top2 from '../resources/h4p_top_02.gif';
 import top3 from '../resources/h4p_top_03.gif';
+import makePng from '../resources/make.png';
 import type { StateProps, DispatchProps } from '../containers/Topic';
 import * as xlasses from '../utils/xlasses';
 
@@ -204,6 +205,22 @@ export default (props: Props) => {
                 style={{ marginTop: 16 }}
               >
                 今すぐプレイ
+              </Button>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Paper elevation={1} className={classes.paper} style={{padding:0}} >
+              <img src={makePng} alt="ステージを作ろう" style={{maxWidth:'100%'}} />
+              <Button
+                color="primary"
+                raised
+                component={Link}
+                to="/officials/make-rpg"
+                className={xlasses.largeButton}
+                style={{ marginTop: -120, marginBottom: 48 }}
+              >
+                ステージをつくる
               </Button>
             </Paper>
           </Grid>
