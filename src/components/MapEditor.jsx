@@ -14,6 +14,8 @@ import DialogContentText from 'material-ui/Dialog/DialogContentText';
 import type ReactMapEditorType from 'react-map-editor';
 import { css } from 'emotion';
 
+import { type StateProps, type DispatchProps } from '../containers/MapEditor';
+
 const classes = {
   root: css({
     height: `calc(100vh - ${56 * 2}px)`,
@@ -46,7 +48,7 @@ type State = {
 };
 
 export type OwnProps = {};
-type Props = OwnProps & { ...ContextRouter };
+type Props = OwnProps & StateProps & DispatchProps & { ...ContextRouter };
 
 @withRouter
 class MapEditor extends React.Component<Props, State> {
@@ -92,11 +94,20 @@ await Hack.parseMapJson(
     this.setState({ open: true, code });
   };
 
+  saveNewMapJson = () => {
+    const json = JSON.stringify(window.root.export().map);
+    const canvas = document.querySelector('canvas');
+    if (!canvas) return;
+    const dataUrl = canvas.toDataURL();
+    this.props.saveNewMapJson(json, dataUrl);
+  };
+
   closeCode = () => {
     this.setState({ open: false });
   };
 
   render() {
+    const { isUploading } = this.props;
     const { ReactMapEditor, tileset } = this.state;
 
     if (!ReactMapEditor) {
@@ -111,6 +122,9 @@ await Hack.parseMapJson(
               マップエディタ（β版）
             </Typography>
             <div className={classes.flex} />
+            <Button disabled={isUploading} onClick={this.saveNewMapJson}>
+              保存する
+            </Button>
             <Button onClick={this.showCode}>ステージに移す</Button>
           </Toolbar>
         </AppBar>
