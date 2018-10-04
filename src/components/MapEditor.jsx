@@ -47,8 +47,8 @@ type State = {
   code: string
 };
 
-export type OwnProps = {};
-type Props = OwnProps & StateProps & DispatchProps & { ...ContextRouter };
+export type OwnProps = { ...ContextRouter };
+type Props = OwnProps & StateProps & DispatchProps;
 
 @withRouter
 class MapEditor extends React.Component<Props, State> {
@@ -114,6 +114,16 @@ await Hack.parseMapJson(
       return <div>Loading...</div>;
     }
 
+    if (this.props.mapState.isEmpty) {
+      return <div>Not Found</div>;
+    }
+    if (this.props.mapState.isProcessing) {
+      return <div>Loading Map Data...</div>;
+    }
+    if (this.props.mapState.isInvalid || !this.props.mapState.data) {
+      return <div>Error</div>;
+    }
+
     return (
       <div className={classes.root}>
         <AppBar position="static" color="default" elevation={0}>
@@ -131,7 +141,7 @@ await Hack.parseMapJson(
         <ReactMapEditor
           ref={ref => (window.root = ref)}
           tileset={tileset}
-          map={defaultMap()}
+          map={this.props.mapState.data}
         />
         <CodeDialog
           open={this.state.open}
@@ -144,36 +154,6 @@ await Hack.parseMapJson(
 }
 
 export default MapEditor;
-
-function defaultMap() {
-  // 15x10 の草原からスタート
-  const row = index => Array.from({ length: 15 }).map(() => index);
-  const table = index => Array.from({ length: 10 }).map(() => row(index));
-
-  return {
-    tables: [table(-888), table(-888), table(1000)],
-    squares: [
-      {
-        index: 1000,
-        placement: {
-          type: 'Ground'
-        },
-        tile: {
-          size: [32, 32],
-          image: {
-            type: 'data-url',
-            src:
-              'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAAA4UlEQVRYw8WXMQ7CQAwE8xEED+GBlFT5RFpKHsGPQJzkZtFqvQFuCxe+8ykT39pxlu1xfr7tejsOW++nYeXjPouvdTyP+3h+iQOwwMt2GMbA0Gfxtc7A8wAshSyl3StQV1JgeQCV4gpkfld8zM8DoOi6KXfFxvw8gNtQGBiWoWpgVITTAdwHqXj3RfIALIWqtaqUs7LF+DzA7LKTGpgOgGJRrZaJyy3Dj1YcA/hXGXbFmAfYO1y6DUf2gRiAO2i4DUiNcHmAX4vLHWbzAN2Ufzu22/8F0wD2iq/7uVVlHAd4AY/m2cw040lfAAAAAElFTkSuQmCC'
-          },
-          author: {
-            name: 'ぴぽや',
-            url: 'http://blog.pipoya.net/'
-          }
-        }
-      }
-    ]
-  };
-}
 
 type CodeDialogProps = {
   open: boolean,

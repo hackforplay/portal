@@ -6,7 +6,7 @@ import uuid from 'uuid/v4';
 import { actionCreatorFactory } from 'typescript-fsa';
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
 
-import * as helpers from './helpers';
+import type { Statefull } from './helpers';
 import { uploadBlob } from './storage';
 import * as authImport from './auth';
 import type { Dispatch, GetStore } from './type';
@@ -28,17 +28,28 @@ type MapDocument = {
   uid: string,
   visibility: 'public'
 };
+export type MapDocumentState = Statefull<MapDocument>;
+
+type MapData = {
+  tables: any[],
+  squares: any[]
+};
+export type MapDataState = Statefull<MapData>;
 
 export type State = {
   isUploading: boolean,
   byPath: {
-    [key: string]: MapDocument
+    [key: string]: MapDocumentState
+  },
+  dataByPath: {
+    [key: string]: MapDataState
   }
 };
 
 const initialState: State = {
   isUploading: false,
-  byPath: {}
+  byPath: {},
+  dataByPath: {}
 };
 
 // Root Reducer
