@@ -22,24 +22,37 @@ export const actions = {
 // redux-thunk and flow-type compat
 export type Action = {};
 
+type MapDocument = {
+  jsonStoragePath: string,
+  thumbnailStoragePath: string,
+  uid: string,
+  visibility: 'public'
+};
+
 export type State = {
-  isUploading: boolean
+  isUploading: boolean,
+  byPath: {
+    [key: string]: MapDocument
+  }
 };
 
 const initialState: State = {
-  isUploading: false
+  isUploading: false,
+  byPath: {}
 };
 
 // Root Reducer
 export default reducerWithInitialState(initialState)
   .case(actions.createNew.started, (state, files) => {
     const next: State = {
+      ...state,
       isUploading: true
     };
     return next;
   })
   .cases([actions.createNew.done, actions.createNew.failed], (state, files) => {
     const next: State = {
+      ...state,
       isUploading: false
     };
     return next;
