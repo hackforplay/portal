@@ -92,7 +92,7 @@ export default reducerWithInitialState(initialState)
   .cases(
     [
       actions.createNew.done,
-      actions.createNew.failed,
+      ctions.createNew.failed,
       actions.update.done,
       actions.update.failed
     ],
@@ -132,7 +132,7 @@ export default reducerWithInitialState(initialState)
 export type SaveNewMapJson = (
   json: string,
   thumbnailDataURL: string
-) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<string>;
 
 export const saveNewMapJson: SaveNewMapJson = (
   json,
@@ -141,22 +141,22 @@ export const saveNewMapJson: SaveNewMapJson = (
   const { uid } = authImport.getState(getStore()).user || { uid: '' };
   const { isUploading } = getState(getStore());
 
-  if (!uid) return;
+  if (!uid) return '';
 
   const params = { json, thumbnailDataURL };
 
-  if (isUploading) return;
+  if (isUploading) return '';
   dispatch(actions.createNew.started(params));
 
   try {
     // thumbnail のアップロード
     // data url => base64 string and metadata
     const [param, base64] = thumbnailDataURL.split(',');
-    const result = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
-    if (!result) {
+    const regex = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
+    if (!regex) {
       throw new Error(`Invalid Data URL: ${param},...`);
     }
-    const type = result[1];
+    const type = regex[1];
     const ext = mime.extension(type);
     if (!base64 || !type || !ext) {
       throw new Error(`Invalid Data URL: ${param},...`);
@@ -179,7 +179,7 @@ export const saveNewMapJson: SaveNewMapJson = (
     const jsonStoragePath = `json/public/users/${uid}/${uuid()}.json`;
     await dispatch(uploadBlob(jsonStoragePath, file));
 
-    await firebase
+    const _ = await firebase
       .firestore()
       .collection('maps')
       .add({
@@ -188,8 +188,14 @@ export const saveNewMapJson: SaveNewMapJson = (
         jsonStoragePath,
         thumbnailStoragePath
       });
+    const documentRef = ((_: any): $npm$firebase$firestore$DocumentReference);
 
-    dispatch(actions.createNew.done({ params, result: {} }));
+    const result = {
+      id: documentRef.id
+    };
+    dispatch(actions.createNew.done({ params, result }));
+
+    return documentRef.id; // ストアにreact-router-domの状態を入れて、リダイレクトが出来るようにする
   } catch (error) {
     dispatch(actions.createNew.failed({ params, error }));
     console.error(error);
