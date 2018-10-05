@@ -7,7 +7,12 @@ import { withRouter, type ContextRouter } from 'react-router-dom';
 import MapEditor from '../components/MapEditor';
 import type { OwnProps } from '../components/MapEditor';
 import type { StoreState } from '../ducks';
-import { saveNewMapJson, type MapDataState, loadMap } from '../ducks/maps';
+import {
+  saveNewMapJson,
+  type MapDataState,
+  loadMap,
+  updateMapJson
+} from '../ducks/maps';
 import * as helpers from '../ducks/helpers';
 
 export type StateProps = {
@@ -60,7 +65,8 @@ const mapStateToProps = (state: StoreState, ownProps: OwnProps): StateProps => {
 
 const mapDispatchToProps = {
   saveNewMapJson,
-  loadMap
+  loadMap,
+  updateMapJson
 };
 
 export type DispatchProps = { ...typeof mapDispatchToProps };

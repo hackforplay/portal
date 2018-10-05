@@ -99,7 +99,15 @@ await Hack.parseMapJson(
     const canvas = document.querySelector('canvas');
     if (!canvas) return;
     const dataUrl = canvas.toDataURL();
-    this.props.saveNewMapJson(json, dataUrl);
+    // 新規保存か、上書き保存か
+    // 他の人のページを見ていることはないと想定する. id があれば上書き, そうでなければ新規
+    // TODO: https://www.notion.so/teramotodaiki/Statefull-canUpdate-canDelete-component-d3dfc285dbaf4b10b446241fa72f5075
+    if (this.props.match.params.id) {
+      const path = `maps/${this.props.match.params.id}`;
+      this.props.updateMapJson(json, dataUrl, path);
+    } else {
+      this.props.saveNewMapJson(json, dataUrl);
+    }
   };
 
   closeCode = () => {

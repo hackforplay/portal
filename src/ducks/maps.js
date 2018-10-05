@@ -43,6 +43,13 @@ export const actions = {
     Error>),
   createNew: (actionCreator.async('CREATE_NEW'): AsyncActionCreators<{ json: string, thumbnailDataURL: string },
     {},
+    Error>),
+  update: (actionCreator.async('UPDATE'): AsyncActionCreators<{
+      json: string,
+      thumbnailDataURL: string,
+      path: string
+    },
+    {},
     Error>)
 };
 
@@ -64,20 +71,31 @@ const initialState: State = {
 
 // Root Reducer
 export default reducerWithInitialState(initialState)
-  .case(actions.createNew.started, (state, files) => {
-    const next: State = {
-      ...state,
-      isUploading: true
-    };
-    return next;
-  })
-  .cases([actions.createNew.done, actions.createNew.failed], (state, files) => {
-    const next: State = {
-      ...state,
-      isUploading: false
-    };
-    return next;
-  })
+  .cases(
+    [actions.createNew.started, actions.update.started],
+    (state, files) => {
+      const next: State = {
+        ...state,
+        isUploading: true
+      };
+      return next;
+    }
+  )
+  .cases(
+    [
+      actions.createNew.done,
+      actions.createNew.failed,
+      actions.update.done,
+      actions.update.failed
+    ],
+    (state, files) => {
+      const next: State = {
+        ...state,
+        isUploading: false
+      };
+      return next;
+    }
+  )
   .case(actions.load.done, (state, payload) => {
     const next: State = {
       ...state,
@@ -156,6 +174,64 @@ export const saveNewMapJson: SaveNewMapJson = (
     dispatch(actions.createNew.done({ params, result: {} }));
   } catch (error) {
     dispatch(actions.createNew.failed({ params, error }));
+    console.error(error);
+  }
+};
+
+export type UpdateMapJson = (
+  json: string,
+  thumbnailDataURL: string,
+  path: string
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
+
+export const updateMapJson: UpdateMapJson = (
+  json,
+  thumbnailDataURL,
+  path
+) => async (dispatch, getStore) => {
+  const { uid } = authImport.getState(getStore()).user || { uid: '' };
+  const { isUploading, byPath } = getState(getStore());
+  const documentData = byPath[path].data;
+
+  if (!uid || !path || !documentData) return;
+
+  const params = { json, thumbnailDataURL, path };
+
+  if (isUploading) return;
+  dispatch(actions.update.started(params));
+
+  try {
+    // thumbnail のアップロード
+    // data url => base64 string and metadata
+    const [param, base64] = thumbnailDataURL.split(',');
+    const result = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
+    if (!result) {
+      throw new Error(`Invalid Data URL: ${param},...`);
+    }
+    const type = result[1];
+    const ext = mime.extension(type);
+    if (!base64 || !type || !ext) {
+      throw new Error(`Invalid Data URL: ${param},...`);
+    }
+    // base64 string => blob ==[UPLOAD]==> storage path
+    const bin = atob(base64); // base64 encoded string => binary string
+    let byteArray = new Uint8Array(bin.length); // binary string => 8bit TypedArray
+    for (let i = bin.length - 1; i >= 0; i--) {
+      byteArray[i] = bin.charCodeAt(i);
+    }
+    const blob = new Blob([byteArray.buffer], { type });
+
+    // Upload to storage
+    await dispatch(uploadBlob(documentData.thumbnailStoragePath, blob));
+
+    // マップデータ JSON に書き出し
+    const file = new Blob([json], { type: 'application/json' });
+    // Storage にアップロード
+    await dispatch(uploadBlob(documentData.jsonStoragePath, file));
+
+    dispatch(actions.update.done({ params, result: {} }));
+  } catch (error) {
+    dispatch(actions.update.failed({ params, error }));
     console.error(error);
   }
 };
