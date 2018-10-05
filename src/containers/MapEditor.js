@@ -1,10 +1,13 @@
 // @flow
+import React from 'react';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter, type ContextRouter } from 'react-router-dom';
 
 import MapEditor from '../components/MapEditor';
 import type { OwnProps } from '../components/MapEditor';
 import type { StoreState } from '../ducks';
-import { saveNewMapJson, type MapDataState } from '../ducks/maps';
+import { saveNewMapJson, type MapDataState, loadMap } from '../ducks/maps';
 import * as helpers from '../ducks/helpers';
 
 export type StateProps = {
@@ -46,7 +49,7 @@ const mapStateToProps = (state: StoreState, ownProps: OwnProps): StateProps => {
   const id = ownProps.match.params.id;
 
   const mapState = id
-    ? state.maps.dataByPath[`maps/${id}`] || helpers.empty()
+    ? state.maps.dataByPath[`maps/${id}`] || helpers.processing()
     : helpers.has(defaultMap());
 
   return {
@@ -56,9 +59,29 @@ const mapStateToProps = (state: StoreState, ownProps: OwnProps): StateProps => {
 };
 
 const mapDispatchToProps = {
-  saveNewMapJson
+  saveNewMapJson,
+  loadMap
 };
 
 export type DispatchProps = { ...typeof mapDispatchToProps };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapEditor);
+type Props = StateProps & DispatchProps & { ...ContextRouter };
+
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(
+  class extends React.Component<Props> {
+    componentDidMount() {
+      const id = this.props.match.params.id;
+      if (id) {
+        // ロードされていなければロードする
+        this.props.loadMap(`maps/${id}`);
+      }
+    }
+
+    render() {
+      return <MapEditor {...this.props} />;
+    }
+  }
+);

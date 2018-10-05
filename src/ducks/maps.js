@@ -3,21 +3,17 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 import mime from 'mime-types';
 import uuid from 'uuid/v4';
-import { actionCreatorFactory } from 'typescript-fsa';
+import { actionCreatorFactory, type AsyncActionCreators } from 'typescript-fsa';
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
 
 import type { Statefull } from './helpers';
-import { uploadBlob } from './storage';
+import * as helpers from './helpers';
+import { uploadBlob, downloadUrl, getStorageByPath } from './storage';
 import * as authImport from './auth';
 import type { Dispatch, GetStore } from './type';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'maps';
-
-const actionCreator = actionCreatorFactory('portal/maps');
-export const actions = {
-  createNew: actionCreator.async('CREATE_NEW')
-};
 
 // redux-thunk and flow-type compat
 export type Action = {};
@@ -35,6 +31,20 @@ type MapData = {
   squares: any[]
 };
 export type MapDataState = Statefull<MapData>;
+
+const actionCreator = actionCreatorFactory('portal/maps');
+export const actions = {
+  load: (actionCreator.async('LOAD'): AsyncActionCreators<{ path: string },
+    {
+      path: string,
+      data: MapData,
+      documentData: MapDocument
+    },
+    Error>),
+  createNew: (actionCreator.async('CREATE_NEW'): AsyncActionCreators<{ json: string, thumbnailDataURL: string },
+    {},
+    Error>)
+};
 
 export type State = {
   isUploading: boolean,
@@ -67,6 +77,20 @@ export default reducerWithInitialState(initialState)
       isUploading: false
     };
     return next;
+  })
+  .case(actions.load.done, (state, payload) => {
+    const next: State = {
+      ...state,
+      byPath: {
+        ...state.byPath,
+        [payload.params.path]: helpers.has(payload.result.documentData)
+      },
+      dataByPath: {
+        ...state.dataByPath,
+        [payload.params.path]: helpers.has(payload.result.data)
+      }
+    };
+    return next;
   });
 
 export type SaveNewMapJson = (
@@ -86,7 +110,7 @@ export const saveNewMapJson: SaveNewMapJson = (
   const params = { json, thumbnailDataURL };
 
   if (isUploading) return;
-  dispatch(actions.createNew.started({ params }));
+  dispatch(actions.createNew.started(params));
 
   try {
     // thumbnail のアップロード
@@ -119,7 +143,7 @@ export const saveNewMapJson: SaveNewMapJson = (
     const jsonStoragePath = `json/public/users/${uid}/${uuid()}.json`;
     await dispatch(uploadBlob(jsonStoragePath, file));
 
-    const ref = await firebase
+    await firebase
       .firestore()
       .collection('maps')
       .add({
@@ -129,12 +153,59 @@ export const saveNewMapJson: SaveNewMapJson = (
         thumbnailStoragePath
       });
 
-    console.log(ref);
-
     dispatch(actions.createNew.done({ params, result: {} }));
   } catch (error) {
     dispatch(actions.createNew.failed({ params, error }));
     console.error(error);
+  }
+};
+
+export type LoadMap = (
+  path: string
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
+
+export const loadMap: LoadMap = path => async (dispatch, getStore) => {
+  const { byPath, dataByPath } = getState(getStore());
+
+  if (byPath[path] || dataByPath[path]) {
+    return; // 既にロード中
+  }
+
+  const params = { path };
+  dispatch(actions.load.started(params));
+
+  try {
+    // Firestore から取得
+    const documentSnapshot = await firebase
+      .firestore()
+      .doc(path)
+      .get();
+
+    const documentData = ((documentSnapshot.data(): any): MapDocument);
+
+    await dispatch(downloadUrl(documentData.jsonStoragePath));
+
+    const jsonState = getStorageByPath(
+      getStore(),
+      documentData.jsonStoragePath
+    );
+
+    if (!jsonState.url) {
+      throw new Error('Not Found in Storage');
+    }
+
+    const response = await fetch(jsonState.url);
+    const json = await response.text();
+    const result = {
+      path,
+      data: JSON.parse(json),
+      documentData
+    };
+
+    dispatch(actions.load.done({ params, result }));
+  } catch (error) {
+    console.error(error);
+    dispatch(actions.load.failed({ params, error }));
   }
 };
 
