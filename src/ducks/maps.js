@@ -3,7 +3,11 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 import mime from 'mime-types';
 import uuid from 'uuid/v4';
-import { actionCreatorFactory, type AsyncActionCreators } from 'typescript-fsa';
+import {
+  actionCreatorFactory,
+  type ActionCreator,
+  type AsyncActionCreators
+} from 'typescript-fsa';
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
 
 import type { Statefull } from './helpers';
@@ -34,6 +38,10 @@ export type MapDataState = Statefull<MapData>;
 
 const actionCreator = actionCreatorFactory('portal/maps');
 export const actions = {
+  set: (actionCreator('SET'): ActionCreator<{
+    path: string,
+    data: MapData
+  }>),
   load: (actionCreator.async('LOAD'): AsyncActionCreators<{ path: string },
     {
       path: string,
@@ -106,6 +114,16 @@ export default reducerWithInitialState(initialState)
       dataByPath: {
         ...state.dataByPath,
         [payload.params.path]: helpers.has(payload.result.data)
+      }
+    };
+    return next;
+  })
+  .case(actions.set, (state, payload) => {
+    const next: State = {
+      ...state,
+      dataByPath: {
+        ...state.dataByPath,
+        [payload.path]: helpers.has(payload.data)
       }
     };
     return next;
@@ -201,6 +219,10 @@ export const updateMapJson: UpdateMapJson = (
   dispatch(actions.update.started(params));
 
   try {
+    // ストアのデータを更新する
+    const data = JSON.parse(json);
+    dispatch(actions.set({ path, data }));
+
     // thumbnail のアップロード
     // data url => base64 string and metadata
     const [param, base64] = thumbnailDataURL.split(',');
