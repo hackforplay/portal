@@ -94,7 +94,7 @@ await Hack.parseMapJson(
     this.setState({ open: true, code });
   };
 
-  saveNewMapJson = () => {
+  saveNewMapJson = async () => {
     const json = JSON.stringify(window.root.export().map);
     const canvas = document.querySelector('canvas');
     if (!canvas) return;
@@ -106,7 +106,12 @@ await Hack.parseMapJson(
       const path = `maps/${this.props.match.params.id}`;
       this.props.updateMapJson(json, dataUrl, path);
     } else {
-      this.props.saveNewMapJson(json, dataUrl);
+      const id = await this.props.saveNewMapJson(json, dataUrl);
+      if (id) {
+        this.props.history.push(`/maps/${id}`);
+      } else {
+        alert('ほぞんにしっぱいしました');
+      }
     }
   };
 

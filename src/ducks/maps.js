@@ -12,7 +12,7 @@ import { reducerWithInitialState } from 'typescript-fsa-reducers';
 
 import type { Statefull } from './helpers';
 import * as helpers from './helpers';
-import { uploadBlob, downloadUrl, getStorageByPath } from './storage';
+import { uploadBlob } from './storage';
 import * as authImport from './auth';
 import type { Dispatch, GetStore } from './type';
 
@@ -23,7 +23,8 @@ export const storeName: string = 'maps';
 export type Action = {};
 
 type MapDocument = {
-  jsonStoragePath: string,
+  jsonRef: string,
+  jsonUrl: string,
   thumbnailStoragePath: string,
   uid: string,
   visibility: 'public'
@@ -132,7 +133,7 @@ export default reducerWithInitialState(initialState)
 export type SaveNewMapJson = (
   json: string,
   thumbnailDataURL: string
-) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
+) => (dispatch: Dispatch, getStore: GetStore) => Promise<string>;
 
 export const saveNewMapJson: SaveNewMapJson = (
   json,
@@ -141,22 +142,22 @@ export const saveNewMapJson: SaveNewMapJson = (
   const { uid } = authImport.getState(getStore()).user || { uid: '' };
   const { isUploading } = getState(getStore());
 
-  if (!uid) return;
+  if (!uid) return '';
 
   const params = { json, thumbnailDataURL };
 
-  if (isUploading) return;
+  if (isUploading) return '';
   dispatch(actions.createNew.started(params));
 
   try {
     // thumbnail のアップロード
     // data url => base64 string and metadata
     const [param, base64] = thumbnailDataURL.split(',');
-    const result = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
-    if (!result) {
+    const regex = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
+    if (!regex) {
       throw new Error(`Invalid Data URL: ${param},...`);
     }
-    const type = result[1];
+    const type = regex[1];
     const ext = mime.extension(type);
     if (!base64 || !type || !ext) {
       throw new Error(`Invalid Data URL: ${param},...`);
@@ -176,24 +177,42 @@ export const saveNewMapJson: SaveNewMapJson = (
     // マップデータ JSON に書き出し
     const file = new Blob([json], { type: 'application/json' });
     // Storage にアップロード
-    const jsonStoragePath = `json/public/users/${uid}/${uuid()}.json`;
-    await dispatch(uploadBlob(jsonStoragePath, file));
 
-    await firebase
+    const snapshot = await firebase
+      .storage()
+      .refFromURL(
+        `gs://${process.env.REACT_APP_FIREBASE_STORAGE_BUCKET_UGC ||
+          ''}/${uuid()}.json`
+      )
+      .put(file);
+
+    const _ = await firebase
       .firestore()
       .collection('maps')
       .add({
         uid,
         visibility: 'public',
-        jsonStoragePath,
+        jsonRef: `gs://${snapshot.metadata.bucket}/${
+          snapshot.metadata.fullPath
+        }`,
+        jsonUrl: `https://storage.googleapis.com/${snapshot.metadata.bucket}/${
+          snapshot.metadata.fullPath
+        }`,
         thumbnailStoragePath
       });
+    const documentRef = ((_: any): $npm$firebase$firestore$DocumentReference);
 
-    dispatch(actions.createNew.done({ params, result: {} }));
+    const result = {
+      id: documentRef.id
+    };
+    dispatch(actions.createNew.done({ params, result }));
+
+    return documentRef.id; // ストアにreact-router-domの状態を入れて、リダイレクトが出来るようにする
   } catch (error) {
     dispatch(actions.createNew.failed({ params, error }));
     console.error(error);
   }
+  return '';
 };
 
 export type UpdateMapJson = (
@@ -249,7 +268,10 @@ export const updateMapJson: UpdateMapJson = (
     // マップデータ JSON に書き出し
     const file = new Blob([json], { type: 'application/json' });
     // Storage にアップロード
-    await dispatch(uploadBlob(documentData.jsonStoragePath, file));
+    await firebase
+      .storage()
+      .refFromURL(documentData.jsonRef)
+      .put(file);
 
     dispatch(actions.update.done({ params, result: {} }));
   } catch (error) {
@@ -281,18 +303,7 @@ export const loadMap: LoadMap = path => async (dispatch, getStore) => {
 
     const documentData = ((documentSnapshot.data(): any): MapDocument);
 
-    await dispatch(downloadUrl(documentData.jsonStoragePath));
-
-    const jsonState = getStorageByPath(
-      getStore(),
-      documentData.jsonStoragePath
-    );
-
-    if (!jsonState.url) {
-      throw new Error('Not Found in Storage');
-    }
-
-    const response = await fetch(jsonState.url);
+    const response = await fetch(documentData.jsonUrl);
     const json = await response.text();
     const result = {
       path,
