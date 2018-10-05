@@ -93,7 +93,7 @@ export default reducerWithInitialState(initialState)
   .cases(
     [
       actions.createNew.done,
-      ctions.createNew.failed,
+      actions.createNew.failed,
       actions.update.done,
       actions.update.failed
     ],
