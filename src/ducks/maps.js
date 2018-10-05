@@ -321,3 +321,5 @@ export const loadMap: LoadMap = path => async (dispatch, getStore) => {
 export function getState(store: $Call<GetStore>): State {
   return store[storeName];
 }
+
+//
