@@ -9,6 +9,7 @@ import type { OwnProps } from '../components/MapEditor';
 import type { StoreState } from '../ducks';
 import {
   saveNewMapJson,
+  type MapDocumentState,
   type MapDataState,
   loadMap,
   updateMapJson
@@ -17,6 +18,7 @@ import * as helpers from '../ducks/helpers';
 
 export type StateProps = {
   isUploading: boolean,
+  mapDocument: MapDocumentState,
   mapState: MapDataState
 };
 
@@ -53,12 +55,17 @@ function defaultMap() {
 const mapStateToProps = (state: StoreState, ownProps: OwnProps): StateProps => {
   const id = ownProps.match.params.id;
 
+  const mapDocument = id
+    ? state.maps.byPath[`maps/${id}`] || helpers.processing()
+    : helpers.empty();
+
   const mapState = id
     ? state.maps.dataByPath[`maps/${id}`] || helpers.processing()
     : helpers.has(defaultMap());
 
   return {
     isUploading: state.maps.isUploading,
+    mapDocument,
     mapState
   };
 };

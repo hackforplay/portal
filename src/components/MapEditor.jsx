@@ -78,20 +78,22 @@ class MapEditor extends React.Component<Props, State> {
   }
 
   showCode = () => {
-    let code;
-    try {
-      code = `
-await Hack.parseMapJson(
-  'map1',
-  \`${JSON.stringify(window.root.export().map)}\`
-);`.trim();
-    } catch (e) {
-      code = `申し訳ございません。コードの生成に失敗しました😭 ${e.name}: ${
-        e.message
-      }`;
-      console.error(e);
+    const { data } = this.props.mapDocument;
+    if (!data) {
+      this.setState({
+        open: true,
+        code: '保存すると、ここにコードが表示されます'
+      });
+      return;
     }
-    this.setState({ open: true, code });
+    this.setState({
+      open: true,
+      code: `
+await Hack.loadMap(
+  'map1',
+  '${data.jsonUrl}'
+);`.trim()
+    });
   };
 
   saveNewMapJson = async () => {
