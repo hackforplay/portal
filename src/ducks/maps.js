@@ -176,8 +176,8 @@ export const saveNewMapJson: SaveNewMapJson = (
 
     // マップデータ JSON に書き出し
     const file = new Blob([json], { type: 'application/json' });
-    // Storage にアップロード
 
+    // Storage にアップロード
     const snapshot = await firebase
       .storage()
       .refFromURL(
