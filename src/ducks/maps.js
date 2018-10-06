@@ -22,12 +22,14 @@ export const storeName: string = 'maps';
 // redux-thunk and flow-type compat
 export type Action = {};
 
-type MapDocument = {
+export type MapDocument = {
   jsonRef: string,
   jsonUrl: string,
   thumbnailStoragePath: string,
   uid: string,
-  visibility: 'public'
+  visibility: 'limited',
+  createdAt: FirestoreTimestamp,
+  updatedAt?: FirestoreTimestamp
 };
 export type MapDocumentState = Statefull<MapDocument>;
 
@@ -59,6 +61,16 @@ export const actions = {
       path: string
     },
     {},
+    Error>),
+  bringOwnDocumentTop: (actionCreator('BRING_OWN_DOCUMENT_TOP'): ActionCreator<{
+    document: $npm$firebase$firestore$DocumentSnapshot
+  }>),
+  loadOwnDocuments: (actionCreator.async(
+    'LOAD_OWN_DOCUMENTS'
+  ): AsyncActionCreators<{},
+    {
+      documents: $npm$firebase$firestore$DocumentSnapshot[]
+    },
     Error>)
 };
 
@@ -69,13 +81,15 @@ export type State = {
   },
   dataByPath: {
     [key: string]: MapDataState
-  }
+  },
+  ownDocumentSnapshotsOrderByUpdatedAt: $npm$firebase$firestore$DocumentSnapshot[]
 };
 
 const initialState: State = {
   isUploading: false,
   byPath: {},
-  dataByPath: {}
+  dataByPath: {},
+  ownDocumentSnapshotsOrderByUpdatedAt: []
 };
 
 // Root Reducer
@@ -128,6 +142,44 @@ export default reducerWithInitialState(initialState)
       }
     };
     return next;
+  })
+  .case(actions.bringOwnDocumentTop, (state, payload) => {
+    // ownDocumentSnapshotsOrderByUpdatedAt のトップを payload.document に変更または新たに追加する
+    const document: $npm$firebase$firestore$DocumentSnapshot = payload.document;
+    const snapshots = state.ownDocumentSnapshotsOrderByUpdatedAt.filter(
+      old => old.id !== document.id
+    );
+    snapshots.unshift(document);
+    const next: State = {
+      ...state,
+      ownDocumentSnapshotsOrderByUpdatedAt: snapshots
+    };
+    return next;
+  })
+  .case(actions.loadOwnDocuments.done, (state, payload) => {
+    // ownDocumentSnapshotsOrderByUpdatedAt に payload.documents を追加し, タイムスタンプでソートする
+    const documents: $npm$firebase$firestore$DocumentSnapshot[] =
+      payload.result.documents;
+    const byPath = { ...state.byPath };
+    for (const item of documents) {
+      byPath[`maps/${item.id}`] = helpers.has(item.data());
+    }
+    const snapshots = [...state.ownDocumentSnapshotsOrderByUpdatedAt];
+    for (const item of documents) {
+      const index = snapshots.findIndex(old => old.id === item.id);
+      if (index !== -1) {
+        snapshots[index] = item;
+      } else {
+        snapshots.push(item);
+      }
+    }
+    snapshots.sort(compareTimestamps);
+    const next: State = {
+      ...state,
+      byPath,
+      ownDocumentSnapshotsOrderByUpdatedAt: snapshots
+    };
+    return next;
   });
 
 export type SaveNewMapJson = (
@@ -169,7 +221,7 @@ export const saveNewMapJson: SaveNewMapJson = (
       byteArray[i] = bin.charCodeAt(i);
     }
     const blob = new Blob([byteArray.buffer], { type });
-    const thumbnailStoragePath = `image/public/users/${uid}/${uuid()}.${ext}`;
+    const thumbnailStoragePath = `image/limited/users/${uid}/${uuid()}.${ext}`;
 
     // Upload to storage
     await dispatch(uploadBlob(thumbnailStoragePath, blob));
@@ -191,21 +243,24 @@ export const saveNewMapJson: SaveNewMapJson = (
       .collection('maps')
       .add({
         uid,
-        visibility: 'public',
+        visibility: 'limited',
         jsonRef: `gs://${snapshot.metadata.bucket}/${
           snapshot.metadata.fullPath
         }`,
         jsonUrl: `https://storage.googleapis.com/${snapshot.metadata.bucket}/${
           snapshot.metadata.fullPath
         }`,
-        thumbnailStoragePath
+        thumbnailStoragePath,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-    const documentRef = (_: $npm$firebase$firestore$DocumentReference);
 
-    const result = {
-      id: documentRef.id
-    };
-    dispatch(actions.createNew.done({ params, result }));
+    dispatch(actions.createNew.done({ params, result: {} }));
+
+    // ストアの情報を更新する
+    const documentRef = (_: $npm$firebase$firestore$DocumentReference);
+    const documentSnapshot: $npm$firebase$firestore$DocumentSnapshot = await documentRef.get();
+    dispatch(actions.bringOwnDocumentTop({ document: documentSnapshot }));
 
     return documentRef.id; // ストアにreact-router-domの状態を入れて、リダイレクトが出来るようにする
   } catch (error) {
@@ -242,6 +297,15 @@ export const updateMapJson: UpdateMapJson = (
     const data = JSON.parse(json);
     dispatch(actions.set({ path, data }));
 
+    // ストアのドキュメントが更新されたら、ドキュメントをトップに持ってくる
+    const cancel = await firebase
+      .firestore()
+      .doc(path)
+      .onSnapshot(documentSnapshot => {
+        cancel();
+        dispatch(actions.bringOwnDocumentTop({ document: documentSnapshot }));
+      });
+
     // thumbnail のアップロード
     // data url => base64 string and metadata
     const [param, base64] = thumbnailDataURL.split(',');
@@ -273,6 +337,12 @@ export const updateMapJson: UpdateMapJson = (
       .refFromURL(documentData.jsonRef)
       .put(file);
 
+    await firebase
+      .firestore()
+      .doc(path)
+      .update({
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
     dispatch(actions.update.done({ params, result: {} }));
   } catch (error) {
     dispatch(actions.update.failed({ params, error }));
@@ -287,23 +357,28 @@ export type LoadMap = (
 export const loadMap: LoadMap = path => async (dispatch, getStore) => {
   const { byPath, dataByPath } = getState(getStore());
 
-  if (byPath[path] || dataByPath[path]) {
-    return; // 既にロード中
-  }
+  if (dataByPath[path]) return; // 既にロード中
 
   const params = { path };
   dispatch(actions.load.started(params));
 
   try {
-    // Firestore から取得
-    const documentSnapshot = await firebase
-      .firestore()
-      .doc(path)
-      .get();
+    let documentData = byPath[path] ? byPath[path].data : null;
+    let jsonUrl;
+    if (documentData) {
+      jsonUrl = documentData.jsonUrl;
+    } else {
+      // Firestore から取得
+      const documentSnapshot = await await firebase
+        .firestore()
+        .doc(path)
+        .get();
 
-    const documentData = ((documentSnapshot.data(): any): MapDocument);
+      documentData = ((documentSnapshot.data(): any): MapDocument);
+      jsonUrl = documentData.jsonUrl;
+    }
 
-    const response = await fetch(documentData.jsonUrl);
+    const response = await fetch(jsonUrl);
     const json = await response.text();
     const result = {
       path,
@@ -318,8 +393,48 @@ export const loadMap: LoadMap = path => async (dispatch, getStore) => {
   }
 };
 
+export type LoadOwnMaps = () => (
+  dispatch: Dispatch,
+  getStore: GetStore
+) => Promise<void>;
+
+export const loadOwnMaps: LoadOwnMaps = () => async (dispatch, getStore) => {
+  const authUser = authImport.getState(getStore()).user;
+  if (!authUser) {
+    // ログインしていない
+    return;
+  }
+  const params = {};
+  dispatch(actions.loadOwnDocuments.started(params));
+  try {
+    const { uid } = authUser;
+    const querySnapshot = await firebase
+      .firestore()
+      .collection('maps')
+      .where('uid', '==', uid)
+      .orderBy('updatedAt', 'desc')
+      .orderBy('createdAt', 'desc')
+      .get();
+    const result = {
+      documents: querySnapshot.docs
+    };
+    dispatch(actions.loadOwnDocuments.done({ params, result }));
+  } catch (error) {
+    dispatch(actions.loadOwnDocuments.failed({ params, error }));
+  }
+};
+
 export function getState(store: $Call<GetStore>): State {
   return store[storeName];
 }
 
-//
+function compareTimestamps(
+  a: $npm$firebase$firestore$DocumentSnapshot,
+  b: $npm$firebase$firestore$DocumentSnapshot
+): number {
+  const _a: MapDocument = (a.data(): any);
+  const _b: MapDocument = (b.data(): any);
+  const aTimestamp = _a.updatedAt || _a.createdAt;
+  const bTimestamp = _b.updatedAt || _b.createdAt;
+  return bTimestamp.toDate().getTime() - aTimestamp.toDate().getTime();
+}

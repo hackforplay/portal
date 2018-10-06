@@ -12,11 +12,13 @@ import {
   type WorkCollectionType
 } from '../ducks/work';
 import { getUserByUid, type UserType } from '../ducks/user';
+import { loadOwnMaps } from '../ducks/maps';
 
 export type StateProps = {
   user: UserType,
   works: WorkCollectionType,
-  isOwner: boolean
+  isOwner: boolean,
+  maps: $npm$firebase$firestore$DocumentSnapshot[]
 };
 
 const mapStateToProps = (
@@ -35,13 +37,15 @@ const mapStateToProps = (
   return {
     user: getUserByUid(state, id),
     works: getWorksByUserId(state, id),
-    isOwner: authUser ? authUser.uid === id : false
+    isOwner: authUser ? authUser.uid === id : false,
+    maps: authUser ? state.maps.ownDocumentSnapshotsOrderByUpdatedAt : []
   };
 };
 
 const mapDispatchToProps = {
   fetchWorksByUser,
-  startObserveOwnWorks
+  startObserveOwnWorks,
+  loadOwnMaps
 };
 
 export type DispatchProps = { ...typeof mapDispatchToProps };
@@ -52,6 +56,7 @@ export default (class UserWorks extends React.Component<Props> {
   update() {
     if (this.props.isOwner) {
       this.props.startObserveOwnWorks();
+      this.props.loadOwnMaps();
     } else {
       this.props.fetchWorksByUser(this.props.user);
     }
