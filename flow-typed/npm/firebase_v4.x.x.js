@@ -569,7 +569,7 @@ declare class $npm$firebase$firestore$DocumentReference {
     | $npm$firebase$firestore$observer
     | $npm$firebase$firestore$observerError,
     onError?: $npm$firebase$firestore$observerError
-  ): void;
+  ): () => void;
   set(data: {}, options?: { merge: boolean } | null): Promise<void>;
   update(...args: Array<any>): Promise<void>;
 }
