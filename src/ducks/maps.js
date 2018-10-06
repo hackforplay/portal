@@ -186,7 +186,7 @@ export const saveNewMapJson: SaveNewMapJson = (
       )
       .put(file);
 
-    const _ = await firebase
+    const _: any = await firebase
       .firestore()
       .collection('maps')
       .add({
@@ -200,7 +200,7 @@ export const saveNewMapJson: SaveNewMapJson = (
         }`,
         thumbnailStoragePath
       });
-    const documentRef = ((_: any): $npm$firebase$firestore$DocumentReference);
+    const documentRef = (_: $npm$firebase$firestore$DocumentReference);
 
     const result = {
       id: documentRef.id
