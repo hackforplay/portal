@@ -32,6 +32,14 @@
         { "fieldPath": "visibility", "mode": "ASCENDING" },
         { "fieldPath": "createdAt", "mode": "DESCENDING" }
       ]
+    },
+    {
+      "collectionId": "maps",
+      "fields": [
+        { "fieldPath": "uid", "mode": "ASCENDING" },
+        { "fieldPath": "updatedAt", "mode": "DESCENDING" },
+        { "fieldPath": "createdAt", "mode": "DESCENDING" }
+      ]
     }
   ]
 }
