@@ -134,6 +134,7 @@ export default class WorkList extends React.Component<Props, State> {
             ))}
           </Grid>
         </Collapse>
+        <Link to="/map-editor">マップをつくる</Link>
       </Paper>
     );
   }
