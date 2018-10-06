@@ -61,6 +61,7 @@ export default function App() {
           <Route path="/officials" component={OfficialWork} />
           <Route path="/users/:id/:tab?/:query?" component={UserWorks} />
           <Route path="/map-editor" component={MapEditor} />
+          <Route path="/maps/:id" component={MapEditor} />
 
           <Route path={sp1} exact component={Sp1} />
           <Route path={`${sp1}/ranking/:stage`} component={PCRanking} />

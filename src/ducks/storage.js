@@ -166,11 +166,13 @@ export const uploadBlob: uploadBlobType = (path, file) => async (
   dispatch,
   getStore
 ) => {
-  const storage = getStorageByPath(getStore(), path);
-  if (storage.isAvailable || storage.isUploading) {
-    // すでにアップロードされたファイル
-    return;
-  }
+  // ↓ファイルの上書き保存ができなかったので、コメントアウトした. 問題ないか？
+  // const storage = getStorageByPath(getStore(), path);
+  // if (storage.isAvailable || storage.isUploading) {
+  //   // すでにアップロードされたファイル
+  //   return;
+  // }
+
   const parsed = parseStoragePath(path);
   if (!isAuthUser(getStore(), parsed.uid)) {
     // アップロード権限がない

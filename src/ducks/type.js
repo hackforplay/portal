@@ -12,6 +12,7 @@ import type {
   Action as PCRankingAction
 } from './pcRanking';
 import type { State as StorageState, Action as StorageAction } from './storage';
+import type { State as MapsState, Action as MapsAction } from './maps';
 
 export type StoreState = {|
   +auth: AuthState,
@@ -20,7 +21,8 @@ export type StoreState = {|
   +make: MakeState,
   +user: UserState,
   +pcRanking: PCRankingState,
-  +storage: StorageState
+  +storage: StorageState,
+  +maps: MapsState
 |};
 export type GetStore = () => StoreState;
 
@@ -34,6 +36,7 @@ export type Action =
   | OfficialWorkAction
   | MakeAction
   | StorageAction
+  | MapsAction
   | AuthAction
   | UserAction
   | PCRankingAction

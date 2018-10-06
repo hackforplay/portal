@@ -43,6 +43,10 @@ export const searchBarInfo = [
       {
         text: 'ステージ',
         to: '/users/:id'
+      },
+      {
+        text: 'マップ',
+        to: '/users/:id/maps'
       } /*,
       {
         text: 'お気に入り',

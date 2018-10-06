@@ -5,6 +5,7 @@ import type { ContextRouter } from 'react-router-dom';
 import { css } from 'emotion';
 
 import WorkList from '../containers/WorkList';
+import MapList from '../containers/MapList';
 import theme from '../settings/theme';
 import type { StateProps, DispatchProps } from '../containers/UserWorks';
 
@@ -16,7 +17,7 @@ const classes = {
 
 export type Props = StateProps & DispatchProps & { ...ContextRouter };
 
-export default ({ match, works }: Props) => {
+export default ({ match, works, maps }: Props) => {
   // 現在の URL に対して適切なデータを表示
   const id = match.params.id || '';
   const tab = match.params.tab || '';
@@ -28,6 +29,14 @@ export default ({ match, works }: Props) => {
           title="ステージ"
           more
           moreLink={`/users/${id}`}
+          showVisibility
+        />
+      ) : tab === 'maps' ? (
+        <MapList
+          maps={maps}
+          title="マップ"
+          more
+          moreLink={`/users/${id}/maps`}
           showVisibility
         />
       ) : /* tab === 'likes' ? (
