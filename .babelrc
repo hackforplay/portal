@@ -1,4 +1,11 @@
 {
   "presets": ["react-app"],
-  "plugins": ["transform-decorators-legacy"]
+  "plugins": [
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ]
+  ]
 }
