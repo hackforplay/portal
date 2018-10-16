@@ -3,7 +3,7 @@ import React from "react";
 import type { ElementProps } from "react";
 import SvgIcon from "material-ui/SvgIcon";
 
-const Serach = (props: ElementProps<typeof SvgIcon>) => (
+const SvgSerach = (props: ElementProps<typeof SvgIcon>) => (
   <SvgIcon {...props}>
     <g fill="currentColor" fillRule="evenodd">
       <path
@@ -22,4 +22,4 @@ const Serach = (props: ElementProps<typeof SvgIcon>) => (
   </SvgIcon>
 );
 
-export default Serach;
+export default SvgSerach;
