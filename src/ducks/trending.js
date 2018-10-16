@@ -3,6 +3,22 @@ import type { WorkData } from './work';
 
 export const data: Array<WorkData> = [
   {
+    id: 'officials/typing',
+    search: 'officials/typing',
+    created_at: '2018/10/16 00:00:00',
+    title: 'キーボードのトレーニング',
+    createdAt: '2018/10/16 00:00:00',
+    clearRate: 0,
+    description: '',
+    author: '公式',
+    favsNum: 0,
+    path: '/officials/typing',
+    updatedAt: '2018/10/16 00:00:00',
+    viewsNum: 0,
+    visibility: 'public',
+    image: 'https://i.gyazo.com/8163e3222e744220eee77e0328de4282.png'
+  },
+  {
     id: '3087',
     search: 'ks9iEXXkQE7rvJ',
     created_at: '2018-03-28 09:43:40',
