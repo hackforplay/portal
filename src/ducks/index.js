@@ -9,6 +9,7 @@ import * as make from './make';
 import * as user from './user';
 import * as pcRanking from './pcRanking';
 import * as storage from './storage';
+import * as theme from './theme';
 
 export default combineReducers({
   auth: auth.default,
@@ -17,7 +18,8 @@ export default combineReducers({
   make: make.default,
   user: user.default,
   pcRanking: pcRanking.default,
-  storage: storage.default
+  storage: storage.default,
+  theme: theme.default
 });
 
 export * from './type';
