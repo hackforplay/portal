@@ -127,7 +127,7 @@ export default (props: Props) => {
                   <Typography type="subheading" align="left" gutterBottom>
                     HackforPlayとは？
                   </Typography>
-                  <Typography type="title" align="left" gutterBottom>
+                  <Typography variant="title" align="left" gutterBottom>
                     はじめてプレイする方はこちら
                   </Typography>
                 </div>
@@ -152,7 +152,7 @@ export default (props: Props) => {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img src={dragon} alt="" />
                 <div style={{ marginLeft: 16 }}>
-                  <Typography type="title" align="left" gutterBottom>
+                  <Typography variant="title" align="left" gutterBottom>
                     プログラミングコロシアム特別ステージ
                   </Typography>
                 </div>
@@ -181,10 +181,10 @@ export default (props: Props) => {
                   />
                 </Grid>
               </Grid>
-              <Typography type="title" align="left" gutterBottom>
+              <Typography variant="title" align="left" gutterBottom>
                 今年のプログラミングコロシアムは、ロックマン©︎とコラボ！
               </Typography>
-              <Typography type="body1" align="left" gutterBottom>
+              <Typography variant="body1" align="left" gutterBottom>
                 プログラムを使ってロックマン©︎を動かそう。コマンドの一覧は
                 <a
                   href="https://scrapbox.io/hackforplay/%E3%83%AD%E3%83%83%E3%82%AF%E3%83%9E%E3%83%B3%E3%81%AE%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89"
@@ -195,7 +195,7 @@ export default (props: Props) => {
                 </a>
                 すれば見ることができるぞ
               </Typography>
-              <Typography type="caption" align="left">
+              <Typography variant="caption" align="left">
                 ※ロックマンは株式会社カプコンの登録商標です
               </Typography>
               <Button
@@ -240,7 +240,7 @@ export default (props: Props) => {
               works={props.trending}
               title={
                 <Typography
-                  type="title"
+                  variant="title"
                   align="center"
                   gutterBottom
                   className={classes.title}
@@ -273,7 +273,7 @@ export default (props: Props) => {
           {/* <Grid item xs={12} sm={6}>
             <Paper elevation={1} className={classes.paper}>
               <Typography
-                type="title"
+                variant="title"
                 align="center"
                 gutterBottom
                 className={classes.title}
@@ -313,7 +313,7 @@ export default (props: Props) => {
             <Paper elevation={1} className={classes.paper}>
               <div>
                 <Typography
-                  type="title"
+                  variant="title"
                   align="center"
                   gutterBottom
                   className={classes.title}

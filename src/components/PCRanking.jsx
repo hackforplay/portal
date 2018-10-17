@@ -126,7 +126,7 @@ export default ({ records, match }: Props) => {
           </Table>
         </Paper>
       ) : records.isEmpty ? (
-        <Typography type="display1">
+        <Typography variant="display1">
           まだ記録がないか、無効なステージです :-(
         </Typography>
       ) : (

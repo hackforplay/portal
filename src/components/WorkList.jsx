@@ -178,7 +178,7 @@ export default class WorkList extends React.Component<Props, State> {
     return (
       <Paper className={classNames(classes.root, this.props.className)}>
         {typeof title === 'string' ? (
-          <Typography type="headline" className={classes.headline}>
+          <Typography variant="headline" className={classes.headline}>
             {title}
           </Typography>
         ) : (
@@ -214,7 +214,7 @@ export default class WorkList extends React.Component<Props, State> {
                       }
                       title={
                         <Typography
-                          type="body2"
+                          variant="body2"
                           className={classNames({
                             [classes.noTitle]: !item.title
                           })}
@@ -243,7 +243,7 @@ export default class WorkList extends React.Component<Props, State> {
                       }}
                     />
                     <CardContent>
-                      <Typography type="caption">
+                      <Typography variant="caption">
                         {item.viewsNum > 0
                           ? this.fromNow(item.createdAt)
                           : 'NEW!'}
@@ -266,7 +266,7 @@ export default class WorkList extends React.Component<Props, State> {
               <Grid item>
                 {works.isProcessing ? <CircularProgress /> : null}
                 {works.isInvalid ? (
-                  <Typography type="headline">
+                  <Typography variant="headline">
                     {`エラーが発生しました`}
                     <span role="img" aria-label="Confused">
                       {`😕`}
@@ -275,7 +275,7 @@ export default class WorkList extends React.Component<Props, State> {
                   </Typography>
                 ) : null}
                 {works.isEmpty ? (
-                  <Typography type="headline">
+                  <Typography variant="headline">
                     {`ステージが見つかりませんでした`}
                     <span role="img" aria-label="Confused">
                       {`😕`}

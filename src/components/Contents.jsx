@@ -102,10 +102,10 @@ function StageContent(props: ContentType & { ...ContextRouter }) {
       >
         <div />
         <div>
-          <Typography type="title" align="left" gutterBottom>
+          <Typography variant="title" align="left" gutterBottom>
             {props.title}
           </Typography>
-          <Typography type="caption" align="left">
+          <Typography variant="caption" align="left">
             {props.description}
           </Typography>
         </div>
@@ -171,10 +171,10 @@ function YouTubeContent(props: ContentType) {
       <Grid item xs={6} className={youtubeStyle.alignMiddle}>
         <div />
         <div>
-          <Typography type="title" align="left">
+          <Typography variant="title" align="left">
             {props.title}
           </Typography>
-          <Typography type="caption" align="left">
+          <Typography variant="caption" align="left">
             {props.description}
           </Typography>
         </div>

@@ -121,7 +121,7 @@ export default class Profile extends React.Component<Props> {
     if (user.isEmpty) {
       return (
         <div className={classes.root}>
-          <Typography type="headline">ユーザーが見つかりません</Typography>
+          <Typography variant="headline">ユーザーが見つかりません</Typography>
         </div>
       );
     }
@@ -129,7 +129,7 @@ export default class Profile extends React.Component<Props> {
     if (!user.data) {
       return (
         <div className={classes.root}>
-          <Typography type="headline">ロード中です</Typography>
+          <Typography variant="headline">ロード中です</Typography>
         </div>
       );
     }
@@ -194,10 +194,10 @@ export default class Profile extends React.Component<Props> {
                 helperText="本名(ほんみょう)は かかないで！"
               />
             ) : (
-              <Typography type="headline">{userData.displayName}</Typography>
+              <Typography variant="headline">{userData.displayName}</Typography>
             )}
             {userData.worksNum ? (
-              <Typography type="caption" align="left">{`投稿数 ${
+              <Typography variant="caption" align="left">{`投稿数 ${
                 userData.worksNum
               }`}</Typography>
             ) : null}

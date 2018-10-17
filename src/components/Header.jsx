@@ -163,7 +163,7 @@ class Header extends React.Component<Props, State> {
         <AppBar position="fixed" elevation={0}>
           <Toolbar className={classes.toolbar}>
             <Typography
-              type="title"
+              variant="title"
               style={{ color: 'black' }}
               component={Link}
               to="/"
@@ -280,17 +280,15 @@ class Header extends React.Component<Props, State> {
             >
               {user.data ? (
                 <MenuItem onClick={this.goTo(`/users/${user.data.uid}`)}>
-                  <Typography type="button">マイページ</Typography>
+                  マイページ
                 </MenuItem>
               ) : null}
               {isSignedIn ? (
-                <MenuItem onClick={this.signOut}>
-                  <Typography type="button">ログアウト</Typography>
-                </MenuItem>
+                <MenuItem onClick={this.signOut}>ログアウト</MenuItem>
               ) : (
                 <MenuItem onClick={this.signInWithGoogle}>
                   <img src={googleIcon} alt="Google" className={classes.icon} />
-                  <Typography type="button">Google でログイン</Typography>
+                  Google でログイン
                 </MenuItem>
               )}
             </Popover>

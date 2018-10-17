@@ -291,7 +291,7 @@ export default class Work extends React.Component<Props, State> {
                   }}
                 />
               ) : (
-                <Typography type="title">{title}</Typography>
+                <Typography variant="title">{title}</Typography>
               )}
               <div className={classes.blank} />
               {hasError ? (
@@ -303,7 +303,7 @@ export default class Work extends React.Component<Props, State> {
                 </Button>
               ) : null}
               {make.work.isProcessing || make.saved ? (
-                <Typography type="caption" className={classes.caption}>
+                <Typography variant="caption" className={classes.caption}>
                   {make.saved ? `保存されています` : `ちょっとまってね...`}
                 </Typography>
               ) : (

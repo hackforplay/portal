@@ -38,10 +38,10 @@ export default compose(withRouter)((props: Props) => {
 
   return (
     <div className={classes.root}>
-      <Typography align="center" type="headline" gutterBottom>
+      <Typography align="center" variant="headline" gutterBottom>
         {info.headline}
       </Typography>
-      <Typography align="center" type="caption">
+      <Typography align="center" variant="caption">
         {info.caption}
       </Typography>
     </div>
