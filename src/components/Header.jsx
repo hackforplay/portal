@@ -22,6 +22,7 @@ import Beginner from '../icons/Beginner';
 import Play from '../icons/Play';
 import Create from '../icons/Create';
 import type { StateProps, DispatchProps } from '../containers/Header';
+import ContrastButton from './ContrastButton';
 
 const classes = {
   root: css({
@@ -162,7 +163,7 @@ class Header extends React.Component<Props, State> {
         <AppBar position="fixed" elevation={0}>
           <Toolbar className={classes.toolbar}>
             <Typography
-              type="title"
+              variant="title"
               style={{ color: 'black' }}
               component={Link}
               to="/"
@@ -184,59 +185,55 @@ class Header extends React.Component<Props, State> {
 
             <div className={classes.blank} />
             <Tooltip title="ホーム" classes={{ tooltip: classes.tooltip }}>
-              <Button
-                color="contrast"
+              <ContrastButton
                 component={Link}
                 to="/"
                 className={classes.separator}
               >
                 <Home />
                 <span className={classes.buttonLabel}>ホーム</span>
-              </Button>
+              </ContrastButton>
             </Tooltip>
             {isInOfficialWork ? null : (
               <Tooltip
                 title="あそびかた"
                 classes={{ tooltip: classes.tooltip }}
               >
-                <Button
-                  color="contrast"
+                <ContrastButton
                   component={Link}
                   to="/contents/tutorial"
                   className={classes.separator}
                 >
                   <Beginner />
                   <span className={classes.buttonLabel}>あそびかた</span>
-                </Button>
+                </ContrastButton>
               </Tooltip>
             )}
             <Tooltip
               title="みんなのステージ"
               classes={{ tooltip: classes.tooltip }}
             >
-              <Button
-                color="contrast"
+              <ContrastButton
                 component={Link}
                 to="/lists"
                 className={classes.separator}
               >
                 <Play />
                 <span className={classes.buttonLabel}>みんなのステージ</span>
-              </Button>
+              </ContrastButton>
             </Tooltip>
             <Tooltip
               title="ステージを作る"
               classes={{ tooltip: classes.tooltip }}
             >
-              <Button
-                color="contrast"
+              <ContrastButton
                 component={Link}
                 to="/contents/kit"
                 className={classes.separator}
               >
                 <Create />
                 <span className={classes.buttonLabel}>ステージを作る</span>
-              </Button>
+              </ContrastButton>
             </Tooltip>
             {user.data ? <div className={classes.separator} /> : null}
             {user.data ? (
@@ -263,7 +260,7 @@ class Header extends React.Component<Props, State> {
               )
             ) : (
               <Button
-                raised
+                variant="raised"
                 color="primary"
                 aria-owns={anchorEl ? 'simple-menu' : null}
                 aria-haspopup="true"
@@ -283,17 +280,15 @@ class Header extends React.Component<Props, State> {
             >
               {user.data ? (
                 <MenuItem onClick={this.goTo(`/users/${user.data.uid}`)}>
-                  <Typography type="button">マイページ</Typography>
+                  マイページ
                 </MenuItem>
               ) : null}
               {isSignedIn ? (
-                <MenuItem onClick={this.signOut}>
-                  <Typography type="button">ログアウト</Typography>
-                </MenuItem>
+                <MenuItem onClick={this.signOut}>ログアウト</MenuItem>
               ) : (
                 <MenuItem onClick={this.signInWithGoogle}>
                   <img src={googleIcon} alt="Google" className={classes.icon} />
-                  <Typography type="button">Google でログイン</Typography>
+                  Google でログイン
                 </MenuItem>
               )}
             </Popover>

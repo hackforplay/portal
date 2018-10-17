@@ -89,7 +89,7 @@ class NavigationBar extends React.Component<Props> {
             </IconButton>
           ) : null}
 
-          {info.text && <Typography type="headline">{info.text}</Typography>}
+          {info.text && <Typography variant="headline">{info.text}</Typography>}
           {selected && (
             <Tabs
               value={selected.to}
