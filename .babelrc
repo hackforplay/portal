@@ -1,6 +1,36 @@
 {
-  "presets": ["react-app"],
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "ie": "11"
+        },
+        "useBuiltIns": "entry"
+      }
+    ],
+    [
+      "@babel/react",
+      {
+        "useBuiltIns": true
+      }
+    ]
+  ],
   "plugins": [
+    "@babel/plugin-transform-flow-strip-types",
+    [
+      "@babel/plugin-proposal-class-properties",
+      {
+        "loose": true
+      }
+    ],
+    [
+      "@babel/plugin-proposal-object-rest-spread",
+      {
+        "useBuiltIns": true
+      }
+    ],
+    "@babel/plugin-syntax-dynamic-import",
     [
       "@babel/plugin-proposal-decorators",
       {
