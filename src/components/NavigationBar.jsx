@@ -16,7 +16,7 @@ import { css } from 'emotion';
 
 import { searchBarInfo } from '../settings/siteMap';
 
-const classes = {
+const cn = {
   toolbar: css({
     minHeight: 48, // 上下のマージンをなくす
     backgroundColor: grey[50]
@@ -82,7 +82,7 @@ class NavigationBar extends React.Component<Props> {
 
     return (
       <AppBar position="static" color="default" elevation={0}>
-        <Toolbar className={classes.toolbar}>
+        <Toolbar className={cn.toolbar}>
           {info.backTo ? (
             <IconButton aria-label="Back" component={Link} to={info.backTo}>
               <ArrowBack />
@@ -104,7 +104,7 @@ class NavigationBar extends React.Component<Props> {
               ))}
             </Tabs>
           )}
-          <div className={classes.blank} />
+          <div className={cn.blank} />
           {info.searchTo ? (
             <IconButton aria-label="Search" component={Link} to={info.searchTo}>
               <SearchIcon />

@@ -11,7 +11,7 @@ import diamond_blue from '../resources/diamond_blue.png';
 import diamond_green from '../resources/diamond_green.png';
 import type { StateProps, DispatchProps } from '../containers/FeatureLists';
 
-const classes = {
+const cn = {
   root: css({
     padding: theme.spacing.unit * 3
   }),
@@ -30,12 +30,12 @@ export default ({ match, lists }: Props) => {
   // 現在の URL に対して適切なデータを表示
   const more = match.params.more;
   return (
-    <Grid container spacing={24} className={classes.root}>
+    <Grid container spacing={24} className={cn.root}>
       <Grid item xs={12}>
         <WorkList
           works={lists.trending}
           title={
-            <Typography variant="title" gutterBottom className={classes.title}>
+            <Typography variant="title" gutterBottom className={cn.title}>
               <img src={diamond_blue} alt="" />
               人気のステージ
             </Typography>
@@ -49,7 +49,7 @@ export default ({ match, lists }: Props) => {
         <WorkList
           works={lists.recommended}
           title={
-            <Typography variant="title" gutterBottom className={classes.title}>
+            <Typography variant="title" gutterBottom className={cn.title}>
               <img src={diamond_green} alt="" />
               {/*"おすすめのステージ"*/}あたらしいステージ
             </Typography>

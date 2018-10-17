@@ -14,7 +14,7 @@ import DialogContentText from 'material-ui/Dialog/DialogContentText';
 import type ReactMapEditorType from 'react-map-editor';
 import { css } from 'emotion';
 
-const classes = {
+const cn = {
   root: css({
     height: `calc(100vh - ${56 * 2}px)`,
     '@media (min-width:0px) and (orientation: landscape)': {
@@ -104,13 +104,13 @@ await Hack.parseMapJson(
     }
 
     return (
-      <div className={classes.root}>
+      <div className={cn.root}>
         <AppBar position="static" color="default" elevation={0}>
           <Toolbar>
             <Typography variant="title" color="inherit">
               マップエディタ（β版）
             </Typography>
-            <div className={classes.flex} />
+            <div className={cn.flex} />
             <Button onClick={this.showCode}>ステージに移す</Button>
           </Toolbar>
         </AppBar>
@@ -189,7 +189,7 @@ export class CodeDialog extends React.Component<CodeDialogProps> {
             このコードをコピーして、「Hack.changeMap('map1');」のすぐ上に書き足して下さい
           </DialogContentText>
           <textarea
-            className={classes && classes.code}
+            className={cn && cn.code}
             readOnly
             ref={ref => (this.textarea = ref)}
             wrap="off"

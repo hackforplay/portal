@@ -14,7 +14,7 @@ import { css } from 'emotion';
 import theme from '../settings/theme';
 import type { StateProps, DispatchProps } from '../containers/PCRanking';
 
-const classes = {
+const cn = {
   root: css({
     maxWidth: 840,
     marginLeft: 'auto',
@@ -64,7 +64,7 @@ export default ({ records, match }: Props) => {
   }
 
   return (
-    <div className={classes.root}>
+    <div className={cn.root}>
       <h1>ランキング</h1>
       {records.data ? (
         <Paper>
@@ -92,31 +92,31 @@ export default ({ records, match }: Props) => {
                   <TableCell
                     numeric={false}
                     padding="default"
-                    className={classes.cell}
+                    className={cn.cell}
                   >{`${i + 1}位`}</TableCell>
                   <TableCell
                     numeric={false}
                     padding="default"
-                    className={classes.cell}
+                    className={cn.cell}
                   >
                     {item.name}
                   </TableCell>
                   <TableCell
                     numeric={false}
                     padding="default"
-                    className={classes.cell}
+                    className={cn.cell}
                   >
                     {item.score}
                   </TableCell>
                   <TableCell
                     numeric={false}
                     padding="default"
-                    className={classes.cell}
+                    className={cn.cell}
                   >{`${item.lastTime}秒`}</TableCell>
                   <TableCell
                     numeric={false}
                     padding="default"
-                    className={classes.cell}
+                    className={cn.cell}
                   >
                     {fromNow(item.createdAt)}
                   </TableCell>
@@ -130,14 +130,14 @@ export default ({ records, match }: Props) => {
           まだ記録がないか、無効なステージです :-(
         </Typography>
       ) : (
-        <CircularProgress className={classes.progress} />
+        <CircularProgress className={cn.progress} />
       )}
       <Button
         variant="raised"
         color="primary"
         component={Link}
         to={playLinks[stage]}
-        className={classes.button}
+        className={cn.button}
       >
         このステージをプレイする
       </Button>

@@ -24,7 +24,7 @@ import Create from '../icons/Create';
 import type { StateProps, DispatchProps } from '../containers/Header';
 import ContrastButton from './ContrastButton';
 
-const classes = {
+const cn = {
   root: css({
     '@media (min-width:0px) and (orientation: landscape)': {
       height: 48
@@ -159,15 +159,15 @@ class Header extends React.Component<Props, State> {
       hostname.startsWith('earlybird') || hostname.startsWith('localhost');
 
     return (
-      <div className={classes.root}>
+      <div className={cn.root}>
         <AppBar position="fixed" elevation={0}>
-          <Toolbar className={classes.toolbar}>
+          <Toolbar className={cn.toolbar}>
             <Typography
               variant="title"
               style={{ color: 'black' }}
               component={Link}
               to="/"
-              className={classes.title}
+              className={cn.title}
             >
               <img src={logo} height={36} alt="HackforPlay" />
             </Typography>
@@ -176,73 +176,60 @@ class Header extends React.Component<Props, State> {
               displayEmpty
               disableUnderline
               onChange={this.handleVersionChange}
-              className={classes.select}
-              classes={{ icon: classes.selectIcon }}
+              className={cn.select}
+              classes={{ icon: cn.selectIcon }}
             >
               <MenuItem value="earlybird">最新版</MenuItem>
               <MenuItem value="www">安定版</MenuItem>
             </Select>
 
-            <div className={classes.blank} />
-            <Tooltip title="ホーム" classes={{ tooltip: classes.tooltip }}>
-              <ContrastButton
-                component={Link}
-                to="/"
-                className={classes.separator}
-              >
+            <div className={cn.blank} />
+            <Tooltip title="ホーム" classes={{ tooltip: cn.tooltip }}>
+              <ContrastButton component={Link} to="/" className={cn.separator}>
                 <Home />
-                <span className={classes.buttonLabel}>ホーム</span>
+                <span className={cn.buttonLabel}>ホーム</span>
               </ContrastButton>
             </Tooltip>
             {isInOfficialWork ? null : (
-              <Tooltip
-                title="あそびかた"
-                classes={{ tooltip: classes.tooltip }}
-              >
+              <Tooltip title="あそびかた" classes={{ tooltip: cn.tooltip }}>
                 <ContrastButton
                   component={Link}
                   to="/contents/tutorial"
-                  className={classes.separator}
+                  className={cn.separator}
                 >
                   <Beginner />
-                  <span className={classes.buttonLabel}>あそびかた</span>
+                  <span className={cn.buttonLabel}>あそびかた</span>
                 </ContrastButton>
               </Tooltip>
             )}
-            <Tooltip
-              title="みんなのステージ"
-              classes={{ tooltip: classes.tooltip }}
-            >
+            <Tooltip title="みんなのステージ" classes={{ tooltip: cn.tooltip }}>
               <ContrastButton
                 component={Link}
                 to="/lists"
-                className={classes.separator}
+                className={cn.separator}
               >
                 <Play />
-                <span className={classes.buttonLabel}>みんなのステージ</span>
+                <span className={cn.buttonLabel}>みんなのステージ</span>
               </ContrastButton>
             </Tooltip>
-            <Tooltip
-              title="ステージを作る"
-              classes={{ tooltip: classes.tooltip }}
-            >
+            <Tooltip title="ステージを作る" classes={{ tooltip: cn.tooltip }}>
               <ContrastButton
                 component={Link}
                 to="/contents/kit"
-                className={classes.separator}
+                className={cn.separator}
               >
                 <Create />
-                <span className={classes.buttonLabel}>ステージを作る</span>
+                <span className={cn.buttonLabel}>ステージを作る</span>
               </ContrastButton>
             </Tooltip>
-            {user.data ? <div className={classes.separator} /> : null}
+            {user.data ? <div className={cn.separator} /> : null}
             {user.data ? (
               user.data.photoURL ? (
                 // アイコンアバター
                 <Avatar
                   aria-owns={anchorEl ? 'simple-menu' : null}
                   aria-haspopup="true"
-                  className={classes.avatar}
+                  className={cn.avatar}
                   src={user.data.photoURL}
                   storagePath={user.data.profileImagePath}
                   onClick={this.handleClick}
@@ -252,7 +239,7 @@ class Header extends React.Component<Props, State> {
                 <Avatar
                   aria-owns={anchorEl ? 'simple-menu' : null}
                   aria-haspopup="true"
-                  className={classes.avatar}
+                  className={cn.avatar}
                   onClick={this.handleClick}
                 >
                   {user.data.displayName.substr(0, 1)}
@@ -287,7 +274,7 @@ class Header extends React.Component<Props, State> {
                 <MenuItem onClick={this.signOut}>ログアウト</MenuItem>
               ) : (
                 <MenuItem onClick={this.signInWithGoogle}>
-                  <img src={googleIcon} alt="Google" className={classes.icon} />
+                  <img src={googleIcon} alt="Google" className={cn.icon} />
                   Google でログイン
                 </MenuItem>
               )}

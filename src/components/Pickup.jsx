@@ -6,7 +6,7 @@ import theme from '../settings/theme';
 import WorkList from '../containers/WorkList';
 import type { StateProps, DispatchProps } from '../containers/Pickup';
 
-const classes = {
+const cn = {
   root: css({
     padding: theme.spacing.unit * 4
   })
@@ -18,7 +18,7 @@ export default (props: Props) => {
   const { pickup } = props;
 
   return (
-    <div className={classes.root}>
+    <div className={cn.root}>
       <WorkList
         works={pickup}
         title="ピックアップステージ"

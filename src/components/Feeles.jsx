@@ -13,7 +13,7 @@ const rootStyle = (padding: number) => ({
   height: `calc(100vh - ${padding}px)`
 });
 
-const classes = {
+const cn = {
   root: css({
     ...rootStyle(56),
     '@media (min-width:0px) and (orientation: landscape)': {
@@ -101,7 +101,7 @@ export default class Feeles extends React.Component<Props, State> {
       delete props.onThumbnailChange;
     }
 
-    const root = classNames(classes.root, {
+    const root = classNames(cn.root, {
       [replayClassName]: replay
     });
 

@@ -33,7 +33,7 @@ export type State = {
   unblock: () => void
 };
 
-const classes = {
+const cn = {
   chip: css({
     marginRight: theme.spacing.unit * 2
   }),
@@ -262,7 +262,7 @@ export default class Work extends React.Component<Props, State> {
                 onClick={() => {
                   this.setState({ openSidebar: !this.state.openSidebar });
                 }}
-                className={classes.iconButton}
+                className={cn.iconButton}
               >
                 {this.state.openSidebar ? <Close /> : <Menu />}
               </IconButton>
@@ -275,27 +275,27 @@ export default class Work extends React.Component<Props, State> {
                       private: '非公開'
                     }[makeWorkData.visibility]
                   }
-                  className={classes.chip}
+                  className={cn.chip}
                 />
               ) : null}
               {replay ? (
                 <EditableTitleTextField
                   placeholder="タイトルがついていません"
-                  className={classNames(classes.title, {
-                    [classes.noTitle]: !make.metadata.title
+                  className={classNames(cn.title, {
+                    [cn.noTitle]: !make.metadata.title
                   })}
                   InputProps={{
-                    classes: {
-                      underline: classes.underline
+                    cn: {
+                      underline: cn.underline
                     }
                   }}
                 />
               ) : (
                 <Typography variant="title">{title}</Typography>
               )}
-              <div className={classes.blank} />
+              <div className={cn.blank} />
               {hasError ? (
-                <span className={classes.error}>エラーがおきたようです</span>
+                <span className={cn.error}>エラーがおきたようです</span>
               ) : null}
               {makeWorkData && makeWorkData.visibility !== 'public' ? (
                 <Button disabled={!canPublish} onClick={this.handleSetPublic}>
@@ -303,7 +303,7 @@ export default class Work extends React.Component<Props, State> {
                 </Button>
               ) : null}
               {make.work.isProcessing || make.saved ? (
-                <Typography variant="caption" className={classes.caption}>
+                <Typography variant="caption" className={cn.caption}>
                   {make.saved ? `保存されています` : `ちょっとまってね...`}
                 </Typography>
               ) : (

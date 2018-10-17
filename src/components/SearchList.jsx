@@ -6,7 +6,7 @@ import WorkList from '../containers/WorkList';
 import theme from '../settings/theme';
 import { type StateProps } from '../containers/SearchList';
 
-const classes = {
+const cn = {
   root: css({
     padding: theme.spacing.unit * 4
   })
@@ -20,7 +20,7 @@ export default (props: Props) => {
   const { result } = props;
 
   return (
-    <div className={classes.root}>
+    <div className={cn.root}>
       <WorkList
         works={result}
         title="検索結果"

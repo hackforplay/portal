@@ -26,7 +26,7 @@ import makePng from '../resources/make.png';
 import type { StateProps, DispatchProps } from '../containers/Topic';
 import * as xlasses from '../utils/xlasses';
 
-const classes = {
+const cn = {
   root: css({
     maxWidth: 840,
     boxSizing: 'border-box',
@@ -99,28 +99,28 @@ export default (props: Props) => {
         slidesToScroll={1}
         autoplay
         autoplaySpeed={10000}
-        className={classes.slider}
+        className={cn.slider}
       >
         <img
           src={top1}
           alt={`スライムがたおせない！？これは・・・バグっているね！`}
-          className={classes.sliderItem}
+          className={cn.sliderItem}
         />
         <img
           src={top2}
           alt={`本をひらいてみよう。おかしいのはどこ？`}
-          className={classes.sliderItem}
+          className={cn.sliderItem}
         />
         <img
           src={top3}
           alt={`プログラミングで、せかいをかきかえてみよう！`}
-          className={classes.sliderItem}
+          className={cn.sliderItem}
         />
       </Slider>
-      <div className={classes.root}>
+      <div className={cn.root}>
         <Grid container spacing={24}>
           <Grid item xs={12}>
-            <Paper elevation={1} className={classes.paper}>
+            <Paper elevation={1} className={cn.paper}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img src={beginner} alt="" />
                 <div style={{ marginLeft: 16 }}>
@@ -148,7 +148,7 @@ export default (props: Props) => {
 
           {/* プログラミングコロシアム */}
           <Grid item xs={12}>
-            <Paper elevation={1} className={classes.paper}>
+            <Paper elevation={1} className={cn.paper}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img src={dragon} alt="" />
                 <div style={{ marginLeft: 16 }}>
@@ -170,7 +170,7 @@ export default (props: Props) => {
                     frameBorder="0"
                     allow="autoplay; encrypted-media"
                     allowFullScreen
-                    className={classes.iframe}
+                    className={cn.iframe}
                   />
                 </Grid>
                 <Grid item sm={6} xs={12}>
@@ -214,7 +214,7 @@ export default (props: Props) => {
           <Grid item xs={12}>
             <Paper
               elevation={1}
-              className={classes.paper}
+              className={cn.paper}
               style={{ padding: 0 }}
             >
               <img
@@ -243,7 +243,7 @@ export default (props: Props) => {
                   variant="title"
                   align="center"
                   gutterBottom
-                  className={classes.title}
+                  className={cn.title}
                 >
                   <img src={diamond_pink} alt="" />
                   人気のステージ
@@ -251,7 +251,7 @@ export default (props: Props) => {
               }
               more={false}
               moreLink="/lists/trending"
-              className={classes.workList}
+              className={cn.workList}
               showVisibility={false}
             />
           </Grid>
@@ -271,12 +271,12 @@ export default (props: Props) => {
           </Grid>
 
           {/* <Grid item xs={12} sm={6}>
-            <Paper elevation={1} className={classes.paper}>
+            <Paper elevation={1} className={cn.paper}>
               <Typography
                 variant="title"
                 align="center"
                 gutterBottom
-                className={classes.title}
+                className={cn.title}
               >
                 <img src={info} alt="" />
                 ワークショップ情報
@@ -293,7 +293,7 @@ export default (props: Props) => {
               />
               <Typography
                 type="subheading"
-                className={classes.body}
+                className={cn.body}
                 gutterBottom
               >
                 第６回金沢市キッズプログラミング教室が開催されます
@@ -302,7 +302,7 @@ export default (props: Props) => {
                 color="primary"
                 variant="raised"
                 href="http://www4.city.kanazawa.lg.jp/17009/kidspg.html"
-                className={classes.button}
+                className={cn.button}
               >
                 詳細はこちら
               </Button>
@@ -310,13 +310,13 @@ export default (props: Props) => {
           </Grid> */}
 
           <Grid item xs={12} sm={6}>
-            <Paper elevation={1} className={classes.paper}>
+            <Paper elevation={1} className={cn.paper}>
               <div>
                 <Typography
                   variant="title"
                   align="center"
                   gutterBottom
-                  className={classes.title}
+                  className={cn.title}
                 >
                   <img src={mail} alt="" />
                   お問い合わせ
@@ -327,10 +327,10 @@ export default (props: Props) => {
               </div>
               <div>
                 <a href="https://twitter.com/teramotodaiki">
-                  <img src={twitter} className={classes.icon} alt="Twitter" />
+                  <img src={twitter} className={cn.icon} alt="Twitter" />
                 </a>
                 <a href="https://www.facebook.com/hackforplay">
-                  <img src={facebook} className={classes.icon} alt="Facebook" />
+                  <img src={facebook} className={cn.icon} alt="Facebook" />
                 </a>
               </div>
               <Button

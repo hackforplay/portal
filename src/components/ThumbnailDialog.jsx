@@ -10,7 +10,7 @@ import type { StateProps, DispatchProps } from '../containers/ThumbnailDialog';
 import * as WorkList from './WorkList';
 import * as xlasses from '../utils/xlasses';
 
-const classes = {
+const cn = {
   root: css({
     backgroundColor: 'red',
     maxWidth: '100vw'
@@ -72,13 +72,13 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md">
         <DialogTitle>カバー画像をセットしよう</DialogTitle>
-        <DialogContent className={classes.content}>
-          <div className={classes.wrapper}>
+        <DialogContent className={cn.content}>
+          <div className={cn.wrapper}>
             {src ? (
               // 現在のサムネイル
               <div
                 className={cx(
-                  classes.border,
+                  cn.border,
                   this.state.selectedIndex === null && 'selected'
                 )}
                 onClick={() => {
@@ -87,7 +87,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
                   });
                 }}
               >
-                <div className={cx(WorkList.classes.thumbnail, classes.item)}>
+                <div className={cx(WorkList.cn.thumbnail, cn.item)}>
                   <img src={src} alt="今のサムネイル" />
                 </div>
               </div>
@@ -96,7 +96,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
               <div
                 key={i}
                 className={cx(
-                  classes.border,
+                  cn.border,
                   this.state.selectedIndex === i && 'selected'
                 )}
                 onClick={() => {
@@ -105,7 +105,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
                   });
                 }}
               >
-                <div className={cx(WorkList.classes.thumbnail, classes.item)}>
+                <div className={cx(WorkList.cn.thumbnail, cn.item)}>
                   <img src={src} alt="サムネイル" />
                 </div>
               </div>

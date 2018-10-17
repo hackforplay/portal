@@ -14,7 +14,7 @@ import no03 from '../resources/no03.png';
 
 const reference = `https://firebasestorage.googleapis.com/v0/b/hackforplay-production.appspot.com/o/specials%2Freference.pdf?alt=media&token=22b71ece-3b6b-4d35-bb62-59e5223b3dad`;
 
-const classes = {
+const cn = {
   root: css({
     maxWidth: 840,
     paddingTop: theme.spacing.unit * 4,
@@ -65,16 +65,16 @@ export default class ProgrammingColosseum extends React.Component<{}> {
 
   render() {
     return (
-      <div className={classes.root}>
-        <Paper elevation={1} className={classes.paper}>
-          <div className={classes.paragraph}>
-            <img src={attention} className={classes.img} alt="" />
+      <div className={cn.root}>
+        <Paper elevation={1} className={cn.paper}>
+          <div className={cn.paragraph}>
+            <img src={attention} className={cn.img} alt="" />
             <Typography variant="title" color="error" align="left">
               始める前に必ずお読みください
             </Typography>
           </div>
-          <div className={classes.paragraph}>
-            <img src={no01} className={classes.img} alt="" />
+          <div className={cn.paragraph}>
+            <img src={no01} className={cn.img} alt="" />
             <div>
               <Typography variant="title" align="left" gutterBottom>
                 リファレンスのダウンロード
@@ -88,7 +88,7 @@ export default class ProgrammingColosseum extends React.Component<{}> {
                 component="a"
                 download
                 href={reference}
-                className={classes.button}
+                className={cn.button}
               >
                 ダウンロードする
               </Button>
@@ -97,14 +97,14 @@ export default class ProgrammingColosseum extends React.Component<{}> {
                 color="default"
                 target="_blank"
                 href={reference}
-                className={classes.button}
+                className={cn.button}
               >
                 新しいタブで開く
               </Button>
             </div>
           </div>
-          <div className={classes.paragraph}>
-            <img src={no02} className={classes.img} alt="" />
+          <div className={cn.paragraph}>
+            <img src={no02} className={cn.img} alt="" />
             <div>
               <Typography variant="title" align="left" gutterBottom>
                 ランキングついて
@@ -122,8 +122,8 @@ export default class ProgrammingColosseum extends React.Component<{}> {
               </Button>
             </div>
           </div>
-          <div className={classes.paragraph}>
-            <img src={no03} className={classes.img} alt="" />
+          <div className={cn.paragraph}>
+            <img src={no03} className={cn.img} alt="" />
             <div>
               <Typography variant="title" align="left" gutterBottom>
                 レベルについて

@@ -11,7 +11,7 @@ import { css } from 'emotion';
 import theme from '../settings/theme';
 import { optionalHeaderInfo } from '../settings/siteMap';
 
-const classes = {
+const cn = {
   root: css({
     paddingTop: theme.spacing.unit * 6,
     paddingBottom: theme.spacing.unit * 6,
@@ -37,7 +37,7 @@ export default compose(withRouter)((props: Props) => {
   }
 
   return (
-    <div className={classes.root}>
+    <div className={cn.root}>
       <Typography align="center" variant="headline" gutterBottom>
         {info.headline}
       </Typography>

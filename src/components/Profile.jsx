@@ -15,7 +15,7 @@ import Avatar from '../containers/Avatar';
 import theme from '../settings/theme';
 import type { StateProps, DispatchProps } from '../containers/ProfileEdit';
 
-const classes = {
+const cn = {
   root: css({
     paddingTop: theme.spacing.unit * 8,
     paddingLeft: theme.spacing.unit * 4,
@@ -120,7 +120,7 @@ export default class Profile extends React.Component<Props> {
 
     if (user.isEmpty) {
       return (
-        <div className={classes.root}>
+        <div className={cn.root}>
           <Typography variant="headline">ユーザーが見つかりません</Typography>
         </div>
       );
@@ -128,7 +128,7 @@ export default class Profile extends React.Component<Props> {
 
     if (!user.data) {
       return (
-        <div className={classes.root}>
+        <div className={cn.root}>
           <Typography variant="headline">ロード中です</Typography>
         </div>
       );
@@ -142,16 +142,16 @@ export default class Profile extends React.Component<Props> {
       : user.data;
 
     return (
-      <div className={classes.root}>
+      <div className={cn.root}>
         <Grid
           container
           spacing={16}
           alignItems="center"
-          className={classes.container}
+          className={cn.container}
         >
           <Grid item xs={2}>
             <Avatar
-              className={classes.avatar}
+              className={cn.avatar}
               src={userData.photoURL}
               storagePath={userData.profileImagePath}
               alt={userData.displayName.substr(0, 1)}
@@ -160,7 +160,7 @@ export default class Profile extends React.Component<Props> {
               <div>
                 <IconButton
                   color="primary"
-                  className={classes.iconButton}
+                  className={cn.iconButton}
                   aria-label="Edit profile image"
                   onClick={this.handleClickPhotoIcon}
                 >
@@ -169,7 +169,7 @@ export default class Profile extends React.Component<Props> {
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/gif"
-                  className={classes.fileInput}
+                  className={cn.fileInput}
                   ref={input => (this.input = input)}
                 />
               </div>
@@ -181,9 +181,9 @@ export default class Profile extends React.Component<Props> {
                 id="name"
                 InputProps={{
                   disableUnderline: true,
-                  classes: {
-                    root: classes.textFieldRoot,
-                    input: classes.textFieldInput
+                  cn: {
+                    root: cn.textFieldRoot,
+                    input: cn.textFieldInput
                   }
                 }}
                 autoFocus
@@ -208,7 +208,7 @@ export default class Profile extends React.Component<Props> {
                 <Button
                   variant="raised"
                   color="primary"
-                  className={classes.button}
+                  className={cn.button}
                   component={Link}
                   to={`/users/${userData.uid}`}
                   onClick={this.props.confirmAuthUserEditing}
@@ -219,7 +219,7 @@ export default class Profile extends React.Component<Props> {
                 <Button
                   variant="raised"
                   color="primary"
-                  className={classes.button}
+                  className={cn.button}
                   component={Link}
                   to={`/users/${userData.uid}/edit`}
                 >

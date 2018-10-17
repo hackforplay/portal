@@ -18,7 +18,7 @@ import { searchBarInfo } from '../settings/siteMap';
 import theme from '../settings/theme';
 import type { StateProps } from '../containers/SearchBar';
 
-const classes = {
+const cn = {
   toolbar: css({
     minHeight: 48, // 上下のマージンをなくす
     backgroundColor: grey[50]
@@ -151,16 +151,16 @@ class SearchBar extends React.Component<Props> {
 
     return (
       <AppBar position="static" color="default" elevation={0}>
-        <Toolbar className={classes.toolbar}>
+        <Toolbar className={cn.toolbar}>
           {info.backTo ? (
             <IconButton aria-label="Back" component={Link} to={info.backTo}>
               <ArrowBack />
             </IconButton>
           ) : null}
           {info.text && <Typography variant="headline">{info.text}</Typography>}
-          <div className={classes.blank} />
-          <div className={classes.wrapper}>
-            <div className={classes.search}>
+          <div className={cn.blank} />
+          <div className={cn.wrapper}>
+            <div className={cn.search}>
               {result.isProcessing ? (
                 <CircularProgress color="inherit" size={24} />
               ) : (
@@ -169,7 +169,7 @@ class SearchBar extends React.Component<Props> {
             </div>
             <input
               id="docsearch-input"
-              className={classes.input}
+              className={cn.input}
               type="text"
               defaultValue={match.params.query}
               onChange={this.handleChangeSearch}

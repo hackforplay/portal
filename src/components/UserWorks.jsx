@@ -8,7 +8,7 @@ import WorkList from '../containers/WorkList';
 import theme from '../settings/theme';
 import type { StateProps, DispatchProps } from '../containers/UserWorks';
 
-const classes = {
+const cn = {
   root: css({
     padding: theme.spacing.unit * 4
   })
@@ -21,7 +21,7 @@ export default ({ match, works }: Props) => {
   const id = match.params.id || '';
   const tab = match.params.tab || '';
   return (
-    <div className={classes.root}>
+    <div className={cn.root}>
       {tab === '' ? (
         <WorkList
           works={works}

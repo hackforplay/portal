@@ -27,7 +27,7 @@ import noImage from '../resources/no-image.png';
 import { type WorkCollectionType, type WorkData } from '../ducks/work';
 import { removeMessage } from './Work';
 
-export const classes = {
+export const cn = {
   root: css({
     padding: theme.spacing.unit * 6
   }),
@@ -176,9 +176,9 @@ export default class WorkList extends React.Component<Props, State> {
     const { anchor } = this.state;
 
     return (
-      <Paper className={classNames(classes.root, this.props.className)}>
+      <Paper className={classNames(cn.root, this.props.className)}>
         {typeof title === 'string' ? (
-          <Typography variant="headline" className={classes.headline}>
+          <Typography variant="headline" className={cn.headline}>
             {title}
           </Typography>
         ) : (
@@ -192,9 +192,9 @@ export default class WorkList extends React.Component<Props, State> {
                   <Card
                     elevation={0}
                     className={cx(
-                      classes.card,
-                      classes.thumbnail,
-                      item.visibility === 'private' && classes.card_private
+                      cn.card,
+                      cn.thumbnail,
+                      item.visibility === 'private' && cn.card_private
                     )}
                     onClick={this.link(item.path)}
                   >
@@ -216,7 +216,7 @@ export default class WorkList extends React.Component<Props, State> {
                         <Typography
                           variant="body2"
                           className={classNames({
-                            [classes.noTitle]: !item.title
+                            [cn.noTitle]: !item.title
                           })}
                         >
                           {item.title || `タイトルがついていません`}
@@ -230,16 +230,16 @@ export default class WorkList extends React.Component<Props, State> {
                               : `/anonymous/${item.author || ''}`
                           )}
                           className={classNames({
-                            [classes.authorName]: !!item.author,
-                            [classes.noAuthorName]: !item.author
+                            [cn.authorName]: !!item.author,
+                            [cn.noAuthorName]: !item.author
                           })}
                         >
                           {item.author || '名無しの権兵衛'}
                         </span>
                       }
                       classes={{
-                        title: classes.title,
-                        subheader: classes.subheader
+                        title: cn.title,
+                        subheader: cn.subheader
                       }}
                     />
                     <CardContent>
@@ -287,11 +287,11 @@ export default class WorkList extends React.Component<Props, State> {
           </Grid>
         </Collapse>
         {more ? null : (
-          <div className={classes.more}>
+          <div className={cn.more}>
             <Button
               variant="raised"
               color="primary"
-              className={classes.button}
+              className={cn.button}
               component={Link}
               to={moreLink}
             >
