@@ -13,7 +13,6 @@
     "css-loader": "0.28.4",
     "csx": "^9.0.0",
     "dotenv": "4.0.0",
-    "emotion": "^9.2.6",
     "eslint": "4.4.1",
     "eslint-config-react-app": "^2.0.1",
     "eslint-loader": "1.9.0",
