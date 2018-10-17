@@ -2,14 +2,14 @@
 import * as React from 'react';
 import type { ContextRouter } from 'react-router-dom';
 // import Paper from 'material-ui/Paper';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 import WorkList from '../containers/WorkList';
 import theme from '../settings/theme';
 import type { StateProps, DispatchProps } from '../containers/UserWorks';
 
 const cn = {
-  root: css({
+  root: style({
     padding: theme.spacing.unit * 4
   })
 };

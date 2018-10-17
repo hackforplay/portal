@@ -1,13 +1,13 @@
 // @flow
 import * as React from 'react';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 import WorkList from '../containers/WorkList';
 import theme from '../settings/theme';
 import { type StateProps } from '../containers/SearchList';
 
 const cn = {
-  root: css({
+  root: style({
     padding: theme.spacing.unit * 4
   })
 };

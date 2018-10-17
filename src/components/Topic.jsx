@@ -8,7 +8,7 @@ import Paper from 'material-ui/Paper';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 import theme from '../settings/theme';
 import WorkList from '../containers/WorkList';
@@ -27,14 +27,14 @@ import type { StateProps, DispatchProps } from '../containers/Topic';
 import * as xlasses from '../utils/xlasses';
 
 const cn = {
-  root: css({
+  root: style({
     maxWidth: 840,
     boxSizing: 'border-box',
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 32
   }),
-  slider: css({
+  slider: style({
     '& .slick-prev': {
       left: 25,
       zIndex: 1
@@ -44,7 +44,7 @@ const cn = {
       zIndex: 1
     }
   }),
-  sliderItem: css({
+  sliderItem: style({
     position: 'relative',
     height: 480,
     maxHeight: '50vh',
@@ -53,10 +53,10 @@ const cn = {
     // https://github.com/bfred-it/object-fit-images/
     fontFamily: "'object-fit: contain;'"
   }),
-  workList: css({
+  workList: style({
     textAlign: 'center'
   }),
-  paper: css({
+  paper: style({
     flex: '0 1 100%',
     padding: 60,
     textAlign: 'center',
@@ -65,22 +65,22 @@ const cn = {
     alignItems: 'center',
     boxSizing: 'border-box'
   }),
-  title: css({
+  title: style({
     display: 'inline-flex',
     alignItems: 'center'
   }),
-  icon: css({
+  icon: style({
     marginTop: theme.spacing.unit * 4,
     marginBottom: theme.spacing.unit * 4,
     marginLeft: theme.spacing.unit * 2,
     marginRight: theme.spacing.unit * 2
   }),
-  body: css({
+  body: style({
     alignSelf: 'left',
     marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit * 4
   }),
-  iframe: css({
+  iframe: style({
     width: '100%',
     height: '100%'
   })

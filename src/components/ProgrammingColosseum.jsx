@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 import theme from '../settings/theme';
 import attention from '../resources/attention.png';
@@ -15,7 +15,7 @@ import no03 from '../resources/no03.png';
 const reference = `https://firebasestorage.googleapis.com/v0/b/hackforplay-production.appspot.com/o/specials%2Freference.pdf?alt=media&token=22b71ece-3b6b-4d35-bb62-59e5223b3dad`;
 
 const cn = {
-  root: css({
+  root: style({
     maxWidth: 840,
     paddingTop: theme.spacing.unit * 4,
     boxSizing: 'border-box',
@@ -24,7 +24,7 @@ const cn = {
     flexWrap: 'wrap',
     alignItems: 'center'
   }),
-  paper: css({
+  paper: style({
     width: '100%',
     boxSizing: 'border-box',
     padding: theme.spacing.unit * 6,
@@ -36,16 +36,16 @@ const cn = {
       marginBottom: theme.spacing.unit * -6
     }
   }),
-  paragraph: css({
+  paragraph: style({
     display: 'flex',
     alignItems: 'center',
     marginBottom: theme.spacing.unit * 6
   }),
-  img: css({
+  img: style({
     alignSelf: 'flex-start',
     marginRight: theme.spacing.unit * 5
   }),
-  button: css({
+  button: style({
     marginRight: theme.spacing.unit * 2
   })
 };

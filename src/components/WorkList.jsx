@@ -18,7 +18,7 @@ import { MenuItem } from 'material-ui/Menu';
 import Collapse from 'material-ui/transitions/Collapse';
 import { grey } from 'material-ui/colors';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
-import { css, cx } from 'emotion';
+import { style, classes } from 'typestyle';
 
 import { type StateProps, type DispatchProps } from '../containers/WorkList';
 import CardMedia from '../containers/CardMedia';
@@ -28,14 +28,14 @@ import { type WorkCollectionType, type WorkData } from '../ducks/work';
 import { removeMessage } from './Work';
 
 export const cn = {
-  root: css({
+  root: style({
     padding: theme.spacing.unit * 6
   }),
-  card: css({
+  card: style({
     cursor: 'pointer',
     textAlign: 'left'
   }),
-  thumbnail: css({
+  thumbnail: style({
     width: 240,
     '&>img': {
       minHeight: 160,
@@ -45,35 +45,35 @@ export const cn = {
       fontFamily: "'object-fit: contain;'"
     }
   }),
-  card_private: css({
+  card_private: style({
     filter: `brightness(90%)`
   }),
-  headline: css({
+  headline: style({
     marginBottom: theme.spacing.unit * 4
   }),
-  title: css({
+  title: style({
     maxHeight: 48,
     overflow: 'hidden'
   }),
-  noTitle: css({
+  noTitle: style({
     fontStyle: 'italic'
   }),
-  subheader: css({
+  subheader: style({
     maxWidth: 176,
     overflow: 'hidden',
     textOverflow: 'ellipsis'
   }),
-  authorName: css({
+  authorName: style({
     color: grey[500],
     '&:hover': {
       color: grey[900]
     }
   }),
-  noAuthorName: css({
+  noAuthorName: style({
     color: grey[500],
     fontStyle: 'italic'
   }),
-  more: css({
+  more: style({
     width: '100%',
     position: 'relative',
     textAlign: 'center',
@@ -88,7 +88,7 @@ export const cn = {
       background: 'linear-gradient(to bottom, transparent, white)'
     }
   }),
-  button: css({
+  button: style({
     fontSize: 'large',
     marginTop: theme.spacing.unit * 2,
     paddingTop: theme.spacing.unit * 2,
@@ -191,7 +191,7 @@ export default class WorkList extends React.Component<Props, State> {
                 <Grid item key={item.path}>
                   <Card
                     elevation={0}
-                    className={cx(
+                    className={classes(
                       cn.card,
                       cn.thumbnail,
                       item.visibility === 'private' && cn.card_private

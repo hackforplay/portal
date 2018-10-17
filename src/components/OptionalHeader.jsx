@@ -6,13 +6,13 @@ import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import Typography from 'material-ui/Typography';
 import { grey } from 'material-ui/colors';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 import theme from '../settings/theme';
 import { optionalHeaderInfo } from '../settings/siteMap';
 
 const cn = {
-  root: css({
+  root: style({
     paddingTop: theme.spacing.unit * 6,
     paddingBottom: theme.spacing.unit * 6,
     backgroundColor: grey[300]

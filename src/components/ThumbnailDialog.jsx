@@ -3,7 +3,7 @@ import * as React from 'react';
 import Dialog from 'material-ui/Dialog/Dialog';
 import { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
-import { css, cx } from 'emotion';
+import { style, classes } from 'typestyle';
 
 import theme from '../settings/theme';
 import type { StateProps, DispatchProps } from '../containers/ThumbnailDialog';
@@ -11,18 +11,18 @@ import * as WorkList from './WorkList';
 import * as xlasses from '../utils/xlasses';
 
 const cn = {
-  root: css({
+  root: style({
     backgroundColor: 'red',
     maxWidth: '100vw'
   }),
-  content: css({
+  content: style({
     maxWidth: '80vw'
   }),
-  wrapper: css({
+  wrapper: style({
     display: 'flex',
     flexWrap: 'wrap'
   }),
-  border: css({
+  border: style({
     margin: 2,
     borderStyle: 'solid',
     borderWidth: 2,
@@ -31,7 +31,7 @@ const cn = {
       borderColor: theme.palette.primary[500]
     }
   }),
-  item: css({
+  item: style({
     height: 160
   })
 };
@@ -77,7 +77,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
             {src ? (
               // 現在のサムネイル
               <div
-                className={cx(
+                className={classes(
                   cn.border,
                   this.state.selectedIndex === null && 'selected'
                 )}
@@ -87,7 +87,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
                   });
                 }}
               >
-                <div className={cx(WorkList.cn.thumbnail, cn.item)}>
+                <div className={classes(WorkList.cn.thumbnail, cn.item)}>
                   <img src={src} alt="今のサムネイル" />
                 </div>
               </div>
@@ -95,7 +95,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
             {make.thumbnails.map((src, i) => (
               <div
                 key={i}
-                className={cx(
+                className={classes(
                   cn.border,
                   this.state.selectedIndex === i && 'selected'
                 )}
@@ -105,7 +105,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
                   });
                 }}
               >
-                <div className={cx(WorkList.cn.thumbnail, cn.item)}>
+                <div className={classes(WorkList.cn.thumbnail, cn.item)}>
                   <img src={src} alt="サムネイル" />
                 </div>
               </div>

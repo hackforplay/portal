@@ -12,7 +12,7 @@ import Select from 'material-ui/Select';
 import grey from 'material-ui/colors/grey';
 import Home from 'material-ui-icons/Home';
 import Tooltip from 'material-ui/Tooltip';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 import Avatar from '../containers/Avatar';
 import theme from '../settings/theme';
@@ -25,7 +25,7 @@ import type { StateProps, DispatchProps } from '../containers/Header';
 import ContrastButton from './ContrastButton';
 
 const cn = {
-  root: css({
+  root: style({
     '@media (min-width:0px) and (orientation: landscape)': {
       height: 48
     },
@@ -34,23 +34,23 @@ const cn = {
     },
     height: 56
   }),
-  toolbar: css({
+  toolbar: style({
     backgroundColor: grey[900],
     maxHeight: 64
   }),
-  blank: css({
+  blank: style({
     flex: 1
   }),
-  icon: css({
+  icon: style({
     width: 18,
     marginRight: 12
   }),
-  avatar: css({
+  avatar: style({
     cursor: 'pointer',
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit
   }),
-  title: css({
+  title: style({
     '@media (max-width:721px)': {
       // 画面幅が一定以下の時はロゴを表示しない
       display: 'none'
@@ -58,7 +58,7 @@ const cn = {
     color: 'black',
     filter: 'invert(100%)'
   }),
-  separator: css({
+  separator: style({
     position: 'relative',
     display: 'inline-flex',
     minHeight: 36,
@@ -75,7 +75,7 @@ const cn = {
       }
     }
   }),
-  select: css({
+  select: style({
     '@media (max-width:561px)': {
       // 画面幅が一定以下の時は切り替えメニューを表示しない
       display: 'none'
@@ -84,16 +84,16 @@ const cn = {
     marginRight: 8,
     color: 'white'
   }),
-  selectIcon: css({
+  selectIcon: style({
     color: 'white'
   }),
-  tooltip: css({
+  tooltip: style({
     '@media (min-width:920px)': {
       // button label が表示されるときは tooltip を表示しない
       display: 'none'
     }
   }),
-  buttonLabel: css({
+  buttonLabel: style({
     '@media (max-width:921px)': {
       // 画面幅が一定以上の時だけ button label を表示する
       display: 'none'

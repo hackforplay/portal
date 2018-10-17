@@ -7,14 +7,14 @@ import Divider from 'material-ui/Divider';
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 import theme from '../settings/theme';
 import contents from '../settings/contents';
 import type { ContentType } from '../settings/contents';
 import * as xlasses from '../utils/xlasses';
 
-const rootStyle = css({
+const rootStyle = style({
   maxWidth: 840,
   boxSizing: 'border-box',
   marginTop: theme.spacing.unit * 4,
@@ -64,16 +64,16 @@ class Contents extends React.Component<OwnProps & { ...ContextRouter }> {
 }
 
 const stageStyle = {
-  item: css({
+  item: style({
     paddingTop: theme.spacing.unit * 4,
     paddingBottom: theme.spacing.unit * 4
   }),
-  alignMiddle: css({
+  alignMiddle: style({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between'
   }),
-  img: css({
+  img: style({
     width: '100%',
     paddingRight: theme.spacing.unit * 2
   })
@@ -127,19 +127,19 @@ function StageContent(props: ContentType & { ...ContextRouter }) {
 }
 
 const youtubeStyle = {
-  item: css({
+  item: style({
     paddingTop: theme.spacing.unit * 4,
     paddingBottom: theme.spacing.unit * 4
   }),
-  alignMiddle: css({
+  alignMiddle: style({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between'
   }),
-  button: css({
+  button: style({
     marginRight: theme.spacing.unit * 2
   }),
-  responsive: css({
+  responsive: style({
     position: 'relative',
     paddingBottom: '56.25%',
     height: 0,

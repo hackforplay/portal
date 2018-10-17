@@ -12,25 +12,25 @@ import SearchIcon from 'material-ui-icons/Search';
 import ArrowBack from 'material-ui-icons/ArrowBack';
 import { grey } from 'material-ui/colors';
 import { fade } from 'material-ui/styles/colorManipulator';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 import { searchBarInfo } from '../settings/siteMap';
 import theme from '../settings/theme';
 import type { StateProps } from '../containers/SearchBar';
 
 const cn = {
-  toolbar: css({
+  toolbar: style({
     minHeight: 48, // 上下のマージンをなくす
     backgroundColor: grey[50]
   }),
-  blank: css({
+  blank: style({
     flex: 1
   }),
-  icon: css({
+  icon: style({
     width: 18,
     marginRight: 12
   }),
-  textField: css({
+  textField: style({
     flexGrow: 1,
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
@@ -39,7 +39,7 @@ const cn = {
       backgroundColor: grey[500]
     }
   }),
-  wrapper: css({
+  wrapper: style({
     fontFamily: theme.typography.fontFamily,
     position: 'relative',
     marginRight: theme.spacing.unit * 2,
@@ -57,7 +57,7 @@ const cn = {
       }
     }
   }),
-  search: css({
+  search: style({
     width: theme.spacing.unit * 9,
     height: '100%',
     position: 'absolute',
@@ -66,7 +66,7 @@ const cn = {
     alignItems: 'center',
     justifyContent: 'center'
   }),
-  input: css({
+  input: style({
     font: 'inherit',
     padding: `${theme.spacing.unit}px ${theme.spacing.unit}px ${
       theme.spacing.unit

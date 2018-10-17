@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import classNames from 'classnames';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 import type { StateProps, DispatchProps } from '../containers/Feeles';
 
@@ -14,7 +14,7 @@ const rootStyle = (padding: number) => ({
 });
 
 const cn = {
-  root: css({
+  root: style({
     ...rootStyle(56),
     '@media (min-width:0px) and (orientation: landscape)': {
       ...rootStyle(48)

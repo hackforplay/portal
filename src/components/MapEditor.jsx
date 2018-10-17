@@ -12,10 +12,10 @@ import DialogTitle from 'material-ui/Dialog/DialogTitle';
 import DialogContent from 'material-ui/Dialog/DialogContent';
 import DialogContentText from 'material-ui/Dialog/DialogContentText';
 import type ReactMapEditorType from 'react-map-editor';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 const cn = {
-  root: css({
+  root: style({
     height: `calc(100vh - ${56 * 2}px)`,
     '@media (min-width:0px) and (orientation: landscape)': {
       height: `calc(100vh - ${48 * 2}px)`
@@ -24,10 +24,10 @@ const cn = {
       height: `calc(100vh - ${64 * 2}px)`
     }
   }),
-  flex: css({
+  flex: style({
     flexGrow: 1
   }),
-  code: css({
+  code: style({
     height: '5rem',
     width: '100%',
     fontFamily: `Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace`,

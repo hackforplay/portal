@@ -9,28 +9,28 @@ import Button from 'material-ui/Button';
 import { CircularProgress } from 'material-ui/Progress';
 import Typography from 'material-ui/Typography';
 import type { ContextRouter } from 'react-router-dom';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 import theme from '../settings/theme';
 import type { StateProps, DispatchProps } from '../containers/PCRanking';
 
 const cn = {
-  root: css({
+  root: style({
     maxWidth: 840,
     marginLeft: 'auto',
     marginRight: 'auto'
   }),
-  progress: css({
+  progress: style({
     display: 'block',
     marginLeft: 'auto',
     marginRight: 'auto',
     padding: theme.spacing.unit * 6
   }),
-  button: css({
+  button: style({
     marginTop: theme.spacing.unit * 3,
     marginBottom: theme.spacing.unit * 3
   }),
-  cell: css({
+  cell: style({
     maxWidth: 200,
     textOverflow: 'ellipsis',
     overflow: 'hidden'

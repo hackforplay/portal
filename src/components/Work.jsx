@@ -11,7 +11,7 @@ import Popover from 'material-ui/Popover';
 import Chip from 'material-ui/Chip';
 import { MenuItem } from 'material-ui/Menu';
 import IconButton from 'material-ui/IconButton';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 import Menu from 'material-ui-icons/Menu';
 import Close from 'material-ui-icons/Close';
 
@@ -34,36 +34,36 @@ export type State = {
 };
 
 const cn = {
-  chip: css({
+  chip: style({
     marginRight: theme.spacing.unit * 2
   }),
-  blank: css({
+  blank: style({
     flex: 1
   }),
-  caption: css({
+  caption: style({
     marginLeft: theme.spacing.unit * 2,
     marginRight: theme.spacing.unit * 2
   }),
-  noTitle: css({
+  noTitle: style({
     fontStyle: 'italic'
   }),
-  title: css({
+  title: style({
     ...theme.typography.title,
     maxWidth: 500,
     flexGrow: 1,
     flexShrink: 10000
   }),
-  underline: css({
+  underline: style({
     '&:before': {
       // focus も hover もされていないときの underline を消去
       height: 0
     }
   }),
-  iconButton: css({
+  iconButton: style({
     marginLeft: 4,
     marginRight: 4
   }),
-  error: css({
+  error: style({
     color: 'red'
   })
 };

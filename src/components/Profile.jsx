@@ -9,40 +9,40 @@ import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 import Photo from 'material-ui-icons/Photo';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 import Avatar from '../containers/Avatar';
 import theme from '../settings/theme';
 import type { StateProps, DispatchProps } from '../containers/ProfileEdit';
 
 const cn = {
-  root: css({
+  root: style({
     paddingTop: theme.spacing.unit * 8,
     paddingLeft: theme.spacing.unit * 4,
     paddingBottom: theme.spacing.unit * 4,
     backgroundColor: theme.palette.background.appBar
   }),
-  container: css({
+  container: style({
     maxWidth: 600
   }),
-  avatar: css({
+  avatar: style({
     width: 80,
     height: 80,
     fontSize: '2.5rem'
   }),
-  button: css({
+  button: style({
     marginBottom: theme.spacing.unit
   }),
-  iconButton: css({
+  iconButton: style({
     marginTop: -48
   }),
-  textFieldRoot: css({
+  textFieldRoot: style({
     padding: 0,
     'label + &': {
       marginTop: theme.spacing.unit * 3
     }
   }),
-  textFieldInput: css({
+  textFieldInput: style({
     borderRadius: 4,
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
@@ -55,7 +55,7 @@ const cn = {
       boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)'
     }
   }),
-  fileInput: css({
+  fileInput: style({
     display: 'none'
   })
 };

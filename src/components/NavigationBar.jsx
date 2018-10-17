@@ -12,19 +12,19 @@ import IconButton from 'material-ui/IconButton';
 import SearchIcon from 'material-ui-icons/Search';
 import ArrowBack from 'material-ui-icons/ArrowBack';
 import { grey } from 'material-ui/colors';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 import { searchBarInfo } from '../settings/siteMap';
 
 const cn = {
-  toolbar: css({
+  toolbar: style({
     minHeight: 48, // 上下のマージンをなくす
     backgroundColor: grey[50]
   }),
-  blank: css({
+  blank: style({
     flex: 1
   }),
-  icon: css({
+  icon: style({
     width: 18,
     marginRight: 12
   })

@@ -3,7 +3,7 @@ import * as React from 'react';
 import type { ContextRouter } from 'react-router-dom';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
 import theme from '../settings/theme';
 import WorkList from '../containers/WorkList';
@@ -12,10 +12,10 @@ import diamond_green from '../resources/diamond_green.png';
 import type { StateProps, DispatchProps } from '../containers/FeatureLists';
 
 const cn = {
-  root: css({
+  root: style({
     padding: theme.spacing.unit * 3
   }),
-  title: css({
+  title: style({
     display: 'inline-flex',
     alignItems: 'center'
   })
