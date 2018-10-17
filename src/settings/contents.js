@@ -406,6 +406,75 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         ]
       }
     ]
+  },
+  {
+    path: '/specials/プログラミングコロシアム2018',
+    items: [
+      {
+        type: 'stage',
+        title: 'れんしゅうステージ',
+        image: 'https://i.gyazo.com/60cfa51509c815a713be7a38d8d547d6.gif',
+        author: null,
+        description: 'まずは、このステージで、あそびかたをおぼえよう！',
+        buttons: [
+          {
+            raised: true,
+            color: 'primary',
+            children: 'プレイ',
+            component: Link,
+            to: '/officials/pg-colosseum-2018/training'
+          },
+          {
+            children: '答え',
+            href:
+              'https://scrapbox.io/hackforplay/%E3%83%AD%E3%83%83%E3%82%AF%E3%83%9E%E3%83%B3%E3%81%AE%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'stage',
+        title: 'ステージ１【vsエアーマン】',
+        image: 'https://i.gyazo.com/93539dd4f2f2612059c881b2a937d065.gif',
+        author: null,
+        description: 'ロックマンといっしょにたたかおう！',
+        buttons: [
+          {
+            raised: true,
+            color: 'primary',
+            children: 'プレイ',
+            component: Link,
+            to: '/officials/pg-colosseum-2018/yosen-1-FRhtfFzG'
+          },
+          {
+            children: '答え',
+            href: 'https://www.notion.so/63c3ecb229b64e45a4a301d9f9894b5f',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'stage',
+        title: 'ステージ２【vsイエローデビル】',
+        image: 'https://i.gyazo.com/19c764093668c23ed36f46a02c1698f7.gif',
+        author: null,
+        description: 'ロックマンといっしょにたたかおう！',
+        buttons: [
+          {
+            raised: true,
+            color: 'primary',
+            children: 'プレイ',
+            component: Link,
+            to: '/officials/pg-colosseum-2018/yosen-2-LKSm5H9D'
+          },
+          {
+            children: '答え',
+            href: 'https://www.notion.so/63c3ecb229b64e45a4a301d9f9894b5f',
+            target: '_blank'
+          }
+        ]
+      }
+    ]
   }
 ];
 
