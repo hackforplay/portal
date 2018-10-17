@@ -27,6 +27,9 @@ const cn = {
   icon: style({
     width: 18,
     marginRight: 12
+  }),
+  tabs: style({
+    flexGrow: 999
   })
 };
 
@@ -97,7 +100,7 @@ class NavigationBar extends React.Component<Props> {
               onChange={this.handleChangeTab}
               scrollable
               scrollButtons="auto"
-              style={{ flexGrow: 999 }}
+              className={cn.tabs}
             >
               {info.tabs.map(tab => (
                 <Tab key={tab.to} label={tab.text} value={tab.to} />

@@ -8,6 +8,7 @@ import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import { style } from 'typestyle';
+import { important } from 'csx';
 
 import theme from '../settings/theme';
 import contents from '../settings/contents';
@@ -71,7 +72,8 @@ const stageStyle = {
   alignMiddle: style({
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    padding: important(32)
   }),
   img: style({
     width: '100%',
@@ -94,12 +96,7 @@ function StageContent(props: ContentType & { ...ContextRouter }) {
       <Grid item xs={6}>
         <img src={props.image} alt="" className={stageStyle.img} />
       </Grid>
-      <Grid
-        item
-        xs={6}
-        className={stageStyle.alignMiddle}
-        style={{ padding: 32 }}
-      >
+      <Grid item xs={6} className={stageStyle.alignMiddle}>
         <div />
         <div>
           <Typography variant="title" align="left" gutterBottom>

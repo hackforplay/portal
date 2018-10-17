@@ -8,7 +8,7 @@ import Paper from 'material-ui/Paper';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
-import { style } from 'typestyle';
+import { style, classes } from 'typestyle';
 
 import theme from '../settings/theme';
 import WorkList from '../containers/WorkList';
@@ -83,7 +83,16 @@ const cn = {
   iframe: style({
     width: '100%',
     height: '100%'
-  })
+  }),
+  flexAlignCenter: style({ display: 'flex', alignItems: 'center' }),
+  marginLeft16: style({ marginLeft: 16 }),
+  marginTop16: style({ marginTop: 16 }),
+  procoloContainer: style({ marginTop: 8, marginBottom: 8, height: 212 }),
+  height100: style({ height: '100%' }),
+  noPadding: style({ padding: 0 }),
+  width100: style({ maxWidth: '100%' }),
+  makeButton: style({ marginTop: -120, marginBottom: 48 }),
+  facebook: style({ border: 'none', overflow: 'hidden' })
 };
 
 export type Props = StateProps & DispatchProps;
@@ -121,9 +130,9 @@ export default (props: Props) => {
         <Grid container spacing={24}>
           <Grid item xs={12}>
             <Paper elevation={1} className={cn.paper}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div className={cn.flexAlignCenter}>
                 <img src={beginner} alt="" />
-                <div style={{ marginLeft: 16 }}>
+                <div className={cn.marginLeft16}>
                   <Typography type="subheading" align="left" gutterBottom>
                     HackforPlayとは？
                   </Typography>
@@ -138,8 +147,7 @@ export default (props: Props) => {
                 variant="raised"
                 component={Link}
                 to="/officials/hack-rpg"
-                className={xlasses.largeButton}
-                style={{ marginTop: 16 }}
+                className={classes(xlasses.largeButton, cn.marginTop16)}
               >
                 ゲームスタート
               </Button>
@@ -149,9 +157,9 @@ export default (props: Props) => {
           {/* プログラミングコロシアム */}
           <Grid item xs={12}>
             <Paper elevation={1} className={cn.paper}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div className={cn.flexAlignCenter}>
                 <img src={dragon} alt="" />
-                <div style={{ marginLeft: 16 }}>
+                <div className={cn.marginLeft16}>
                   <Typography variant="title" align="left" gutterBottom>
                     プログラミングコロシアム特別ステージ
                   </Typography>
@@ -161,7 +169,7 @@ export default (props: Props) => {
                 container
                 justify="center"
                 spacing={16}
-                style={{ marginTop: 8, marginBottom: 8, height: 212 }}
+                className={cn.procoloContainer}
               >
                 <Grid item sm={6} xs={12}>
                   <iframe
@@ -177,7 +185,7 @@ export default (props: Props) => {
                   <img
                     src="https://assets.feeles.com/thumbnail/7af083af9079fc370610d0e688c073d3.jpg"
                     alt="練習用ステージ"
-                    style={{ height: '100%' }}
+                    className={cn.height100}
                   />
                 </Grid>
               </Grid>
@@ -203,8 +211,7 @@ export default (props: Props) => {
                 variant="raised"
                 component={Link}
                 to="/specials/プログラミングコロシアム2018"
-                className={xlasses.largeButton}
-                style={{ marginTop: 16 }}
+                className={classes(xlasses.largeButton, cn.marginTop16)}
               >
                 今すぐプレイ
               </Button>
@@ -212,23 +219,22 @@ export default (props: Props) => {
           </Grid>
 
           <Grid item xs={12}>
-            <Paper
-              elevation={1}
-              className={cn.paper}
-              style={{ padding: 0 }}
-            >
+            <Paper elevation={1} className={classes(cn.paper, cn.noPadding)}>
               <img
                 src={makePng}
                 alt="ステージを作ろう"
-                style={{ maxWidth: '100%' }}
+                className={cn.width100}
               />
               <Button
                 color="primary"
                 variant="raised"
                 component={Link}
                 to="/officials/make-rpg"
-                className={xlasses.largeButton}
-                style={{ marginTop: -120, marginBottom: 48 }}
+                className={classes(
+                  xlasses.largeButton,
+                  cn.marginTop16,
+                  cn.makeButton
+                )}
               >
                 ステージをつくる
               </Button>
@@ -262,7 +268,7 @@ export default (props: Props) => {
               src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fhackforplay%2F&tabs=timeline&width=380&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=481203238698048"
               width="408"
               height="500"
-              style={{ border: 'none', overflow: 'hidden' }}
+              className={cn.facebook}
               scrolling="no"
               frameBorder="0"
               allowtransparency="true"

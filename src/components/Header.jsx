@@ -164,7 +164,6 @@ class Header extends React.Component<Props, State> {
           <Toolbar className={cn.toolbar}>
             <Typography
               variant="title"
-              style={{ color: 'black' }}
               component={Link}
               to="/"
               className={cn.title}
