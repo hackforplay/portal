@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import { MuiThemeProvider } from 'material-ui/styles';
 import {
   BrowserRouter as Router,
   Route,
@@ -8,7 +7,7 @@ import {
   Redirect
 } from 'react-router-dom';
 
-import theme from '../settings/theme';
+import MuiThemeProvider from '../containers/MuiThemeProvider';
 import Header from '../containers/Header';
 import UserWorks from '../containers/UserWorks';
 import Topic from '../containers/Topic';
@@ -32,7 +31,7 @@ const sp1 = `/specials/プログラミングコロシアム`;
 
 export default function App() {
   return (
-    <MuiThemeProvider theme={theme}>
+    <MuiThemeProvider>
       <Router>
         <div>
           <Route component={GoogleTagManager} />
