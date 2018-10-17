@@ -289,7 +289,7 @@ export default class WorkList extends React.Component<Props, State> {
         {more ? null : (
           <div className={classes.more}>
             <Button
-              raised
+              variant="raised"
               color="primary"
               className={classes.button}
               component={Link}

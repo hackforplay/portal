@@ -206,7 +206,7 @@ export default class Profile extends React.Component<Props> {
             <Grid item xs={5}>
               {edit ? (
                 <Button
-                  raised
+                  variant="raised"
                   color="primary"
                   className={classes.button}
                   component={Link}
@@ -217,7 +217,7 @@ export default class Profile extends React.Component<Props> {
                 </Button>
               ) : (
                 <Button
-                  raised
+                  variant="raised"
                   color="primary"
                   className={classes.button}
                   component={Link}

@@ -133,7 +133,7 @@ export default ({ records, match }: Props) => {
         <CircularProgress className={classes.progress} />
       )}
       <Button
-        raised
+        variant="raised"
         color="primary"
         component={Link}
         to={playLinks[stage]}

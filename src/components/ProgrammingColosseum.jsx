@@ -83,7 +83,7 @@ export default class ProgrammingColosseum extends React.Component<{}> {
                 このゲームで使える全ての機能が書かれたリファレンスです。ゲームを始める前に、必ずダウンロードしてください。
               </Typography>
               <Button
-                raised
+                variant="raised"
                 color="primary"
                 component="a"
                 download
@@ -93,7 +93,7 @@ export default class ProgrammingColosseum extends React.Component<{}> {
                 ダウンロードする
               </Button>
               <Button
-                raised
+                variant="raised"
                 color="default"
                 target="_blank"
                 href={reference}
@@ -113,7 +113,7 @@ export default class ProgrammingColosseum extends React.Component<{}> {
                 ステージをクリアするとランキングに参加できます。
               </Typography>
               <Button
-                raised
+                variant="raised"
                 color="primary"
                 component={Link}
                 to="/specials/プログラミングコロシアム/ranking/semi1"

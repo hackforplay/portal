@@ -135,7 +135,7 @@ export default (props: Props) => {
 
               <Button
                 color="primary"
-                raised
+                variant="raised"
                 component={Link}
                 to="/officials/hack-rpg"
                 className={xlasses.largeButton}
@@ -185,20 +185,22 @@ export default (props: Props) => {
                 今年のプログラミングコロシアムは、ロックマン©︎とコラボ！
               </Typography>
               <Typography type="body1" align="left" gutterBottom>
-                プログラムを使ってロックマン©︎を動かそう。コマンドの一覧は<a
+                プログラムを使ってロックマン©︎を動かそう。コマンドの一覧は
+                <a
                   href="https://scrapbox.io/hackforplay/%E3%83%AD%E3%83%83%E3%82%AF%E3%83%9E%E3%83%B3%E3%81%AE%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   ここをクリック
-                </a>すれば見ることができるぞ
+                </a>
+                すれば見ることができるぞ
               </Typography>
               <Typography type="caption" align="left">
                 ※ロックマンは株式会社カプコンの登録商標です
               </Typography>
               <Button
                 color="primary"
-                raised
+                variant="raised"
                 component={Link}
                 to="/officials/pg-colosseum-2018/training"
                 className={xlasses.largeButton}
@@ -210,11 +212,19 @@ export default (props: Props) => {
           </Grid>
 
           <Grid item xs={12}>
-            <Paper elevation={1} className={classes.paper} style={{padding:0}} >
-              <img src={makePng} alt="ステージを作ろう" style={{maxWidth:'100%'}} />
+            <Paper
+              elevation={1}
+              className={classes.paper}
+              style={{ padding: 0 }}
+            >
+              <img
+                src={makePng}
+                alt="ステージを作ろう"
+                style={{ maxWidth: '100%' }}
+              />
               <Button
                 color="primary"
-                raised
+                variant="raised"
                 component={Link}
                 to="/officials/make-rpg"
                 className={xlasses.largeButton}
@@ -290,7 +300,7 @@ export default (props: Props) => {
               </Typography>
               <Button
                 color="primary"
-                raised
+                variant="raised"
                 href="http://www4.city.kanazawa.lg.jp/17009/kidspg.html"
                 className={classes.button}
               >
@@ -325,7 +335,7 @@ export default (props: Props) => {
               </div>
               <Button
                 color="primary"
-                raised
+                variant="raised"
                 href="https://goo.gl/forms/S655BeMUpNHjmAtg1"
                 target="_blank"
               >
