@@ -185,7 +185,7 @@ export default class WorkList extends React.Component<Props, State> {
           title
         )}
         <Collapse collapsedHeight="284px" in={more || false}>
-          <Grid container justify="center">
+          <Grid container justify="center" spacing={8}>
             {works.data ? (
               works.data.map(item => (
                 <Grid item key={item.path}>
