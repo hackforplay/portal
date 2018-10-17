@@ -35,7 +35,7 @@ export default ({ match, lists }: Props) => {
         <WorkList
           works={lists.trending}
           title={
-            <Typography type="title" gutterBottom className={classes.title}>
+            <Typography variant="title" gutterBottom className={classes.title}>
               <img src={diamond_blue} alt="" />
               人気のステージ
             </Typography>
@@ -49,7 +49,7 @@ export default ({ match, lists }: Props) => {
         <WorkList
           works={lists.recommended}
           title={
-            <Typography type="title" gutterBottom className={classes.title}>
+            <Typography variant="title" gutterBottom className={classes.title}>
               <img src={diamond_green} alt="" />
               {/*"おすすめのステージ"*/}あたらしいステージ
             </Typography>

@@ -157,7 +157,7 @@ class SearchBar extends React.Component<Props> {
               <ArrowBack />
             </IconButton>
           ) : null}
-          {info.text && <Typography type="headline">{info.text}</Typography>}
+          {info.text && <Typography variant="headline">{info.text}</Typography>}
           <div className={classes.blank} />
           <div className={classes.wrapper}>
             <div className={classes.search}>

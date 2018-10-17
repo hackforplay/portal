@@ -21,7 +21,7 @@ export type ContentType = {
     fullWidth?: boolean,
     href?: string,
     mini?: boolean,
-    raised?: boolean,
+    variant?: 'raised' | 'flat' | 'fab',
     type?: string,
     target?: '_blank'
   }>
@@ -41,7 +41,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         url: '/officials/hack-rpg',
         buttons: [
           {
-            raised: true,
+            variant: 'raised',
             color: 'primary',
             children: 'ゲームスタート',
             component: Link,
@@ -143,7 +143,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         url: '/officials/make-rpg',
         buttons: [
           {
-            raised: true,
+            variant: 'raised',
             color: 'primary',
             children: 'ステージをつくる',
             component: Link,
@@ -308,7 +308,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         url: '/officials/pg-colosseum/#/training/index.html',
         buttons: [
           {
-            raised: true,
+            variant: 'raised',
             color: 'primary',
             children: 'スタート',
             component: Link,
@@ -326,20 +326,20 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         url: '/officials/pg-colosseum/#/stages/semi/index.html',
         buttons: [
           {
-            raised: true,
+            variant: 'raised',
             color: 'primary',
             children: 'はじめから',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/semi/index.html'
           },
           {
-            raised: true,
+            variant: 'raised',
             children: 'ステージ２',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/semi2/index.html'
           },
           {
-            raised: true,
+            variant: 'raised',
             children: 'ステージ３',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/semi3/index.html'
@@ -356,20 +356,20 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         description: '決勝戦に使われたステージです',
         buttons: [
           {
-            raised: true,
+            variant: 'raised',
             color: 'primary',
             children: 'はじめから',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/final/index.html'
           },
           {
-            raised: true,
+            variant: 'raised',
             children: 'ステージ２',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/final2/index.html'
           },
           {
-            raised: true,
+            variant: 'raised',
             children: 'ステージ３',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/final3/index.html'
@@ -385,20 +385,20 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         description: '最終決戦に使われたステージです',
         buttons: [
           {
-            raised: true,
+            variant: 'raised',
             color: 'primary',
             children: 'はじめから',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/champion/index.html'
           },
           {
-            raised: true,
+            variant: 'raised',
             children: 'ステージ２',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/slot2/index.html'
           },
           {
-            raised: true,
+            variant: 'raised',
             children: 'ステージ３',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/danmaku3/index.html'

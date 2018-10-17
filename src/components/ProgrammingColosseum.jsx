@@ -69,21 +69,21 @@ export default class ProgrammingColosseum extends React.Component<{}> {
         <Paper elevation={1} className={classes.paper}>
           <div className={classes.paragraph}>
             <img src={attention} className={classes.img} alt="" />
-            <Typography type="title" color="error" align="left">
+            <Typography variant="title" color="error" align="left">
               始める前に必ずお読みください
             </Typography>
           </div>
           <div className={classes.paragraph}>
             <img src={no01} className={classes.img} alt="" />
             <div>
-              <Typography type="title" align="left" gutterBottom>
+              <Typography variant="title" align="left" gutterBottom>
                 リファレンスのダウンロード
               </Typography>
-              <Typography type="body1" align="left" gutterBottom>
+              <Typography variant="body1" align="left" gutterBottom>
                 このゲームで使える全ての機能が書かれたリファレンスです。ゲームを始める前に、必ずダウンロードしてください。
               </Typography>
               <Button
-                raised
+                variant="raised"
                 color="primary"
                 component="a"
                 download
@@ -93,7 +93,7 @@ export default class ProgrammingColosseum extends React.Component<{}> {
                 ダウンロードする
               </Button>
               <Button
-                raised
+                variant="raised"
                 color="default"
                 target="_blank"
                 href={reference}
@@ -106,14 +106,14 @@ export default class ProgrammingColosseum extends React.Component<{}> {
           <div className={classes.paragraph}>
             <img src={no02} className={classes.img} alt="" />
             <div>
-              <Typography type="title" align="left" gutterBottom>
+              <Typography variant="title" align="left" gutterBottom>
                 ランキングついて
               </Typography>
-              <Typography type="body1" align="left" gutterBottom>
+              <Typography variant="body1" align="left" gutterBottom>
                 ステージをクリアするとランキングに参加できます。
               </Typography>
               <Button
-                raised
+                variant="raised"
                 color="primary"
                 component={Link}
                 to="/specials/プログラミングコロシアム/ranking/semi1"
@@ -125,10 +125,10 @@ export default class ProgrammingColosseum extends React.Component<{}> {
           <div className={classes.paragraph}>
             <img src={no03} className={classes.img} alt="" />
             <div>
-              <Typography type="title" align="left" gutterBottom>
+              <Typography variant="title" align="left" gutterBottom>
                 レベルについて
               </Typography>
-              <Typography type="body1" align="left" gutterBottom>
+              <Typography variant="body1" align="left" gutterBottom>
                 全部で4つのレベルが用意されています。まずはチュートリアルからやってみましょう
               </Typography>
             </div>

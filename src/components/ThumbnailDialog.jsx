@@ -114,7 +114,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
         </DialogContent>
         <DialogActions>
           <Button
-            raised
+            variant="raised"
             color="primary"
             disabled={this.state.selectedIndex === null}
             onClick={this.handleSetThumbnail}
