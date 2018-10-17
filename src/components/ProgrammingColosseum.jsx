@@ -6,7 +6,7 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import { style } from 'typestyle';
 
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import attention from '../resources/attention.png';
 import no01 from '../resources/no01.png';
 import no02 from '../resources/no02.png';
@@ -14,10 +14,10 @@ import no03 from '../resources/no03.png';
 
 const reference = `https://firebasestorage.googleapis.com/v0/b/hackforplay-production.appspot.com/o/specials%2Freference.pdf?alt=media&token=22b71ece-3b6b-4d35-bb62-59e5223b3dad`;
 
-const cn = {
+const getCn = props => ({
   root: style({
     maxWidth: 840,
-    paddingTop: theme.spacing.unit * 4,
+    paddingTop: props.theme.spacing.unit * 4,
     boxSizing: 'border-box',
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -27,29 +27,30 @@ const cn = {
   paper: style({
     width: '100%',
     boxSizing: 'border-box',
-    padding: theme.spacing.unit * 6,
-    marginBottom: theme.spacing.unit * 4,
+    padding: props.theme.spacing.unit * 6,
+    marginBottom: props.theme.spacing.unit * 4,
     '&:after': {
       content: '" "',
       display: 'block',
       whiteSpace: 'pre',
-      marginBottom: theme.spacing.unit * -6
+      marginBottom: props.theme.spacing.unit * -6
     }
   }),
   paragraph: style({
     display: 'flex',
     alignItems: 'center',
-    marginBottom: theme.spacing.unit * 6
+    marginBottom: props.theme.spacing.unit * 6
   }),
   img: style({
     alignSelf: 'flex-start',
-    marginRight: theme.spacing.unit * 5
+    marginRight: props.theme.spacing.unit * 5
   }),
   button: style({
-    marginRight: theme.spacing.unit * 2
+    marginRight: props.theme.spacing.unit * 2
   })
-};
+});
 
+@withTheme()
 export default class ProgrammingColosseum extends React.Component<{}> {
   componentDidMount() {
     // async のテスト
@@ -64,17 +65,19 @@ export default class ProgrammingColosseum extends React.Component<{}> {
   }
 
   render() {
+    const dcn = getCn(this.props);
+
     return (
-      <div className={cn.root}>
-        <Paper elevation={1} className={cn.paper}>
-          <div className={cn.paragraph}>
-            <img src={attention} className={cn.img} alt="" />
+      <div className={dcn.root}>
+        <Paper elevation={1} className={dcn.paper}>
+          <div className={dcn.paragraph}>
+            <img src={attention} className={dcn.img} alt="" />
             <Typography variant="title" color="error" align="left">
               始める前に必ずお読みください
             </Typography>
           </div>
-          <div className={cn.paragraph}>
-            <img src={no01} className={cn.img} alt="" />
+          <div className={dcn.paragraph}>
+            <img src={no01} className={dcn.img} alt="" />
             <div>
               <Typography variant="title" align="left" gutterBottom>
                 リファレンスのダウンロード
@@ -88,7 +91,7 @@ export default class ProgrammingColosseum extends React.Component<{}> {
                 component="a"
                 download
                 href={reference}
-                className={cn.button}
+                className={dcn.button}
               >
                 ダウンロードする
               </Button>
@@ -97,14 +100,14 @@ export default class ProgrammingColosseum extends React.Component<{}> {
                 color="default"
                 target="_blank"
                 href={reference}
-                className={cn.button}
+                className={dcn.button}
               >
                 新しいタブで開く
               </Button>
             </div>
           </div>
-          <div className={cn.paragraph}>
-            <img src={no02} className={cn.img} alt="" />
+          <div className={dcn.paragraph}>
+            <img src={no02} className={dcn.img} alt="" />
             <div>
               <Typography variant="title" align="left" gutterBottom>
                 ランキングついて
@@ -122,8 +125,8 @@ export default class ProgrammingColosseum extends React.Component<{}> {
               </Button>
             </div>
           </div>
-          <div className={cn.paragraph}>
-            <img src={no03} className={cn.img} alt="" />
+          <div className={dcn.paragraph}>
+            <img src={no03} className={dcn.img} alt="" />
             <div>
               <Typography variant="title" align="left" gutterBottom>
                 レベルについて

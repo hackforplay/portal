@@ -15,7 +15,7 @@ import Tooltip from 'material-ui/Tooltip';
 import { style } from 'typestyle';
 
 import Avatar from '../containers/Avatar';
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import googleIcon from '../resources/google.svg';
 import logo from '../resources/logo.png';
 import Beginner from '../icons/Beginner';
@@ -44,11 +44,6 @@ const cn = {
   icon: style({
     width: 18,
     marginRight: 12
-  }),
-  avatar: style({
-    cursor: 'pointer',
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit
   }),
   title: style({
     '@media (max-width:721px)': {
@@ -100,6 +95,13 @@ const cn = {
     }
   })
 };
+const getCn = props => ({
+  avatar: style({
+    cursor: 'pointer',
+    marginLeft: props.theme.spacing.unit,
+    marginRight: props.theme.spacing.unit
+  })
+});
 
 export type OwnProps = {};
 export type Props = OwnProps &
@@ -110,6 +112,7 @@ type State = {
   anchorEl: ?HTMLElement
 };
 
+@withTheme()
 @withRouter
 class Header extends React.Component<Props, State> {
   state = {
@@ -151,6 +154,7 @@ class Header extends React.Component<Props, State> {
   };
 
   render() {
+    const dcn = getCn(this.props);
     const { user, isSignedIn, isInOfficialWork } = this.props;
     const { anchorEl } = this.state;
 
@@ -228,7 +232,7 @@ class Header extends React.Component<Props, State> {
                 <Avatar
                   aria-owns={anchorEl ? 'simple-menu' : null}
                   aria-haspopup="true"
-                  className={cn.avatar}
+                  className={dcn.avatar}
                   src={user.data.photoURL}
                   storagePath={user.data.profileImagePath}
                   onClick={this.handleClick}

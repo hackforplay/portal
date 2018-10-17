@@ -5,7 +5,7 @@ import { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
 import { style, classes } from 'typestyle';
 
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import type { StateProps, DispatchProps } from '../containers/ThumbnailDialog';
 import * as WorkList from './WorkList';
 import * as xlasses from '../utils/xlasses';
@@ -22,19 +22,21 @@ const cn = {
     display: 'flex',
     flexWrap: 'wrap'
   }),
+  item: style({
+    height: 160
+  })
+};
+const getCn = props => ({
   border: style({
     margin: 2,
     borderStyle: 'solid',
     borderWidth: 2,
     borderColor: 'transparent',
     '&.selected': {
-      borderColor: theme.palette.primary[500]
+      borderColor: props.theme.palette.primary[500]
     }
-  }),
-  item: style({
-    height: 160
   })
-};
+});
 
 export type OwnProps = {
   open: boolean,
@@ -48,6 +50,7 @@ type State = {
   selectedIndex: number | null
 };
 
+@withTheme()
 export default class ThumbnailDialog extends React.Component<Props, State> {
   state = {
     // Index of make.thumbnails
@@ -67,6 +70,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
   };
 
   render() {
+    const dcn = getCn(this.props);
     const { make, open, src, onClose } = this.props;
 
     return (
@@ -78,7 +82,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
               // 現在のサムネイル
               <div
                 className={classes(
-                  cn.border,
+                  dcn.border,
                   this.state.selectedIndex === null && 'selected'
                 )}
                 onClick={() => {
@@ -96,7 +100,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
               <div
                 key={i}
                 className={classes(
-                  cn.border,
+                  dcn.border,
                   this.state.selectedIndex === i && 'selected'
                 )}
                 onClick={() => {

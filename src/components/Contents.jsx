@@ -9,27 +9,66 @@ import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import { style } from 'typestyle';
 import { important } from 'csx';
+import { withTheme } from '@material-ui/core/styles';
 
-import theme from '../settings/theme';
 import contents from '../settings/contents';
 import type { ContentType } from '../settings/contents';
 import * as xlasses from '../utils/xlasses';
 
-const rootStyle = style({
-  maxWidth: 840,
-  boxSizing: 'border-box',
-  marginTop: theme.spacing.unit * 4,
-  marginBottom: theme.spacing.unit * 4,
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  paddingLeft: theme.spacing.unit * 4,
-  paddingRight: theme.spacing.unit * 4
+const cn = {
+  alignMiddle: style({
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    padding: important(32)
+  }),
+  responsive: style({
+    position: 'relative',
+    paddingBottom: '56.25%',
+    height: 0,
+    overflow: 'hidden',
+    maxWidth: '100%',
+    '& iframe': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%'
+    }
+  })
+};
+const getCn = props => ({
+  root: style({
+    maxWidth: 840,
+    boxSizing: 'border-box',
+    marginTop: props.theme.spacing.unit * 4,
+    marginBottom: props.theme.spacing.unit * 4,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    paddingLeft: props.theme.spacing.unit * 4,
+    paddingRight: props.theme.spacing.unit * 4
+  }),
+  item: style({
+    paddingTop: props.theme.spacing.unit * 4,
+    paddingBottom: props.theme.spacing.unit * 4,
+    $nest: {
+      '& img': {
+        width: '100%',
+        paddingRight: props.theme.spacing.unit * 2
+      },
+      '& button': {
+        marginRight: props.theme.spacing.unit * 2
+      }
+    }
+  })
 });
 
 export type OwnProps = {};
 
+@withTheme()
 class Contents extends React.Component<OwnProps & { ...ContextRouter }> {
   render() {
+    const dcn = getCn(this.props);
     const { location } = this.props;
 
     // 現在表示している URL にふさわしいデータソースを取得する
@@ -47,9 +86,19 @@ class Contents extends React.Component<OwnProps & { ...ContextRouter }> {
     for (const item of source.items) {
       children.push(
         item.type === 'youtube' ? (
-          <YouTubeContent key={item.title} {...this.props} {...item} />
+          <YouTubeContent
+            key={item.title}
+            {...this.props}
+            {...item}
+            className={dcn.item}
+          />
         ) : item.type === 'stage' ? (
-          <StageContent key={item.title} {...this.props} {...item} />
+          <StageContent
+            key={item.title}
+            {...this.props}
+            {...item}
+            className={dcn.item}
+          />
         ) : null,
         <Divider key={item.title + '-divider'} />
       );
@@ -58,35 +107,18 @@ class Contents extends React.Component<OwnProps & { ...ContextRouter }> {
 
     return (
       <div>
-        <Paper className={rootStyle}>{children}</Paper>
+        <Paper className={dcn.root}>{children}</Paper>
       </div>
     );
   }
 }
-
-const stageStyle = {
-  item: style({
-    paddingTop: theme.spacing.unit * 4,
-    paddingBottom: theme.spacing.unit * 4
-  }),
-  alignMiddle: style({
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    padding: important(32)
-  }),
-  img: style({
-    width: '100%',
-    paddingRight: theme.spacing.unit * 2
-  })
-};
 
 function StageContent(props: ContentType & { ...ContextRouter }) {
   return (
     <Grid
       container
       spacing={16}
-      className={stageStyle.item}
+      className={props.className}
       onClick={() => {
         if (props.url) {
           props.history.push(props.url);
@@ -94,9 +126,9 @@ function StageContent(props: ContentType & { ...ContextRouter }) {
       }}
     >
       <Grid item xs={6}>
-        <img src={props.image} alt="" className={stageStyle.img} />
+        <img src={props.image} alt="" />
       </Grid>
-      <Grid item xs={6} className={stageStyle.alignMiddle}>
+      <Grid item xs={6} className={cn.alignMiddle}>
         <div />
         <div>
           <Typography variant="title" align="left" gutterBottom>
@@ -123,40 +155,11 @@ function StageContent(props: ContentType & { ...ContextRouter }) {
   );
 }
 
-const youtubeStyle = {
-  item: style({
-    paddingTop: theme.spacing.unit * 4,
-    paddingBottom: theme.spacing.unit * 4
-  }),
-  alignMiddle: style({
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between'
-  }),
-  button: style({
-    marginRight: theme.spacing.unit * 2
-  }),
-  responsive: style({
-    position: 'relative',
-    paddingBottom: '56.25%',
-    height: 0,
-    overflow: 'hidden',
-    maxWidth: '100%',
-    '& iframe': {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%'
-    }
-  })
-};
-
 function YouTubeContent(props: ContentType) {
   return (
-    <Grid container spacing={16} className={youtubeStyle.item}>
+    <Grid container spacing={16} className={props.className}>
       <Grid item xs={6}>
-        <div className={youtubeStyle.responsive}>
+        <div className={cn.responsive}>
           <iframe
             title={props.title}
             src={props.url}
@@ -165,7 +168,7 @@ function YouTubeContent(props: ContentType) {
           />
         </div>
       </Grid>
-      <Grid item xs={6} className={youtubeStyle.alignMiddle}>
+      <Grid item xs={6} className={cn.alignMiddle}>
         <div />
         <div>
           <Typography variant="title" align="left">
@@ -177,7 +180,7 @@ function YouTubeContent(props: ContentType) {
         </div>
         <div>
           {props.buttons.map((item, i) => (
-            <Button {...item} key={i} className={youtubeStyle.button}>
+            <Button {...item} key={i}>
               {item.children}
             </Button>
           ))}

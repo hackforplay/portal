@@ -11,7 +11,7 @@ import Typography from 'material-ui/Typography';
 import type { ContextRouter } from 'react-router-dom';
 import { style } from 'typestyle';
 
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import type { StateProps, DispatchProps } from '../containers/PCRanking';
 
 const cn = {
@@ -20,22 +20,24 @@ const cn = {
     marginLeft: 'auto',
     marginRight: 'auto'
   }),
-  progress: style({
-    display: 'block',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    padding: theme.spacing.unit * 6
-  }),
-  button: style({
-    marginTop: theme.spacing.unit * 3,
-    marginBottom: theme.spacing.unit * 3
-  }),
   cell: style({
     maxWidth: 200,
     textOverflow: 'ellipsis',
     overflow: 'hidden'
   })
 };
+const getCn = props => ({
+  progress: style({
+    display: 'block',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    padding: props.theme.spacing.unit * 6
+  }),
+  button: style({
+    marginTop: props.theme.spacing.unit * 3,
+    marginBottom: props.theme.spacing.unit * 3
+  })
+});
 
 const playLinks = {
   semi1: '/officials/pg-colosseum/#/stages/semi1/index.html',
@@ -57,7 +59,9 @@ const fromNow = (createdAt: string) => {
 
 export type Props = StateProps & DispatchProps & { ...ContextRouter };
 
-export default ({ records, match }: Props) => {
+export default withTheme()((props: Props) => {
+  const dcn = getCn(props);
+  const { records, match } = props;
   const stage = match.params && match.params.stage;
   if (!stage) {
     return null;
@@ -130,17 +134,17 @@ export default ({ records, match }: Props) => {
           まだ記録がないか、無効なステージです :-(
         </Typography>
       ) : (
-        <CircularProgress className={cn.progress} />
+        <CircularProgress className={dcn.progress} />
       )}
       <Button
         variant="raised"
         color="primary"
         component={Link}
         to={playLinks[stage]}
-        className={cn.button}
+        className={dcn.button}
       >
         このステージをプレイする
       </Button>
     </div>
   );
-};
+});

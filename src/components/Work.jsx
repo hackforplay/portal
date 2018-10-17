@@ -15,7 +15,7 @@ import { style } from 'typestyle';
 import Menu from 'material-ui-icons/Menu';
 import Close from 'material-ui-icons/Close';
 
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import Feeles from '../containers/Feeles';
 import EditableTitleTextField from '../containers/EditableTitleTextField';
 import ThumbnailDialog from '../containers/ThumbnailDialog';
@@ -34,24 +34,11 @@ export type State = {
 };
 
 const cn = {
-  chip: style({
-    marginRight: theme.spacing.unit * 2
-  }),
   blank: style({
     flex: 1
   }),
-  caption: style({
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2
-  }),
   noTitle: style({
     fontStyle: 'italic'
-  }),
-  title: style({
-    ...theme.typography.title,
-    maxWidth: 500,
-    flexGrow: 1,
-    flexShrink: 10000
   }),
   underline: style({
     '&:before': {
@@ -67,7 +54,23 @@ const cn = {
     color: 'red'
   })
 };
+const getCn = props => ({
+  chip: style({
+    marginRight: props.theme.spacing.unit * 2
+  }),
+  caption: style({
+    marginLeft: props.theme.spacing.unit * 2,
+    marginRight: props.theme.spacing.unit * 2
+  }),
+  title: style({
+    ...props.theme.typography.title,
+    maxWidth: 500,
+    flexGrow: 1,
+    flexShrink: 10000
+  })
+});
 
+@withTheme()
 @withRouter
 export default class Work extends React.Component<Props, State> {
   static defaultProps = {
@@ -128,7 +131,9 @@ export default class Work extends React.Component<Props, State> {
   };
 
   handleSave = () => {
-    const { make: { metadata, thumbnails } } = this.props;
+    const {
+      make: { metadata, thumbnails }
+    } = this.props;
     if (!metadata.thumbnailStoragePath && thumbnails.length > 0) {
       // もしサムネイルが設定おらず, サムネイルが撮影されている場合, まずサムネイルを設定させる
       this.setState({
@@ -177,13 +182,21 @@ export default class Work extends React.Component<Props, State> {
 
   // Feeles で実行している iframe から message を受け取った
   handleMessage: OnMessage = event => {
-    const { data: { value: { labelName, labelValue, href } } } = event;
+    const {
+      data: {
+        value: { labelName, labelValue, href }
+      }
+    } = event;
     const { make, work } = this.props;
     if (labelName) {
       // path に対して実行 (その path とは, 改変前なら work.data.path, 改変後なら make.work.data.path)
       const path = make.changed
-        ? make.work.data ? make.work.data.path : null
-        : work.data ? work.data.path : null;
+        ? make.work.data
+          ? make.work.data.path
+          : null
+        : work.data
+          ? work.data.path
+          : null;
       if (path) {
         // もし現在プレイ中の work の path が存在するなら labels に新たなラベルを追加
         // e.g. { 'gameclear': 'gameclear' }
@@ -208,6 +221,7 @@ export default class Work extends React.Component<Props, State> {
   };
 
   render() {
+    const dcn = getCn(this.props);
     const {
       work,
       canSave,
@@ -250,7 +264,12 @@ export default class Work extends React.Component<Props, State> {
     // portal 側でプロジェクトの中身を取得できるまで render しない
     // (onChange によって Store が書き換えられると saved: false になるため)
     if (isPreparing) {
-      return <div>「{title}」を準備中...</div>;
+      return (
+        <div>
+          「{title}
+          」を準備中...
+        </div>
+      );
     }
 
     return (
@@ -275,13 +294,13 @@ export default class Work extends React.Component<Props, State> {
                       private: '非公開'
                     }[makeWorkData.visibility]
                   }
-                  className={cn.chip}
+                  className={dcn.chip}
                 />
               ) : null}
               {replay ? (
                 <EditableTitleTextField
                   placeholder="タイトルがついていません"
-                  className={classNames(cn.title, {
+                  className={classNames(dcn.title, {
                     [cn.noTitle]: !make.metadata.title
                   })}
                   InputProps={{
@@ -303,7 +322,7 @@ export default class Work extends React.Component<Props, State> {
                 </Button>
               ) : null}
               {make.work.isProcessing || make.saved ? (
-                <Typography variant="caption" className={cn.caption}>
+                <Typography variant="caption" className={dcn.caption}>
                   {make.saved ? `保存されています` : `ちょっとまってね...`}
                 </Typography>
               ) : (

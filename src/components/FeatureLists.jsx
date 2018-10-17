@@ -4,33 +4,37 @@ import type { ContextRouter } from 'react-router-dom';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import { style } from 'typestyle';
+import { withTheme } from '@material-ui/core/styles';
 
-import theme from '../settings/theme';
 import WorkList from '../containers/WorkList';
 import diamond_blue from '../resources/diamond_blue.png';
 import diamond_green from '../resources/diamond_green.png';
 import type { StateProps, DispatchProps } from '../containers/FeatureLists';
 
 const cn = {
-  root: style({
-    padding: theme.spacing.unit * 3
-  }),
   title: style({
     display: 'inline-flex',
     alignItems: 'center'
   })
 };
+const getCn = props => ({
+  root: style({
+    padding: props.theme.spacing.unit * 3
+  })
+});
 
 export type OwnProps = {};
 export type Props = OwnProps &
   StateProps &
   DispatchProps & { ...ContextRouter };
 
-export default ({ match, lists }: Props) => {
+export default withTheme()((props: Props) => {
+  const dcn = getCn(props);
+  const { match, lists } = props;
   // 現在の URL に対して適切なデータを表示
   const more = match.params.more;
   return (
-    <Grid container spacing={24} className={cn.root}>
+    <Grid container spacing={24} className={dcn.root}>
       <Grid item xs={12}>
         <WorkList
           works={lists.trending}
@@ -51,7 +55,8 @@ export default ({ match, lists }: Props) => {
           title={
             <Typography variant="title" gutterBottom className={cn.title}>
               <img src={diamond_green} alt="" />
-              {/*"おすすめのステージ"*/}あたらしいステージ
+              {/*"おすすめのステージ"*/}
+              あたらしいステージ
             </Typography>
           }
           more={more === 'recommended'}
@@ -61,4 +66,4 @@ export default ({ match, lists }: Props) => {
       </Grid>
     </Grid>
   );
-};
+});

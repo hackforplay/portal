@@ -15,7 +15,7 @@ import { fade } from 'material-ui/styles/colorManipulator';
 import { style } from 'typestyle';
 
 import { searchBarInfo } from '../settings/siteMap';
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import type { StateProps } from '../containers/SearchBar';
 
 const cn = {
@@ -29,28 +29,21 @@ const cn = {
   icon: style({
     width: 18,
     marginRight: 12
-  }),
-  textField: style({
-    flexGrow: 1,
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    backgroundColor: grey[300],
-    '&:hover': {
-      backgroundColor: grey[500]
-    }
-  }),
+  })
+};
+const getCn = props => ({
   wrapper: style({
-    fontFamily: theme.typography.fontFamily,
+    fontFamily: props.theme.typography.fontFamily,
     position: 'relative',
-    marginRight: theme.spacing.unit * 2,
-    marginLeft: theme.spacing.unit,
+    marginRight: props.theme.spacing.unit * 2,
+    marginLeft: props.theme.spacing.unit,
     borderRadius: 2,
-    background: fade(theme.palette.common.black, 0.15),
+    background: fade(props.theme.palette.common.black, 0.15),
     '&:hover': {
-      background: fade(theme.palette.common.black, 0.25)
+      background: fade(props.theme.palette.common.black, 0.25)
     },
     '& $input': {
-      transition: theme.transitions.create('width'),
+      transition: props.theme.transitions.create('width'),
       width: 200,
       '&:focus': {
         width: 250
@@ -58,7 +51,7 @@ const cn = {
     }
   }),
   search: style({
-    width: theme.spacing.unit * 9,
+    width: props.theme.spacing.unit * 9,
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -68,9 +61,9 @@ const cn = {
   }),
   input: style({
     font: 'inherit',
-    padding: `${theme.spacing.unit}px ${theme.spacing.unit}px ${
-      theme.spacing.unit
-    }px ${theme.spacing.unit * 9}px`,
+    padding: `${props.theme.spacing.unit}px ${props.theme.spacing.unit}px ${
+      props.theme.spacing.unit
+    }px ${props.theme.spacing.unit * 9}px`,
     border: 0,
     display: 'block',
     verticalAlign: 'middle',
@@ -83,11 +76,12 @@ const cn = {
       outline: 0
     }
   })
-};
+});
 
 export type OwnProps = {};
 type Props = OwnProps & StateProps & { ...ContextRouter };
 
+@withTheme()
 @withRouter
 class SearchBar extends React.Component<Props> {
   // "入力 => ディレイ => 検索" のためのタイマー
@@ -136,6 +130,8 @@ class SearchBar extends React.Component<Props> {
   };
 
   render() {
+    const dcn = getCn(this.props);
+
     const { match, location, result } = this.props;
 
     // 現在表示している URL にふさわしいタブの状態を取得する
@@ -159,8 +155,8 @@ class SearchBar extends React.Component<Props> {
           ) : null}
           {info.text && <Typography variant="headline">{info.text}</Typography>}
           <div className={cn.blank} />
-          <div className={cn.wrapper}>
-            <div className={cn.search}>
+          <div className={dcn.wrapper}>
+            <div className={dcn.search}>
               {result.isProcessing ? (
                 <CircularProgress color="inherit" size={24} />
               ) : (
@@ -169,7 +165,7 @@ class SearchBar extends React.Component<Props> {
             </div>
             <input
               id="docsearch-input"
-              className={cn.input}
+              className={dcn.input}
               type="text"
               defaultValue={match.params.query}
               onChange={this.handleChangeSearch}

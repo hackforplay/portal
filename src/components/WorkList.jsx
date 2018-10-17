@@ -22,15 +22,12 @@ import { style, classes } from 'typestyle';
 
 import { type StateProps, type DispatchProps } from '../containers/WorkList';
 import CardMedia from '../containers/CardMedia';
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import noImage from '../resources/no-image.png';
 import { type WorkCollectionType, type WorkData } from '../ducks/work';
 import { removeMessage } from './Work';
 
 export const cn = {
-  root: style({
-    padding: theme.spacing.unit * 6
-  }),
   card: style({
     cursor: 'pointer',
     textAlign: 'left'
@@ -47,9 +44,6 @@ export const cn = {
   }),
   card_private: style({
     filter: `brightness(90%)`
-  }),
-  headline: style({
-    marginBottom: theme.spacing.unit * 4
   }),
   title: style({
     maxHeight: 48,
@@ -87,16 +81,24 @@ export const cn = {
       height: 16,
       background: 'linear-gradient(to bottom, transparent, white)'
     }
+  })
+};
+const getCn = props => ({
+  root: style({
+    padding: props.theme.spacing.unit * 6
+  }),
+  headline: style({
+    marginBottom: props.theme.spacing.unit * 4
   }),
   button: style({
     fontSize: 'large',
-    marginTop: theme.spacing.unit * 2,
-    paddingTop: theme.spacing.unit * 2,
-    paddingRight: theme.spacing.unit * 4,
-    paddingBottom: theme.spacing.unit * 2,
-    paddingLeft: theme.spacing.unit * 4
+    marginTop: props.theme.spacing.unit * 2,
+    paddingTop: props.theme.spacing.unit * 2,
+    paddingRight: props.theme.spacing.unit * 4,
+    paddingBottom: props.theme.spacing.unit * 2,
+    paddingLeft: props.theme.spacing.unit * 4
   })
-};
+});
 
 export type OwnProps = {
   works: WorkCollectionType,
@@ -116,6 +118,7 @@ export type Props = OwnProps &
   StateProps &
   DispatchProps & { ...ContextRouter };
 
+@withTheme()
 @withRouter
 export default class WorkList extends React.Component<Props, State> {
   state = {
@@ -165,6 +168,7 @@ export default class WorkList extends React.Component<Props, State> {
   };
 
   render() {
+    const dcn = getCn(this.props);
     const {
       works,
       title,
@@ -176,9 +180,9 @@ export default class WorkList extends React.Component<Props, State> {
     const { anchor } = this.state;
 
     return (
-      <Paper className={classNames(cn.root, this.props.className)}>
+      <Paper className={classNames(dcn.root, this.props.className)}>
         {typeof title === 'string' ? (
-          <Typography variant="headline" className={cn.headline}>
+          <Typography variant="headline" className={dcn.headline}>
             {title}
           </Typography>
         ) : (
@@ -291,7 +295,7 @@ export default class WorkList extends React.Component<Props, State> {
             <Button
               variant="raised"
               color="primary"
-              className={cn.button}
+              className={dcn.button}
               component={Link}
               to={moreLink}
             >

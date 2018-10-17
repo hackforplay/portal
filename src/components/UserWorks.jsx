@@ -5,23 +5,25 @@ import type { ContextRouter } from 'react-router-dom';
 import { style } from 'typestyle';
 
 import WorkList from '../containers/WorkList';
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import type { StateProps, DispatchProps } from '../containers/UserWorks';
 
-const cn = {
+const getCn = props => ({
   root: style({
-    padding: theme.spacing.unit * 4
+    padding: props.theme.spacing.unit * 4
   })
-};
+});
 
 export type Props = StateProps & DispatchProps & { ...ContextRouter };
 
-export default ({ match, works }: Props) => {
+export default withTheme()((props: Props) => {
+  const dcn = getCn(props);
+  const { match, works } = props;
   // 現在の URL に対して適切なデータを表示
   const id = match.params.id || '';
   const tab = match.params.tab || '';
   return (
-    <div className={cn.root}>
+    <div className={dcn.root}>
       {tab === '' ? (
         <WorkList
           works={works}
@@ -44,4 +46,4 @@ export default ({ match, works }: Props) => {
       ) :*/ null}
     </div>
   );
-};
+});

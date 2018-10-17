@@ -12,16 +12,10 @@ import Photo from 'material-ui-icons/Photo';
 import { style } from 'typestyle';
 
 import Avatar from '../containers/Avatar';
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import type { StateProps, DispatchProps } from '../containers/ProfileEdit';
 
 const cn = {
-  root: style({
-    paddingTop: theme.spacing.unit * 8,
-    paddingLeft: theme.spacing.unit * 4,
-    paddingBottom: theme.spacing.unit * 4,
-    backgroundColor: theme.palette.background.appBar
-  }),
   container: style({
     maxWidth: 600
   }),
@@ -30,35 +24,43 @@ const cn = {
     height: 80,
     fontSize: '2.5rem'
   }),
-  button: style({
-    marginBottom: theme.spacing.unit
-  }),
   iconButton: style({
     marginTop: -48
-  }),
-  textFieldRoot: style({
-    padding: 0,
-    'label + &': {
-      marginTop: theme.spacing.unit * 3
-    }
-  }),
-  textFieldInput: style({
-    borderRadius: 4,
-    backgroundColor: theme.palette.common.white,
-    border: '1px solid #ced4da',
-    fontSize: 16,
-    padding: '10px 12px',
-    width: 'calc(100% - 24px)',
-    transition: theme.transitions.create(['border-color', 'box-shadow']),
-    '&:focus': {
-      borderColor: '#80bdff',
-      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)'
-    }
   }),
   fileInput: style({
     display: 'none'
   })
 };
+const getCn = props => ({
+  root: style({
+    paddingTop: props.theme.spacing.unit * 8,
+    paddingLeft: props.theme.spacing.unit * 4,
+    paddingBottom: props.theme.spacing.unit * 4,
+    backgroundColor: props.theme.palette.background.appBar
+  }),
+  textFieldInput: style({
+    borderRadius: 4,
+    backgroundColor: props.theme.palette.common.white,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '10px 12px',
+    width: 'calc(100% - 24px)',
+    transition: props.theme.transitions.create(['border-color', 'box-shadow']),
+    '&:focus': {
+      borderColor: '#80bdff',
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)'
+    }
+  }),
+  textFieldRoot: style({
+    padding: 0,
+    'label + &': {
+      marginTop: props.theme.spacing.unit * 3
+    }
+  }),
+  button: style({
+    marginBottom: props.theme.spacing.unit
+  })
+});
 
 export type OwnProps = {
   edit?: boolean
@@ -68,6 +70,7 @@ export type Props = OwnProps &
   StateProps &
   DispatchProps & { ...ContextRouter };
 
+@withTheme()
 export default class Profile extends React.Component<Props> {
   static defaultProps = {
     edit: false
@@ -116,11 +119,12 @@ export default class Profile extends React.Component<Props> {
   };
 
   render() {
+    const dcn = getCn(this.props);
     const { user, edit, editing, owner } = this.props;
 
     if (user.isEmpty) {
       return (
-        <div className={cn.root}>
+        <div className={dcn.root}>
           <Typography variant="headline">ユーザーが見つかりません</Typography>
         </div>
       );
@@ -128,7 +132,7 @@ export default class Profile extends React.Component<Props> {
 
     if (!user.data) {
       return (
-        <div className={cn.root}>
+        <div className={dcn.root}>
           <Typography variant="headline">ロード中です</Typography>
         </div>
       );
@@ -142,7 +146,7 @@ export default class Profile extends React.Component<Props> {
       : user.data;
 
     return (
-      <div className={cn.root}>
+      <div className={dcn.root}>
         <Grid
           container
           spacing={16}
@@ -182,8 +186,8 @@ export default class Profile extends React.Component<Props> {
                 InputProps={{
                   disableUnderline: true,
                   classes: {
-                    root: cn.textFieldRoot,
-                    input: cn.textFieldInput
+                    root: dcn.textFieldRoot,
+                    input: dcn.textFieldInput
                   }
                 }}
                 autoFocus
@@ -208,7 +212,7 @@ export default class Profile extends React.Component<Props> {
                 <Button
                   variant="raised"
                   color="primary"
-                  className={cn.button}
+                  className={dcn.button}
                   component={Link}
                   to={`/users/${userData.uid}`}
                   onClick={this.props.confirmAuthUserEditing}
@@ -219,7 +223,7 @@ export default class Profile extends React.Component<Props> {
                 <Button
                   variant="raised"
                   color="primary"
-                  className={cn.button}
+                  className={dcn.button}
                   component={Link}
                   to={`/users/${userData.uid}/edit`}
                 >

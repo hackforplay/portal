@@ -10,7 +10,7 @@ import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import { style, classes } from 'typestyle';
 
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import WorkList from '../containers/WorkList';
 import beginner from '../resources/beginner.png';
 import diamond_pink from '../resources/diamond_pink.png';
@@ -69,17 +69,6 @@ const cn = {
     display: 'inline-flex',
     alignItems: 'center'
   }),
-  icon: style({
-    marginTop: theme.spacing.unit * 4,
-    marginBottom: theme.spacing.unit * 4,
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2
-  }),
-  body: style({
-    alignSelf: 'left',
-    marginTop: theme.spacing.unit,
-    marginBottom: theme.spacing.unit * 4
-  }),
   iframe: style({
     width: '100%',
     height: '100%'
@@ -94,10 +83,24 @@ const cn = {
   makeButton: style({ marginTop: -120, marginBottom: 48 }),
   facebook: style({ border: 'none', overflow: 'hidden' })
 };
+const getCn = props => ({
+  icon: style({
+    marginTop: props.theme.spacing.unit * 4,
+    marginBottom: props.theme.spacing.unit * 4,
+    marginLeft: props.theme.spacing.unit * 2,
+    marginRight: props.theme.spacing.unit * 2
+  }),
+  body: style({
+    alignSelf: 'left',
+    marginTop: props.theme.spacing.unit,
+    marginBottom: props.theme.spacing.unit * 4
+  })
+});
 
 export type Props = StateProps & DispatchProps;
 
-export default (props: Props) => {
+export default withTheme()((props: Props) => {
+  const dcn = getCn(props);
   return (
     <div>
       <Slider
@@ -299,7 +302,7 @@ export default (props: Props) => {
               />
               <Typography
                 type="subheading"
-                className={cn.body}
+                className={dcn.body}
                 gutterBottom
               >
                 第６回金沢市キッズプログラミング教室が開催されます
@@ -333,10 +336,10 @@ export default (props: Props) => {
               </div>
               <div>
                 <a href="https://twitter.com/teramotodaiki">
-                  <img src={twitter} className={cn.icon} alt="Twitter" />
+                  <img src={twitter} className={dcn.icon} alt="Twitter" />
                 </a>
                 <a href="https://www.facebook.com/hackforplay">
-                  <img src={facebook} className={cn.icon} alt="Facebook" />
+                  <img src={facebook} className={dcn.icon} alt="Facebook" />
                 </a>
               </div>
               <Button
@@ -353,4 +356,4 @@ export default (props: Props) => {
       </div>
     </div>
   );
-};
+});

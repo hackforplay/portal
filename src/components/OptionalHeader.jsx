@@ -8,21 +8,25 @@ import Typography from 'material-ui/Typography';
 import { grey } from 'material-ui/colors';
 import { style } from 'typestyle';
 
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import { optionalHeaderInfo } from '../settings/siteMap';
 
-const cn = {
+const getCn = props => ({
   root: style({
-    paddingTop: theme.spacing.unit * 6,
-    paddingBottom: theme.spacing.unit * 6,
+    paddingTop: props.theme.spacing.unit * 6,
+    paddingBottom: props.theme.spacing.unit * 6,
     backgroundColor: grey[300]
   })
-};
+});
 
 export type OwnProps = {};
 type Props = OwnProps & { ...ContextRouter };
 
-export default compose(withRouter)((props: Props) => {
+export default compose(
+  withTheme,
+  withRouter
+)((props: Props) => {
+  const dcn = getCn(props);
   const { location } = props;
 
   // 現在表示している URL にふさわしいタブの状態を取得する
@@ -37,7 +41,7 @@ export default compose(withRouter)((props: Props) => {
   }
 
   return (
-    <div className={cn.root}>
+    <div className={dcn.root}>
       <Typography align="center" variant="headline" gutterBottom>
         {info.headline}
       </Typography>

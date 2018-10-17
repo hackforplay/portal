@@ -3,24 +3,25 @@ import * as React from 'react';
 import { style } from 'typestyle';
 
 import WorkList from '../containers/WorkList';
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import { type StateProps } from '../containers/SearchList';
 
-const cn = {
+const getCn = props => ({
   root: style({
-    padding: theme.spacing.unit * 4
+    padding: props.theme.spacing.unit * 4
   })
-};
+});
 
 export type OwnProps = {};
 
 type Props = OwnProps & StateProps;
 
-export default (props: Props) => {
+export default withTheme()((props: Props) => {
+  const dcn = getCn(props);
   const { result } = props;
 
   return (
-    <div className={cn.root}>
+    <div className={dcn.root}>
       <WorkList
         works={result}
         title="検索結果"
@@ -30,4 +31,4 @@ export default (props: Props) => {
       />
     </div>
   );
-};
+});
