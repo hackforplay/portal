@@ -181,7 +181,7 @@ export default class Profile extends React.Component<Props> {
                 id="name"
                 InputProps={{
                   disableUnderline: true,
-                  cn: {
+                  classes: {
                     root: cn.textFieldRoot,
                     input: cn.textFieldInput
                   }
