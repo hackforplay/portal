@@ -418,7 +418,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         description: 'まずは、このステージで、あそびかたをおぼえよう！',
         buttons: [
           {
-            raised: true,
+            variant: 'raised',
             color: 'primary',
             children: 'プレイ',
             component: Link,
@@ -440,7 +440,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         description: 'ロックマンといっしょにたたかおう！',
         buttons: [
           {
-            raised: true,
+            variant: 'raised',
             color: 'primary',
             children: 'プレイ',
             component: Link,
@@ -461,7 +461,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         description: 'ロックマンといっしょにたたかおう！',
         buttons: [
           {
-            raised: true,
+            variant: 'raised',
             color: 'primary',
             children: 'プレイ',
             component: Link,
