@@ -1,6 +1,5 @@
 // @flow
 import * as React from 'react';
-import classNames from 'classnames';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
@@ -180,7 +179,7 @@ export default class WorkList extends React.Component<Props, State> {
     const { anchor } = this.state;
 
     return (
-      <Paper className={classNames(dcn.root, this.props.className)}>
+      <Paper className={classes(dcn.root, this.props.className)}>
         {typeof title === 'string' ? (
           <Typography variant="headline" className={dcn.headline}>
             {title}
@@ -219,9 +218,7 @@ export default class WorkList extends React.Component<Props, State> {
                       title={
                         <Typography
                           variant="body2"
-                          className={classNames({
-                            [cn.noTitle]: !item.title
-                          })}
+                          className={classes(!item.title && cn.noTitle)}
                         >
                           {item.title || `タイトルがついていません`}
                         </Typography>
@@ -233,10 +230,9 @@ export default class WorkList extends React.Component<Props, State> {
                               ? `/users/${item.uid}`
                               : `/anonymous/${item.author || ''}`
                           )}
-                          className={classNames({
-                            [cn.authorName]: !!item.author,
-                            [cn.noAuthorName]: !item.author
-                          })}
+                          className={
+                            item.author ? cn.authorName : cn.noAuthorName
+                          }
                         >
                           {item.author || '名無しの権兵衛'}
                         </span>

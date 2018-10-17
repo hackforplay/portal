@@ -1,7 +1,6 @@
 // @flow
 import * as React from 'react';
-import classNames from 'classnames';
-import { style } from 'typestyle';
+import { style, classes } from 'typestyle';
 
 import type { StateProps, DispatchProps } from '../containers/Feeles';
 
@@ -101,13 +100,9 @@ export default class Feeles extends React.Component<Props, State> {
       delete props.onThumbnailChange;
     }
 
-    const root = classNames(cn.root, {
-      [replayClassName]: replay
-    });
-
     return (
       <div
-        className={root}
+        className={classes(cn.root, replay && replayClassName)}
         ref={rootEl => this.state.rootEl || this.setState({ rootEl })}
       >
         {rootEl && Feeles ? (

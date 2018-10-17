@@ -1,6 +1,5 @@
 // @flow
 import * as React from 'react';
-import classNames from 'classnames';
 import { withRouter, type LocationShape } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
@@ -11,7 +10,7 @@ import Popover from 'material-ui/Popover';
 import Chip from 'material-ui/Chip';
 import { MenuItem } from 'material-ui/Menu';
 import IconButton from 'material-ui/IconButton';
-import { style } from 'typestyle';
+import { style, classes } from 'typestyle';
 import Menu from 'material-ui-icons/Menu';
 import Close from 'material-ui-icons/Close';
 
@@ -300,9 +299,10 @@ export default class Work extends React.Component<Props, State> {
               {replay ? (
                 <EditableTitleTextField
                   placeholder="タイトルがついていません"
-                  className={classNames(dcn.title, {
-                    [cn.noTitle]: !make.metadata.title
-                  })}
+                  className={classes(
+                    dcn.title,
+                    !make.metadata.title && cn.noTitle
+                  )}
                   InputProps={{
                     cn: {
                       underline: cn.underline
