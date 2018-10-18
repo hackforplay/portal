@@ -36,7 +36,7 @@ const getCn = props => ({
     paddingTop: props.theme.spacing.unit * 8,
     paddingLeft: props.theme.spacing.unit * 4,
     paddingBottom: props.theme.spacing.unit * 4,
-    backgroundColor: props.theme.palette.background.appBar
+    backgroundColor: props.theme.palette.background.paper
   }),
   textFieldInput: style({
     borderRadius: 4,
