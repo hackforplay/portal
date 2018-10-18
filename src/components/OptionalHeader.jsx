@@ -4,8 +4,8 @@ import { compose } from 'redux';
 import pathToRegexp from 'path-to-regexp';
 import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import Typography from 'material-ui/Typography';
-import { grey } from 'material-ui/colors';
+import Typography from '@material-ui/core/Typography';
+import { grey } from '@material-ui/core/colors';
 import { style } from 'typestyle';
 
 import { withTheme } from '@material-ui/core/styles';
@@ -42,7 +42,7 @@ export default compose(
 
   return (
     <div className={dcn.root}>
-      <Typography align="center" variant="headline" gutterBottom>
+      <Typography align="center" variant="h5" gutterBottom>
         {info.headline}
       </Typography>
       <Typography align="center" variant="caption">

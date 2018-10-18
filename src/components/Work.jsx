@@ -2,14 +2,14 @@
 import * as React from 'react';
 import { withRouter, type LocationShape } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import Popover from 'material-ui/Popover';
-import Chip from 'material-ui/Chip';
-import { MenuItem } from 'material-ui/Menu';
-import IconButton from 'material-ui/IconButton';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Popover from '@material-ui/core/Popover';
+import Chip from '@material-ui/core/Chip';
+import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
 import { style, classes } from 'typestyle';
 import Menu from 'material-ui-icons/Menu';
 import Close from 'material-ui-icons/Close';
@@ -312,7 +312,7 @@ export default class Work extends React.Component<Props, State> {
                   }}
                 />
               ) : (
-                <Typography variant="title">{title}</Typography>
+                <Typography variant="h6">{title}</Typography>
               )}
               <div className={cn.blank} />
               {hasError ? (

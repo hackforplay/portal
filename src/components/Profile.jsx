@@ -3,11 +3,11 @@ import * as React from 'react';
 import md5 from 'md5';
 import mime from 'mime-types';
 import { Link, type ContextRouter } from 'react-router-dom';
-import Grid from 'material-ui/Grid';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import IconButton from 'material-ui/IconButton';
-import TextField from 'material-ui/TextField';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import TextField from '@material-ui/core/TextField';
 import Photo from 'material-ui-icons/Photo';
 import { style } from 'typestyle';
 
@@ -127,7 +127,7 @@ export default class Profile extends React.Component<Props> {
     if (user.isEmpty) {
       return (
         <div className={dcn.root}>
-          <Typography variant="headline">ユーザーが見つかりません</Typography>
+          <Typography variant="h5">ユーザーが見つかりません</Typography>
         </div>
       );
     }
@@ -135,7 +135,7 @@ export default class Profile extends React.Component<Props> {
     if (!user.data) {
       return (
         <div className={dcn.root}>
-          <Typography variant="headline">ロード中です</Typography>
+          <Typography variant="h5">ロード中です</Typography>
         </div>
       );
     }
@@ -200,7 +200,7 @@ export default class Profile extends React.Component<Props> {
                 helperText="本名(ほんみょう)は かかないで！"
               />
             ) : (
-              <Typography variant="headline">{userData.displayName}</Typography>
+              <Typography variant="h5">{userData.displayName}</Typography>
             )}
             {userData.worksNum ? (
               <Typography variant="caption" align="left">{`投稿数 ${
@@ -212,7 +212,7 @@ export default class Profile extends React.Component<Props> {
             <Grid item xs={5}>
               {edit ? (
                 <Button
-                  variant="raised"
+                  variant="contained"
                   color="primary"
                   className={dcn.button}
                   component={Link}
@@ -223,7 +223,7 @@ export default class Profile extends React.Component<Props> {
                 </Button>
               ) : (
                 <Button
-                  variant="raised"
+                  variant="contained"
                   color="primary"
                   className={dcn.button}
                   component={Link}

@@ -2,12 +2,17 @@
 import * as React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import Table from 'material-ui/Table/Table';
-import { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import Paper from 'material-ui/Paper';
-import Button from 'material-ui/Button';
-import { CircularProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
+import Table from '@material-ui/core/Table/Table';
+import {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow
+} from '@material-ui/core/Table';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 import type { ContextRouter } from 'react-router-dom';
 import { style } from 'typestyle';
 
@@ -137,7 +142,7 @@ export default withTheme()((props: Props) => {
         <CircularProgress className={dcn.progress} />
       )}
       <Button
-        variant="raised"
+        variant="contained"
         color="primary"
         component={Link}
         to={playLinks[stage]}

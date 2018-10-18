@@ -3,15 +3,15 @@ import * as React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import pathToRegexp from 'path-to-regexp';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
-import { CircularProgress } from 'material-ui/Progress';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import SearchIcon from 'material-ui-icons/Search';
 import ArrowBack from 'material-ui-icons/ArrowBack';
-import { grey } from 'material-ui/colors';
-import { fade } from 'material-ui/styles/colorManipulator';
+import { grey } from '@material-ui/core/colors';
+import { fade } from '@material-ui/core/styles/colorManipulator';
 import { style } from 'typestyle';
 
 import { searchBarInfo } from '../settings/siteMap';
@@ -157,7 +157,7 @@ class SearchBar extends React.Component<Props> {
               <ArrowBack />
             </IconButton>
           ) : null}
-          {info.text && <Typography variant="headline">{info.text}</Typography>}
+          {info.text && <Typography variant="h5">{info.text}</Typography>}
           <div className={cn.blank} />
           <div className={dcn.wrapper}>
             <div className={dcn.search}>

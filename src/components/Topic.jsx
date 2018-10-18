@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import Paper from 'material-ui/Paper';
-import Button from 'material-ui/Button';
-import Grid from 'material-ui/Grid';
-import Typography from 'material-ui/Typography';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 import { style, classes } from 'typestyle';
 
 import { withTheme } from '@material-ui/core/styles';
@@ -141,7 +141,7 @@ export default withTheme()((props: Props) => {
                   <Typography type="subheading" align="left" gutterBottom>
                     HackforPlayとは？
                   </Typography>
-                  <Typography variant="title" align="left" gutterBottom>
+                  <Typography variant="h6" align="left" gutterBottom>
                     はじめてプレイする方はこちら
                   </Typography>
                 </div>
@@ -149,7 +149,7 @@ export default withTheme()((props: Props) => {
 
               <Button
                 color="primary"
-                variant="raised"
+                variant="contained"
                 component={Link}
                 to="/officials/hack-rpg"
                 className={classes(xlasses.largeButton, cn.marginTop16)}
@@ -165,7 +165,7 @@ export default withTheme()((props: Props) => {
               <div className={cn.flexAlignCenter}>
                 <img src={dragon} alt="" />
                 <div className={cn.marginLeft16}>
-                  <Typography variant="title" align="left" gutterBottom>
+                  <Typography variant="h6" align="left" gutterBottom>
                     プログラミングコロシアム特別ステージ
                   </Typography>
                 </div>
@@ -194,7 +194,7 @@ export default withTheme()((props: Props) => {
                   />
                 </Grid>
               </Grid>
-              <Typography variant="title" align="left" gutterBottom>
+              <Typography variant="h6" align="left" gutterBottom>
                 今年のプログラミングコロシアムは、ロックマン©︎とコラボ！
               </Typography>
               <Typography variant="body1" align="left" gutterBottom>
@@ -213,7 +213,7 @@ export default withTheme()((props: Props) => {
               </Typography>
               <Button
                 color="primary"
-                variant="raised"
+                variant="contained"
                 component={Link}
                 to="/specials/プログラミングコロシアム2018"
                 className={classes(xlasses.largeButton, cn.marginTop16)}
@@ -232,7 +232,7 @@ export default withTheme()((props: Props) => {
               />
               <Button
                 color="primary"
-                variant="raised"
+                variant="contained"
                 component={Link}
                 to="/officials/make-rpg"
                 className={classes(
@@ -251,7 +251,7 @@ export default withTheme()((props: Props) => {
               works={props.trending}
               title={
                 <Typography
-                  variant="title"
+                  variant="h6"
                   align="center"
                   gutterBottom
                   className={cn.title}
@@ -284,7 +284,7 @@ export default withTheme()((props: Props) => {
           {/* <Grid item xs={12} sm={6}>
             <Paper elevation={1} className={cn.paper}>
               <Typography
-                variant="title"
+                variant="h6"
                 align="center"
                 gutterBottom
                 className={cn.title}
@@ -311,7 +311,7 @@ export default withTheme()((props: Props) => {
               </Typography>
               <Button
                 color="primary"
-                variant="raised"
+                variant="contained"
                 href="http://www4.city.kanazawa.lg.jp/17009/kidspg.html"
                 className={cn.button}
               >
@@ -324,7 +324,7 @@ export default withTheme()((props: Props) => {
             <Paper elevation={1} className={cn.paper}>
               <div>
                 <Typography
-                  variant="title"
+                  variant="h6"
                   align="center"
                   gutterBottom
                   className={cn.title}
@@ -346,7 +346,7 @@ export default withTheme()((props: Props) => {
               </div>
               <Button
                 color="primary"
-                variant="raised"
+                variant="contained"
                 href="https://goo.gl/forms/S655BeMUpNHjmAtg1"
                 target="_blank"
               >

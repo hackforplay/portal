@@ -1,8 +1,8 @@
 // @flow
 import * as React from 'react';
 import type { ContextRouter } from 'react-router-dom';
-import Grid from 'material-ui/Grid';
-import Typography from 'material-ui/Typography';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 import { style } from 'typestyle';
 import { withTheme } from '@material-ui/core/styles';
 
@@ -39,7 +39,7 @@ export default withTheme()((props: Props) => {
         <WorkList
           works={lists.trending}
           title={
-            <Typography variant="title" gutterBottom className={cn.title}>
+            <Typography variant="h6" gutterBottom className={cn.title}>
               <img src={diamond_blue} alt="" />
               人気のステージ
             </Typography>
@@ -53,7 +53,7 @@ export default withTheme()((props: Props) => {
         <WorkList
           works={lists.recommended}
           title={
-            <Typography variant="title" gutterBottom className={cn.title}>
+            <Typography variant="h6" gutterBottom className={cn.title}>
               <img src={diamond_green} alt="" />
               {/*"おすすめのステージ"*/}
               あたらしいステージ

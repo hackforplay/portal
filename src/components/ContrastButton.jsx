@@ -1,7 +1,7 @@
 import React from 'react';
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 import { style, classes } from 'typestyle';
-import { withTheme } from 'material-ui/styles';
+import { withTheme } from '@material-ui/core/styles';
 
 const getCn = props => ({
   root: style({

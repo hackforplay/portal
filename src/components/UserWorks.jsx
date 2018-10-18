@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import type { ContextRouter } from 'react-router-dom';
-// import Paper from 'material-ui/Paper';
+// import Paper from '@material-ui/core/Paper';
 import { style } from 'typestyle';
 
 import WorkList from '../containers/WorkList';

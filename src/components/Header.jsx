@@ -2,16 +2,16 @@
 import * as React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import { MenuItem } from 'material-ui/Menu';
-import Popover from 'material-ui/Popover';
-import Button from 'material-ui/Button/Button';
-import Select from 'material-ui/Select';
-import grey from 'material-ui/colors/grey';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import MenuItem from '@material-ui/core/MenuItem';
+import Popover from '@material-ui/core/Popover';
+import Button from '@material-ui/core/Button/Button';
+import Select from '@material-ui/core/Select';
+import grey from '@material-ui/core/colors/grey';
 import Home from 'material-ui-icons/Home';
-import Tooltip from 'material-ui/Tooltip';
+import Tooltip from '@material-ui/core/Tooltip';
 import { style, media } from 'typestyle';
 
 import Avatar from '../containers/Avatar';
@@ -160,7 +160,7 @@ class Header extends React.Component<Props, State> {
         <AppBar position="fixed" elevation={0}>
           <Toolbar className={cn.toolbar}>
             <Typography
-              variant="title"
+              variant="h6"
               component={Link}
               to="/"
               className={cn.title}
@@ -243,7 +243,7 @@ class Header extends React.Component<Props, State> {
               )
             ) : (
               <Button
-                variant="raised"
+                variant="contained"
                 color="primary"
                 aria-owns={anchorEl ? 'simple-menu' : null}
                 aria-haspopup="true"

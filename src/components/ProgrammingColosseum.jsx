@@ -1,9 +1,9 @@
 // @flow
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import { style } from 'typestyle';
 
 import { withTheme } from '@material-ui/core/styles';
@@ -74,21 +74,21 @@ export default class ProgrammingColosseum extends React.Component<{}> {
         <Paper elevation={1} className={dcn.paper}>
           <div className={dcn.paragraph}>
             <img src={attention} className={dcn.img} alt="" />
-            <Typography variant="title" color="error" align="left">
+            <Typography variant="h6" color="error" align="left">
               始める前に必ずお読みください
             </Typography>
           </div>
           <div className={dcn.paragraph}>
             <img src={no01} className={dcn.img} alt="" />
             <div>
-              <Typography variant="title" align="left" gutterBottom>
+              <Typography variant="h6" align="left" gutterBottom>
                 リファレンスのダウンロード
               </Typography>
               <Typography variant="body1" align="left" gutterBottom>
                 このゲームで使える全ての機能が書かれたリファレンスです。ゲームを始める前に、必ずダウンロードしてください。
               </Typography>
               <Button
-                variant="raised"
+                variant="contained"
                 color="primary"
                 component="a"
                 download
@@ -98,7 +98,7 @@ export default class ProgrammingColosseum extends React.Component<{}> {
                 ダウンロードする
               </Button>
               <Button
-                variant="raised"
+                variant="contained"
                 color="default"
                 target="_blank"
                 href={reference}
@@ -111,14 +111,14 @@ export default class ProgrammingColosseum extends React.Component<{}> {
           <div className={dcn.paragraph}>
             <img src={no02} className={dcn.img} alt="" />
             <div>
-              <Typography variant="title" align="left" gutterBottom>
+              <Typography variant="h6" align="left" gutterBottom>
                 ランキングついて
               </Typography>
               <Typography variant="body1" align="left" gutterBottom>
                 ステージをクリアするとランキングに参加できます。
               </Typography>
               <Button
-                variant="raised"
+                variant="contained"
                 color="primary"
                 component={Link}
                 to="/specials/プログラミングコロシアム/ranking/semi1"
@@ -130,7 +130,7 @@ export default class ProgrammingColosseum extends React.Component<{}> {
           <div className={dcn.paragraph}>
             <img src={no03} className={dcn.img} alt="" />
             <div>
-              <Typography variant="title" align="left" gutterBottom>
+              <Typography variant="h6" align="left" gutterBottom>
                 レベルについて
               </Typography>
               <Typography variant="body1" align="left" gutterBottom>

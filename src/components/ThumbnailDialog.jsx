@@ -1,8 +1,8 @@
 // @flow
 import * as React from 'react';
-import Dialog from 'material-ui/Dialog/Dialog';
-import { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
-import Button from 'material-ui/Button';
+import Dialog from '@material-ui/core/Dialog/Dialog';
+import { DialogTitle, DialogContent, DialogActions } from '@material-ui/core/Dialog';
+import Button from '@material-ui/core/Button';
 import { style, classes } from 'typestyle';
 
 import { withTheme } from '@material-ui/core/styles';
@@ -120,7 +120,7 @@ export default class ThumbnailDialog extends React.Component<Props, State> {
         </DialogContent>
         <DialogActions>
           <Button
-            variant="raised"
+            variant="contained"
             color="primary"
             disabled={this.state.selectedIndex === null}
             onClick={this.handleSetThumbnail}

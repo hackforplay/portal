@@ -4,18 +4,19 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import Card from 'material-ui/Card/Card';
-import { CardHeader, CardContent } from 'material-ui/Card';
-import Button from 'material-ui/Button';
-import Grid from 'material-ui/Grid';
-import IconButton from 'material-ui/IconButton';
-import { CircularProgress } from 'material-ui/Progress';
-import Menu from 'material-ui/Menu/Menu';
-import { MenuItem } from 'material-ui/Menu';
-import Collapse from 'material-ui/transitions/Collapse';
-import { grey } from 'material-ui/colors';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Collapse from '@material-ui/core/Collapse';
+import { grey } from '@material-ui/core/colors';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import { style, classes } from 'typestyle';
 
@@ -185,7 +186,7 @@ export default class WorkList extends React.Component<Props, State> {
     return (
       <Paper className={classes(dcn.root, this.props.className)}>
         {typeof title === 'string' ? (
-          <Typography variant="headline" className={dcn.headline}>
+          <Typography variant="h5" className={dcn.headline}>
             {title}
           </Typography>
         ) : (
@@ -270,7 +271,7 @@ export default class WorkList extends React.Component<Props, State> {
               <Grid item>
                 {works.isProcessing ? <CircularProgress /> : null}
                 {works.isInvalid ? (
-                  <Typography variant="headline">
+                  <Typography variant="h5">
                     {`エラーが発生しました`}
                     <span role="img" aria-label="Confused">
                       {`😕`}
@@ -279,7 +280,7 @@ export default class WorkList extends React.Component<Props, State> {
                   </Typography>
                 ) : null}
                 {works.isEmpty ? (
-                  <Typography variant="headline">
+                  <Typography variant="h5">
                     {`ステージが見つかりませんでした`}
                     <span role="img" aria-label="Confused">
                       {`😕`}
@@ -293,7 +294,7 @@ export default class WorkList extends React.Component<Props, State> {
         {more ? null : (
           <div className={cn.more}>
             <Button
-              variant="raised"
+              variant="contained"
               color="primary"
               className={dcn.button}
               component={Link}

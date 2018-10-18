@@ -3,15 +3,15 @@ import * as React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import pathToRegexp from 'path-to-regexp';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Tabs from 'material-ui/Tabs/Tabs';
-import Tab from 'material-ui/Tabs/Tab';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from 'material-ui-icons/Search';
 import ArrowBack from 'material-ui-icons/ArrowBack';
-import { grey } from 'material-ui/colors';
+import { grey } from '@material-ui/core/colors';
 import { style } from 'typestyle';
 
 import { searchBarInfo } from '../settings/siteMap';
@@ -92,7 +92,7 @@ class NavigationBar extends React.Component<Props> {
             </IconButton>
           ) : null}
 
-          {info.text && <Typography variant="headline">{info.text}</Typography>}
+          {info.text && <Typography variant="h5">{info.text}</Typography>}
           {selected && (
             <Tabs
               value={selected.to}

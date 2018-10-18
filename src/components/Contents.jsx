@@ -2,11 +2,11 @@
 import * as React from 'react';
 import pathToRegexp from 'path-to-regexp';
 import type { ContextRouter } from 'react-router-dom';
-import Paper from 'material-ui/Paper';
-import Divider from 'material-ui/Divider';
-import Grid from 'material-ui/Grid';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
+import Paper from '@material-ui/core/Paper';
+import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 import { style } from 'typestyle';
 import { important } from 'csx';
 import { withTheme } from '@material-ui/core/styles';
@@ -131,7 +131,7 @@ function StageContent(props: ContentType & { ...ContextRouter }) {
       <Grid item xs={6} className={cn.alignMiddle}>
         <div />
         <div>
-          <Typography variant="title" align="left" gutterBottom>
+          <Typography variant="h6" align="left" gutterBottom>
             {props.title}
           </Typography>
           <Typography variant="caption" align="left">
@@ -171,7 +171,7 @@ function YouTubeContent(props: ContentType) {
       <Grid item xs={6} className={cn.alignMiddle}>
         <div />
         <div>
-          <Typography variant="title" align="left">
+          <Typography variant="h6" align="left">
             {props.title}
           </Typography>
           <Typography variant="caption" align="left">
