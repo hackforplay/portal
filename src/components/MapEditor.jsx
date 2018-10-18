@@ -147,7 +147,7 @@ await Hack.loadMap(
             <Typography variant="h6" color="inherit">
               マップエディタ（β版）
             </Typography>
-            <div className={classes.flex} />
+            <div className={cn.flex} />
             <Button disabled={isUploading} onClick={this.saveNewMapJson}>
               保存する
             </Button>
