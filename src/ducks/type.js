@@ -13,6 +13,7 @@ import type {
 } from './pcRanking';
 import type { State as StorageState, Action as StorageAction } from './storage';
 import type { State as MapsState, Action as MapsAction } from './maps';
+import type { State as ThemeState, Action as ThemeAction } from './theme';
 
 export type StoreState = {|
   +auth: AuthState,
@@ -22,7 +23,8 @@ export type StoreState = {|
   +user: UserState,
   +pcRanking: PCRankingState,
   +storage: StorageState,
-  +maps: MapsState
+  +maps: MapsState,
+  +theme: ThemeState
 |};
 export type GetStore = () => StoreState;
 
@@ -40,6 +42,7 @@ export type Action =
   | AuthAction
   | UserAction
   | PCRankingAction
+  | ThemeAction
   | ReduxResetAction;
 /* eslint-disable no-use-before-define */
 export type Dispatch = (

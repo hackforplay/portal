@@ -1,6 +1,6 @@
 // @flow
-import { createMuiTheme } from 'material-ui/styles';
-import { deepOrange } from 'material-ui/colors';
+import { createMuiTheme } from '@material-ui/core/styles';
+import deepOrange from '@material-ui/core/colors/deepOrange';
 
 const theme = createMuiTheme({
   palette: {
@@ -8,6 +8,7 @@ const theme = createMuiTheme({
   },
 
   typography: {
+    useNextVariants: true,
     fontWeightMedium: 600
   },
 

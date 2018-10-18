@@ -2,8 +2,8 @@
 import React from 'react';
 import { create } from 'jss';
 import JssProvider from 'react-jss/lib/JssProvider';
-import jssPreset from 'material-ui/styles/jssPreset';
-import createGenerateClassName from 'material-ui/styles/createGenerateClassName';
+import jssPreset from '@material-ui/core/styles/jssPreset';
+import createGenerateClassName from '@material-ui/core/styles/createGenerateClassName';
 
 const styleNode = document.createElement('style');
 styleNode.id = 'insertion-point-jss';

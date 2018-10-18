@@ -1,5 +1,5 @@
 // @flow
-import { CardMedia } from 'material-ui/Card';
+import CardMedia from '@material-ui/core/CardMedia';
 
 import withFirebaseStorage from '../decorators/withFirebaseStorage';
 
