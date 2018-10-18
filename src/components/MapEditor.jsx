@@ -12,18 +12,19 @@ import DialogTitle from 'material-ui/Dialog/DialogTitle';
 import DialogContent from 'material-ui/Dialog/DialogContent';
 import DialogContentText from 'material-ui/Dialog/DialogContentText';
 import type ReactMapEditorType from 'react-map-editor';
-import { style } from 'typestyle';
+import { style, media } from 'typestyle';
 
 const cn = {
-  root: style({
-    height: `calc(100vh - ${56 * 2}px)`,
-    '@media (min-width:0px) and (orientation: landscape)': {
-      height: `calc(100vh - ${48 * 2}px)`
+  root: style(
+    {
+      height: `calc(100vh - ${56 * 2}px)`
     },
-    '@media (min-width:600px)': {
-      height: `calc(100vh - ${64 * 2}px)`
-    }
-  }),
+    media(
+      { minWidth: 0, orientation: 'landscape' },
+      { height: `calc(100vh - ${48 * 2}px)` }
+    ),
+    media({ minWidth: 600 }, { height: `calc(100vh - ${64 * 2}px)` })
+  ),
   flex: style({
     flexGrow: 1
   }),

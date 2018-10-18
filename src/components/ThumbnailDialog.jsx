@@ -32,8 +32,10 @@ const getCn = props => ({
     borderStyle: 'solid',
     borderWidth: 2,
     borderColor: 'transparent',
-    '&.selected': {
-      borderColor: props.theme.palette.primary[500]
+    $nest: {
+      '&.selected': {
+        borderColor: props.theme.palette.primary[500]
+      }
     }
   })
 });

@@ -35,13 +35,15 @@ const cn = {
     marginTop: 32
   }),
   slider: style({
-    '& .slick-prev': {
-      left: 25,
-      zIndex: 1
-    },
-    '& .slick-next': {
-      right: 25,
-      zIndex: 1
+    $nest: {
+      '& .slick-prev': {
+        left: 25,
+        zIndex: 1
+      },
+      '& .slick-next': {
+        right: 25,
+        zIndex: 1
+      }
     }
   }),
   sliderItem: style({

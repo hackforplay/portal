@@ -39,14 +39,18 @@ const getCn = props => ({
     marginLeft: props.theme.spacing.unit,
     borderRadius: 2,
     background: fade(props.theme.palette.common.black, 0.15),
-    '&:hover': {
-      background: fade(props.theme.palette.common.black, 0.25)
-    },
-    '& $input': {
-      transition: props.theme.transitions.create('width'),
-      width: 200,
-      '&:focus': {
-        width: 250
+    $nest: {
+      '&:hover': {
+        background: fade(props.theme.palette.common.black, 0.25)
+      },
+      '& input': {
+        transition: props.theme.transitions.create('width'),
+        width: 200,
+        $nest: {
+          '&:focus': {
+            width: 250
+          }
+        }
       }
     }
   }),

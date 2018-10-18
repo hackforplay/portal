@@ -53,8 +53,10 @@ const getCn = props => ({
   }),
   textFieldRoot: style({
     padding: 0,
-    'label + &': {
-      marginTop: props.theme.spacing.unit * 3
+    $nest: {
+      'label + &': {
+        marginTop: props.theme.spacing.unit * 3
+      }
     }
   }),
   button: style({

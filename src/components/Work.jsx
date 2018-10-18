@@ -40,9 +40,11 @@ const cn = {
     fontStyle: 'italic'
   }),
   underline: style({
-    '&:before': {
-      // focus も hover もされていないときの underline を消去
-      height: 0
+    $nest: {
+      '&::before': {
+        // focus も hover もされていないときの underline を消去
+        height: 0
+      }
     }
   }),
   iconButton: style({

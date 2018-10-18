@@ -33,12 +33,14 @@ export const cn = {
   }),
   thumbnail: style({
     width: 240,
-    '&>img': {
-      minHeight: 160,
-      maxHeight: 160,
-      objectFit: 'cover',
-      // https://github.com/bfred-it/object-fit-images/
-      fontFamily: "'object-fit: contain;'"
+    $nest: {
+      '&>img': {
+        minHeight: 160,
+        maxHeight: 160,
+        objectFit: 'cover',
+        // https://github.com/bfred-it/object-fit-images/
+        fontFamily: "'object-fit: contain;'"
+      }
     }
   }),
   card_private: style({
@@ -70,15 +72,17 @@ export const cn = {
     width: '100%',
     position: 'relative',
     textAlign: 'center',
-    '&:before': {
-      display: 'block',
-      whiteSpace: 'pre',
-      content: '""',
-      position: 'relative',
-      marginTop: -16,
-      width: '100%',
-      height: 16,
-      background: 'linear-gradient(to bottom, transparent, white)'
+    $nest: {
+      '&::before': {
+        display: 'block',
+        whiteSpace: 'pre',
+        content: '""',
+        position: 'relative',
+        marginTop: -16,
+        width: '100%',
+        height: 16,
+        background: 'linear-gradient(to bottom, transparent, white)'
+      }
     }
   })
 };

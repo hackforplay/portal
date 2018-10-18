@@ -12,7 +12,7 @@ import Select from 'material-ui/Select';
 import grey from 'material-ui/colors/grey';
 import Home from 'material-ui-icons/Home';
 import Tooltip from 'material-ui/Tooltip';
-import { style } from 'typestyle';
+import { style, media } from 'typestyle';
 
 import Avatar from '../containers/Avatar';
 import { withTheme } from '@material-ui/core/styles';
@@ -25,15 +25,11 @@ import type { StateProps, DispatchProps } from '../containers/Header';
 import ContrastButton from './ContrastButton';
 
 const cn = {
-  root: style({
-    '@media (min-width:0px) and (orientation: landscape)': {
-      height: 48
-    },
-    '@media (min-width:600px)': {
-      height: 64
-    },
-    height: 56
-  }),
+  root: style(
+    { height: 56 },
+    media({ maxWidth: 0, orientation: 'landscape' }, { height: 48 }),
+    media({ minWidth: 600 }, { height: 64 })
+  ),
   toolbar: style({
     backgroundColor: grey[900],
     maxHeight: 64
@@ -45,55 +41,52 @@ const cn = {
     width: 18,
     marginRight: 12
   }),
-  title: style({
-    '@media (max-width:721px)': {
-      // 画面幅が一定以下の時はロゴを表示しない
-      display: 'none'
+  title: style(
+    { color: 'black', filter: 'invert(100%)' },
+    // 画面幅が一定以下の時はロゴを表示しない
+    media({ maxWidth: 721 }, { display: 'none' })
+  ),
+  separator: style(
+    {
+      position: 'relative',
+      display: 'inline-flex',
+      minHeight: 36,
+      alignSelf: 'center',
+      $nest: {}
     },
-    color: 'black',
-    filter: 'invert(100%)'
-  }),
-  separator: style({
-    position: 'relative',
-    display: 'inline-flex',
-    minHeight: 36,
-    alignSelf: 'center',
-    '&:before': {
-      '@media (min-width:920px)': {
-        // button label が表示されるときだけ separator を表示する
-        content: '""',
-        position: 'absolute',
-        left: 0,
-        backgroundColor: 'white',
-        width: 1,
-        height: 36
+    media(
+      { minWidth: 920 },
+      {
+        $nest: {
+          '&::before': {
+            // button label が表示されるときだけ separator を表示する
+            content: '""',
+            position: 'absolute',
+            left: 0,
+            backgroundColor: 'white',
+            width: 1,
+            height: 36
+          }
+        }
       }
-    }
-  }),
-  select: style({
-    '@media (max-width:561px)': {
-      // 画面幅が一定以下の時は切り替えメニューを表示しない
-      display: 'none'
+    )
+  ),
+  select: style(
+    {
+      marginLeft: 8,
+      marginRight: 8,
+      color: 'white'
     },
-    marginLeft: 8,
-    marginRight: 8,
-    color: 'white'
-  }),
+    // 画面幅が一定以下の時は切り替えメニューを表示しない
+    media({ maxWidth: 561 }, { display: 'none' })
+  ),
   selectIcon: style({
     color: 'white'
   }),
-  tooltip: style({
-    '@media (min-width:920px)': {
-      // button label が表示されるときは tooltip を表示しない
-      display: 'none'
-    }
-  }),
-  buttonLabel: style({
-    '@media (max-width:921px)': {
-      // 画面幅が一定以上の時だけ button label を表示する
-      display: 'none'
-    }
-  })
+  // button label が表示されるときは tooltip を表示しない
+  tooltip: style(media({ minWidth: 920 }, { display: 'none' })),
+  // 画面幅が一定以上の時だけ button label を表示する
+  buttonLabel: style(media({ maxWidth: 921 }, { display: 'none' }))
 };
 const getCn = props => ({
   avatar: style({

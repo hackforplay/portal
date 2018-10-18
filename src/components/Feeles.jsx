@@ -1,28 +1,39 @@
 // @flow
 import * as React from 'react';
-import { style, classes } from 'typestyle';
+import { style, classes, media } from 'typestyle';
 
 import type { StateProps, DispatchProps } from '../containers/Feeles';
 
 const replayClassName = 'replay';
 const rootStyle = (padding: number) => ({
-  [`&.${replayClassName}`]: {
-    height: `calc(100vh - ${padding * 2}px)`
+  $nest: {
+    [`&.${replayClassName}`]: {
+      height: `calc(100vh - ${padding * 2}px)`
+    }
   },
   height: `calc(100vh - ${padding}px)`
 });
 
 const cn = {
-  root: style({
-    ...rootStyle(56),
-    '@media (min-width:0px) and (orientation: landscape)': {
-      ...rootStyle(48)
+  root: style(
+    {
+      overflow: 'hidden'
     },
-    '@media (min-width:600px)': {
-      ...rootStyle(64)
-    },
-    overflow: 'hidden'
-  })
+    rootStyle(56),
+    media(
+      {
+        minWidth: 0,
+        orientation: 'landscape'
+      },
+      rootStyle(48)
+    ),
+    media(
+      {
+        minWidth: 600
+      },
+      rootStyle(64)
+    )
+  )
 };
 
 export type OnMessage = (event: {

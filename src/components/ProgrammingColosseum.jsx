@@ -29,11 +29,13 @@ const getCn = props => ({
     boxSizing: 'border-box',
     padding: props.theme.spacing.unit * 6,
     marginBottom: props.theme.spacing.unit * 4,
-    '&:after': {
-      content: '" "',
-      display: 'block',
-      whiteSpace: 'pre',
-      marginBottom: props.theme.spacing.unit * -6
+    $nest: {
+      '&::after': {
+        content: '" "',
+        display: 'block',
+        whiteSpace: 'pre',
+        marginBottom: props.theme.spacing.unit * -6
+      }
     }
   }),
   paragraph: style({
