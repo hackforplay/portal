@@ -23,7 +23,7 @@ export type OwnProps = {};
 type Props = OwnProps & { ...ContextRouter };
 
 export default compose(
-  withTheme,
+  withTheme(),
   withRouter
 )((props: Props) => {
   const dcn = getCn(props);
