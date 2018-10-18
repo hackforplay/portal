@@ -12,7 +12,7 @@ import { CardContent } from 'material-ui/Card';
 import Grid from 'material-ui/Grid';
 import Collapse from 'material-ui/transitions/Collapse';
 import { grey } from 'material-ui/colors';
-import { css, cx } from 'emotion';
+import { style, classes } from 'typestyle';
 
 import { type StateProps, type DispatchProps } from '../containers/MapList';
 import CardMedia from '../containers/CardMedia';
@@ -20,15 +20,15 @@ import theme from '../settings/theme';
 import noImage from '../resources/no-image.png';
 import { type MapDocument } from '../ducks/maps';
 
-export const classes = {
-  root: css({
+export const cn = {
+  root: style({
     padding: theme.spacing.unit * 6
   }),
-  card: css({
+  card: style({
     cursor: 'pointer',
     textAlign: 'left'
   }),
-  thumbnail: css({
+  thumbnail: style({
     width: 240,
     '&>img': {
       minHeight: 160,
@@ -38,35 +38,35 @@ export const classes = {
       fontFamily: "'object-fit: contain;'"
     }
   }),
-  card_private: css({
+  card_private: style({
     filter: `brightness(90%)`
   }),
-  headline: css({
+  headline: style({
     marginBottom: theme.spacing.unit * 4
   }),
-  title: css({
+  title: style({
     maxHeight: 48,
     overflow: 'hidden'
   }),
-  noTitle: css({
+  noTitle: style({
     fontStyle: 'italic'
   }),
-  subheader: css({
+  subheader: style({
     maxWidth: 176,
     overflow: 'hidden',
     textOverflow: 'ellipsis'
   }),
-  authorName: css({
+  authorName: style({
     color: grey[500],
     '&:hover': {
       color: grey[900]
     }
   }),
-  noAuthorName: css({
+  noAuthorName: style({
     color: grey[500],
     fontStyle: 'italic'
   }),
-  more: css({
+  more: style({
     width: '100%',
     position: 'relative',
     textAlign: 'center',
@@ -81,7 +81,7 @@ export const classes = {
       background: 'linear-gradient(to bottom, transparent, white)'
     }
   }),
-  button: css({
+  button: style({
     fontSize: 'large',
     marginTop: theme.spacing.unit * 2,
     paddingTop: theme.spacing.unit * 2,
@@ -156,7 +156,7 @@ class MapListItem extends React.Component<MapListItemProps> {
       <Link to={`/maps/${this.props.documentSnapshot.id}`}>
         <Card
           elevation={0}
-          className={cx(
+          className={classes(
             classes.card,
             classes.thumbnail
             // item.visibility === 'private' && classes.card_private
