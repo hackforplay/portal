@@ -10,7 +10,7 @@ import Popover from '@material-ui/core/Popover';
 import Button from '@material-ui/core/Button/Button';
 import Select from '@material-ui/core/Select';
 import grey from '@material-ui/core/colors/grey';
-import Home from 'material-ui-icons/Home';
+import Home from '@material-ui/icons/Home';
 import Tooltip from '@material-ui/core/Tooltip';
 import { style, media } from 'typestyle';
 

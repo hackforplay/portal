@@ -17,7 +17,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Collapse from '@material-ui/core/Collapse';
 import { grey } from '@material-ui/core/colors';
-import MoreVertIcon from 'material-ui-icons/MoreVert';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { style, classes } from 'typestyle';
 
 import { type StateProps, type DispatchProps } from '../containers/WorkList';

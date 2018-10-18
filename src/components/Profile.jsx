@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
-import Photo from 'material-ui-icons/Photo';
+import Photo from '@material-ui/icons/Photo';
 import { style } from 'typestyle';
 
 import Avatar from '../containers/Avatar';

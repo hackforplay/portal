@@ -9,8 +9,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import SearchIcon from 'material-ui-icons/Search';
-import ArrowBack from 'material-ui-icons/ArrowBack';
+import SearchIcon from '@material-ui/icons/Search';
+import ArrowBack from '@material-ui/icons/ArrowBack';
 import { grey } from '@material-ui/core/colors';
 import { style } from 'typestyle';
 

@@ -11,8 +11,8 @@ import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import { style, classes } from 'typestyle';
-import Menu from 'material-ui-icons/Menu';
-import Close from 'material-ui-icons/Close';
+import Menu from '@material-ui/icons/Menu';
+import Close from '@material-ui/icons/Close';
 
 import { withTheme } from '@material-ui/core/styles';
 import Feeles from '../containers/Feeles';
