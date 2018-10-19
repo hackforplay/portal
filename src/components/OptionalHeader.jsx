@@ -4,25 +4,29 @@ import { compose } from 'redux';
 import pathToRegexp from 'path-to-regexp';
 import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import Typography from 'material-ui/Typography';
-import { grey } from 'material-ui/colors';
-import { css } from 'emotion';
+import Typography from '@material-ui/core/Typography';
+import { grey } from '@material-ui/core/colors';
+import { style } from 'typestyle';
 
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import { optionalHeaderInfo } from '../settings/siteMap';
 
-const classes = {
-  root: css({
-    paddingTop: theme.spacing.unit * 6,
-    paddingBottom: theme.spacing.unit * 6,
+const getCn = props => ({
+  root: style({
+    paddingTop: props.theme.spacing.unit * 6,
+    paddingBottom: props.theme.spacing.unit * 6,
     backgroundColor: grey[300]
   })
-};
+});
 
 export type OwnProps = {};
 type Props = OwnProps & { ...ContextRouter };
 
-export default compose(withRouter)((props: Props) => {
+export default compose(
+  withTheme(),
+  withRouter
+)((props: Props) => {
+  const dcn = getCn(props);
   const { location } = props;
 
   // 現在表示している URL にふさわしいタブの状態を取得する
@@ -37,8 +41,8 @@ export default compose(withRouter)((props: Props) => {
   }
 
   return (
-    <div className={classes.root}>
-      <Typography align="center" variant="headline" gutterBottom>
+    <div className={dcn.root}>
+      <Typography align="center" variant="h5" gutterBottom>
         {info.headline}
       </Typography>
       <Typography align="center" variant="caption">

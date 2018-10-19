@@ -1,29 +1,39 @@
 // @flow
 import * as React from 'react';
-import classNames from 'classnames';
-import { css } from 'emotion';
+import { style, classes, media } from 'typestyle';
 
 import type { StateProps, DispatchProps } from '../containers/Feeles';
 
 const replayClassName = 'replay';
 const rootStyle = (padding: number) => ({
-  [`&.${replayClassName}`]: {
-    height: `calc(100vh - ${padding * 2}px)`
+  $nest: {
+    [`&.${replayClassName}`]: {
+      height: `calc(100vh - ${padding * 2}px)`
+    }
   },
   height: `calc(100vh - ${padding}px)`
 });
 
-const classes = {
-  root: css({
-    ...rootStyle(56),
-    '@media (min-width:0px) and (orientation: landscape)': {
-      ...rootStyle(48)
+const cn = {
+  root: style(
+    {
+      overflow: 'hidden'
     },
-    '@media (min-width:600px)': {
-      ...rootStyle(64)
-    },
-    overflow: 'hidden'
-  })
+    rootStyle(56),
+    media(
+      {
+        minWidth: 0,
+        orientation: 'landscape'
+      },
+      rootStyle(48)
+    ),
+    media(
+      {
+        minWidth: 600
+      },
+      rootStyle(64)
+    )
+  )
 };
 
 export type OnMessage = (event: {
@@ -101,13 +111,9 @@ export default class Feeles extends React.Component<Props, State> {
       delete props.onThumbnailChange;
     }
 
-    const root = classNames(classes.root, {
-      [replayClassName]: replay
-    });
-
     return (
       <div
-        className={root}
+        className={classes(cn.root, replay && replayClassName)}
         ref={rootEl => this.state.rootEl || this.setState({ rootEl })}
       >
         {rootEl && Feeles ? (

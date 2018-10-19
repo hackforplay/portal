@@ -1,21 +1,20 @@
 // @flow
 import * as React from 'react';
-import classNames from 'classnames';
 import { withRouter, type LocationShape } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import Popover from 'material-ui/Popover';
-import Chip from 'material-ui/Chip';
-import { MenuItem } from 'material-ui/Menu';
-import IconButton from 'material-ui/IconButton';
-import { css } from 'emotion';
-import Menu from 'material-ui-icons/Menu';
-import Close from 'material-ui-icons/Close';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Popover from '@material-ui/core/Popover';
+import Chip from '@material-ui/core/Chip';
+import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
+import { style, classes } from 'typestyle';
+import Menu from '@material-ui/icons/Menu';
+import Close from '@material-ui/icons/Close';
 
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import Feeles from '../containers/Feeles';
 import EditableTitleTextField from '../containers/EditableTitleTextField';
 import ThumbnailDialog from '../containers/ThumbnailDialog';
@@ -33,41 +32,46 @@ export type State = {
   unblock: () => void
 };
 
-const classes = {
-  chip: css({
-    marginRight: theme.spacing.unit * 2
-  }),
-  blank: css({
+const cn = {
+  blank: style({
     flex: 1
   }),
-  caption: css({
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2
-  }),
-  noTitle: css({
+  noTitle: style({
     fontStyle: 'italic'
   }),
-  title: css({
-    ...theme.typography.title,
-    maxWidth: 500,
-    flexGrow: 1,
-    flexShrink: 10000
-  }),
-  underline: css({
-    '&:before': {
-      // focus も hover もされていないときの underline を消去
-      height: 0
+  underline: style({
+    $nest: {
+      '&::before': {
+        // focus も hover もされていないときの underline を消去
+        height: 0
+      }
     }
   }),
-  iconButton: css({
+  iconButton: style({
     marginLeft: 4,
     marginRight: 4
   }),
-  error: css({
+  error: style({
     color: 'red'
   })
 };
+const getCn = props => ({
+  chip: style({
+    marginRight: props.theme.spacing.unit * 2
+  }),
+  caption: style({
+    marginLeft: props.theme.spacing.unit * 2,
+    marginRight: props.theme.spacing.unit * 2
+  }),
+  title: style({
+    ...props.theme.typography.title,
+    maxWidth: 500,
+    flexGrow: 1,
+    flexShrink: 10000
+  })
+});
 
+@withTheme()
 @withRouter
 export default class Work extends React.Component<Props, State> {
   static defaultProps = {
@@ -128,7 +132,9 @@ export default class Work extends React.Component<Props, State> {
   };
 
   handleSave = () => {
-    const { make: { metadata, thumbnails } } = this.props;
+    const {
+      make: { metadata, thumbnails }
+    } = this.props;
     if (!metadata.thumbnailStoragePath && thumbnails.length > 0) {
       // もしサムネイルが設定おらず, サムネイルが撮影されている場合, まずサムネイルを設定させる
       this.setState({
@@ -177,13 +183,21 @@ export default class Work extends React.Component<Props, State> {
 
   // Feeles で実行している iframe から message を受け取った
   handleMessage: OnMessage = event => {
-    const { data: { value: { labelName, labelValue, href } } } = event;
+    const {
+      data: {
+        value: { labelName, labelValue, href }
+      }
+    } = event;
     const { make, work } = this.props;
     if (labelName) {
       // path に対して実行 (その path とは, 改変前なら work.data.path, 改変後なら make.work.data.path)
       const path = make.changed
-        ? make.work.data ? make.work.data.path : null
-        : work.data ? work.data.path : null;
+        ? make.work.data
+          ? make.work.data.path
+          : null
+        : work.data
+          ? work.data.path
+          : null;
       if (path) {
         // もし現在プレイ中の work の path が存在するなら labels に新たなラベルを追加
         // e.g. { 'gameclear': 'gameclear' }
@@ -208,6 +222,7 @@ export default class Work extends React.Component<Props, State> {
   };
 
   render() {
+    const dcn = getCn(this.props);
     const {
       work,
       canSave,
@@ -250,7 +265,12 @@ export default class Work extends React.Component<Props, State> {
     // portal 側でプロジェクトの中身を取得できるまで render しない
     // (onChange によって Store が書き換えられると saved: false になるため)
     if (isPreparing) {
-      return <div>「{title}」を準備中...</div>;
+      return (
+        <div>
+          「{title}
+          」を準備中...
+        </div>
+      );
     }
 
     return (
@@ -262,7 +282,7 @@ export default class Work extends React.Component<Props, State> {
                 onClick={() => {
                   this.setState({ openSidebar: !this.state.openSidebar });
                 }}
-                className={classes.iconButton}
+                className={cn.iconButton}
               >
                 {this.state.openSidebar ? <Close /> : <Menu />}
               </IconButton>
@@ -275,27 +295,28 @@ export default class Work extends React.Component<Props, State> {
                       private: '非公開'
                     }[makeWorkData.visibility]
                   }
-                  className={classes.chip}
+                  className={dcn.chip}
                 />
               ) : null}
               {replay ? (
                 <EditableTitleTextField
                   placeholder="タイトルがついていません"
-                  className={classNames(classes.title, {
-                    [classes.noTitle]: !make.metadata.title
-                  })}
+                  className={classes(
+                    dcn.title,
+                    !make.metadata.title && cn.noTitle
+                  )}
                   InputProps={{
-                    classes: {
-                      underline: classes.underline
+                    cn: {
+                      underline: cn.underline
                     }
                   }}
                 />
               ) : (
-                <Typography variant="title">{title}</Typography>
+                <Typography variant="h6">{title}</Typography>
               )}
-              <div className={classes.blank} />
+              <div className={cn.blank} />
               {hasError ? (
-                <span className={classes.error}>エラーがおきたようです</span>
+                <span className={cn.error}>エラーがおきたようです</span>
               ) : null}
               {makeWorkData && makeWorkData.visibility !== 'public' ? (
                 <Button disabled={!canPublish} onClick={this.handleSetPublic}>
@@ -303,7 +324,7 @@ export default class Work extends React.Component<Props, State> {
                 </Button>
               ) : null}
               {make.work.isProcessing || make.saved ? (
-                <Typography variant="caption" className={classes.caption}>
+                <Typography variant="caption" className={dcn.caption}>
                   {make.saved ? `保存されています` : `ちょっとまってね...`}
                 </Typography>
               ) : (
