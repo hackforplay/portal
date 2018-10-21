@@ -1,102 +1,108 @@
 // @flow
 import * as React from 'react';
-import classNames from 'classnames';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import Card from 'material-ui/Card/Card';
-import { CardHeader, CardContent } from 'material-ui/Card';
-import Button from 'material-ui/Button';
-import Grid from 'material-ui/Grid';
-import IconButton from 'material-ui/IconButton';
-import { CircularProgress } from 'material-ui/Progress';
-import Menu from 'material-ui/Menu/Menu';
-import { MenuItem } from 'material-ui/Menu';
-import Collapse from 'material-ui/transitions/Collapse';
-import { grey } from 'material-ui/colors';
-import MoreVertIcon from 'material-ui-icons/MoreVert';
-import { css, cx } from 'emotion';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Collapse from '@material-ui/core/Collapse';
+import { grey } from '@material-ui/core/colors';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { style, classes } from 'typestyle';
 
 import { type StateProps, type DispatchProps } from '../containers/WorkList';
 import CardMedia from '../containers/CardMedia';
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import noImage from '../resources/no-image.png';
 import { type WorkCollectionType, type WorkData } from '../ducks/work';
 import { removeMessage } from './Work';
 
-export const classes = {
-  root: css({
-    padding: theme.spacing.unit * 6
-  }),
-  card: css({
+export const cn = {
+  card: style({
     cursor: 'pointer',
     textAlign: 'left'
   }),
-  thumbnail: css({
+  thumbnail: style({
     width: 240,
-    '&>img': {
-      minHeight: 160,
-      maxHeight: 160,
-      objectFit: 'cover',
-      // https://github.com/bfred-it/object-fit-images/
-      fontFamily: "'object-fit: contain;'"
+    $nest: {
+      '&>img': {
+        minHeight: 160,
+        maxHeight: 160,
+        objectFit: 'cover',
+        // https://github.com/bfred-it/object-fit-images/
+        fontFamily: "'object-fit: contain;'"
+      }
     }
   }),
-  card_private: css({
+  card_private: style({
     filter: `brightness(90%)`
   }),
-  headline: css({
-    marginBottom: theme.spacing.unit * 4
-  }),
-  title: css({
+  title: style({
     maxHeight: 48,
     overflow: 'hidden'
   }),
-  noTitle: css({
+  noTitle: style({
     fontStyle: 'italic'
   }),
-  subheader: css({
+  subheader: style({
     maxWidth: 176,
     overflow: 'hidden',
     textOverflow: 'ellipsis'
   }),
-  authorName: css({
+  authorName: style({
     color: grey[500],
     '&:hover': {
       color: grey[900]
     }
   }),
-  noAuthorName: css({
+  noAuthorName: style({
     color: grey[500],
     fontStyle: 'italic'
   }),
-  more: css({
+  more: style({
     width: '100%',
     position: 'relative',
     textAlign: 'center',
-    '&:before': {
-      display: 'block',
-      whiteSpace: 'pre',
-      content: '""',
-      position: 'relative',
-      marginTop: -16,
-      width: '100%',
-      height: 16,
-      background: 'linear-gradient(to bottom, transparent, white)'
+    $nest: {
+      '&::before': {
+        display: 'block',
+        whiteSpace: 'pre',
+        content: '""',
+        position: 'relative',
+        marginTop: -16,
+        width: '100%',
+        height: 16,
+        background: 'linear-gradient(to bottom, transparent, white)'
+      }
     }
-  }),
-  button: css({
-    fontSize: 'large',
-    marginTop: theme.spacing.unit * 2,
-    paddingTop: theme.spacing.unit * 2,
-    paddingRight: theme.spacing.unit * 4,
-    paddingBottom: theme.spacing.unit * 2,
-    paddingLeft: theme.spacing.unit * 4
   })
 };
+const getCn = props => ({
+  root: style({
+    padding: props.theme.spacing.unit * 6
+  }),
+  headline: style({
+    marginBottom: props.theme.spacing.unit * 4
+  }),
+  button: style({
+    fontSize: 'large',
+    marginTop: props.theme.spacing.unit * 2,
+    paddingTop: props.theme.spacing.unit * 2,
+    paddingRight: props.theme.spacing.unit * 4,
+    paddingBottom: props.theme.spacing.unit * 2,
+    paddingLeft: props.theme.spacing.unit * 4
+  })
+});
 
 export type OwnProps = {
   works: WorkCollectionType,
@@ -116,6 +122,7 @@ export type Props = OwnProps &
   StateProps &
   DispatchProps & { ...ContextRouter };
 
+@withTheme()
 @withRouter
 export default class WorkList extends React.Component<Props, State> {
   state = {
@@ -165,6 +172,7 @@ export default class WorkList extends React.Component<Props, State> {
   };
 
   render() {
+    const dcn = getCn(this.props);
     const {
       works,
       title,
@@ -176,25 +184,25 @@ export default class WorkList extends React.Component<Props, State> {
     const { anchor } = this.state;
 
     return (
-      <Paper className={classNames(classes.root, this.props.className)}>
+      <Paper className={classes(dcn.root, this.props.className)}>
         {typeof title === 'string' ? (
-          <Typography type="headline" className={classes.headline}>
+          <Typography variant="h5" className={dcn.headline}>
             {title}
           </Typography>
         ) : (
           title
         )}
         <Collapse collapsedHeight="284px" in={more || false}>
-          <Grid container justify="center">
+          <Grid container justify="center" spacing={8}>
             {works.data ? (
               works.data.map(item => (
                 <Grid item key={item.path}>
                   <Card
                     elevation={0}
-                    className={cx(
-                      classes.card,
-                      classes.thumbnail,
-                      item.visibility === 'private' && classes.card_private
+                    className={classes(
+                      cn.card,
+                      cn.thumbnail,
+                      item.visibility === 'private' && cn.card_private
                     )}
                     onClick={this.link(item.path)}
                   >
@@ -214,10 +222,8 @@ export default class WorkList extends React.Component<Props, State> {
                       }
                       title={
                         <Typography
-                          type="body2"
-                          className={classNames({
-                            [classes.noTitle]: !item.title
-                          })}
+                          variant="body2"
+                          className={classes(!item.title && cn.noTitle)}
                         >
                           {item.title || `タイトルがついていません`}
                         </Typography>
@@ -229,21 +235,20 @@ export default class WorkList extends React.Component<Props, State> {
                               ? `/users/${item.uid}`
                               : `/anonymous/${item.author || ''}`
                           )}
-                          className={classNames({
-                            [classes.authorName]: !!item.author,
-                            [classes.noAuthorName]: !item.author
-                          })}
+                          className={
+                            item.author ? cn.authorName : cn.noAuthorName
+                          }
                         >
                           {item.author || '名無しの権兵衛'}
                         </span>
                       }
                       classes={{
-                        title: classes.title,
-                        subheader: classes.subheader
+                        title: cn.title,
+                        subheader: cn.subheader
                       }}
                     />
                     <CardContent>
-                      <Typography type="caption">
+                      <Typography variant="caption">
                         {item.viewsNum > 0
                           ? this.fromNow(item.createdAt)
                           : 'NEW!'}
@@ -266,7 +271,7 @@ export default class WorkList extends React.Component<Props, State> {
               <Grid item>
                 {works.isProcessing ? <CircularProgress /> : null}
                 {works.isInvalid ? (
-                  <Typography type="headline">
+                  <Typography variant="h5">
                     {`エラーが発生しました`}
                     <span role="img" aria-label="Confused">
                       {`😕`}
@@ -275,7 +280,7 @@ export default class WorkList extends React.Component<Props, State> {
                   </Typography>
                 ) : null}
                 {works.isEmpty ? (
-                  <Typography type="headline">
+                  <Typography variant="h5">
                     {`ステージが見つかりませんでした`}
                     <span role="img" aria-label="Confused">
                       {`😕`}
@@ -287,11 +292,11 @@ export default class WorkList extends React.Component<Props, State> {
           </Grid>
         </Collapse>
         {more ? null : (
-          <div className={classes.more}>
+          <div className={cn.more}>
             <Button
-              raised
+              variant="contained"
               color="primary"
-              className={classes.button}
+              className={dcn.button}
               component={Link}
               to={moreLink}
             >

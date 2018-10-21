@@ -3,62 +3,66 @@ import * as React from 'react';
 import md5 from 'md5';
 import mime from 'mime-types';
 import { Link, type ContextRouter } from 'react-router-dom';
-import Grid from 'material-ui/Grid';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import IconButton from 'material-ui/IconButton';
-import TextField from 'material-ui/TextField';
-import Photo from 'material-ui-icons/Photo';
-import { css } from 'emotion';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import TextField from '@material-ui/core/TextField';
+import Photo from '@material-ui/icons/Photo';
+import { style } from 'typestyle';
 
 import Avatar from '../containers/Avatar';
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import type { StateProps, DispatchProps } from '../containers/ProfileEdit';
 
-const classes = {
-  root: css({
-    paddingTop: theme.spacing.unit * 8,
-    paddingLeft: theme.spacing.unit * 4,
-    paddingBottom: theme.spacing.unit * 4,
-    backgroundColor: theme.palette.background.appBar
-  }),
-  container: css({
+const cn = {
+  container: style({
     maxWidth: 600
   }),
-  avatar: css({
+  avatar: style({
     width: 80,
     height: 80,
     fontSize: '2.5rem'
   }),
-  button: css({
-    marginBottom: theme.spacing.unit
-  }),
-  iconButton: css({
+  iconButton: style({
     marginTop: -48
   }),
-  textFieldRoot: css({
-    padding: 0,
-    'label + &': {
-      marginTop: theme.spacing.unit * 3
-    }
+  fileInput: style({
+    display: 'none'
+  })
+};
+const getCn = props => ({
+  root: style({
+    paddingTop: props.theme.spacing.unit * 8,
+    paddingLeft: props.theme.spacing.unit * 4,
+    paddingBottom: props.theme.spacing.unit * 4,
+    backgroundColor: props.theme.palette.background.paper
   }),
-  textFieldInput: css({
+  textFieldInput: style({
     borderRadius: 4,
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: props.theme.palette.common.white,
     border: '1px solid #ced4da',
     fontSize: 16,
     padding: '10px 12px',
     width: 'calc(100% - 24px)',
-    transition: theme.transitions.create(['border-color', 'box-shadow']),
+    transition: props.theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
       borderColor: '#80bdff',
       boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)'
     }
   }),
-  fileInput: css({
-    display: 'none'
+  textFieldRoot: style({
+    padding: 0,
+    $nest: {
+      'label + &': {
+        marginTop: props.theme.spacing.unit * 3
+      }
+    }
+  }),
+  button: style({
+    marginBottom: props.theme.spacing.unit
   })
-};
+});
 
 export type OwnProps = {
   edit?: boolean
@@ -68,6 +72,7 @@ export type Props = OwnProps &
   StateProps &
   DispatchProps & { ...ContextRouter };
 
+@withTheme()
 export default class Profile extends React.Component<Props> {
   static defaultProps = {
     edit: false
@@ -116,20 +121,21 @@ export default class Profile extends React.Component<Props> {
   };
 
   render() {
+    const dcn = getCn(this.props);
     const { user, edit, editing, owner } = this.props;
 
     if (user.isEmpty) {
       return (
-        <div className={classes.root}>
-          <Typography type="headline">ユーザーが見つかりません</Typography>
+        <div className={dcn.root}>
+          <Typography variant="h5">ユーザーが見つかりません</Typography>
         </div>
       );
     }
 
     if (!user.data) {
       return (
-        <div className={classes.root}>
-          <Typography type="headline">ロード中です</Typography>
+        <div className={dcn.root}>
+          <Typography variant="h5">ロード中です</Typography>
         </div>
       );
     }
@@ -142,16 +148,16 @@ export default class Profile extends React.Component<Props> {
       : user.data;
 
     return (
-      <div className={classes.root}>
+      <div className={dcn.root}>
         <Grid
           container
           spacing={16}
           alignItems="center"
-          className={classes.container}
+          className={cn.container}
         >
           <Grid item xs={2}>
             <Avatar
-              className={classes.avatar}
+              className={cn.avatar}
               src={userData.photoURL}
               storagePath={userData.profileImagePath}
               alt={userData.displayName.substr(0, 1)}
@@ -160,7 +166,7 @@ export default class Profile extends React.Component<Props> {
               <div>
                 <IconButton
                   color="primary"
-                  className={classes.iconButton}
+                  className={cn.iconButton}
                   aria-label="Edit profile image"
                   onClick={this.handleClickPhotoIcon}
                 >
@@ -169,7 +175,7 @@ export default class Profile extends React.Component<Props> {
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/gif"
-                  className={classes.fileInput}
+                  className={cn.fileInput}
                   ref={input => (this.input = input)}
                 />
               </div>
@@ -182,8 +188,8 @@ export default class Profile extends React.Component<Props> {
                 InputProps={{
                   disableUnderline: true,
                   classes: {
-                    root: classes.textFieldRoot,
-                    input: classes.textFieldInput
+                    root: dcn.textFieldRoot,
+                    input: dcn.textFieldInput
                   }
                 }}
                 autoFocus
@@ -194,10 +200,10 @@ export default class Profile extends React.Component<Props> {
                 helperText="本名(ほんみょう)は かかないで！"
               />
             ) : (
-              <Typography type="headline">{userData.displayName}</Typography>
+              <Typography variant="h5">{userData.displayName}</Typography>
             )}
             {userData.worksNum ? (
-              <Typography type="caption" align="left">{`投稿数 ${
+              <Typography variant="caption" align="left">{`投稿数 ${
                 userData.worksNum
               }`}</Typography>
             ) : null}
@@ -206,9 +212,9 @@ export default class Profile extends React.Component<Props> {
             <Grid item xs={5}>
               {edit ? (
                 <Button
-                  raised
+                  variant="contained"
                   color="primary"
-                  className={classes.button}
+                  className={dcn.button}
                   component={Link}
                   to={`/users/${userData.uid}`}
                   onClick={this.props.confirmAuthUserEditing}
@@ -217,9 +223,9 @@ export default class Profile extends React.Component<Props> {
                 </Button>
               ) : (
                 <Button
-                  raised
+                  variant="contained"
                   color="primary"
-                  className={classes.button}
+                  className={dcn.button}
                   component={Link}
                   to={`/users/${userData.uid}/edit`}
                 >

@@ -2,34 +2,35 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
-import Dialog from 'material-ui/Dialog/Dialog';
-import DialogActions from 'material-ui/Dialog/DialogActions';
-import DialogTitle from 'material-ui/Dialog/DialogTitle';
-import DialogContent from 'material-ui/Dialog/DialogContent';
-import DialogContentText from 'material-ui/Dialog/DialogContentText';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import Dialog from '@material-ui/core/Dialog/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import type ReactMapEditorType from 'react-map-editor';
-import { css } from 'emotion';
+import { style, media } from 'typestyle';
 
 import { type StateProps, type DispatchProps } from '../containers/MapEditor';
 
-const classes = {
-  root: css({
-    height: `calc(100vh - ${56 * 2}px)`,
-    '@media (min-width:0px) and (orientation: landscape)': {
-      height: `calc(100vh - ${48 * 2}px)`
+const cn = {
+  root: style(
+    {
+      height: `calc(100vh - ${56 * 2}px)`
     },
-    '@media (min-width:600px)': {
-      height: `calc(100vh - ${64 * 2}px)`
-    }
-  }),
-  flex: css({
+    media(
+      { minWidth: 0, orientation: 'landscape' },
+      { height: `calc(100vh - ${48 * 2}px)` }
+    ),
+    media({ minWidth: 600 }, { height: `calc(100vh - ${64 * 2}px)` })
+  ),
+  flex: style({
     flexGrow: 1
   }),
-  code: css({
+  code: style({
     height: '5rem',
     width: '100%',
     fontFamily: `Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace`,
@@ -140,13 +141,13 @@ await Hack.loadMap(
     }
 
     return (
-      <div className={classes.root}>
+      <div className={cn.root}>
         <AppBar position="static" color="default" elevation={0}>
           <Toolbar>
-            <Typography variant="title" color="inherit">
+            <Typography variant="h6" color="inherit">
               マップエディタ（β版）
             </Typography>
-            <div className={classes.flex} />
+            <div className={cn.flex} />
             <Button disabled={isUploading} onClick={this.saveNewMapJson}>
               保存する
             </Button>
@@ -198,7 +199,7 @@ export class CodeDialog extends React.Component<CodeDialogProps> {
             このコードをコピーして、「Hack.changeMap('map1');」のすぐ上に書き足して下さい
           </DialogContentText>
           <textarea
-            className={classes && classes.code}
+            className={cn && cn.code}
             readOnly
             ref={ref => (this.textarea = ref)}
             wrap="off"

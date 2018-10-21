@@ -1,6 +1,6 @@
 // @flow
 import { Link } from 'react-router-dom';
-import type { Color } from 'material-ui/Button/Button';
+import type { Color } from '@material-ui/core/Button/Button';
 
 import thumbnail from '../resources/stage6.jpeg';
 
@@ -21,7 +21,7 @@ export type ContentType = {
     fullWidth?: boolean,
     href?: string,
     mini?: boolean,
-    raised?: boolean,
+    variant?: 'contained' | 'text' | 'fab',
     type?: string,
     target?: '_blank'
   }>
@@ -41,7 +41,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         url: '/officials/hack-rpg',
         buttons: [
           {
-            raised: true,
+            variant: 'contained',
             color: 'primary',
             children: 'ゲームスタート',
             component: Link,
@@ -143,7 +143,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         url: '/officials/make-rpg',
         buttons: [
           {
-            raised: true,
+            variant: 'contained',
             color: 'primary',
             children: 'ステージをつくる',
             component: Link,
@@ -325,7 +325,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         url: '/officials/pg-colosseum/#/training/index.html',
         buttons: [
           {
-            raised: true,
+            variant: 'contained',
             color: 'primary',
             children: 'スタート',
             component: Link,
@@ -343,20 +343,20 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         url: '/officials/pg-colosseum/#/stages/semi/index.html',
         buttons: [
           {
-            raised: true,
+            variant: 'contained',
             color: 'primary',
             children: 'はじめから',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/semi/index.html'
           },
           {
-            raised: true,
+            variant: 'contained',
             children: 'ステージ２',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/semi2/index.html'
           },
           {
-            raised: true,
+            variant: 'contained',
             children: 'ステージ３',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/semi3/index.html'
@@ -373,20 +373,20 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         description: '決勝戦に使われたステージです',
         buttons: [
           {
-            raised: true,
+            variant: 'contained',
             color: 'primary',
             children: 'はじめから',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/final/index.html'
           },
           {
-            raised: true,
+            variant: 'contained',
             children: 'ステージ２',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/final2/index.html'
           },
           {
-            raised: true,
+            variant: 'contained',
             children: 'ステージ３',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/final3/index.html'
@@ -402,23 +402,92 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         description: '最終決戦に使われたステージです',
         buttons: [
           {
-            raised: true,
+            variant: 'contained',
             color: 'primary',
             children: 'はじめから',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/champion/index.html'
           },
           {
-            raised: true,
+            variant: 'contained',
             children: 'ステージ２',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/slot2/index.html'
           },
           {
-            raised: true,
+            variant: 'contained',
             children: 'ステージ３',
             component: Link,
             to: '/officials/pg-colosseum/#/stages/danmaku3/index.html'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    path: '/specials/プログラミングコロシアム2018',
+    items: [
+      {
+        type: 'stage',
+        title: 'れんしゅうステージ',
+        image: 'https://i.gyazo.com/60cfa51509c815a713be7a38d8d547d6.gif',
+        author: null,
+        description: 'まずは、このステージで、あそびかたをおぼえよう！',
+        buttons: [
+          {
+            variant: 'contained',
+            color: 'primary',
+            children: 'プレイ',
+            component: Link,
+            to: '/officials/pg-colosseum-2018/training'
+          },
+          {
+            children: '答え',
+            href:
+              'https://scrapbox.io/hackforplay/%E3%83%AD%E3%83%83%E3%82%AF%E3%83%9E%E3%83%B3%E3%81%AE%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'stage',
+        title: 'ステージ１【vsエアーマン】',
+        image: 'https://i.gyazo.com/93539dd4f2f2612059c881b2a937d065.gif',
+        author: null,
+        description: 'ロックマンといっしょにたたかおう！',
+        buttons: [
+          {
+            variant: 'contained',
+            color: 'primary',
+            children: 'プレイ',
+            component: Link,
+            to: '/officials/pg-colosseum-2018/yosen-1-FRhtfFzG'
+          },
+          {
+            children: '答え',
+            href: 'https://www.notion.so/63c3ecb229b64e45a4a301d9f9894b5f',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'stage',
+        title: 'ステージ２【vsイエローデビル】',
+        image: 'https://i.gyazo.com/19c764093668c23ed36f46a02c1698f7.gif',
+        author: null,
+        description: 'ロックマンといっしょにたたかおう！',
+        buttons: [
+          {
+            variant: 'contained',
+            color: 'primary',
+            children: 'プレイ',
+            component: Link,
+            to: '/officials/pg-colosseum-2018/yosen-2-LKSm5H9D'
+          },
+          {
+            children: '答え',
+            href: 'https://www.notion.so/63c3ecb229b64e45a4a301d9f9894b5f',
+            target: '_blank'
           }
         ]
       }

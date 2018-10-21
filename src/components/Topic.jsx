@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import Paper from 'material-ui/Paper';
-import Button from 'material-ui/Button';
-import Grid from 'material-ui/Grid';
-import Typography from 'material-ui/Typography';
-import { css } from 'emotion';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import { style, classes } from 'typestyle';
 
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import WorkList from '../containers/WorkList';
 import beginner from '../resources/beginner.png';
 import diamond_pink from '../resources/diamond_pink.png';
@@ -26,25 +26,27 @@ import makePng from '../resources/make.png';
 import type { StateProps, DispatchProps } from '../containers/Topic';
 import * as xlasses from '../utils/xlasses';
 
-const classes = {
-  root: css({
+const cn = {
+  root: style({
     maxWidth: 840,
     boxSizing: 'border-box',
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 32
   }),
-  slider: css({
-    '& .slick-prev': {
-      left: 25,
-      zIndex: 1
-    },
-    '& .slick-next': {
-      right: 25,
-      zIndex: 1
+  slider: style({
+    $nest: {
+      '& .slick-prev': {
+        left: 25,
+        zIndex: 1
+      },
+      '& .slick-next': {
+        right: 25,
+        zIndex: 1
+      }
     }
   }),
-  sliderItem: css({
+  sliderItem: style({
     position: 'relative',
     height: 480,
     maxHeight: '50vh',
@@ -53,10 +55,10 @@ const classes = {
     // https://github.com/bfred-it/object-fit-images/
     fontFamily: "'object-fit: contain;'"
   }),
-  workList: css({
+  workList: style({
     textAlign: 'center'
   }),
-  paper: css({
+  paper: style({
     flex: '0 1 100%',
     padding: 60,
     textAlign: 'center',
@@ -65,30 +67,42 @@ const classes = {
     alignItems: 'center',
     boxSizing: 'border-box'
   }),
-  title: css({
+  title: style({
     display: 'inline-flex',
     alignItems: 'center'
   }),
-  icon: css({
-    marginTop: theme.spacing.unit * 4,
-    marginBottom: theme.spacing.unit * 4,
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2
-  }),
-  body: css({
-    alignSelf: 'left',
-    marginTop: theme.spacing.unit,
-    marginBottom: theme.spacing.unit * 4
-  }),
-  iframe: css({
+  iframe: style({
     width: '100%',
     height: '100%'
-  })
+  }),
+  flexAlignCenter: style({ display: 'flex', alignItems: 'center' }),
+  marginLeft16: style({ marginLeft: 16 }),
+  marginTop16: style({ marginTop: 16 }),
+  procoloContainer: style({ marginTop: 8, marginBottom: 8, height: 212 }),
+  height100: style({ height: '100%' }),
+  noPadding: style({ padding: 0 }),
+  width100: style({ maxWidth: '100%' }),
+  makeButton: style({ marginTop: -120, marginBottom: 48 }),
+  facebook: style({ border: 'none', overflow: 'hidden' })
 };
+const getCn = props => ({
+  icon: style({
+    marginTop: props.theme.spacing.unit * 4,
+    marginBottom: props.theme.spacing.unit * 4,
+    marginLeft: props.theme.spacing.unit * 2,
+    marginRight: props.theme.spacing.unit * 2
+  }),
+  body: style({
+    alignSelf: 'left',
+    marginTop: props.theme.spacing.unit,
+    marginBottom: props.theme.spacing.unit * 4
+  })
+});
 
 export type Props = StateProps & DispatchProps;
 
-export default (props: Props) => {
+export default withTheme()((props: Props) => {
+  const dcn = getCn(props);
   return (
     <div>
       <Slider
@@ -99,35 +113,35 @@ export default (props: Props) => {
         slidesToScroll={1}
         autoplay
         autoplaySpeed={10000}
-        className={classes.slider}
+        className={cn.slider}
       >
         <img
           src={top1}
           alt={`スライムがたおせない！？これは・・・バグっているね！`}
-          className={classes.sliderItem}
+          className={cn.sliderItem}
         />
         <img
           src={top2}
           alt={`本をひらいてみよう。おかしいのはどこ？`}
-          className={classes.sliderItem}
+          className={cn.sliderItem}
         />
         <img
           src={top3}
           alt={`プログラミングで、せかいをかきかえてみよう！`}
-          className={classes.sliderItem}
+          className={cn.sliderItem}
         />
       </Slider>
-      <div className={classes.root}>
+      <div className={cn.root}>
         <Grid container spacing={24}>
           <Grid item xs={12}>
-            <Paper elevation={1} className={classes.paper}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Paper elevation={1} className={cn.paper}>
+              <div className={cn.flexAlignCenter}>
                 <img src={beginner} alt="" />
-                <div style={{ marginLeft: 16 }}>
+                <div className={cn.marginLeft16}>
                   <Typography type="subheading" align="left" gutterBottom>
                     HackforPlayとは？
                   </Typography>
-                  <Typography type="title" align="left" gutterBottom>
+                  <Typography variant="h6" align="left" gutterBottom>
                     はじめてプレイする方はこちら
                   </Typography>
                 </div>
@@ -135,11 +149,10 @@ export default (props: Props) => {
 
               <Button
                 color="primary"
-                raised
+                variant="contained"
                 component={Link}
                 to="/officials/hack-rpg"
-                className={xlasses.largeButton}
-                style={{ marginTop: 16 }}
+                className={classes(xlasses.largeButton, cn.marginTop16)}
               >
                 ゲームスタート
               </Button>
@@ -148,11 +161,11 @@ export default (props: Props) => {
 
           {/* プログラミングコロシアム */}
           <Grid item xs={12}>
-            <Paper elevation={1} className={classes.paper}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Paper elevation={1} className={cn.paper}>
+              <div className={cn.flexAlignCenter}>
                 <img src={dragon} alt="" />
-                <div style={{ marginLeft: 16 }}>
-                  <Typography type="title" align="left" gutterBottom>
+                <div className={cn.marginLeft16}>
+                  <Typography variant="h6" align="left" gutterBottom>
                     プログラミングコロシアム特別ステージ
                   </Typography>
                 </div>
@@ -161,7 +174,7 @@ export default (props: Props) => {
                 container
                 justify="center"
                 spacing={16}
-                style={{ marginTop: 8, marginBottom: 8, height: 212 }}
+                className={cn.procoloContainer}
               >
                 <Grid item sm={6} xs={12}>
                   <iframe
@@ -170,55 +183,63 @@ export default (props: Props) => {
                     frameBorder="0"
                     allow="autoplay; encrypted-media"
                     allowFullScreen
-                    className={classes.iframe}
+                    className={cn.iframe}
                   />
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <img
                     src="https://assets.feeles.com/thumbnail/7af083af9079fc370610d0e688c073d3.jpg"
                     alt="練習用ステージ"
-                    style={{ height: '100%' }}
+                    className={cn.height100}
                   />
                 </Grid>
               </Grid>
-              <Typography type="title" align="left" gutterBottom>
+              <Typography variant="h6" align="left" gutterBottom>
                 今年のプログラミングコロシアムは、ロックマン©︎とコラボ！
               </Typography>
-              <Typography type="body1" align="left" gutterBottom>
-                プログラムを使ってロックマン©︎を動かそう。コマンドの一覧は<a
+              <Typography variant="body1" align="left" gutterBottom>
+                プログラムを使ってロックマン©︎を動かそう。コマンドの一覧は
+                <a
                   href="https://scrapbox.io/hackforplay/%E3%83%AD%E3%83%83%E3%82%AF%E3%83%9E%E3%83%B3%E3%81%AE%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   ここをクリック
-                </a>すれば見ることができるぞ
+                </a>
+                すれば見ることができるぞ
               </Typography>
-              <Typography type="caption" align="left">
+              <Typography variant="caption" align="left">
                 ※ロックマンは株式会社カプコンの登録商標です
               </Typography>
               <Button
                 color="primary"
-                raised
+                variant="contained"
                 component={Link}
-                to="/officials/pg-colosseum-2018/training"
-                className={xlasses.largeButton}
-                style={{ marginTop: 16 }}
+                to="/specials/プログラミングコロシアム2018"
+                className={classes(xlasses.largeButton, cn.marginTop16)}
               >
-                ゲームスタート
+                今すぐプレイ
               </Button>
             </Paper>
           </Grid>
 
           <Grid item xs={12}>
-            <Paper elevation={1} className={classes.paper} style={{padding:0}} >
-              <img src={makePng} alt="ステージを作ろう" style={{maxWidth:'100%'}} />
+            <Paper elevation={1} className={classes(cn.paper, cn.noPadding)}>
+              <img
+                src={makePng}
+                alt="ステージを作ろう"
+                className={cn.width100}
+              />
               <Button
                 color="primary"
-                raised
+                variant="contained"
                 component={Link}
                 to="/officials/make-rpg"
-                className={xlasses.largeButton}
-                style={{ marginTop: -120, marginBottom: 48 }}
+                className={classes(
+                  xlasses.largeButton,
+                  cn.marginTop16,
+                  cn.makeButton
+                )}
               >
                 ステージをつくる
               </Button>
@@ -230,10 +251,10 @@ export default (props: Props) => {
               works={props.trending}
               title={
                 <Typography
-                  type="title"
+                  variant="h6"
                   align="center"
                   gutterBottom
-                  className={classes.title}
+                  className={cn.title}
                 >
                   <img src={diamond_pink} alt="" />
                   人気のステージ
@@ -241,7 +262,7 @@ export default (props: Props) => {
               }
               more={false}
               moreLink="/lists/trending"
-              className={classes.workList}
+              className={cn.workList}
               showVisibility={false}
             />
           </Grid>
@@ -252,7 +273,7 @@ export default (props: Props) => {
               src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fhackforplay%2F&tabs=timeline&width=380&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=481203238698048"
               width="408"
               height="500"
-              style={{ border: 'none', overflow: 'hidden' }}
+              className={cn.facebook}
               scrolling="no"
               frameBorder="0"
               allowtransparency="true"
@@ -261,12 +282,12 @@ export default (props: Props) => {
           </Grid>
 
           {/* <Grid item xs={12} sm={6}>
-            <Paper elevation={1} className={classes.paper}>
+            <Paper elevation={1} className={cn.paper}>
               <Typography
-                type="title"
+                variant="h6"
                 align="center"
                 gutterBottom
-                className={classes.title}
+                className={cn.title}
               >
                 <img src={info} alt="" />
                 ワークショップ情報
@@ -283,16 +304,16 @@ export default (props: Props) => {
               />
               <Typography
                 type="subheading"
-                className={classes.body}
+                className={dcn.body}
                 gutterBottom
               >
                 第６回金沢市キッズプログラミング教室が開催されます
               </Typography>
               <Button
                 color="primary"
-                raised
+                variant="contained"
                 href="http://www4.city.kanazawa.lg.jp/17009/kidspg.html"
-                className={classes.button}
+                className={cn.button}
               >
                 詳細はこちら
               </Button>
@@ -300,13 +321,13 @@ export default (props: Props) => {
           </Grid> */}
 
           <Grid item xs={12} sm={6}>
-            <Paper elevation={1} className={classes.paper}>
+            <Paper elevation={1} className={cn.paper}>
               <div>
                 <Typography
-                  type="title"
+                  variant="h6"
                   align="center"
                   gutterBottom
-                  className={classes.title}
+                  className={cn.title}
                 >
                   <img src={mail} alt="" />
                   お問い合わせ
@@ -317,15 +338,15 @@ export default (props: Props) => {
               </div>
               <div>
                 <a href="https://twitter.com/teramotodaiki">
-                  <img src={twitter} className={classes.icon} alt="Twitter" />
+                  <img src={twitter} className={dcn.icon} alt="Twitter" />
                 </a>
                 <a href="https://www.facebook.com/hackforplay">
-                  <img src={facebook} className={classes.icon} alt="Facebook" />
+                  <img src={facebook} className={dcn.icon} alt="Facebook" />
                 </a>
               </div>
               <Button
                 color="primary"
-                raised
+                variant="contained"
                 href="https://goo.gl/forms/S655BeMUpNHjmAtg1"
                 target="_blank"
               >
@@ -337,4 +358,4 @@ export default (props: Props) => {
       </div>
     </div>
   );
-};
+});

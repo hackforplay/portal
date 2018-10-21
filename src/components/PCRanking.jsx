@@ -2,40 +2,47 @@
 import * as React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import Table from 'material-ui/Table/Table';
-import { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import Paper from 'material-ui/Paper';
-import Button from 'material-ui/Button';
-import { CircularProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
+import Table from '@material-ui/core/Table/Table';
+import {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow
+} from '@material-ui/core/Table';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 import type { ContextRouter } from 'react-router-dom';
-import { css } from 'emotion';
+import { style } from 'typestyle';
 
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import type { StateProps, DispatchProps } from '../containers/PCRanking';
 
-const classes = {
-  root: css({
+const cn = {
+  root: style({
     maxWidth: 840,
     marginLeft: 'auto',
     marginRight: 'auto'
   }),
-  progress: css({
-    display: 'block',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    padding: theme.spacing.unit * 6
-  }),
-  button: css({
-    marginTop: theme.spacing.unit * 3,
-    marginBottom: theme.spacing.unit * 3
-  }),
-  cell: css({
+  cell: style({
     maxWidth: 200,
     textOverflow: 'ellipsis',
     overflow: 'hidden'
   })
 };
+const getCn = props => ({
+  progress: style({
+    display: 'block',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    padding: props.theme.spacing.unit * 6
+  }),
+  button: style({
+    marginTop: props.theme.spacing.unit * 3,
+    marginBottom: props.theme.spacing.unit * 3
+  })
+});
 
 const playLinks = {
   semi1: '/officials/pg-colosseum/#/stages/semi1/index.html',
@@ -57,14 +64,16 @@ const fromNow = (createdAt: string) => {
 
 export type Props = StateProps & DispatchProps & { ...ContextRouter };
 
-export default ({ records, match }: Props) => {
+export default withTheme()((props: Props) => {
+  const dcn = getCn(props);
+  const { records, match } = props;
   const stage = match.params && match.params.stage;
   if (!stage) {
     return null;
   }
 
   return (
-    <div className={classes.root}>
+    <div className={cn.root}>
       <h1>ランキング</h1>
       {records.data ? (
         <Paper>
@@ -92,31 +101,31 @@ export default ({ records, match }: Props) => {
                   <TableCell
                     numeric={false}
                     padding="default"
-                    className={classes.cell}
+                    className={cn.cell}
                   >{`${i + 1}位`}</TableCell>
                   <TableCell
                     numeric={false}
                     padding="default"
-                    className={classes.cell}
+                    className={cn.cell}
                   >
                     {item.name}
                   </TableCell>
                   <TableCell
                     numeric={false}
                     padding="default"
-                    className={classes.cell}
+                    className={cn.cell}
                   >
                     {item.score}
                   </TableCell>
                   <TableCell
                     numeric={false}
                     padding="default"
-                    className={classes.cell}
+                    className={cn.cell}
                   >{`${item.lastTime}秒`}</TableCell>
                   <TableCell
                     numeric={false}
                     padding="default"
-                    className={classes.cell}
+                    className={cn.cell}
                   >
                     {fromNow(item.createdAt)}
                   </TableCell>
@@ -126,21 +135,21 @@ export default ({ records, match }: Props) => {
           </Table>
         </Paper>
       ) : records.isEmpty ? (
-        <Typography type="display1">
+        <Typography variant="display1">
           まだ記録がないか、無効なステージです :-(
         </Typography>
       ) : (
-        <CircularProgress className={classes.progress} />
+        <CircularProgress className={dcn.progress} />
       )}
       <Button
-        raised
+        variant="contained"
         color="primary"
         component={Link}
         to={playLinks[stage]}
-        className={classes.button}
+        className={dcn.button}
       >
         このステージをプレイする
       </Button>
     </div>
   );
-};
+});

@@ -1,28 +1,30 @@
 // @flow
 import * as React from 'react';
 import type { ContextRouter } from 'react-router-dom';
-// import Paper from 'material-ui/Paper';
-import { css } from 'emotion';
+// import Paper from '@material-ui/core/Paper';
+import { style } from 'typestyle';
 
 import WorkList from '../containers/WorkList';
 import MapList from '../containers/MapList';
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import type { StateProps, DispatchProps } from '../containers/UserWorks';
 
-const classes = {
-  root: css({
-    padding: theme.spacing.unit * 4
+const getCn = props => ({
+  root: style({
+    padding: props.theme.spacing.unit * 4
   })
-};
+});
 
 export type Props = StateProps & DispatchProps & { ...ContextRouter };
 
-export default ({ match, works, maps }: Props) => {
+export default withTheme()((props: Props) => {
+  const dcn = getCn(props);
+  const { match, works, maps } = props;
   // 現在の URL に対して適切なデータを表示
   const id = match.params.id || '';
   const tab = match.params.tab || '';
   return (
-    <div className={classes.root}>
+    <div className={dcn.root}>
       {tab === '' ? (
         <WorkList
           works={works}
@@ -53,4 +55,4 @@ export default ({ match, works, maps }: Props) => {
       ) :*/ null}
     </div>
   );
-};
+});

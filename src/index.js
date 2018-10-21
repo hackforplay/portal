@@ -10,7 +10,6 @@ import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProductio
 import moment from 'moment';
 import 'moment/locale/ja';
 import 'normalize.css';
-import '@babel/polyfill';
 import 'url-search-params-polyfill';
 import objectFitImages from 'object-fit-images';
 

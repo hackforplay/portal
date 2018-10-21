@@ -2,103 +2,99 @@
 import * as React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import { MenuItem } from 'material-ui/Menu';
-import Popover from 'material-ui/Popover';
-import Button from 'material-ui/Button/Button';
-import Select from 'material-ui/Select';
-import grey from 'material-ui/colors/grey';
-import Home from 'material-ui-icons/Home';
-import Tooltip from 'material-ui/Tooltip';
-import { css } from 'emotion';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import MenuItem from '@material-ui/core/MenuItem';
+import Popover from '@material-ui/core/Popover';
+import Button from '@material-ui/core/Button/Button';
+import Select from '@material-ui/core/Select';
+import grey from '@material-ui/core/colors/grey';
+import Home from '@material-ui/icons/Home';
+import Tooltip from '@material-ui/core/Tooltip';
+import { style, media } from 'typestyle';
 
 import Avatar from '../containers/Avatar';
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import googleIcon from '../resources/google.svg';
 import logo from '../resources/logo.png';
 import Beginner from '../icons/Beginner';
 import Play from '../icons/Play';
 import Create from '../icons/Create';
 import type { StateProps, DispatchProps } from '../containers/Header';
+import ContrastButton from './ContrastButton';
 
-const classes = {
-  root: css({
-    '@media (min-width:0px) and (orientation: landscape)': {
-      height: 48
-    },
-    '@media (min-width:600px)': {
-      height: 64
-    },
-    height: 56
-  }),
-  toolbar: css({
+const cn = {
+  root: style(
+    { height: 56 },
+    media({ maxWidth: 0, orientation: 'landscape' }, { height: 48 }),
+    media({ minWidth: 600 }, { height: 64 })
+  ),
+  toolbar: style({
     backgroundColor: grey[900],
     maxHeight: 64
   }),
-  blank: css({
+  blank: style({
     flex: 1
   }),
-  icon: css({
+  icon: style({
     width: 18,
     marginRight: 12
   }),
-  avatar: css({
-    cursor: 'pointer',
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit
-  }),
-  title: css({
-    '@media (max-width:721px)': {
-      // 画面幅が一定以下の時はロゴを表示しない
-      display: 'none'
+  title: style(
+    { color: 'black', filter: 'invert(100%)' },
+    // 画面幅が一定以下の時はロゴを表示しない
+    media({ maxWidth: 721 }, { display: 'none' })
+  ),
+  separator: style(
+    {
+      position: 'relative',
+      display: 'inline-flex',
+      minHeight: 36,
+      alignSelf: 'center',
+      $nest: {}
     },
-    color: 'black',
-    filter: 'invert(100%)'
-  }),
-  separator: css({
-    position: 'relative',
-    display: 'inline-flex',
-    minHeight: 36,
-    alignSelf: 'center',
-    '&:before': {
-      '@media (min-width:920px)': {
-        // button label が表示されるときだけ separator を表示する
-        content: '""',
-        position: 'absolute',
-        left: 0,
-        backgroundColor: 'white',
-        width: 1,
-        height: 36
+    media(
+      { minWidth: 920 },
+      {
+        $nest: {
+          '&::before': {
+            // button label が表示されるときだけ separator を表示する
+            content: '""',
+            position: 'absolute',
+            left: 0,
+            backgroundColor: 'white',
+            width: 1,
+            height: 36
+          }
+        }
       }
-    }
-  }),
-  select: css({
-    '@media (max-width:561px)': {
-      // 画面幅が一定以下の時は切り替えメニューを表示しない
-      display: 'none'
+    )
+  ),
+  select: style(
+    {
+      marginLeft: 8,
+      marginRight: 8,
+      color: 'white'
     },
-    marginLeft: 8,
-    marginRight: 8,
+    // 画面幅が一定以下の時は切り替えメニューを表示しない
+    media({ maxWidth: 561 }, { display: 'none' })
+  ),
+  selectIcon: style({
     color: 'white'
   }),
-  selectIcon: css({
-    color: 'white'
-  }),
-  tooltip: css({
-    '@media (min-width:920px)': {
-      // button label が表示されるときは tooltip を表示しない
-      display: 'none'
-    }
-  }),
-  buttonLabel: css({
-    '@media (max-width:921px)': {
-      // 画面幅が一定以上の時だけ button label を表示する
-      display: 'none'
-    }
-  })
+  // button label が表示されるときは tooltip を表示しない
+  tooltip: style(media({ minWidth: 920 }, { display: 'none' })),
+  // 画面幅が一定以上の時だけ button label を表示する
+  buttonLabel: style(media({ maxWidth: 921 }, { display: 'none' }))
 };
+const getCn = props => ({
+  avatar: style({
+    cursor: 'pointer',
+    marginLeft: props.theme.spacing.unit,
+    marginRight: props.theme.spacing.unit
+  })
+});
 
 export type OwnProps = {};
 export type Props = OwnProps &
@@ -109,6 +105,7 @@ type State = {
   anchorEl: ?HTMLElement
 };
 
+@withTheme()
 @withRouter
 class Header extends React.Component<Props, State> {
   state = {
@@ -150,6 +147,7 @@ class Header extends React.Component<Props, State> {
   };
 
   render() {
+    const dcn = getCn(this.props);
     const { user, isSignedIn, isInOfficialWork } = this.props;
     const { anchorEl } = this.state;
 
@@ -158,15 +156,14 @@ class Header extends React.Component<Props, State> {
       hostname.startsWith('earlybird') || hostname.startsWith('localhost');
 
     return (
-      <div className={classes.root}>
+      <div className={cn.root}>
         <AppBar position="fixed" elevation={0}>
-          <Toolbar className={classes.toolbar}>
+          <Toolbar className={cn.toolbar}>
             <Typography
-              type="title"
-              style={{ color: 'black' }}
+              variant="h6"
               component={Link}
               to="/"
-              className={classes.title}
+              className={cn.title}
             >
               <img src={logo} height={36} alt="HackforPlay" />
             </Typography>
@@ -175,77 +172,60 @@ class Header extends React.Component<Props, State> {
               displayEmpty
               disableUnderline
               onChange={this.handleVersionChange}
-              className={classes.select}
-              classes={{ icon: classes.selectIcon }}
+              className={cn.select}
+              classes={{ icon: cn.selectIcon }}
             >
               <MenuItem value="earlybird">最新版</MenuItem>
               <MenuItem value="www">安定版</MenuItem>
             </Select>
 
-            <div className={classes.blank} />
-            <Tooltip title="ホーム" classes={{ tooltip: classes.tooltip }}>
-              <Button
-                color="contrast"
-                component={Link}
-                to="/"
-                className={classes.separator}
-              >
+            <div className={cn.blank} />
+            <Tooltip title="ホーム" classes={{ tooltip: cn.tooltip }}>
+              <ContrastButton component={Link} to="/" className={cn.separator}>
                 <Home />
-                <span className={classes.buttonLabel}>ホーム</span>
-              </Button>
+                <span className={cn.buttonLabel}>ホーム</span>
+              </ContrastButton>
             </Tooltip>
             {isInOfficialWork ? null : (
-              <Tooltip
-                title="あそびかた"
-                classes={{ tooltip: classes.tooltip }}
-              >
-                <Button
-                  color="contrast"
+              <Tooltip title="あそびかた" classes={{ tooltip: cn.tooltip }}>
+                <ContrastButton
                   component={Link}
                   to="/contents/tutorial"
-                  className={classes.separator}
+                  className={cn.separator}
                 >
                   <Beginner />
-                  <span className={classes.buttonLabel}>あそびかた</span>
-                </Button>
+                  <span className={cn.buttonLabel}>あそびかた</span>
+                </ContrastButton>
               </Tooltip>
             )}
-            <Tooltip
-              title="みんなのステージ"
-              classes={{ tooltip: classes.tooltip }}
-            >
-              <Button
-                color="contrast"
+            <Tooltip title="みんなのステージ" classes={{ tooltip: cn.tooltip }}>
+              <ContrastButton
                 component={Link}
                 to="/lists"
-                className={classes.separator}
+                className={cn.separator}
               >
                 <Play />
-                <span className={classes.buttonLabel}>みんなのステージ</span>
-              </Button>
+                <span className={cn.buttonLabel}>みんなのステージ</span>
+              </ContrastButton>
             </Tooltip>
-            <Tooltip
-              title="ステージを作る"
-              classes={{ tooltip: classes.tooltip }}
-            >
-              <Button
-                color="contrast"
+            <Tooltip title="ステージを作る" classes={{ tooltip: cn.tooltip }}>
+              <ContrastButton
                 component={Link}
                 to="/contents/kit"
-                className={classes.separator}
+                className={cn.separator}
               >
                 <Create />
-                <span className={classes.buttonLabel}>ステージを作る</span>
-              </Button>
+                <span className={cn.buttonLabel}>ステージを作る</span>
+              </ContrastButton>
             </Tooltip>
-            {user.data ? <div className={classes.separator} /> : null}
+            {user.data ? <div className={cn.separator} /> : null}
             {user.data ? (
               user.data.photoURL ? (
                 // アイコンアバター
                 <Avatar
                   aria-owns={anchorEl ? 'simple-menu' : null}
                   aria-haspopup="true"
-                  className={classes.avatar}
+                  className={dcn.avatar}
                   src={user.data.photoURL}
                   storagePath={user.data.profileImagePath}
                   onClick={this.handleClick}
@@ -255,7 +235,7 @@ class Header extends React.Component<Props, State> {
                 <Avatar
                   aria-owns={anchorEl ? 'simple-menu' : null}
                   aria-haspopup="true"
-                  className={classes.avatar}
+                  className={cn.avatar}
                   onClick={this.handleClick}
                 >
                   {user.data.displayName.substr(0, 1)}
@@ -263,7 +243,7 @@ class Header extends React.Component<Props, State> {
               )
             ) : (
               <Button
-                raised
+                variant="contained"
                 color="primary"
                 aria-owns={anchorEl ? 'simple-menu' : null}
                 aria-haspopup="true"
@@ -283,17 +263,15 @@ class Header extends React.Component<Props, State> {
             >
               {user.data ? (
                 <MenuItem onClick={this.goTo(`/users/${user.data.uid}`)}>
-                  <Typography type="button">マイページ</Typography>
+                  マイページ
                 </MenuItem>
               ) : null}
               {isSignedIn ? (
-                <MenuItem onClick={this.signOut}>
-                  <Typography type="button">ログアウト</Typography>
-                </MenuItem>
+                <MenuItem onClick={this.signOut}>ログアウト</MenuItem>
               ) : (
                 <MenuItem onClick={this.signInWithGoogle}>
-                  <img src={googleIcon} alt="Google" className={classes.icon} />
-                  <Typography type="button">Google でログイン</Typography>
+                  <img src={googleIcon} alt="Google" className={cn.icon} />
+                  Google でログイン
                 </MenuItem>
               )}
             </Popover>

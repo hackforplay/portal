@@ -3,7 +3,7 @@ import React from "react";
 import type { ElementProps } from "react";
 import SvgIcon from "material-ui/SvgIcon";
 
-const Google = (props: ElementProps<typeof SvgIcon>) => (
+const SvgGoogle = (props: ElementProps<typeof SvgIcon>) => (
   <SvgIcon {...props}>
     <g fill="none" fillRule="evenodd">
       <path
@@ -27,4 +27,4 @@ const Google = (props: ElementProps<typeof SvgIcon>) => (
   </SvgIcon>
 );
 
-export default Google;
+export default SvgGoogle;

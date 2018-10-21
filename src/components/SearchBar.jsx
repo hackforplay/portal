@@ -3,62 +3,59 @@ import * as React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
 import pathToRegexp from 'path-to-regexp';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
-import { CircularProgress } from 'material-ui/Progress';
-import SearchIcon from 'material-ui-icons/Search';
-import ArrowBack from 'material-ui-icons/ArrowBack';
-import { grey } from 'material-ui/colors';
-import { fade } from 'material-ui/styles/colorManipulator';
-import { css } from 'emotion';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import SearchIcon from '@material-ui/icons/Search';
+import ArrowBack from '@material-ui/icons/ArrowBack';
+import { grey } from '@material-ui/core/colors';
+import { fade } from '@material-ui/core/styles/colorManipulator';
+import { style } from 'typestyle';
 
 import { searchBarInfo } from '../settings/siteMap';
-import theme from '../settings/theme';
+import { withTheme } from '@material-ui/core/styles';
 import type { StateProps } from '../containers/SearchBar';
 
-const classes = {
-  toolbar: css({
+const cn = {
+  toolbar: style({
     minHeight: 48, // 上下のマージンをなくす
     backgroundColor: grey[50]
   }),
-  blank: css({
+  blank: style({
     flex: 1
   }),
-  icon: css({
+  icon: style({
     width: 18,
     marginRight: 12
-  }),
-  textField: css({
-    flexGrow: 1,
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    backgroundColor: grey[300],
-    '&:hover': {
-      backgroundColor: grey[500]
-    }
-  }),
-  wrapper: css({
-    fontFamily: theme.typography.fontFamily,
+  })
+};
+const getCn = props => ({
+  wrapper: style({
+    fontFamily: props.theme.typography.fontFamily,
     position: 'relative',
-    marginRight: theme.spacing.unit * 2,
-    marginLeft: theme.spacing.unit,
+    marginRight: props.theme.spacing.unit * 2,
+    marginLeft: props.theme.spacing.unit,
     borderRadius: 2,
-    background: fade(theme.palette.common.black, 0.15),
-    '&:hover': {
-      background: fade(theme.palette.common.black, 0.25)
-    },
-    '& $input': {
-      transition: theme.transitions.create('width'),
-      width: 200,
-      '&:focus': {
-        width: 250
+    background: fade(props.theme.palette.common.black, 0.15),
+    $nest: {
+      '&:hover': {
+        background: fade(props.theme.palette.common.black, 0.25)
+      },
+      '& input': {
+        transition: props.theme.transitions.create('width'),
+        width: 200,
+        $nest: {
+          '&:focus': {
+            width: 250
+          }
+        }
       }
     }
   }),
-  search: css({
-    width: theme.spacing.unit * 9,
+  search: style({
+    width: props.theme.spacing.unit * 9,
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -66,11 +63,11 @@ const classes = {
     alignItems: 'center',
     justifyContent: 'center'
   }),
-  input: css({
+  input: style({
     font: 'inherit',
-    padding: `${theme.spacing.unit}px ${theme.spacing.unit}px ${
-      theme.spacing.unit
-    }px ${theme.spacing.unit * 9}px`,
+    padding: `${props.theme.spacing.unit}px ${props.theme.spacing.unit}px ${
+      props.theme.spacing.unit
+    }px ${props.theme.spacing.unit * 9}px`,
     border: 0,
     display: 'block',
     verticalAlign: 'middle',
@@ -83,11 +80,12 @@ const classes = {
       outline: 0
     }
   })
-};
+});
 
 export type OwnProps = {};
 type Props = OwnProps & StateProps & { ...ContextRouter };
 
+@withTheme()
 @withRouter
 class SearchBar extends React.Component<Props> {
   // "入力 => ディレイ => 検索" のためのタイマー
@@ -136,6 +134,8 @@ class SearchBar extends React.Component<Props> {
   };
 
   render() {
+    const dcn = getCn(this.props);
+
     const { match, location, result } = this.props;
 
     // 現在表示している URL にふさわしいタブの状態を取得する
@@ -151,16 +151,16 @@ class SearchBar extends React.Component<Props> {
 
     return (
       <AppBar position="static" color="default" elevation={0}>
-        <Toolbar className={classes.toolbar}>
+        <Toolbar className={cn.toolbar}>
           {info.backTo ? (
             <IconButton aria-label="Back" component={Link} to={info.backTo}>
               <ArrowBack />
             </IconButton>
           ) : null}
-          {info.text && <Typography type="headline">{info.text}</Typography>}
-          <div className={classes.blank} />
-          <div className={classes.wrapper}>
-            <div className={classes.search}>
+          {info.text && <Typography variant="h5">{info.text}</Typography>}
+          <div className={cn.blank} />
+          <div className={dcn.wrapper}>
+            <div className={dcn.search}>
               {result.isProcessing ? (
                 <CircularProgress color="inherit" size={24} />
               ) : (
@@ -169,7 +169,7 @@ class SearchBar extends React.Component<Props> {
             </div>
             <input
               id="docsearch-input"
-              className={classes.input}
+              className={dcn.input}
               type="text"
               defaultValue={match.params.query}
               onChange={this.handleChangeSearch}
