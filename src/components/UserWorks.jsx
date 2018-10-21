@@ -4,8 +4,8 @@ import type { ContextRouter } from 'react-router-dom';
 // import Paper from '@material-ui/core/Paper';
 import { style } from 'typestyle';
 
-import MapList from '../containers/MapList';
 import WorkList from '../containers/WorkList';
+import MapList from '../containers/MapList';
 import { withTheme } from '@material-ui/core/styles';
 import type { StateProps, DispatchProps } from '../containers/UserWorks';
 

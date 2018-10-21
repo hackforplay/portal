@@ -1,48 +1,42 @@
 // @flow
 import * as React from 'react';
-import classNames from 'classnames';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import type { ContextRouter } from 'react-router-dom';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import Card from 'material-ui/Card/Card';
-import { CardContent } from 'material-ui/Card';
-import Grid from 'material-ui/Grid';
-import Collapse from 'material-ui/transitions/Collapse';
-import { grey } from 'material-ui/colors';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Grid from '@material-ui/core/Grid';
+import Collapse from '@material-ui/core/Collapse';
+import { grey } from '@material-ui/core/colors';
 import { style, classes } from 'typestyle';
 
 import { type StateProps, type DispatchProps } from '../containers/MapList';
 import CardMedia from '../containers/CardMedia';
-import theme from '../settings/theme';
 import noImage from '../resources/no-image.png';
 import { type MapDocument } from '../ducks/maps';
 
 export const cn = {
-  root: style({
-    padding: theme.spacing.unit * 6
-  }),
   card: style({
     cursor: 'pointer',
     textAlign: 'left'
   }),
   thumbnail: style({
     width: 240,
-    '&>img': {
-      minHeight: 160,
-      maxHeight: 160,
-      objectFit: 'cover',
-      // https://github.com/bfred-it/object-fit-images/
-      fontFamily: "'object-fit: contain;'"
+    $nest: {
+      '&>img': {
+        minHeight: 160,
+        maxHeight: 160,
+        objectFit: 'cover',
+        // https://github.com/bfred-it/object-fit-images/
+        fontFamily: "'object-fit: contain;'"
+      }
     }
   }),
   card_private: style({
     filter: `brightness(90%)`
-  }),
-  headline: style({
-    marginBottom: theme.spacing.unit * 4
   }),
   title: style({
     maxHeight: 48,
@@ -58,8 +52,10 @@ export const cn = {
   }),
   authorName: style({
     color: grey[500],
-    '&:hover': {
-      color: grey[900]
+    $nest: {
+      '&:hover': {
+        color: grey[900]
+      }
     }
   }),
   noAuthorName: style({
@@ -70,26 +66,28 @@ export const cn = {
     width: '100%',
     position: 'relative',
     textAlign: 'center',
-    '&:before': {
-      display: 'block',
-      whiteSpace: 'pre',
-      content: '""',
-      position: 'relative',
-      marginTop: -16,
-      width: '100%',
-      height: 16,
-      background: 'linear-gradient(to bottom, transparent, white)'
+    $nest: {
+      '&::before': {
+        display: 'block',
+        whiteSpace: 'pre',
+        content: '""',
+        position: 'relative',
+        marginTop: -16,
+        width: '100%',
+        height: 16,
+        background: 'linear-gradient(to bottom, transparent, white)'
+      }
     }
-  }),
-  button: style({
-    fontSize: 'large',
-    marginTop: theme.spacing.unit * 2,
-    paddingTop: theme.spacing.unit * 2,
-    paddingRight: theme.spacing.unit * 4,
-    paddingBottom: theme.spacing.unit * 2,
-    paddingLeft: theme.spacing.unit * 4
   })
 };
+const getCn = props => ({
+  root: style({
+    padding: props.theme.spacing.unit * 6
+  }),
+  headline: style({
+    marginBottom: props.theme.spacing.unit * 4
+  })
+});
 
 export type OwnProps = {
   maps: $npm$firebase$firestore$DocumentSnapshot[],
@@ -109,12 +107,13 @@ export type Props = OwnProps &
 @withRouter
 export default class WorkList extends React.Component<Props, State> {
   render() {
+    const dcn = getCn(this.props);
     const { maps, title, more, showVisibility } = this.props;
 
     return (
-      <Paper className={classNames(classes.root, this.props.className)}>
+      <Paper className={classes(dcn.root, this.props.className)}>
         {typeof title === 'string' ? (
-          <Typography type="headline" className={classes.headline}>
+          <Typography type="headline" className={dcn.headline}>
             {title}
           </Typography>
         ) : (
@@ -157,9 +156,9 @@ class MapListItem extends React.Component<MapListItemProps> {
         <Card
           elevation={0}
           className={classes(
-            classes.card,
-            classes.thumbnail
-            // item.visibility === 'private' && classes.card_private
+            cn.card,
+            cn.thumbnail
+            // item.visibility === 'private' && cn.card_private
           )}
         >
           <CardMedia
