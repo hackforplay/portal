@@ -1,6 +1,5 @@
 // @flow
 import * as React from 'react';
-import classNames from 'classnames';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
@@ -12,84 +11,83 @@ import { CardContent } from 'material-ui/Card';
 import Grid from 'material-ui/Grid';
 import Collapse from 'material-ui/transitions/Collapse';
 import { grey } from 'material-ui/colors';
-import { css, cx } from 'emotion';
+import { style, classes } from 'typestyle';
 
 import { type StateProps, type DispatchProps } from '../containers/MapList';
 import CardMedia from '../containers/CardMedia';
-import theme from '../settings/theme';
 import noImage from '../resources/no-image.png';
 import { type MapDocument } from '../ducks/maps';
 
-export const classes = {
-  root: css({
-    padding: theme.spacing.unit * 6
-  }),
-  card: css({
+export const cn = {
+  card: style({
     cursor: 'pointer',
     textAlign: 'left'
   }),
-  thumbnail: css({
+  thumbnail: style({
     width: 240,
-    '&>img': {
-      minHeight: 160,
-      maxHeight: 160,
-      objectFit: 'cover',
-      // https://github.com/bfred-it/object-fit-images/
-      fontFamily: "'object-fit: contain;'"
+    $nest: {
+      '&>img': {
+        minHeight: 160,
+        maxHeight: 160,
+        objectFit: 'cover',
+        // https://github.com/bfred-it/object-fit-images/
+        fontFamily: "'object-fit: contain;'"
+      }
     }
   }),
-  card_private: css({
+  card_private: style({
     filter: `brightness(90%)`
   }),
-  headline: css({
-    marginBottom: theme.spacing.unit * 4
-  }),
-  title: css({
+  title: style({
     maxHeight: 48,
     overflow: 'hidden'
   }),
-  noTitle: css({
+  noTitle: style({
     fontStyle: 'italic'
   }),
-  subheader: css({
+  subheader: style({
     maxWidth: 176,
     overflow: 'hidden',
     textOverflow: 'ellipsis'
   }),
-  authorName: css({
+  authorName: style({
     color: grey[500],
-    '&:hover': {
-      color: grey[900]
+    $nest: {
+      '&:hover': {
+        color: grey[900]
+      }
     }
   }),
-  noAuthorName: css({
+  noAuthorName: style({
     color: grey[500],
     fontStyle: 'italic'
   }),
-  more: css({
+  more: style({
     width: '100%',
     position: 'relative',
     textAlign: 'center',
-    '&:before': {
-      display: 'block',
-      whiteSpace: 'pre',
-      content: '""',
-      position: 'relative',
-      marginTop: -16,
-      width: '100%',
-      height: 16,
-      background: 'linear-gradient(to bottom, transparent, white)'
+    $nest: {
+      '&::before': {
+        display: 'block',
+        whiteSpace: 'pre',
+        content: '""',
+        position: 'relative',
+        marginTop: -16,
+        width: '100%',
+        height: 16,
+        background: 'linear-gradient(to bottom, transparent, white)'
+      }
     }
-  }),
-  button: css({
-    fontSize: 'large',
-    marginTop: theme.spacing.unit * 2,
-    paddingTop: theme.spacing.unit * 2,
-    paddingRight: theme.spacing.unit * 4,
-    paddingBottom: theme.spacing.unit * 2,
-    paddingLeft: theme.spacing.unit * 4
   })
 };
+const getCn = props => ({
+  root: style({
+    padding: props.theme.spacing.unit * 6
+  }),
+  headline: style({
+    marginBottom: props.theme.spacing.unit * 4
+  })
+});
 
 export type OwnProps = {
   maps: $npm$firebase$firestore$DocumentSnapshot[],
@@ -109,12 +107,13 @@ export type Props = OwnProps &
 @withRouter
 export default class WorkList extends React.Component<Props, State> {
   render() {
+    const dcn = getCn(this.props);
     const { maps, title, more, showVisibility } = this.props;
 
     return (
-      <Paper className={classNames(classes.root, this.props.className)}>
+      <Paper className={classes(dcn.root, this.props.className)}>
         {typeof title === 'string' ? (
-          <Typography type="headline" className={classes.headline}>
+          <Typography type="headline" className={dcn.headline}>
             {title}
           </Typography>
         ) : (
@@ -156,10 +155,10 @@ class MapListItem extends React.Component<MapListItemProps> {
       <Link to={`/maps/${this.props.documentSnapshot.id}`}>
         <Card
           elevation={0}
-          className={cx(
-            classes.card,
-            classes.thumbnail
-            // item.visibility === 'private' && classes.card_private
+          className={classes(
+            cn.card,
+            cn.thumbnail
+            // item.visibility === 'private' && cn.card_private
           )}
         >
           <CardMedia
