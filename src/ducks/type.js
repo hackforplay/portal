@@ -12,6 +12,7 @@ import type {
   Action as PCRankingAction
 } from './pcRanking';
 import type { State as StorageState, Action as StorageAction } from './storage';
+import type { State as MapsState, Action as MapsAction } from './maps';
 import type { State as ThemeState, Action as ThemeAction } from './storage';
 
 export type StoreState = {|
@@ -22,6 +23,7 @@ export type StoreState = {|
   +user: UserState,
   +pcRanking: PCRankingState,
   +storage: StorageState,
+  +maps: MapsState,
   +theme: ThemeState
 |};
 export type GetStore = () => StoreState;
@@ -36,6 +38,7 @@ export type Action =
   | OfficialWorkAction
   | MakeAction
   | StorageAction
+  | MapsAction
   | AuthAction
   | UserAction
   | PCRankingAction

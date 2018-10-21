@@ -5,6 +5,7 @@ import type { ContextRouter } from 'react-router-dom';
 import { style } from 'typestyle';
 
 import WorkList from '../containers/WorkList';
+import MapList from '../containers/MapList';
 import { withTheme } from '@material-ui/core/styles';
 import type { StateProps, DispatchProps } from '../containers/UserWorks';
 
@@ -18,7 +19,7 @@ export type Props = StateProps & DispatchProps & { ...ContextRouter };
 
 export default withTheme()((props: Props) => {
   const dcn = getCn(props);
-  const { match, works } = props;
+  const { match, works, maps } = props;
   // 現在の URL に対して適切なデータを表示
   const id = match.params.id || '';
   const tab = match.params.tab || '';
@@ -30,6 +31,14 @@ export default withTheme()((props: Props) => {
           title="ステージ"
           more
           moreLink={`/users/${id}`}
+          showVisibility
+        />
+      ) : tab === 'maps' ? (
+        <MapList
+          maps={maps}
+          title="マップ"
+          more
+          moreLink={`/users/${id}/maps`}
           showVisibility
         />
       ) : /* tab === 'likes' ? (

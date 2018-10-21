@@ -152,6 +152,23 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         ]
       },
       {
+        type: 'stage',
+        title: 'RPGキットのマップを作ろう！',
+        author: null,
+        description: 'マップをデザインしてステージで使うことができます',
+        image: 'https://i.gyazo.com/bace7786ec37a46b8ccb673563f2fda9.png',
+        url: '/map-editor',
+        buttons: [
+          {
+            raised: true,
+            color: 'primary',
+            children: 'マップをつくる',
+            component: Link,
+            to: '/map-editor'
+          }
+        ]
+      },
+      {
         type: 'youtube',
         title: 'オリジナルゲームをつくろう！',
         author: null,

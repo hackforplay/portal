@@ -9,6 +9,7 @@ import * as make from './make';
 import * as user from './user';
 import * as pcRanking from './pcRanking';
 import * as storage from './storage';
+import * as maps from './maps';
 import * as theme from './theme';
 
 export default combineReducers({
@@ -19,6 +20,7 @@ export default combineReducers({
   user: user.default,
   pcRanking: pcRanking.default,
   storage: storage.default,
+  maps: maps.default,
   theme: theme.default
 });
 
