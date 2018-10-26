@@ -93,7 +93,7 @@
     "babel-loader": "^8.0.4",
     "empty": "^0.10.1",
     "firebase-admin": "^5.12.1",
-    "firebase-tools": "^3.18.4",
+    "firebase-tools": "^4.1.2",
     "firestore-seed": "0.0.5",
     "flow-bin": "^0.78.0",
     "flow-typed": "^2.5.1",
