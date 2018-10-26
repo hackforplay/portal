@@ -7,8 +7,8 @@ cache:
   directories:
   - node_modules
 script:
-- if [ "$TRAVIS_BRANCH" == "earlybird" ]; travis_wait node scripts/earlybird.js; fi
-- if [ "$TRAVIS_BRANCH" == "master" ]; travis_wait node scripts/build.js; fi
+- if [ "$TRAVIS_BRANCH" == "earlybird" ]; then travis_wait node scripts/earlybird.js; fi
+- if [ "$TRAVIS_BRANCH" == "master" ]; then travis_wait node scripts/build.js; fi
 - npm run test
 - npm --prefix functions install
 - npm --prefix functions install --only=dev
