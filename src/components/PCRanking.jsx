@@ -2,13 +2,11 @@
 import * as React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import Table from '@material-ui/core/Table/Table';
-import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow
-} from '@material-ui/core/Table';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -139,8 +137,8 @@ export default withTheme()((props: Props) => {
           まだ記録がないか、無効なステージです :-(
         </Typography>
       ) : (
-        <CircularProgress className={dcn.progress} />
-      )}
+            <CircularProgress className={dcn.progress} />
+          )}
       <Button
         variant="contained"
         color="primary"
