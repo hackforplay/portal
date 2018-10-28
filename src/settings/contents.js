@@ -148,6 +148,12 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
             children: 'ステージをつくる',
             component: Link,
             to: '/officials/make-rpg'
+          },
+          {
+            children: 'やり方をしらべる',
+            href:
+              'https://www.notion.so/teramotodaiki/190dd152ace548c7a6d6ca11ac478920',
+            target: '_blank'
           }
         ]
       },
