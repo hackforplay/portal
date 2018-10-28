@@ -160,7 +160,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         url: '/map-editor',
         buttons: [
           {
-            raised: true,
+            variant: 'contained',
             color: 'primary',
             children: 'マップをつくる',
             component: Link,
