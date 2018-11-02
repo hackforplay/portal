@@ -19,31 +19,20 @@ export const data: Array<WorkData> = [
     image: 'https://i.gyazo.com/8163e3222e744220eee77e0328de4282.png'
   },
   {
-    id: '3087',
-    search: 'ks9iEXXkQE7rvJ',
-    created_at: '2018-03-28 09:43:40',
-    title: '\u52c7\u8005\u306e\u5927\u5192\u967a\u3000\u7b2c\uff11\u7ae0',
-    image:
-      'https://firebasestorage.googleapis.com/v0/b/hackforplay-production.appspot.com/o/specials%2Ftmp%2F0ce75136-3dbf-4f60-984b-74c79d15a1f5.jpeg?alt=media&token=996b7b90-dcb8-4c6b-8a67-c6b31717be8f',
-    url: 'http://www.feeles.com/p/ks9iEXXkQE7rvJ',
-    description:
-      '\u30b9\u30c8\u30fc\u30ea\u30fc\u304c\u9577\u3044\u306e\u3067\u3054\u6ce8\u610f\u3092\u3002',
-    author: '\u30df\u30c3\u30c1\u30fc',
-    homepage: null,
-    original: 'https://kits.feeles.com/make-rpg.html',
-    favs: 1,
-    kit_identifier: 'com.feeles.make-rpg',
-    views: 4,
-    asset_url:
-      'https://assets.feeles.com/json/bimqmcyEZxQ6qtiV9gWNvHdwn417geYc4xwhIC6G.json',
-
-    createdAt: '2018-02-04 03:52:06',
+    id: 'cdFb8NMPvYjLekN1jCKd',
+    search: 'cdFb8NMPvYjLekN1jCKd',
+    created_at: '2018/11/02 18:34:00',
+    title: '勇者の大冒険　SPECIAL',
+    createdAt: '2018/11/02 18:34:00',
     clearRate: 0,
+    description: '',
+    author: 'ミッチー',
     favsNum: 0,
-    path: '',
-    updatedAt: '2018-02-04 03:52:06',
+    path: '/works/cdFb8NMPvYjLekN1jCKd',
+    updatedAt: '2018/11/02 18:34:00',
     viewsNum: 0,
-    visibility: 'public'
+    visibility: 'public',
+    image: 'https://i.gyazo.com/ff24d19a7dbf92ab162ad9805fe9bedc.png'
   },
   {
     id: 'sPbbbvJ7NqV7dYhVPXfAPLYZRDI2',
