@@ -67,8 +67,8 @@ export const initializeAuth: initializeAuthType = () => async (
   dispatch,
   getStore
 ) => {
-  // 現在のセッションまたはタブでのみ状態が維持され、ユーザーが認証を受けたタブやウィンドウを閉じるとクリアされる
-  await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+  // ブラウザ ウィンドウを閉じたり React Native でアクティビティが破棄されたりした場合でも、状態が維持されることを示します。この状態をクリアするには、明示的なログアウトが必要です
+  await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
   // firebase.auth().signInWithRedirect(provider); されて戻ってきた
   firebase.auth().getRedirectResult();
@@ -133,7 +133,9 @@ function connectExternalService(user: AuthUser) {
 }
 
 export function isAuthUser(state: $Call<GetStore>, uid: string) {
-  const { auth: { user } } = state;
+  const {
+    auth: { user }
+  } = state;
   return user && user.uid === uid;
 }
 
