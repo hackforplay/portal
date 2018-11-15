@@ -199,16 +199,6 @@ class Header extends React.Component<Props, State> {
                 </ContrastButton>
               </Tooltip>
             )}
-            <Tooltip title="みんなのステージ" classes={{ tooltip: cn.tooltip }}>
-              <ContrastButton
-                component={Link}
-                to="/lists"
-                className={cn.separator}
-              >
-                <People />
-                <span className={cn.buttonLabel}>みんなのステージ</span>
-              </ContrastButton>
-            </Tooltip>
             <Tooltip title="ステージをつくる" classes={{ tooltip: cn.tooltip }}>
               <ContrastButton
                 component={Link}
@@ -217,6 +207,16 @@ class Header extends React.Component<Props, State> {
               >
                 <VideogameAsset />
                 <span className={cn.buttonLabel}>ステージをつくる</span>
+              </ContrastButton>
+            </Tooltip>
+            <Tooltip title="みんなのステージ" classes={{ tooltip: cn.tooltip }}>
+              <ContrastButton
+                component={Link}
+                to="/lists"
+                className={cn.separator}
+              >
+                <People />
+                <span className={cn.buttonLabel}>みんなのステージ</span>
               </ContrastButton>
             </Tooltip>
             {user.data ? <div className={cn.separator} /> : null}
