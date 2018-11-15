@@ -33,6 +33,7 @@ const initialState: State = {
 export default (state: State = initialState, action: Action): State => {
   switch (action.type) {
     case INIT:
+    case 'RESET':
       return {
         initialized: true
       };
