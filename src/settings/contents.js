@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import type { Color } from '@material-ui/core/Button/Button';
-import Edit from '@material-ui/icons/Edit';
+import VideogameAsset from '@material-ui/icons/VideogameAsset';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import PlayArrow from '@material-ui/icons/PlayArrow';
 
@@ -153,7 +153,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
             variant: 'contained',
             color: 'primary',
             className: xlasses.largeButton,
-            children: [<Edit key="icon" />, 'ステージをつくる'],
+            children: [<VideogameAsset key="icon" />, 'ステージをつくる'],
             component: Link,
             to: '/officials/make-rpg'
           },
