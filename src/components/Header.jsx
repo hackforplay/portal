@@ -15,6 +15,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { style, media } from 'typestyle';
 import VideogameAsset from '@material-ui/icons/VideogameAsset';
 import People from '@material-ui/icons/People';
+import Person from '@material-ui/icons/Person';
 
 import Avatar from '../containers/Avatar';
 import { withTheme } from '@material-ui/core/styles';
@@ -250,6 +251,7 @@ class Header extends React.Component<Props, State> {
                 onClick={this.handleClick}
                 disabled={user.isProcessing}
               >
+                <Person />
                 ログイン
               </Button>
             )}
