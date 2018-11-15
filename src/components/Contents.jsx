@@ -13,7 +13,6 @@ import { withTheme } from '@material-ui/core/styles';
 
 import contents from '../settings/contents';
 import type { ContentType } from '../settings/contents';
-import * as xlasses from '../utils/xlasses';
 
 const cn = {
   alignMiddle: style({
@@ -143,7 +142,6 @@ function StageContent(props: ContentType & { ...ContextRouter }) {
             <Button
               {...item}
               key={i}
-              className={xlasses.largeButton}
               onClick={event => event.stopPropagation()}
             >
               {item.children}
