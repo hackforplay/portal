@@ -159,6 +159,23 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'stage',
+        title: 'RPGキット2 (β)',
+        author: null,
+        description: 'ベータ版です',
+        image: 'https://assets.feeles.com/www/kit/screenshot-makerpg.png',
+        url: '/officials/make-rpg-2',
+        buttons: [
+          {
+            variant: 'contained',
+            color: 'primary',
+            children: 'ためしてみる (β)',
+            component: Link,
+            to: '/officials/make-rpg-2'
+          }
+        ]
+      },
+      {
+        type: 'stage',
         title: 'RPGキットのマップを作ろう！',
         author: null,
         description: 'マップをデザインしてステージで使うことができます',
