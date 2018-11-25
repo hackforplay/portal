@@ -312,6 +312,8 @@ export default class Work extends React.Component<Props, State> {
                   ? `保存されました`
                   : make.work.isProcessing
                   ? `アップロード中です...`
+                  : make.work.isEmpty
+                  ? `保存されていません`
                   : ''}
               </Typography>
               <Button
