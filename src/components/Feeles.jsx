@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import { style, classes, media } from 'typestyle';
+import debounce from 'debounce';
 
 import type { StateProps, DispatchProps } from '../containers/Feeles';
 
@@ -97,7 +98,7 @@ export default class Feeles extends React.Component<Props, State> {
     // TODO: Feeles の機能をなくして portal の機能に一元化する
     // Feeles の機能と portal の機能が両立している場合があるので,
     // replay === false でも onChange は捉える
-    props.onChange = this.props.changeWork;
+    props.onChange = debounce(this.props.changeWork, 1000); // オートセーブが連続で呼ばれないように debounce する
     props.onMessage = this.props.onMessage;
     props.onThumbnailChange = this.props.thumbnail;
     if (replay) {
