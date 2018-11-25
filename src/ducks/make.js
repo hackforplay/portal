@@ -120,7 +120,7 @@ export default reducerWithInitialState(initialState)
   .case(actions.thumbnail, (state, dataUrl) => {
     const next: State = {
       ...state,
-      thumbnails: [...state.thumbnails.slice(0, 11), dataUrl]
+      thumbnails: [...state.thumbnails.slice(0, 5), dataUrl]
     };
     return next;
   })
