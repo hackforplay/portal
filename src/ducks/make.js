@@ -581,7 +581,9 @@ export type removeWorkType = () => (
 ) => Promise<void>;
 
 export const removeWork: removeWorkType = () => async (dispatch, getStore) => {
-  const { work: { data } } = getState(getStore());
+  const {
+    work: { data }
+  } = getState(getStore());
   if (!canRemove(getStore()) || !data) {
     return;
   }
@@ -611,7 +613,10 @@ export function canSave(state: $Call<GetStore>) {
 }
 
 export function canPublish(state: $Call<GetStore>) {
-  const { make: { saved, work }, auth: { user } } = state;
+  const {
+    make: { saved, work },
+    auth: { user }
+  } = state;
   const workData = work.data;
   if (!workData || !saved || !user || user.uid !== workData.uid) {
     // 保存されていないか、ログインしていない
@@ -623,7 +628,10 @@ export function canPublish(state: $Call<GetStore>) {
 }
 
 export function canRemove(state: $Call<GetStore>) {
-  const { make: { work }, auth: { user } } = state;
+  const {
+    make: { work },
+    auth: { user }
+  } = state;
   const workData = work.data;
   if (!workData || !user || user.uid !== workData.uid) {
     // 保存されていないか、ログインしていない
