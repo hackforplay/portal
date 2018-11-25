@@ -238,6 +238,7 @@ export const changeWork: changeWorkType = payload => async (
   getStore
 ) => {
   const { work } = getState(getStore());
+  const { user } = authImport.getState(getStore());
   if (work.isProcessing || work.isInvalid) {
     // Sync 中またはエラーがある状態ならスルー
     return;
@@ -256,6 +257,11 @@ export const changeWork: changeWorkType = payload => async (
   } else {
     // データだけ上書きする
     dispatch(actions.change(project));
+  }
+  // もし, 他人の作品でなく, ログインもしているなら, そのままセーブする
+  const workData = work.data;
+  if (user && (!workData || user.uid === workData.uid)) {
+    dispatch(saveWork()); // eslint-disable-line no-use-before-define
   }
 };
 
