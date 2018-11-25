@@ -196,8 +196,8 @@ export default class Work extends React.Component<Props, State> {
           ? make.work.data.path
           : null
         : work.data
-          ? work.data.path
-          : null;
+        ? work.data.path
+        : null;
       if (path) {
         // もし現在プレイ中の work の path が存在するなら labels に新たなラベルを追加
         // e.g. { 'gameclear': 'gameclear' }
@@ -325,7 +325,7 @@ export default class Work extends React.Component<Props, State> {
               ) : null}
               {make.work.isProcessing || make.saved ? (
                 <Typography variant="caption" className={dcn.caption}>
-                  {make.saved ? `保存されています` : `ちょっとまってね...`}
+                  {make.saved ? `保存されました` : `アップロード中です...`}
                 </Typography>
               ) : (
                 <Button disabled={!canSave} onClick={this.handleSave}>
