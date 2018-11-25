@@ -120,7 +120,7 @@ export default reducerWithInitialState(initialState)
   .case(actions.thumbnail, (state, dataUrl) => {
     const next: State = {
       ...state,
-      thumbnails: [...state.thumbnails.slice(0, 5), dataUrl]
+      thumbnails: [dataUrl].concat(state.thumbnails.slice(0, 5))
     };
     return next;
   })
@@ -320,8 +320,7 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
     return;
   }
 
-  // TODO: サムネイルを選択する GUI を実装する
-  // （仮実装）もしサムネイルが設定されていなければ, thumbnails の先頭をアップロードして設定する
+  // もしサムネイルが設定されていなければ, 最後のサムネイルをアップロードして設定する
   if (!metadata.thumbnailStoragePath) {
     const [dataURL] = thumbnails;
     if (dataURL) {
