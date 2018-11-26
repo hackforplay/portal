@@ -217,14 +217,10 @@ export default reducerWithInitialState(initialState)
     };
     return next;
   })
-  .case(actions.upload.done, (state, { result }) => {
+  .case(actions.upload.done, state => {
     const next: State = {
       ...state,
-      uploading: false,
-      metadata: {
-        ...state.metadata,
-        ...result
-      }
+      uploading: false
     };
     return next;
   })
@@ -315,7 +311,8 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
     // Upload to storage
     await dispatch(uploadBlob(thumbnailStoragePath, blob));
     // Set to redux store
-    dispatch(actions.upload.done({ result: { thumbnailStoragePath } }));
+    dispatch(actions.upload.done());
+    dispatch(actions.metadata({ thumbnailStoragePath }));
   } catch (error) {
     dispatch(actions.upload.failed({ error }));
     console.error(error);
