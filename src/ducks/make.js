@@ -56,7 +56,7 @@ export type Action = {};
 
 export type State = {
   work: WorkItemType,
-  saved: boolean, // 現時点での files が保存されているか
+  saved: boolean, // 現時点で全体が保存されているかどうか
   uploading: boolean,
   changed: boolean, // 起動時から一度でもファイルが変更されたか
   error: null | Error,
@@ -111,6 +111,7 @@ export default reducerWithInitialState(initialState)
   .case(actions.metadata, (state, metadata) => {
     const next: State = {
       ...state,
+      saved: false,
       metadata: {
         ...state.metadata,
         ...metadata
