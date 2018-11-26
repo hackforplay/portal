@@ -28,10 +28,12 @@ import {
   removeWork
 } from '../ducks/make';
 import type { State as MakeState } from '../ducks/make';
+import * as authImport from '../ducks/auth';
 
 import type { StoreState } from '../ducks';
 
 export type StateProps = {
+  isSignedIn: boolean,
   work: WorkItemType,
   replay: boolean,
   canSave: boolean,
@@ -62,6 +64,7 @@ const mapStateToProps = (
   state: StoreState,
   ownProps: ContextRouter
 ): StateProps => {
+  const isSignedIn = Boolean(authImport.getState(state).user);
   if (isOfficial(ownProps.match)) {
     const { location } = ownProps;
     // 現在表示している URL にふさわしいデータソースを取得する
@@ -72,9 +75,10 @@ const mapStateToProps = (
     const replayable = source ? source.replayable : false;
     const makeWorkData = state.make.work.data;
     return {
+      isSignedIn,
       work,
       make: state.make,
-      replay: replayable && !!state.auth.user,
+      replay: replayable && isSignedIn,
       canSave: canSave(state),
       canPublish: canPublish(state),
       canRemove: canRemove(state),
@@ -94,6 +98,7 @@ const mapStateToProps = (
   const replay = isAuthUsersWork(state, path);
   const isPreparing = replay && helpers.isInitialized(state.make.work);
   return {
+    isSignedIn,
     work: getWorkByPath(state, path),
     make: state.make,
     canSave: canSave(state),
