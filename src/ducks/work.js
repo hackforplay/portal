@@ -5,6 +5,7 @@ import 'firebase/firestore';
 import * as trending from './trending';
 import * as helpers from './helpers';
 import * as auth from './auth';
+import * as makeImport from './make';
 import type { Statefull } from './helpers';
 import type { UserType } from './user';
 import type { Dispatch, GetStore } from './type';
@@ -357,6 +358,22 @@ export default (state: State = initialState, action: Action): State => {
             ...inherit,
             ...action.labels
           }
+        }
+      };
+    case makeImport.actions.push.done.type:
+      // 自分の作品をアップロードし終わったときの Action
+      const { workData } = action.payload.result;
+      const ownList = state.byUserId[workData.uid] || [];
+      const others = ownList.filter(data => data.path !== workData.path);
+      return {
+        ...state,
+        byPath: {
+          ...state.byPath,
+          [workData.path]: helpers.has(workData) // データを追加(更新)
+        },
+        byUserId: {
+          ...state.byUserId,
+          [action.uid]: [workData].concat(others) // 先頭に追加
         }
       };
     default:
