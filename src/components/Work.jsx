@@ -332,10 +332,13 @@ export default class Work extends React.Component<Props, State> {
                 onClose={this.handleClose}
               >
                 <MenuItem
-                  disabled={make.thumbnails.length === 0}
+                  disabled={
+                    make.thumbnails.length === 0 ||
+                    (makeWorkData && makeWorkData.visibility !== 'public')
+                  }
                   onClick={this.handleDialogOpen}
                 >
-                  カバー画像をセットする
+                  カバー画像をかえる
                 </MenuItem>
                 {makeWorkData && makeWorkData.visibility === 'public' ? (
                   <MenuItem onClick={this.handleShareTwitter}>
