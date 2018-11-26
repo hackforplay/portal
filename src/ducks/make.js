@@ -6,6 +6,7 @@ import mime from 'mime-types';
 import uuid from 'uuid/v4';
 import { actionCreatorFactory, type ActionCreator } from 'typescript-fsa';
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
+import debounce from 'debounce';
 
 import * as helpers from './helpers';
 import {
@@ -55,13 +56,15 @@ export type Action = {};
 
 export type State = {
   work: WorkItemType,
-  saved: boolean, // 現時点での files が保存されているか
+  saved: boolean, // 現時点で全体が保存されているかどうか
   uploading: boolean,
   changed: boolean, // 起動時から一度でもファイルが変更されたか
   error: null | Error,
   metadata: Metadata,
   thumbnails: Array<string>,
+  needUpdateThumbnail: boolean, // カバー画像の自動更新が必要かどうか
   files?: Array<{}>,
+  needUploadFiles: boolean, // files のアップロードが必要かどうか
   hashOfFiles: string
 };
 
@@ -73,6 +76,8 @@ const initialState: State = {
   error: null,
   metadata: {},
   thumbnails: [],
+  needUpdateThumbnail: false,
+  needUploadFiles: false,
   hashOfFiles: ''
 };
 
@@ -86,8 +91,10 @@ export default reducerWithInitialState(initialState)
       changed: false,
       error: null,
       files,
+      needUploadFiles: true, // 次のセーブでファイルをアップロードする
       metadata: {},
       thumbnails: [],
+      needUpdateThumbnail: false,
       // JSON 文字列から MD5 ハッシュを計算
       hashOfFiles: hashFiles(files)
     };
@@ -102,6 +109,7 @@ export default reducerWithInitialState(initialState)
       saved: false,
       changed: true,
       files,
+      needUploadFiles: true, // 次のセーブでファイルをアップロードする
       // JSON 文字列から MD5 ハッシュを計算
       hashOfFiles: hashFiles(files)
     };
@@ -110,6 +118,7 @@ export default reducerWithInitialState(initialState)
   .case(actions.metadata, (state, metadata) => {
     const next: State = {
       ...state,
+      saved: false,
       metadata: {
         ...state.metadata,
         ...metadata
@@ -120,7 +129,8 @@ export default reducerWithInitialState(initialState)
   .case(actions.thumbnail, (state, dataUrl) => {
     const next: State = {
       ...state,
-      thumbnails: [...state.thumbnails.slice(0, 11), dataUrl]
+      thumbnails: [dataUrl].concat(state.thumbnails.slice(0, 5)),
+      needUpdateThumbnail: true // 次のセーブでサムネイルを自動更新する
     };
     return next;
   })
@@ -133,6 +143,8 @@ export default reducerWithInitialState(initialState)
       error: null,
       metadata: {},
       thumbnails: [],
+      needUpdateThumbnail: false,
+      needUploadFiles: false,
       hashOfFiles: ''
     };
     return next;
@@ -146,6 +158,8 @@ export default reducerWithInitialState(initialState)
       error,
       metadata: {},
       thumbnails: [],
+      needUpdateThumbnail: false,
+      needUploadFiles: false,
       hashOfFiles: ''
     };
     return next;
@@ -170,7 +184,9 @@ export default reducerWithInitialState(initialState)
         error: null,
         work: helpers.has(workData),
         saved: true,
+        needUpdateThumbnail: false, // サムネイルの更新は完了した
         files,
+        needUploadFiles: false, // ファイルのアップロードは完了した
         // JSON 文字列から MD5 ハッシュを計算
         hashOfFiles: hashFiles(files),
         metadata: {
@@ -208,14 +224,10 @@ export default reducerWithInitialState(initialState)
     };
     return next;
   })
-  .case(actions.upload.done, (state, { result }) => {
+  .case(actions.upload.done, state => {
     const next: State = {
       ...state,
-      uploading: false,
-      metadata: {
-        ...state.metadata,
-        ...result
-      }
+      uploading: false
     };
     return next;
   })
@@ -238,6 +250,7 @@ export const changeWork: changeWorkType = payload => async (
   getStore
 ) => {
   const { work } = getState(getStore());
+  const { user } = authImport.getState(getStore());
   if (work.isProcessing || work.isInvalid) {
     // Sync 中またはエラーがある状態ならスルー
     return;
@@ -256,6 +269,11 @@ export const changeWork: changeWorkType = payload => async (
   } else {
     // データだけ上書きする
     dispatch(actions.change(project));
+  }
+  // もし, 他人の作品でなく, ログインもしているなら, そのままセーブする
+  const workData = work.data;
+  if (user && (!workData || user.uid === workData.uid)) {
+    await dispatch(executeAutoSave());
   }
 };
 
@@ -300,12 +318,56 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
     // Upload to storage
     await dispatch(uploadBlob(thumbnailStoragePath, blob));
     // Set to redux store
-    dispatch(actions.upload.done({ result: { thumbnailStoragePath } }));
+    dispatch(actions.upload.done());
+    dispatch(actions.metadata({ thumbnailStoragePath }));
   } catch (error) {
     dispatch(actions.upload.failed({ error }));
     console.error(error);
   }
 };
+
+const _executeAutoSave = debounce(async (dispatch, getStore) => {
+  const { uid } = authImport.getState(getStore()).user || { uid: '' };
+  const { files, work, metadata, thumbnails, needUpdateThumbnail } = getState(
+    getStore()
+  );
+
+  if (!uid || !files || !canSave(getStore())) {
+    return;
+  }
+
+  const visibility = work.data ? work.data.visibility : 'private'; // デフォルトは非公開
+
+  // 前処理
+  if (needUpdateThumbnail) {
+    // もしステージが「公開中」でないなら, サムネイルを自動更新する
+    if (visibility !== 'public') {
+      const [dataURL] = thumbnails;
+      if (dataURL) {
+        await dispatch(setThumbnailFromDataURL(dataURL));
+        // ----> ストアが更新される（はず）
+      }
+    }
+  }
+  // TODO: author を編集する GUI を実装する
+  // （仮実装）もし author が設定されていなければ, ログインユーザの DisplayName を author とする
+  if (!metadata.author) {
+    const userData = userImport.getUserByUid(getStore(), uid).data;
+    if (userData && userData.displayName) {
+      await dispatch(actions.metadata({ author: userData.displayName }));
+      // ----> ストアが更新される（はず）
+    }
+  }
+
+  await dispatch(saveWork()); // eslint-disable-line no-use-before-define
+}, 5000);
+
+/**
+ * 前処理+保存を行う. 連続で呼び出されても大丈夫なように, debounce されている
+ */
+export function executeAutoSave() {
+  return _executeAutoSave;
+}
 
 export type saveWorkType = () => (
   dispatch: Dispatch,
@@ -314,58 +376,40 @@ export type saveWorkType = () => (
 
 export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
   const { uid } = authImport.getState(getStore()).user || { uid: '' };
-  const { files, work, metadata, thumbnails } = getState(getStore());
+  const { files, needUploadFiles, work, metadata: current } = getState(
+    getStore()
+  );
+  const metadata: Metadata = {
+    // デフォルト値
+    title: '',
+    description: '',
+    // 現在のデータ
+    ...current
+  };
 
   if (!uid || !files || !canSave(getStore())) {
     return;
   }
 
-  // TODO: サムネイルを選択する GUI を実装する
-  // （仮実装）もしサムネイルが設定されていなければ, thumbnails の先頭をアップロードして設定する
-  if (!metadata.thumbnailStoragePath) {
-    const [dataURL] = thumbnails;
-    if (dataURL) {
-      await dispatch(setThumbnailFromDataURL(dataURL));
-      // ----> ストアが更新される（はず）
-      return dispatch(saveWork());
-    }
-  }
-
-  // TODO: author を編集する GUI を実装する
-  // （仮実装）もし author が設定されていなければ, ログインユーザの DisplayName を author とする
-  if (!metadata.author) {
-    const userData = userImport.getUserByUid(getStore(), uid).data;
-    if (userData && userData.displayName) {
-      await dispatch(actions.metadata({ author: userData.displayName }));
-      // ----> ストアが更新される（はず）
-      return dispatch(saveWork());
-    }
-  }
-
   try {
     dispatch(actions.push.started({ params: { workData: work.data } }));
-
-    // visibility を取得
-    const visibility = work.data ? work.data.visibility : 'private';
-    // プロジェクトを JSON に書き出し
-    const json = JSON.stringify(files);
-    const file = new Blob([json], { type: 'application/json' });
-    // Storage にアップロード
-    const assetStoragePath = `json/${visibility}/users/${uid}/${uuid()}.json`;
-    await dispatch(uploadBlob(assetStoragePath, file));
+    if (needUploadFiles) {
+      // visibility を取得
+      const visibility = work.data ? work.data.visibility : 'private';
+      // プロジェクトを JSON に書き出し
+      const json = JSON.stringify(files);
+      const file = new Blob([json], { type: 'application/json' });
+      // Storage にアップロード
+      const assetStoragePath = `json/${visibility}/users/${uid}/${uuid()}.json`;
+      await dispatch(uploadBlob(assetStoragePath, file));
+      metadata.assetStoragePath = assetStoragePath;
+    }
 
     // 取得
     const uploadedRef = await uploadWorkData({
       work,
       uid,
-      metadata: {
-        // デフォルト値
-        title: '',
-        description: '',
-        // ユーザーが設定したメタデータ
-        ...metadata,
-        assetStoragePath
-      }
+      metadata
     });
     const snapshot = (await uploadedRef.get(): $npm$firebase$firestore$DocumentSnapshot);
     const result = {
@@ -380,7 +424,11 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
     );
 
     // 古いアセットを削除
-    if (work.data && work.data.assetStoragePath) {
+    if (
+      work.data &&
+      work.data.assetStoragePath &&
+      work.data.assetStoragePath !== metadata.assetStoragePath
+    ) {
       dispatch(removeFile(work.data.assetStoragePath));
     }
     // 古いサムネイルを削除
@@ -535,6 +583,11 @@ export type editExistingWorkType = (
   work: WorkItemType
 ) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
+/**
+ * ステージを make で扱えるようにする. 他人の作品を一時的に改造する場合にもこれを使う
+ * オフィシャルのキットにこれを使うと, 他人の作品扱いになって保存ができなくなる
+ * @param {*} work
+ */
 export const editExistingWork: editExistingWorkType = work => async (
   dispatch,
   getStore
@@ -542,8 +595,8 @@ export const editExistingWork: editExistingWorkType = work => async (
   const make = getState(getStore());
   const { user } = authImport.getState(getStore());
   const workData = work.data;
-  if (!workData || !user || workData.uid !== user.uid || make.work.data) {
-    // 自分のステージではないか、ログインしていないか、すでに別のものを作り始めている
+  if (!workData || !user || make.work.data) {
+    // ログインしていないか、すでに別のものを作り始めている
     return;
   }
   try {
@@ -581,7 +634,9 @@ export type removeWorkType = () => (
 ) => Promise<void>;
 
 export const removeWork: removeWorkType = () => async (dispatch, getStore) => {
-  const { work: { data } } = getState(getStore());
+  const {
+    work: { data }
+  } = getState(getStore());
   if (!canRemove(getStore()) || !data) {
     return;
   }
@@ -607,11 +662,19 @@ export function canSave(state: $Call<GetStore>) {
     // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていないか、サムネイルをアップロード中
     return false;
   }
+  const workData = work.data;
+  if (workData && workData.uid !== user.uid) {
+    // 他人の作品
+    return false;
+  }
   return work.isEmpty || work.isAvailable;
 }
 
 export function canPublish(state: $Call<GetStore>) {
-  const { make: { saved, work }, auth: { user } } = state;
+  const {
+    make: { saved, work },
+    auth: { user }
+  } = state;
   const workData = work.data;
   if (!workData || !saved || !user || user.uid !== workData.uid) {
     // 保存されていないか、ログインしていない
@@ -623,7 +686,10 @@ export function canPublish(state: $Call<GetStore>) {
 }
 
 export function canRemove(state: $Call<GetStore>) {
-  const { make: { work }, auth: { user } } = state;
+  const {
+    make: { work },
+    auth: { user }
+  } = state;
   const workData = work.data;
   if (!workData || !user || user.uid !== workData.uid) {
     // 保存されていないか、ログインしていない
