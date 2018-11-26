@@ -62,6 +62,7 @@ export type State = {
   error: null | Error,
   metadata: Metadata,
   thumbnails: Array<string>,
+  needUpdateThumbnail: boolean, // カバー画像の自動更新が必要かどうか
   files?: Array<{}>,
   needUploadFiles: boolean, // files のアップロードが必要かどうか
   hashOfFiles: string
@@ -75,6 +76,7 @@ const initialState: State = {
   error: null,
   metadata: {},
   thumbnails: [],
+  needUpdateThumbnail: false,
   needUploadFiles: false,
   hashOfFiles: ''
 };
@@ -92,6 +94,7 @@ export default reducerWithInitialState(initialState)
       needUploadFiles: true, // 次のセーブでファイルをアップロードする
       metadata: {},
       thumbnails: [],
+      needUpdateThumbnail: false,
       // JSON 文字列から MD5 ハッシュを計算
       hashOfFiles: hashFiles(files)
     };
@@ -126,7 +129,8 @@ export default reducerWithInitialState(initialState)
   .case(actions.thumbnail, (state, dataUrl) => {
     const next: State = {
       ...state,
-      thumbnails: [dataUrl].concat(state.thumbnails.slice(0, 5))
+      thumbnails: [dataUrl].concat(state.thumbnails.slice(0, 5)),
+      needUpdateThumbnail: true // 次のセーブでサムネイルを自動更新する
     };
     return next;
   })
@@ -139,6 +143,7 @@ export default reducerWithInitialState(initialState)
       error: null,
       metadata: {},
       thumbnails: [],
+      needUpdateThumbnail: false,
       needUploadFiles: false,
       hashOfFiles: ''
     };
@@ -153,6 +158,7 @@ export default reducerWithInitialState(initialState)
       error,
       metadata: {},
       thumbnails: [],
+      needUpdateThumbnail: false,
       needUploadFiles: false,
       hashOfFiles: ''
     };
@@ -178,6 +184,7 @@ export default reducerWithInitialState(initialState)
         error: null,
         work: helpers.has(workData),
         saved: true,
+        needUpdateThumbnail: false, // サムネイルの更新は完了した
         files,
         needUploadFiles: false, // ファイルのアップロードは完了した
         // JSON 文字列から MD5 ハッシュを計算
@@ -321,7 +328,9 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
 
 const _executeAutoSave = debounce(async (dispatch, getStore) => {
   const { uid } = authImport.getState(getStore()).user || { uid: '' };
-  const { files, work, metadata, thumbnails } = getState(getStore());
+  const { files, work, metadata, thumbnails, needUpdateThumbnail } = getState(
+    getStore()
+  );
 
   if (!uid || !files || !canSave(getStore())) {
     return;
@@ -330,12 +339,14 @@ const _executeAutoSave = debounce(async (dispatch, getStore) => {
   const visibility = work.data ? work.data.visibility : 'private'; // デフォルトは非公開
 
   // 前処理
-  // もしステージが「公開中」でないなら, サムネイルを自動更新する
-  if (visibility !== 'public') {
-    const [dataURL] = thumbnails;
-    if (dataURL) {
-      await dispatch(setThumbnailFromDataURL(dataURL));
-      // ----> ストアが更新される（はず）
+  if (needUpdateThumbnail) {
+    // もしステージが「公開中」でないなら, サムネイルを自動更新する
+    if (visibility !== 'public') {
+      const [dataURL] = thumbnails;
+      if (dataURL) {
+        await dispatch(setThumbnailFromDataURL(dataURL));
+        // ----> ストアが更新される（はず）
+      }
     }
   }
   // TODO: author を編集する GUI を実装する
