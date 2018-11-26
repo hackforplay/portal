@@ -6,6 +6,7 @@ import mime from 'mime-types';
 import uuid from 'uuid/v4';
 import { actionCreatorFactory, type ActionCreator } from 'typescript-fsa';
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
+import debounce from 'debounce';
 
 import * as helpers from './helpers';
 import {
@@ -261,7 +262,7 @@ export const changeWork: changeWorkType = payload => async (
   // もし, 他人の作品でなく, ログインもしているなら, そのままセーブする
   const workData = work.data;
   if (user && (!workData || user.uid === workData.uid)) {
-    await dispatch(saveWork()); // eslint-disable-line no-use-before-define
+    await dispatch(executeAutoSave());
   }
 };
 
@@ -313,12 +314,7 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
   }
 };
 
-export type saveWorkType = () => (
-  dispatch: Dispatch,
-  getStore: GetStore
-) => Promise<void>;
-
-export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
+const _executeAutoSave = debounce(async (dispatch, getStore) => {
   const { uid } = authImport.getState(getStore()).user || { uid: '' };
   const { files, work, metadata, thumbnails } = getState(getStore());
 
@@ -326,16 +322,17 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
     return;
   }
 
-  // もしサムネイルが設定されていなければ, 最後のサムネイルをアップロードして設定する
-  if (!metadata.thumbnailStoragePath) {
+  const visibility = work.data ? work.data.visibility : 'private'; // デフォルトは非公開
+
+  // 前処理
+  // もしステージが「公開中」でないなら, サムネイルを自動更新する
+  if (visibility !== 'public') {
     const [dataURL] = thumbnails;
     if (dataURL) {
       await dispatch(setThumbnailFromDataURL(dataURL));
       // ----> ストアが更新される（はず）
-      return dispatch(saveWork());
     }
   }
-
   // TODO: author を編集する GUI を実装する
   // （仮実装）もし author が設定されていなければ, ログインユーザの DisplayName を author とする
   if (!metadata.author) {
@@ -343,8 +340,30 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
     if (userData && userData.displayName) {
       await dispatch(actions.metadata({ author: userData.displayName }));
       // ----> ストアが更新される（はず）
-      return dispatch(saveWork());
     }
+  }
+
+  await dispatch(saveWork()); // eslint-disable-line no-use-before-define
+}, 5000);
+
+/**
+ * 前処理+保存を行う. 連続で呼び出されても大丈夫なように, debounce されている
+ */
+export function executeAutoSave() {
+  return _executeAutoSave;
+}
+
+export type saveWorkType = () => (
+  dispatch: Dispatch,
+  getStore: GetStore
+) => Promise<void>;
+
+export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
+  const { uid } = authImport.getState(getStore()).user || { uid: '' };
+  const { files, work, metadata } = getState(getStore());
+
+  if (!uid || !files || !canSave(getStore())) {
+    return;
   }
 
   try {
