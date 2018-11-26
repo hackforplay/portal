@@ -261,7 +261,7 @@ export const changeWork: changeWorkType = payload => async (
   // もし, 他人の作品でなく, ログインもしているなら, そのままセーブする
   const workData = work.data;
   if (user && (!workData || user.uid === workData.uid)) {
-    dispatch(saveWork()); // eslint-disable-line no-use-before-define
+    await dispatch(saveWork()); // eslint-disable-line no-use-before-define
   }
 };
 
