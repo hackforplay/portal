@@ -583,6 +583,11 @@ export type editExistingWorkType = (
   work: WorkItemType
 ) => (dispatch: Dispatch, getStore: GetStore) => Promise<void>;
 
+/**
+ * ステージを make で扱えるようにする. 他人の作品を一時的に改造する場合にもこれを使う
+ * オフィシャルのキットにこれを使うと, 他人の作品扱いになって保存ができなくなる
+ * @param {*} work
+ */
 export const editExistingWork: editExistingWorkType = work => async (
   dispatch,
   getStore
@@ -590,8 +595,8 @@ export const editExistingWork: editExistingWorkType = work => async (
   const make = getState(getStore());
   const { user } = authImport.getState(getStore());
   const workData = work.data;
-  if (!workData || !user || workData.uid !== user.uid || make.work.data) {
-    // 自分のステージではないか、ログインしていないか、すでに別のものを作り始めている
+  if (!workData || !user || make.work.data) {
+    // ログインしていないか、すでに別のものを作り始めている
     return;
   }
   try {
@@ -655,6 +660,11 @@ export function canSave(state: $Call<GetStore>) {
   const hasThumbnail = metadata.thumbnailStoragePath || thumbnails.length > 0;
   if (!files || !hashOfFiles || saved || !user || !hasThumbnail || uploading) {
     // 制作中のプロジェクトがないか、すでにセーブ済みか、ログインしていないか、サムネイルをアップロード中
+    return false;
+  }
+  const workData = work.data;
+  if (workData && workData.uid !== user.uid) {
+    // 他人の作品
     return false;
   }
   return work.isEmpty || work.isAvailable;

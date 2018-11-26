@@ -209,6 +209,7 @@ export default class Work extends React.Component<Props, State> {
   render() {
     const dcn = getCn(this.props);
     const {
+      isSignedIn,
       work,
       canPublish,
       canRemove,
@@ -260,119 +261,122 @@ export default class Work extends React.Component<Props, State> {
 
     return (
       <div>
-        {replay ? (
-          <AppBar position="static" color="default" elevation={0}>
-            <Toolbar disableGutters>
-              <IconButton
-                onClick={() => {
-                  this.setState({ openSidebar: !this.state.openSidebar });
+        <AppBar position="static" color="default" elevation={0}>
+          <Toolbar disableGutters>
+            <IconButton
+              onClick={() => {
+                this.setState({ openSidebar: !this.state.openSidebar });
+              }}
+              className={cn.iconButton}
+            >
+              {this.state.openSidebar ? <Close /> : <Menu />}
+            </IconButton>
+            {makeWorkData ? (
+              <Chip
+                label={
+                  {
+                    public: '公開中',
+                    limited: '限定公開',
+                    private: '非公開'
+                  }[makeWorkData.visibility]
+                }
+                className={dcn.chip}
+              />
+            ) : null}
+            {isOfficial ? null : replay ? (
+              <EditableTitleTextField
+                placeholder="タイトルがついていません"
+                className={classes(
+                  dcn.title,
+                  !make.metadata.title && cn.noTitle
+                )}
+                InputProps={{
+                  cn: {
+                    underline: cn.underline
+                  }
                 }}
-                className={cn.iconButton}
+              />
+            ) : (
+              <Typography variant="h6">{title}</Typography>
+            )}
+            <div className={cn.blank} />
+            {hasError ? (
+              <span className={cn.error}>エラーがおきたようです</span>
+            ) : null}
+            {makeWorkData && makeWorkData.visibility !== 'public' ? (
+              <Button disabled={!canPublish} onClick={this.handleSetPublic}>
+                {`公開する`}
+              </Button>
+            ) : null}
+            <Typography variant="caption" className={dcn.caption}>
+              {!isSignedIn
+                ? 'ログインしていないので、保存されません'
+                : !replay
+                ? '自分のステージではないので、保存されません'
+                : isOfficial && !make.changed
+                ? 'あたらしいステージです' // キットを開いただけの状態
+                : make.work.isProcessing
+                ? `通信中...` // Uploading or Downloading
+                : make.saved
+                ? `保存されました` // 最新の状態
+                : '保存されていません' // 改造中で変更があった
+              }
+            </Typography>
+            {replay && !isOfficial ? (
+              <Button
+                aria-owns={anchorEl ? 'simple-menu' : null}
+                aria-haspopup="true"
+                onClick={this.handleClick}
               >
-                {this.state.openSidebar ? <Close /> : <Menu />}
-              </IconButton>
-              {makeWorkData ? (
-                <Chip
-                  label={
-                    {
-                      public: '公開中',
-                      limited: '限定公開',
-                      private: '非公開'
-                    }[makeWorkData.visibility]
-                  }
-                  className={dcn.chip}
-                />
-              ) : null}
-              {isOfficial ? null : replay ? (
-                <EditableTitleTextField
-                  placeholder="タイトルがついていません"
-                  className={classes(
-                    dcn.title,
-                    !make.metadata.title && cn.noTitle
-                  )}
-                  InputProps={{
-                    cn: {
-                      underline: cn.underline
-                    }
-                  }}
-                />
-              ) : (
-                <Typography variant="h6">{title}</Typography>
-              )}
-              <div className={cn.blank} />
-              {hasError ? (
-                <span className={cn.error}>エラーがおきたようです</span>
-              ) : null}
-              {makeWorkData && makeWorkData.visibility !== 'public' ? (
-                <Button disabled={!canPublish} onClick={this.handleSetPublic}>
-                  {`公開する`}
-                </Button>
-              ) : null}
-              <Typography variant="caption" className={dcn.caption}>
-                {make.saved
-                  ? `保存されました`
-                  : make.work.isProcessing
-                  ? `アップロード中です...`
-                  : make.work.isEmpty
-                  ? ''
-                  : '保存されていません'}
-              </Typography>
-              {isOfficial ? null : (
-                <Button
-                  aria-owns={anchorEl ? 'simple-menu' : null}
-                  aria-haspopup="true"
-                  onClick={this.handleClick}
-                >
-                  その他
-                </Button>
-              )}
-              <Popover
-                id="simple-menu"
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={this.handleClose}
+                その他
+              </Button>
+            ) : null}
+            <Popover
+              id="simple-menu"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={this.handleClose}
+            >
+              <MenuItem
+                disabled={
+                  make.thumbnails.length === 0 ||
+                  (makeWorkData && makeWorkData.visibility !== 'public')
+                }
+                onClick={this.handleDialogOpen}
               >
-                <MenuItem
-                  disabled={
-                    make.thumbnails.length === 0 ||
-                    (makeWorkData && makeWorkData.visibility !== 'public')
-                  }
-                  onClick={this.handleDialogOpen}
-                >
-                  カバー画像をかえる
+                カバー画像をかえる
+              </MenuItem>
+              {makeWorkData && makeWorkData.visibility === 'public' ? (
+                <MenuItem onClick={this.handleShareTwitter}>
+                  Twitter でシェア
                 </MenuItem>
-                {makeWorkData && makeWorkData.visibility === 'public' ? (
-                  <MenuItem onClick={this.handleShareTwitter}>
-                    Twitter でシェア
-                  </MenuItem>
-                ) : null}
-                {makeWorkData && makeWorkData.visibility !== 'private' ? (
-                  <MenuItem
-                    disabled={!canPublish}
-                    onClick={this.handleSetPrivate}
-                  >
-                    非公開にする
-                  </MenuItem>
-                ) : null}
-                {makeWorkData && makeWorkData.visibility !== 'limited' ? (
-                  <MenuItem
-                    disabled={!canPublish}
-                    onClick={this.handleSetLimited}
-                  >
-                    限定公開にする
-                  </MenuItem>
-                ) : null}
-                {makeWorkData ? (
-                  <MenuItem disabled={!canRemove} onClick={this.handleRemove}>
-                    削除する
-                  </MenuItem>
-                ) : null}
-              </Popover>
-            </Toolbar>
-          </AppBar>
-        ) : null}
+              ) : null}
+              {makeWorkData && makeWorkData.visibility !== 'private' ? (
+                <MenuItem
+                  disabled={!canPublish}
+                  onClick={this.handleSetPrivate}
+                >
+                  非公開にする
+                </MenuItem>
+              ) : null}
+              {makeWorkData && makeWorkData.visibility !== 'limited' ? (
+                <MenuItem
+                  disabled={!canPublish}
+                  onClick={this.handleSetLimited}
+                >
+                  限定公開にする
+                </MenuItem>
+              ) : null}
+              {makeWorkData ? (
+                <MenuItem disabled={!canRemove} onClick={this.handleRemove}>
+                  削除する
+                </MenuItem>
+              ) : null}
+            </Popover>
+          </Toolbar>
+        </AppBar>
         <Feeles
           src={src}
           storagePath={storagePath}

@@ -149,10 +149,9 @@ export default class extends React.Component<Props> {
       this.props.fetchWorkByPath(path).then(() => {
         // ステージのビューカウントを増やす
         this.props.addWorkView(path);
-      });
-      if (this.props.replay) {
+        // このステージを make に入れる
         this.props.editExistingWork(this.props.work);
-      }
+      });
     }
   }
 
@@ -164,9 +163,6 @@ export default class extends React.Component<Props> {
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    if (this.props.replay !== nextProps.replay && nextProps.replay) {
-      this.props.editExistingWork(nextProps.work);
-    }
     if (this.props.slaask !== nextProps.slaask) {
       // Slaask の表示・非表示
       this.toggleSlaask(nextProps.slaask);
