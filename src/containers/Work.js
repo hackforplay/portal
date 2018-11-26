@@ -1,21 +1,24 @@
 // @flow
 import * as React from 'react';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import type { ContextRouter, Match } from 'react-router-dom';
 
 import Work from '../components/Work';
+import * as helpers from '../ducks/helpers';
+
 import {
+  addWorkViewLabel,
   getWorkByPath,
   fetchWorkByPath,
   addWorkView,
-  addWorkViewLabel,
-  isAuthUsersWork
+  isAuthUsersWork,
+  type WorkItemType
 } from '../ducks/work';
-import type { WorkItemType } from '../ducks/work';
+import * as officialWork from '../ducks/officialWork';
 import {
   actions,
+  changeWork,
   saveWork,
   editExistingWork,
   setWorkVisibility,
@@ -26,7 +29,6 @@ import {
 } from '../ducks/make';
 import type { State as MakeState } from '../ducks/make';
 
-import * as helpers from '../ducks/helpers';
 import type { StoreState } from '../ducks';
 
 export type StateProps = {
@@ -37,7 +39,9 @@ export type StateProps = {
   canRemove: boolean,
   make: MakeState,
   isPreparing?: boolean,
-  redirect?: string
+  redirect?: string,
+  renderNull: boolean,
+  slaask: boolean
 };
 
 const getPath = (match: Match) => {
@@ -50,10 +54,42 @@ const getPath = (match: Match) => {
   return path;
 };
 
+const isOfficial = (match: Match) => {
+  return match.url.startsWith('/officials');
+};
+
 const mapStateToProps = (
   state: StoreState,
   ownProps: ContextRouter
 ): StateProps => {
+  if (isOfficial(ownProps.match)) {
+    const { location } = ownProps;
+    // 現在表示している URL にふさわしいデータソースを取得する
+    // 現在のパスをもとに, 最適なコンテンツをサーバから取得
+
+    const source = officialWork.get(state, location.pathname);
+    const work = source ? source.work : helpers.invalid('Not Found');
+    const replayable = source ? source.replayable : false;
+    const makeWorkData = state.make.work.data;
+    return {
+      work,
+      make: state.make,
+      replay: replayable && !!state.auth.user,
+      canSave: canSave(state),
+      canPublish: canPublish(state),
+      canRemove: canRemove(state),
+      // official(キット)を保存したとき /works/{id} にリダイレクトする
+      // render できたら redirect する
+      redirect:
+        makeWorkData && makeWorkData.id ? `/works/${makeWorkData.id}` : '',
+      // URL が間違っているとき null を render する
+      // replay かどうかを確かめるために onAuthStateChanged を待つ
+      renderNull: !state.auth.initialized,
+      // slaask widget を表示するかどうかを決めるフラグ
+      slaask: source.slaask
+    };
+  }
+
   const path = getPath(ownProps.match);
   const replay = isAuthUsersWork(state, path);
   const isPreparing = replay && helpers.isInitialized(state.make.work);
@@ -71,10 +107,12 @@ const mapStateToProps = (
 };
 
 const mapDispatchToProps = {
+  fetchWork: officialWork.fetchWork,
+  addWorkViewLabel,
+  changeWork,
   trashWork: () => dispatch => dispatch(actions.trash()),
   fetchWorkByPath,
   addWorkView,
-  addWorkViewLabel,
   saveWork,
   editExistingWork,
   setWorkVisibility,
@@ -86,12 +124,21 @@ export type DispatchProps = { ...typeof mapDispatchToProps };
 
 type Props = StateProps & DispatchProps & { ...ContextRouter };
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
-)(
-  class extends React.Component<Props> {
-    componentDidMount() {
+@withRouter
+@connect(
+  mapStateToProps,
+  mapDispatchToProps
+)
+export default class extends React.Component<Props> {
+  componentDidMount() {
+    if (isOfficial(this.props.match)) {
+      if (helpers.isInitialized(this.props.work)) {
+        // 現在のパスからデータを取得する
+        const { pathname } = this.props.location;
+        this.props.fetchWork(pathname);
+      }
+      this.toggleSlaask(this.props.slaask);
+    } else {
       const path = getPath(this.props.match);
       // ステージデータがなければ取得
       this.props.fetchWorkByPath(path).then(() => {
@@ -102,19 +149,37 @@ export default compose(
         this.props.editExistingWork(this.props.work);
       }
     }
+  }
 
-    componentWillReceiveProps(nextProps) {
-      if (this.props.replay !== nextProps.replay && nextProps.replay) {
-        this.props.editExistingWork(nextProps.work);
-      }
-    }
-
-    componentWillUnmount() {
-      this.props.trashWork();
-    }
-
-    render() {
-      return <Work {...this.props} />;
+  toggleSlaask(showing: boolean) {
+    const slaaskButton = document.querySelector('#slaask-button');
+    if (slaaskButton) {
+      slaaskButton.style.display = showing ? 'block' : 'none';
     }
   }
-);
+
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.props.replay !== nextProps.replay && nextProps.replay) {
+      this.props.editExistingWork(nextProps.work);
+    }
+    if (this.props.slaask !== nextProps.slaask) {
+      // Slaask の表示・非表示
+      this.toggleSlaask(nextProps.slaask);
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.trashWork();
+    this.toggleSlaask(true);
+  }
+
+  render() {
+    const { renderNull, ...props } = this.props;
+
+    if (renderNull) {
+      return null;
+    }
+
+    return <Work {...props} />;
+  }
+}
