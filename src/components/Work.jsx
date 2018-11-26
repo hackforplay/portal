@@ -313,8 +313,8 @@ export default class Work extends React.Component<Props, State> {
                   : make.work.isProcessing
                   ? `アップロード中です...`
                   : make.work.isEmpty
-                  ? `保存されていません`
-                  : ''}
+                  ? ''
+                  : '保存されていません'}
               </Typography>
               <Button
                 aria-owns={anchorEl ? 'simple-menu' : null}
