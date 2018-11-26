@@ -22,7 +22,6 @@ import ProfileEdit from '../containers/ProfileEdit';
 import OptionalHeader from '../containers/OptionalHeader';
 import SearchList from '../containers/SearchList';
 import Pickup from '../containers/Pickup';
-import OfficialWork from '../containers/OfficialWork';
 import Sp1 from '../containers/ProgrammingColosseum';
 import PCRanking from '../containers/PCRanking';
 import MapEditor from '../containers/MapEditor';
