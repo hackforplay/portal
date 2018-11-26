@@ -245,6 +245,7 @@ export default class Work extends React.Component<Props, State> {
     const storagePath = work.data.assetStoragePath || '';
     const makeWorkData = make.work.data;
     const hasError = make.error !== null;
+    const isOfficial = this.props.match.url.startsWith('/officials');
 
     // portal 側でプロジェクトの中身を取得できるまで render しない
     // (onChange によって Store が書き換えられると saved: false になるため)
@@ -282,7 +283,7 @@ export default class Work extends React.Component<Props, State> {
                   className={dcn.chip}
                 />
               ) : null}
-              {replay ? (
+              {isOfficial ? null : replay ? (
                 <EditableTitleTextField
                   placeholder="タイトルがついていません"
                   className={classes(
@@ -316,13 +317,15 @@ export default class Work extends React.Component<Props, State> {
                   ? ''
                   : '保存されていません'}
               </Typography>
-              <Button
-                aria-owns={anchorEl ? 'simple-menu' : null}
-                aria-haspopup="true"
-                onClick={this.handleClick}
-              >
-                その他
-              </Button>
+              {isOfficial ? null : (
+                <Button
+                  aria-owns={anchorEl ? 'simple-menu' : null}
+                  aria-haspopup="true"
+                  onClick={this.handleClick}
+                >
+                  その他
+                </Button>
+              )}
               <Popover
                 id="simple-menu"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
