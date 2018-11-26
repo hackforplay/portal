@@ -63,6 +63,7 @@ export type State = {
   metadata: Metadata,
   thumbnails: Array<string>,
   files?: Array<{}>,
+  needUploadFiles: boolean, // files のアップロードが必要かどうか
   hashOfFiles: string
 };
 
@@ -74,6 +75,7 @@ const initialState: State = {
   error: null,
   metadata: {},
   thumbnails: [],
+  needUploadFiles: false,
   hashOfFiles: ''
 };
 
@@ -87,6 +89,7 @@ export default reducerWithInitialState(initialState)
       changed: false,
       error: null,
       files,
+      needUploadFiles: true, // 次のセーブでファイルをアップロードする
       metadata: {},
       thumbnails: [],
       // JSON 文字列から MD5 ハッシュを計算
@@ -103,6 +106,7 @@ export default reducerWithInitialState(initialState)
       saved: false,
       changed: true,
       files,
+      needUploadFiles: true, // 次のセーブでファイルをアップロードする
       // JSON 文字列から MD5 ハッシュを計算
       hashOfFiles: hashFiles(files)
     };
@@ -135,6 +139,7 @@ export default reducerWithInitialState(initialState)
       error: null,
       metadata: {},
       thumbnails: [],
+      needUploadFiles: false,
       hashOfFiles: ''
     };
     return next;
@@ -148,6 +153,7 @@ export default reducerWithInitialState(initialState)
       error,
       metadata: {},
       thumbnails: [],
+      needUploadFiles: false,
       hashOfFiles: ''
     };
     return next;
@@ -173,6 +179,7 @@ export default reducerWithInitialState(initialState)
         work: helpers.has(workData),
         saved: true,
         files,
+        needUploadFiles: false, // ファイルのアップロードは完了した
         // JSON 文字列から MD5 ハッシュを計算
         hashOfFiles: hashFiles(files),
         metadata: {
@@ -361,7 +368,16 @@ export type saveWorkType = () => (
 
 export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
   const { uid } = authImport.getState(getStore()).user || { uid: '' };
-  const { files, work, metadata } = getState(getStore());
+  const { files, needUploadFiles, work, metadata: current } = getState(
+    getStore()
+  );
+  const metadata: Metadata = {
+    // デフォルト値
+    title: '',
+    description: '',
+    // 現在のデータ
+    ...current
+  };
 
   if (!uid || !files || !canSave(getStore())) {
     return;
@@ -369,28 +385,23 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
 
   try {
     dispatch(actions.push.started({ params: { workData: work.data } }));
-
-    // visibility を取得
-    const visibility = work.data ? work.data.visibility : 'private';
-    // プロジェクトを JSON に書き出し
-    const json = JSON.stringify(files);
-    const file = new Blob([json], { type: 'application/json' });
-    // Storage にアップロード
-    const assetStoragePath = `json/${visibility}/users/${uid}/${uuid()}.json`;
-    await dispatch(uploadBlob(assetStoragePath, file));
+    if (needUploadFiles) {
+      // visibility を取得
+      const visibility = work.data ? work.data.visibility : 'private';
+      // プロジェクトを JSON に書き出し
+      const json = JSON.stringify(files);
+      const file = new Blob([json], { type: 'application/json' });
+      // Storage にアップロード
+      const assetStoragePath = `json/${visibility}/users/${uid}/${uuid()}.json`;
+      await dispatch(uploadBlob(assetStoragePath, file));
+      metadata.assetStoragePath = assetStoragePath;
+    }
 
     // 取得
     const uploadedRef = await uploadWorkData({
       work,
       uid,
-      metadata: {
-        // デフォルト値
-        title: '',
-        description: '',
-        // ユーザーが設定したメタデータ
-        ...metadata,
-        assetStoragePath
-      }
+      metadata
     });
     const snapshot = (await uploadedRef.get(): $npm$firebase$firestore$DocumentSnapshot);
     const result = {
@@ -405,7 +416,11 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
     );
 
     // 古いアセットを削除
-    if (work.data && work.data.assetStoragePath) {
+    if (
+      work.data &&
+      work.data.assetStoragePath &&
+      work.data.assetStoragePath !== metadata.assetStoragePath
+    ) {
       dispatch(removeFile(work.data.assetStoragePath));
     }
     // 古いサムネイルを削除
