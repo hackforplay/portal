@@ -363,8 +363,16 @@ export default (state: State = initialState, action: Action): State => {
     case makeImport.actions.push.done.type:
       // 自分の作品をアップロードし終わったときの Action
       const { workData } = action.payload.result;
-      const ownList = state.byUserId[workData.uid] || [];
-      const others = ownList.filter(data => data.path !== workData.path);
+      const currentCollection: ?WorkCollectionType =
+        state.byUserId[workData.uid];
+      const newCollection: WorkCollectionType = helpers.has(
+        currentCollection
+          ? // 先頭に追加
+            [workData].concat(
+              currentCollection.data.filter(item => item.path !== workData.path)
+            )
+          : [workData]
+      );
       return {
         ...state,
         byPath: {
@@ -373,7 +381,7 @@ export default (state: State = initialState, action: Action): State => {
         },
         byUserId: {
           ...state.byUserId,
-          [action.uid]: [workData].concat(others) // 先頭に追加
+          [action.uid]: newCollection
         }
       };
     default:
