@@ -1,7 +1,12 @@
 // @flow
+import React from 'react';
 import { Link } from 'react-router-dom';
 import type { Color } from '@material-ui/core/Button/Button';
+import VideogameAsset from '@material-ui/icons/VideogameAsset';
+import LibraryBooks from '@material-ui/icons/LibraryBooks';
+import PlayArrow from '@material-ui/icons/PlayArrow';
 
+import * as xlasses from '../utils/xlasses';
 import thumbnail from '../resources/stage6.jpeg';
 
 export type ContentType = {
@@ -13,6 +18,7 @@ export type ContentType = {
   url?: string,
   buttons: Array<{
     color?: Color,
+    className: string,
     children?: string,
     disabled?: boolean,
     disableFocusRipple?: boolean,
@@ -43,7 +49,8 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
           {
             variant: 'contained',
             color: 'primary',
-            children: 'ゲームスタート',
+            className: xlasses.largeButton,
+            children: [<PlayArrow key="icon" />, 'ゲームスタート'],
             component: Link,
             to: '/officials/hack-rpg'
           }
@@ -145,12 +152,14 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
           {
             variant: 'contained',
             color: 'primary',
-            children: 'ステージをつくる',
+            className: xlasses.largeButton,
+            children: [<VideogameAsset key="icon" />, 'ステージをつくる'],
             component: Link,
             to: '/officials/make-rpg'
           },
           {
-            children: 'やり方をしらべる',
+            className: xlasses.mediumButton,
+            children: [<LibraryBooks key="icon" />, '逆引きリファレンス'],
             href:
               'https://www.notion.so/teramotodaiki/190dd152ace548c7a6d6ca11ac478920',
             target: '_blank'

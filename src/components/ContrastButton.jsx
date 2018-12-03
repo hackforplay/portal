@@ -14,6 +14,6 @@ const getCn = props => ({
 
 export default withTheme()(props => {
   const dcn = getCn(props);
-  const { className, ...others } = props;
+  const { className, theme, ...others } = props;
   return <Button className={classes(dcn.root, className)} {...others} />;
 });
