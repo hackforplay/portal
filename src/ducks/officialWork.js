@@ -33,7 +33,8 @@ type OfficialWorkDocumentType = {|
   replayable: boolean,
   slaask: boolean,
   workJsonUrl: string,
-  earlybirdWorkJsonUrl: string
+  earlybirdWorkJsonUrl: string,
+  assetVersion?: stirng
 |};
 
 const makeItem = (
@@ -56,7 +57,8 @@ const makeItem = (
     favsNum: 0,
     clearRate: 0,
     createdAt: '',
-    updatedAt: null
+    updatedAt: null,
+    assetVersion: documentData.assetVersion
   })
 });
 
