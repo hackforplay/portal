@@ -87,39 +87,27 @@ export default class Feeles extends React.Component<Props, State> {
   }
 
   render() {
-    const { src, replay } = this.props;
+    const { src } = this.props;
     const { Feeles, rootEl } = this.state;
 
     // この辺を render にもっていく
     const props: any = {
       jsonURL: src
     };
-    // TODO: Feeles の機能をなくして portal の機能に一元化する
-    // Feeles の機能と portal の機能が両立している場合があるので,
-    // replay === false でも onChange は捉える
     props.onChange = this.props.changeWork;
     props.onMessage = this.props.onMessage;
     props.onThumbnailChange = this.props.thumbnail;
-    if (replay) {
-      props.disableLocalSave = true; // デフォルトのメニューを出さない
-      props.disableScreenShotCard = true; // スクリーンショットカードを無効化
-    }
-    // WIP
-    // TODO: ScreenShot Card の廃止
-    // 暫定的に make-rpg 以外では thumbnail の機能を排除する
-    if (!replay && window.location.pathname !== '/officials/make-rpg') {
-      delete props.onThumbnailChange;
-    }
+    props.disableLocalSave = true; // デフォルトのメニューを出さない
 
     return (
       <div
-        className={classes(cn.root, replay && replayClassName)}
+        className={classes(cn.root, replayClassName)}
         ref={rootEl => this.state.rootEl || this.setState({ rootEl })}
       >
         {rootEl && Feeles ? (
           <Feeles
             {...props}
-            mini={this.props.replay}
+            mini
             openSidebar={this.props.openSidebar}
             rootElement={rootEl}
           />

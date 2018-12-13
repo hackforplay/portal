@@ -13,14 +13,15 @@ import grey from '@material-ui/core/colors/grey';
 import Home from '@material-ui/icons/Home';
 import Tooltip from '@material-ui/core/Tooltip';
 import { style, media } from 'typestyle';
+import VideogameAsset from '@material-ui/icons/VideogameAsset';
+import People from '@material-ui/icons/People';
+import Person from '@material-ui/icons/Person';
 
 import Avatar from '../containers/Avatar';
 import { withTheme } from '@material-ui/core/styles';
 import googleIcon from '../resources/google.svg';
 import logo from '../resources/logo.png';
 import Beginner from '../icons/Beginner';
-import Play from '../icons/Play';
-import Create from '../icons/Create';
 import type { StateProps, DispatchProps } from '../containers/Header';
 import ContrastButton from './ContrastButton';
 
@@ -148,7 +149,7 @@ class Header extends React.Component<Props, State> {
 
   render() {
     const dcn = getCn(this.props);
-    const { user, isSignedIn, isInOfficialWork } = this.props;
+    const { auth, user, isSignedIn, isInOfficialWork } = this.props;
     const { anchorEl } = this.state;
 
     const { hostname } = window.location;
@@ -198,24 +199,24 @@ class Header extends React.Component<Props, State> {
                 </ContrastButton>
               </Tooltip>
             )}
+            <Tooltip title="ステージをつくる" classes={{ tooltip: cn.tooltip }}>
+              <ContrastButton
+                component={Link}
+                to="/contents/kit"
+                className={cn.separator}
+              >
+                <VideogameAsset />
+                <span className={cn.buttonLabel}>ステージをつくる</span>
+              </ContrastButton>
+            </Tooltip>
             <Tooltip title="みんなのステージ" classes={{ tooltip: cn.tooltip }}>
               <ContrastButton
                 component={Link}
                 to="/lists"
                 className={cn.separator}
               >
-                <Play />
+                <People />
                 <span className={cn.buttonLabel}>みんなのステージ</span>
-              </ContrastButton>
-            </Tooltip>
-            <Tooltip title="ステージを作る" classes={{ tooltip: cn.tooltip }}>
-              <ContrastButton
-                component={Link}
-                to="/contents/kit"
-                className={cn.separator}
-              >
-                <Create />
-                <span className={cn.buttonLabel}>ステージを作る</span>
               </ContrastButton>
             </Tooltip>
             {user.data ? <div className={cn.separator} /> : null}
@@ -248,8 +249,9 @@ class Header extends React.Component<Props, State> {
                 aria-owns={anchorEl ? 'simple-menu' : null}
                 aria-haspopup="true"
                 onClick={this.handleClick}
-                disabled={user.isProcessing}
+                disabled={user.isProcessing || !auth.initialized}
               >
+                <Person />
                 ログイン
               </Button>
             )}

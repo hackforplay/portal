@@ -7,6 +7,16 @@
         "source": "**",
         "destination": "/index.html"
       }
+    ],
+    "headers": [
+      {
+        "source": "/service-worker.js",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      },
+      {
+        "source": "/static/js/*",
+        "headers": [{ "key": "Cache-Control", "value": "max-age=1545600" }]
+      }
     ]
   },
   "firestore": {
@@ -14,8 +24,7 @@
     "indexes": "firestore.indexes.json"
   },
   "functions": {
-    "predeploy":
-      "npm --prefix functions install && npm --prefix functions install --only=dev && pwd && ls -a && npm --prefix functions run build",
+    "predeploy": "npm --prefix functions install && npm --prefix functions install --only=dev && pwd && ls -a && npm --prefix functions run build",
     "source": "functions"
   },
   "storage": {

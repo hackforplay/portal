@@ -1,7 +1,12 @@
 // @flow
+import React from 'react';
 import { Link } from 'react-router-dom';
 import type { Color } from '@material-ui/core/Button/Button';
+import VideogameAsset from '@material-ui/icons/VideogameAsset';
+import LibraryBooks from '@material-ui/icons/LibraryBooks';
+import PlayArrow from '@material-ui/icons/PlayArrow';
 
+import * as xlasses from '../utils/xlasses';
 import thumbnail from '../resources/stage6.jpeg';
 
 export type ContentType = {
@@ -13,6 +18,7 @@ export type ContentType = {
   url?: string,
   buttons: Array<{
     color?: Color,
+    className: string,
     children?: string,
     disabled?: boolean,
     disableFocusRipple?: boolean,
@@ -43,7 +49,8 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
           {
             variant: 'contained',
             color: 'primary',
-            children: 'ゲームスタート',
+            className: xlasses.largeButton,
+            children: [<PlayArrow key="icon" />, 'ゲームスタート'],
             component: Link,
             to: '/officials/hack-rpg'
           }
@@ -145,9 +152,34 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
           {
             variant: 'contained',
             color: 'primary',
-            children: 'ステージをつくる',
+            className: xlasses.largeButton,
+            children: [<VideogameAsset key="icon" />, 'ステージをつくる'],
             component: Link,
             to: '/officials/make-rpg'
+          },
+          {
+            className: xlasses.mediumButton,
+            children: [<LibraryBooks key="icon" />, '逆引きリファレンス'],
+            href:
+              'https://www.notion.so/teramotodaiki/190dd152ace548c7a6d6ca11ac478920',
+            target: '_blank'
+          }
+        ]
+      },
+      {
+        type: 'stage',
+        title: 'RPGキット2 (β)',
+        author: null,
+        description: 'ベータ版です',
+        image: 'https://assets.feeles.com/www/kit/screenshot-makerpg.png',
+        url: '/officials/make-rpg-2',
+        buttons: [
+          {
+            variant: 'contained',
+            color: 'primary',
+            children: 'ためしてみる (β)',
+            component: Link,
+            to: '/officials/make-rpg-2'
           }
         ]
       },
@@ -160,7 +192,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         url: '/map-editor',
         buttons: [
           {
-            raised: true,
+            variant: 'contained',
             color: 'primary',
             children: 'マップをつくる',
             component: Link,

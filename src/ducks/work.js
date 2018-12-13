@@ -5,6 +5,7 @@ import 'firebase/firestore';
 import * as trending from './trending';
 import * as helpers from './helpers';
 import * as auth from './auth';
+import * as makeImport from './make';
 import type { Statefull } from './helpers';
 import type { UserType } from './user';
 import type { Dispatch, GetStore } from './type';
@@ -359,6 +360,30 @@ export default (state: State = initialState, action: Action): State => {
           }
         }
       };
+    case makeImport.actions.push.done.type:
+      // 自分の作品をアップロードし終わったときの Action
+      const { workData } = action.payload.result;
+      const currentCollection: ?WorkCollectionType =
+        state.byUserId[workData.uid];
+      const newCollection: WorkCollectionType = helpers.has(
+        currentCollection
+          ? // 先頭に追加
+            [workData].concat(
+              currentCollection.data.filter(item => item.path !== workData.path)
+            )
+          : [workData]
+      );
+      return {
+        ...state,
+        byPath: {
+          ...state.byPath,
+          [workData.path]: helpers.has(workData) // データを追加(更新)
+        },
+        byUserId: {
+          ...state.byUserId,
+          [action.uid]: newCollection
+        }
+      };
     default:
       return state;
   }
@@ -651,20 +676,21 @@ export const startObserveOwnWorks: StartObserveOwnWorks = () => async (
   }
 
   // リクエスト (Firestore)
-  try {
-    firebase
-      .firestore()
-      .collection('works')
-      .where('uid', '==', uid)
-      .orderBy('createdAt', 'desc')
-      .limit(50) // TODO: もっと遡れるように, パラメータ化
-      .onSnapshot(querySnapshot => {
+  firebase
+    .firestore()
+    .collection('works')
+    .where('uid', '==', uid)
+    .orderBy('createdAt', 'desc')
+    .limit(50) // TODO: もっと遡れるように, パラメータ化
+    .onSnapshot(
+      querySnapshot => {
         const works = querySnapshot.docs.map(getWorkData);
         dispatch(setUsers(uid, works.concat(herokuWorks)));
-      });
-  } catch (error) {
-    console.error(error);
-  }
+      },
+      error => {
+        console.error(error);
+      }
+    );
 };
 
 export type fetchWorkByPathType = (
