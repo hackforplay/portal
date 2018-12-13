@@ -121,7 +121,6 @@ const mapDispatchToProps = {
   saveWork,
   editExistingWork,
   setWorkVisibility,
-  setMetadata: () => dispatch => dispatch(actions.metadata()),
   removeWork
 };
 
