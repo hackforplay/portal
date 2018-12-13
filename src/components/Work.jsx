@@ -383,6 +383,7 @@ export default class Work extends React.Component<Props, State> {
           replay={replay}
           onMessage={this.handleMessage}
           openSidebar={this.state.openSidebar}
+          assetVersion={work.data.assetVersion}
         />
         <ThumbnailDialog open={this.state.open} onClose={this.handleClose} />
       </div>

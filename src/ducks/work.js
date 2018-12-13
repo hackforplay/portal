@@ -45,6 +45,7 @@ export type WorkData = {
   +created_at?: string,
   +views?: number,
   +favs?: number,
+  +assetVersion?: stirng,
   // additional structure
   +visibility: VisibilityType,
   +uid?: string,
@@ -68,6 +69,7 @@ type FirestoreWork = {
   +viewsNum: number,
   +clearRate: number,
   +favsNum: number,
+  +assetVersion?: stirng,
   +createdAt: FirestoreTimestamp,
   +updatedAt?: FirestoreTimestamp
 };

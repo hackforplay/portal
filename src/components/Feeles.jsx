@@ -36,6 +36,15 @@ const cn = {
   )
 };
 
+const loadAsset = ((promise = null) => (assetVersion: string) => {
+  if (promise) return promise;
+  return (promise = fetch(
+    `https://storage.googleapis.com/hackforplay-assets/${assetVersion}`
+  )
+    .then(response => response.text())
+    .then(text => JSON.parse(text)));
+})();
+
 export type OnMessage = (event: {
   data: { value: { labelName: string, labelValue: string, href: string } }
 }) => void;
@@ -44,13 +53,15 @@ export type OwnProps = {
   onMessage: OnMessage,
   src: string | void,
   replay: boolean,
-  openSidebar: boolean
+  openSidebar: boolean,
+  assetVersion?: string
 };
 
 type State = {
   rootEl: ?HTMLElement,
   loading: boolean,
-  Feeles: null | React.ComponentType<*>
+  Feeles: null | React.ComponentType<*>,
+  asset: any
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -64,7 +75,8 @@ export default class Feeles extends React.Component<Props, State> {
   state = {
     rootEl: null,
     loading: true,
-    Feeles: null
+    Feeles: null,
+    asset: undefined
   };
 
   componentDidMount() {
@@ -76,7 +88,7 @@ export default class Feeles extends React.Component<Props, State> {
   }
 
   async handleLoad() {
-    const { src } = this.props;
+    const { src, assetVersion } = this.props;
     if (this.state.loading && src) {
       const feeles = await import('feeles-ide/lib/jsx/RootComponent');
       this.setState({
@@ -84,11 +96,15 @@ export default class Feeles extends React.Component<Props, State> {
         loading: false
       });
     }
+    if (assetVersion && !this.state.asset) {
+      const asset = await loadAsset(assetVersion);
+      this.setState({ asset });
+    }
   }
 
   render() {
-    const { src } = this.props;
-    const { Feeles, rootEl } = this.state;
+    const { src, assetVersion } = this.props;
+    const { Feeles, rootEl, asset } = this.state;
 
     // この辺を render にもっていく
     const props: any = {
@@ -99,17 +115,20 @@ export default class Feeles extends React.Component<Props, State> {
     props.onThumbnailChange = this.props.thumbnail;
     props.disableLocalSave = true; // デフォルトのメニューを出さない
 
+    const isCompleteAssetLoading = !assetVersion || asset;
+
     return (
       <div
         className={classes(cn.root, replayClassName)}
         ref={rootEl => this.state.rootEl || this.setState({ rootEl })}
       >
-        {rootEl && Feeles ? (
+        {rootEl && Feeles && isCompleteAssetLoading ? (
           <Feeles
             {...props}
             mini
             openSidebar={this.props.openSidebar}
             rootElement={rootEl}
+            asset={asset}
           />
         ) : null}
       </div>
