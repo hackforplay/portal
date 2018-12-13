@@ -22,7 +22,6 @@ import ProfileEdit from '../containers/ProfileEdit';
 import OptionalHeader from '../containers/OptionalHeader';
 import SearchList from '../containers/SearchList';
 import Pickup from '../containers/Pickup';
-import OfficialWork from '../containers/OfficialWork';
 import Sp1 from '../containers/ProgrammingColosseum';
 import PCRanking from '../containers/PCRanking';
 import MapEditor from '../containers/MapEditor';
@@ -55,9 +54,11 @@ export default function App() {
             <Route path="/lists/:more?" exact component={FeatureLists} />
           </Switch>
           <Route path="/pickup" exact component={Pickup} />
-          <Route path="/works/:id/:action?" exact component={Work} />
-          <Route path="/products/:id" exact component={Work} />
-          <Route path="/officials" component={OfficialWork} />
+          <Route
+            path="/(works|products|officials)/:id?/:action?"
+            exact
+            component={Work}
+          />
           <Route path="/users/:id/:tab?/:query?" component={UserWorks} />
           <Route path="/map-editor" component={MapEditor} />
           <Route path="/maps/:id" component={MapEditor} />

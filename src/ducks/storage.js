@@ -14,7 +14,8 @@ export type StorageType =
       isDownloading: boolean,
       isRemoving: boolean,
       isEmpty: boolean,
-      path: string
+      path: string,
+      promise?: Promise<void>
     |}
   | {|
       isAvailable: true,
@@ -23,7 +24,8 @@ export type StorageType =
       isRemoving: false,
       isEmpty: false,
       path: string,
-      url: string
+      url: string,
+      promise?: Promise<void>
     |};
 
 const UPLOAD = 'portal/storage/UPLOAD';
@@ -86,7 +88,8 @@ export default (state: State = initialState, action: Action): State => {
           isDownloading: true,
           isRemoving: false,
           isEmpty: false,
-          path: action.path
+          path: action.path,
+          promise: action.promise
         }
       };
     case REMOVE:
@@ -136,9 +139,10 @@ export const upload = (path: string): Action => ({
   path
 });
 
-export const download = (path: string): Action => ({
+export const download = (path: string, promise: Promise<void>): Action => ({
   type: DOWNLOAD,
-  path
+  path,
+  promise
 });
 
 export const remove = (path: string): Action => ({
@@ -201,7 +205,7 @@ export const downloadUrl: downloadUrlType = path => async (
   getStore
 ) => {
   const storage = getStorageByPath(getStore(), path);
-  if (storage.isAvailable || storage.isDownloading) {
+  if (storage.isAvailable) {
     // すでにダウンロードされたファイル
     return;
   }
@@ -210,15 +214,22 @@ export const downloadUrl: downloadUrlType = path => async (
     // ダウンロード権限がない
     return;
   }
+  if (storage.isDownloading) {
+    // ダウンロード中
+    return storage.promise;
+  }
 
-  // ダウンロード開始
-  dispatch(download(path));
   try {
-    const result = await firebase
+    const promise = firebase
       .storage()
       .ref()
       .child(path)
       .getDownloadURL();
+
+    // ダウンロード開始
+    dispatch(download(path, promise));
+
+    const result = await promise;
     if (result) {
       // URL を格納
       await dispatch(set(path, result));
