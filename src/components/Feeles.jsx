@@ -36,14 +36,10 @@ const cn = {
   )
 };
 
-const loadAsset = ((promise = null) => (assetVersion: string) => {
-  if (promise) return promise;
-  return (promise = fetch(
-    `https://storage.googleapis.com/hackforplay-assets/${assetVersion}`
-  )
+const loadAsset = (assetVersion: string) =>
+  fetch(`https://storage.googleapis.com/hackforplay-assets/${assetVersion}`)
     .then(response => response.text())
-    .then(text => JSON.parse(text)));
-})();
+    .then(text => JSON.parse(text));
 
 export type OnMessage = (event: {
   data: { value: { labelName: string, labelValue: string, href: string } }
@@ -76,6 +72,7 @@ export default class Feeles extends React.Component<Props, State> {
     rootEl: null,
     loading: true,
     Feeles: null,
+    isFetchingAsset: false,
     asset: undefined
   };
 
@@ -96,9 +93,11 @@ export default class Feeles extends React.Component<Props, State> {
         loading: false
       });
     }
-    if (assetVersion && !this.state.asset) {
+    if (assetVersion && !this.state.asset && !this.state.isFetchingAsset) {
+      this.setState({ isFetchingAsset: true });
       const asset = await loadAsset(assetVersion);
-      this.setState({ asset });
+      this.setState({ asset, isFetchingAsset: false });
+      this.props.setAssetVersion(assetVersion);
     }
   }
 

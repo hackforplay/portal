@@ -13,13 +13,16 @@ const mapStateToProps = (state, ownProps: OwnProps): StateProps => ({});
 
 const mapDispatchToProps = {
   changeWork,
-  setMetadata: metadata => dispatch => dispatch(actions.metadata(metadata)),
+  setAssetVersion: ver => dispatch => dispatch(actions.assetVersion(ver)),
   thumbnail: dataUrl => dispatch => dispatch(actions.thumbnail(dataUrl))
 };
 
 export type DispatchProps = { ...typeof mapDispatchToProps };
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
   withFirebaseStorage
 )(Feeles);
