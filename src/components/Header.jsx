@@ -149,7 +149,7 @@ class Header extends React.Component<Props, State> {
 
   render() {
     const dcn = getCn(this.props);
-    const { user, isSignedIn, isInOfficialWork } = this.props;
+    const { auth, user, isSignedIn, isInOfficialWork } = this.props;
     const { anchorEl } = this.state;
 
     const { hostname } = window.location;
@@ -249,7 +249,7 @@ class Header extends React.Component<Props, State> {
                 aria-owns={anchorEl ? 'simple-menu' : null}
                 aria-haspopup="true"
                 onClick={this.handleClick}
-                disabled={user.isProcessing}
+                disabled={user.isProcessing || !auth.initialized}
               >
                 <Person />
                 ログイン

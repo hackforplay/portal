@@ -651,20 +651,21 @@ export const startObserveOwnWorks: StartObserveOwnWorks = () => async (
   }
 
   // リクエスト (Firestore)
-  try {
-    firebase
-      .firestore()
-      .collection('works')
-      .where('uid', '==', uid)
-      .orderBy('createdAt', 'desc')
-      .limit(50) // TODO: もっと遡れるように, パラメータ化
-      .onSnapshot(querySnapshot => {
+  firebase
+    .firestore()
+    .collection('works')
+    .where('uid', '==', uid)
+    .orderBy('createdAt', 'desc')
+    .limit(50) // TODO: もっと遡れるように, パラメータ化
+    .onSnapshot(
+      querySnapshot => {
         const works = querySnapshot.docs.map(getWorkData);
         dispatch(setUsers(uid, works.concat(herokuWorks)));
-      });
-  } catch (error) {
-    console.error(error);
-  }
+      },
+      error => {
+        console.error(error);
+      }
+    );
 };
 
 export type fetchWorkByPathType = (
