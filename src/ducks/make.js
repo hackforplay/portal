@@ -62,6 +62,7 @@ export type State = {
 };
 
 const defaultPrivacy = 'limited'; // ステージ作成直後は限定公開
+const defaultTitle = 'NO TITLE'; // タイトルをつけずに公開した場合の名前
 
 const initialState: State = {
   work: helpers.initialized(),
@@ -435,7 +436,7 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
   getStore
 ) => {
   const { user } = authImport.getState(getStore());
-  const { work, files } = getState(getStore());
+  const { work, files, metadata } = getState(getStore());
   const workData = work.data;
   if (!canPublish(getStore()) || !workData || !user || !files) {
     return;
@@ -459,6 +460,10 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
       visibility,
       updatedAt: new Date()
     };
+    // タイトルをつけずに公開しようとした場合
+    if (visibility === 'public' && !metadata.title) {
+      updated.title = defaultTitle;
+    }
 
     // プライバシー設定が厳しくなる場合はアセットのファイルパスを変更する
     // public -> limited, public -> private, limited -> private
@@ -653,9 +658,7 @@ export function canPublish(state: $Call<GetStore>) {
     // 保存されていないか、ログインしていない
     return false;
   }
-  return Boolean(
-    workData.assetStoragePath && workData.thumbnailStoragePath && workData.title
-  );
+  return Boolean(workData.assetStoragePath && workData.thumbnailStoragePath);
 }
 
 export function canRemove(state: $Call<GetStore>) {
