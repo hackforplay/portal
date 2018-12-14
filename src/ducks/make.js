@@ -9,14 +9,7 @@ import { reducerWithInitialState } from 'typescript-fsa-reducers';
 import debounce from 'debounce';
 
 import * as helpers from './helpers';
-import {
-  downloadUrl,
-  uploadBlob,
-  getStorageByPath,
-  moveFile,
-  removeFile,
-  parseStoragePath
-} from './storage';
+import { downloadUrl, uploadBlob, getStorageByPath, moveFile } from './storage';
 import * as userImport from './user';
 import * as workImport from './work';
 import * as authImport from './auth';
@@ -287,14 +280,13 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
   dispatch,
   getStore
 ) => {
-  const { work } = getState(getStore());
+  const { metadata } = getState(getStore());
   const { user } = authImport.getState(getStore());
   if (!user) {
     // ログインしていない
     return;
   }
   // data url => base64 string and metadata
-  const visibility = work.data ? work.data.visibility : defaultPrivacy;
   const [param, base64] = dataURL.split(',');
   const result = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
   if (!result) {
@@ -312,9 +304,9 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
     byteArray[i] = bin.charCodeAt(i);
   }
   const blob = new Blob([byteArray.buffer], { type });
-  const thumbnailStoragePath = `image/${visibility}/users/${
-    user.uid
-  }/${uuid()}.${ext}`;
+  const thumbnailStoragePath =
+    metadata.thumbnailStoragePath ||
+    `users/${user.uid}/thumbnails/${uuid()}.${ext}`;
   try {
     dispatch(actions.upload.started());
     // Upload to storage
@@ -396,13 +388,12 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
   try {
     dispatch(actions.push.started({ params: { workData: work.data } }));
     if (needUploadFiles) {
-      // visibility を取得
-      const visibility = work.data ? work.data.visibility : defaultPrivacy;
       // プロジェクトを JSON に書き出し
       const json = JSON.stringify(files);
       const file = new Blob([json], { type: 'application/json' });
       // Storage にアップロード
-      const assetStoragePath = `json/${visibility}/users/${uid}/${uuid()}.json`;
+      const assetStoragePath =
+        current.assetStoragePath || `users/${uid}/projects/${uuid()}.json`;
       await dispatch(uploadBlob(assetStoragePath, file));
       metadata.assetStoragePath = assetStoragePath;
     }
@@ -424,23 +415,6 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
         result
       })
     );
-
-    // 古いアセットを削除
-    if (
-      work.data &&
-      work.data.assetStoragePath &&
-      work.data.assetStoragePath !== metadata.assetStoragePath
-    ) {
-      dispatch(removeFile(work.data.assetStoragePath));
-    }
-    // 古いサムネイルを削除
-    if (
-      work.data &&
-      work.data.thumbnailStoragePath &&
-      work.data.thumbnailStoragePath !== metadata.thumbnailStoragePath
-    ) {
-      dispatch(removeFile(work.data.thumbnailStoragePath));
-    }
   } catch (error) {
     console.error(error);
     dispatch(
@@ -476,37 +450,44 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
     // JSON ファイルのパスが設定されていない
     return;
   }
-  const nextAssetStoragePath = `json/${visibility}/users/${
-    user.uid
-  }/${uuid()}.${parseStoragePath(assetStoragePath).extention}`;
-  const nextThumbnailStoragePath = `image/${visibility}/users/${
-    user.uid
-  }/${uuid()}.${parseStoragePath(thumbnailStoragePath).extention}`;
 
   try {
     dispatch(actions.push.started());
-    // asset を移す
-    await dispatch(moveFile(assetStoragePath, nextAssetStoragePath));
-    await dispatch(downloadUrl(nextAssetStoragePath));
-    if (!getStorageByPath(getStore(), nextAssetStoragePath).url) {
-      // アセットの移動に失敗している
-      throw new Error('Failed to moveFile');
-    }
-    // thumbnail を移す
-    await dispatch(moveFile(thumbnailStoragePath, nextThumbnailStoragePath));
-    await dispatch(downloadUrl(nextThumbnailStoragePath));
-    if (!getStorageByPath(getStore(), nextThumbnailStoragePath).url) {
-      // サムネイルの移動に失敗している
-      throw new Error('Failed to moveFile');
-    }
 
     // 既存のドキュメントを更新
     const updated = {
-      assetStoragePath: nextAssetStoragePath,
-      thumbnailStoragePath: nextThumbnailStoragePath,
       visibility,
       updatedAt: new Date()
     };
+
+    // プライバシー設定が厳しくなる場合はアセットのファイルパスを変更する
+    // public -> limited, public -> private, limited -> private
+    if (workData.visibility === 'public' || visibility === 'private') {
+      const nextAssetStoragePath = `users/${user.uid}/projects/${uuid()}.${
+        assetStoragePath.split('.')[1]
+      }`;
+      const nextThumbnailStoragePath = `users/${
+        user.uid
+      }/thumbnails/${uuid()}.${thumbnailStoragePath.split('.')[1]}`;
+
+      // asset を移す
+      await dispatch(moveFile(assetStoragePath, nextAssetStoragePath));
+      await dispatch(downloadUrl(nextAssetStoragePath));
+      if (!getStorageByPath(getStore(), nextAssetStoragePath).url) {
+        // アセットの移動に失敗している
+        throw new Error('Failed to moveFile');
+      }
+      updated.assetStoragePath = nextAssetStoragePath;
+      // thumbnail を移す
+      await dispatch(moveFile(thumbnailStoragePath, nextThumbnailStoragePath));
+      await dispatch(downloadUrl(nextThumbnailStoragePath));
+      if (!getStorageByPath(getStore(), nextThumbnailStoragePath).url) {
+        // サムネイルの移動に失敗している
+        throw new Error('Failed to moveFile');
+      }
+      updated.thumbnailStoragePath = nextThumbnailStoragePath;
+    }
+
     const ref = firebase
       .firestore()
       .collection('works')
@@ -526,16 +507,6 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
   } catch (error) {
     // 元に戻す
     console.error(error);
-    const { work } = getState(getStore());
-    if (!work.data || !work.data.assetStoragePath !== nextAssetStoragePath) {
-      await dispatch(moveFile(nextAssetStoragePath, assetStoragePath));
-    }
-    if (
-      !work.data ||
-      !work.data.thumbnailStoragePath !== nextThumbnailStoragePath
-    ) {
-      await dispatch(moveFile(nextThumbnailStoragePath, thumbnailStoragePath));
-    }
     await dispatch(
       actions.push.done({
         result: {
