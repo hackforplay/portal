@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import Collapse from '@material-ui/core/Collapse';
 import { grey } from '@material-ui/core/colors';
 import { style, classes } from 'typestyle';
+import { withTheme } from '@material-ui/core/styles';
 
 import { type StateProps, type DispatchProps } from '../containers/MapList';
 import CardMedia from '../containers/CardMedia';
@@ -104,6 +105,7 @@ export type Props = OwnProps &
   StateProps &
   DispatchProps & { ...ContextRouter };
 
+@withTheme()
 @withRouter
 export default class WorkList extends React.Component<Props, State> {
   render() {
@@ -113,14 +115,14 @@ export default class WorkList extends React.Component<Props, State> {
     return (
       <Paper className={classes(dcn.root, this.props.className)}>
         {typeof title === 'string' ? (
-          <Typography type="headline" className={dcn.headline}>
+          <Typography type="h5" className={dcn.headline}>
             {title}
           </Typography>
         ) : (
           title
         )}
         <Collapse collapsedHeight="284px" in={more || false}>
-          <Grid container justify="center">
+          <Grid container justify="center" spacing={8}>
             {maps.map(item => (
               <Grid item key={item.id}>
                 {
