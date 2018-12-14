@@ -68,6 +68,8 @@ export type State = {
   hashOfFiles: string
 };
 
+const defaultPrivacy = 'limited'; // ステージ作成直後は限定公開
+
 const initialState: State = {
   work: helpers.initialized(),
   saved: false,
@@ -292,7 +294,7 @@ export const setThumbnailFromDataURL: setThumbnailFromDataURLType = dataURL => a
     return;
   }
   // data url => base64 string and metadata
-  const visibility = work.data ? work.data.visibility : 'private';
+  const visibility = work.data ? work.data.visibility : defaultPrivacy;
   const [param, base64] = dataURL.split(',');
   const result = /^data:(.*);base64$/i.exec(param); // e.g. data:image/jpeg;base64
   if (!result) {
@@ -336,7 +338,7 @@ const _executeAutoSave = debounce(async (dispatch, getStore) => {
     return;
   }
 
-  const visibility = work.data ? work.data.visibility : 'private'; // デフォルトは非公開
+  const visibility = work.data ? work.data.visibility : defaultPrivacy;
 
   // 前処理
   if (needUpdateThumbnail) {
@@ -395,7 +397,7 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
     dispatch(actions.push.started({ params: { workData: work.data } }));
     if (needUploadFiles) {
       // visibility を取得
-      const visibility = work.data ? work.data.visibility : 'private';
+      const visibility = work.data ? work.data.visibility : defaultPrivacy;
       // プロジェクトを JSON に書き出し
       const json = JSON.stringify(files);
       const file = new Blob([json], { type: 'application/json' });
@@ -565,7 +567,7 @@ async function uploadWorkData({ work, uid, metadata }) {
     const appended = {
       ...metadata,
       uid,
-      visibility: 'private',
+      visibility: defaultPrivacy,
       viewsNum: 0,
       favsNum: 0,
       createdAt: new Date(),
