@@ -5,6 +5,7 @@ import { typeof FirestoreError as FirestoreErrorCode } from 'firebase/firestore'
 import * as helpers from './helpers';
 import type { Dispatch, GetStore } from './type';
 import type { WorkItemType } from '../ducks/work';
+import isEarlybird from '../utils/isEarlybird';
 
 type FirestoreError = {
   code: FirestoreErrorCode,
@@ -15,11 +16,6 @@ type FirestoreError = {
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'officialWork';
-
-// earybird または開発中の時は, earlybird 向けのステージを配信する
-const { hostname } = window.location;
-const isEarlybird =
-  hostname.startsWith('earlybird') || hostname.startsWith('localhost');
 
 type OfficialWorkType = {|
   pathname: string,

@@ -24,6 +24,7 @@ import logo from '../resources/logo.png';
 import Beginner from '../icons/Beginner';
 import type { StateProps, DispatchProps } from '../containers/Header';
 import ContrastButton from './ContrastButton';
+import isEarlybird from '../utils/isEarlybird';
 
 const cn = {
   root: style(
@@ -152,10 +153,6 @@ class Header extends React.Component<Props, State> {
     const { auth, user, isSignedIn, isInOfficialWork } = this.props;
     const { anchorEl } = this.state;
 
-    const { hostname } = window.location;
-    const isEarlyBird =
-      hostname.startsWith('earlybird') || hostname.startsWith('localhost');
-
     return (
       <div className={cn.root}>
         <AppBar position="fixed" elevation={0}>
@@ -169,7 +166,7 @@ class Header extends React.Component<Props, State> {
               <img src={logo} height={36} alt="HackforPlay" />
             </Typography>
             <Select
-              value={isEarlyBird ? 'earlybird' : 'www'}
+              value={isEarlybird ? 'earlybird' : 'www'}
               displayEmpty
               disableUnderline
               onChange={this.handleVersionChange}
