@@ -13,6 +13,7 @@ import { withTheme } from '@material-ui/core/styles';
 
 import contents from '../settings/contents';
 import type { ContentType } from '../settings/contents';
+import isEarlybird from '../utils/isEarlybird';
 
 const cn = {
   alignMiddle: style({
@@ -83,6 +84,7 @@ class Contents extends React.Component<OwnProps & { ...ContextRouter }> {
     const children = [];
 
     for (const item of source.items) {
+      if (!isEarlybird && !item.production) continue; // production には表示しない
       children.push(
         item.type === 'youtube' ? (
           <YouTubeContent
