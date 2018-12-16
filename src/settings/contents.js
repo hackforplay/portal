@@ -11,11 +11,7 @@ import thumbnail from '../resources/stage6.jpeg';
 
 export type ContentType = {
   type: 'youtube' | 'stage',
-<<<<<<< HEAD
   earlybird: boolean,
-=======
-  production: boolean,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
   title: string,
   author: null,
   description: string,
@@ -44,11 +40,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
     items: [
       {
         type: 'stage',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'はじまりのダンジョン',
         author: null,
         description:
@@ -73,11 +65,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
     items: [
       {
         type: 'youtube',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'ステージ１ はじまりの森',
         author: null,
         description: 'まずはプレイヤーを動かしてみよう',
@@ -93,11 +81,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'youtube',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'ステージ２ コードの魔法',
         author: null,
         description: '本のコードを書きかえてみよう',
@@ -113,11 +97,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'youtube',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'ステージ３ 閉じられた群青の輝き',
         author: null,
         description: 'スライムの大群をやっつけるどうすればいいだろう？',
@@ -133,11 +113,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'youtube',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'ステージ４ 大グモ荒野',
         author: null,
         description: 'どうすればダイヤモンドの所まで行けるだろう？',
@@ -153,11 +129,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'youtube',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'ステージ５ 守りし者',
         author: null,
         description: 'これまで使ったスキルを全て使ってドラゴンを倒そう！',
@@ -178,11 +150,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
     items: [
       {
         type: 'stage',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'オリジナルステージが作れる！RPGキット',
         author: null,
         description: 'ハックフォープレイのステージを自分で作れるキットです⚔',
@@ -208,11 +176,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'stage',
-<<<<<<< HEAD
         earlybird: true,
-=======
-        production: false,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'RPGキット2 (ベータ版)',
         author: null,
         description: 'ベータ版です',
@@ -230,11 +194,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'stage',
-<<<<<<< HEAD
         earlybird: true,
-=======
-        production: false,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'RPGキットのマップを作ろう！（ベータ版）',
         author: null,
         description: 'マップをデザインしてステージで使うことができます',
@@ -252,11 +212,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'youtube',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'オリジナルゲームをつくろう！',
         author: null,
         description:
@@ -273,11 +229,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'youtube',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'スキンをかえてみよう！',
         author: null,
         description: 'スキンを使うとキャラクターの見た目を変えられます',
@@ -293,11 +245,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'youtube',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'スキルをつかってみよう！',
         author: null,
         description:
@@ -314,11 +262,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'youtube',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'モンスターをだそう！',
         author: null,
         description: 'モンスターやアイテムなども自由に出すことができます',
@@ -374,11 +318,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
     items: [
       {
         type: 'youtube',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'まずはこの動画を見よう！',
         author: null,
         description: 'プログラミングコロシアム特設ステージの遊び方を紹介します',
@@ -394,11 +334,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'youtube',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'コードを書いて魔法使いを動かす方法',
         author: null,
         description: 'チュートリアルのプレイ方法を紹介します',
@@ -414,11 +350,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'youtube',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: '繰り返しのコードを使ってスコア1000点を出す方法',
         author: null,
         description: 'チュートリアルのクリア方法を紹介します',
@@ -434,11 +366,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'stage',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'チュートリアル',
         image:
           'https://assets.feeles.com/thumbnail/6641e6ff291706f48f83a7b6a3acab9d.jpg',
@@ -457,11 +385,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'stage',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: '準決勝戦',
         image:
           'https://assets.feeles.com/thumbnail/658428ea0da32c66008d4067793fda09.jpg',
@@ -493,11 +417,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
 
       {
         type: 'stage',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: '決勝',
         image:
           'https://assets.feeles.com/thumbnail/b67621fc40f25635649510377d632cb8.jpg',
@@ -527,11 +447,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'stage',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'グランドチャンピオン決定戦',
         image:
           'https://assets.feeles.com/thumbnail/f7c34971cda6bd0df9dc8713ed51ce55.jpg',
@@ -566,11 +482,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
     items: [
       {
         type: 'stage',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'れんしゅうステージ',
         image: 'https://i.gyazo.com/60cfa51509c815a713be7a38d8d547d6.gif',
         author: null,
@@ -593,11 +505,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'stage',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'ステージ１【vsエアーマン】',
         image: 'https://i.gyazo.com/93539dd4f2f2612059c881b2a937d065.gif',
         author: null,
@@ -619,11 +527,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
       },
       {
         type: 'stage',
-<<<<<<< HEAD
         earlybird: false,
-=======
-        production: true,
->>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
         title: 'ステージ２【vsイエローデビル】',
         image: 'https://i.gyazo.com/19c764093668c23ed36f46a02c1698f7.gif',
         author: null,
