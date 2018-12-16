@@ -1,7 +1,6 @@
 // @flow
 import firebase from 'firebase';
 
-import { isAuthUser } from './auth';
 import type { Dispatch, GetStore } from './type';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
@@ -170,19 +169,6 @@ export const uploadBlob: uploadBlobType = (path, file) => async (
   dispatch,
   getStore
 ) => {
-  // ↓ファイルの上書き保存ができなかったので、コメントアウトした. 問題ないか？
-  // const storage = getStorageByPath(getStore(), path);
-  // if (storage.isAvailable || storage.isUploading) {
-  //   // すでにアップロードされたファイル
-  //   return;
-  // }
-
-  const parsed = parseStoragePath(path);
-  if (!isAuthUser(getStore(), parsed.uid)) {
-    // アップロード権限がない
-    return;
-  }
-
   // アップロード開始
   dispatch(upload(path));
   const result = await firebase
@@ -207,11 +193,6 @@ export const downloadUrl: downloadUrlType = path => async (
   const storage = getStorageByPath(getStore(), path);
   if (storage.isAvailable) {
     // すでにダウンロードされたファイル
-    return;
-  }
-  const parsed = parseStoragePath(path);
-  if (!isAuthUser(getStore(), parsed.uid) && parsed.visibility === 'private') {
-    // ダウンロード権限がない
     return;
   }
   if (storage.isDownloading) {
@@ -329,59 +310,6 @@ export function getStorageByPath(
       path: ''
     }
   );
-}
-
-export function parseStoragePath(path: string) {
-  const [container, visibility, _users, uid, fileName] = path.split('/');
-  const [hash, extention] = fileName.split('.');
-  const error = new ParseError(path);
-  if (!['image', 'images', 'json'].includes(container)) {
-    error.add('container', container);
-  }
-  if (!['public', 'limited', 'private'].includes(visibility)) {
-    error.add('visibility', visibility);
-  }
-  if (_users !== 'users') {
-    error.add('"users"', _users);
-  }
-  if (!uid) {
-    error.add('uid', uid);
-  }
-  if (!hash) {
-    error.add('hash', hash);
-  }
-  if (!extention) {
-    error.add('extension', extention);
-  }
-  if (error.has()) {
-    throw error;
-  }
-  return {
-    container,
-    visibility,
-    uid,
-    fileName,
-    hash,
-    extention
-  };
-}
-
-class ParseError extends Error {
-  path: string;
-  message: string = '';
-
-  constructor(path: string) {
-    super();
-    this.path = path;
-  }
-
-  add = (name, value) => {
-    this.message += `There is an invalid ${name}, ${value}.`;
-  };
-
-  has = () => {
-    return !!this.message;
-  };
 }
 
 export function getState(store: $Call<GetStore>): State {

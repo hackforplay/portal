@@ -23,10 +23,6 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
-  "functions": {
-    "predeploy": "npm --prefix functions install && npm --prefix functions install --only=dev && pwd && ls -a && npm --prefix functions run build",
-    "source": "functions"
-  },
   "storage": {
     "rules": "storage.rules"
   }
