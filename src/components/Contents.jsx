@@ -84,7 +84,11 @@ class Contents extends React.Component<OwnProps & { ...ContextRouter }> {
     const children = [];
 
     for (const item of source.items) {
+<<<<<<< HEAD
       if (!isEarlybird && item.earlybird) continue; // production には表示しない
+=======
+      if (!isEarlybird && !item.production) continue; // production には表示しない
+>>>>>>> 6b18c05756ef5dc948a1af7e81b057b4a9fbfe7a
       children.push(
         item.type === 'youtube' ? (
           <YouTubeContent
