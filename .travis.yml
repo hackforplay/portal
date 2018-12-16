@@ -2,32 +2,30 @@ language: node_js
 dist: trusty
 sudo: false
 node_js:
-- "8"
+  - '8'
 cache:
   directories:
-  - node_modules
-  - build/static
+    - node_modules
+    - build/static
 script:
-- travis_wait npm run build
-- npm run test
-- npm --prefix functions install
-- npm --prefix functions install --only=dev
-- if [ "$TRAVIS_BRANCH" == "earlybird" ]; then npx generate-robotstxt --config "./robots-txt.earlybird" build/robots.txt; fi
-- if [ "$TRAVIS_BRANCH" == "master" ]; then npx generate-robotstxt --config "./robots-txt" build/robots.txt; fi
+  - travis_wait npm run build
+  - npm run test
+  - if [ "$TRAVIS_BRANCH" == "earlybird" ]; then npx generate-robotstxt --config "./robots-txt.earlybird" build/robots.txt; fi
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then npx generate-robotstxt --config "./robots-txt" build/robots.txt; fi
 deploy:
   - provider: firebase
     skip_cleanup: true
-    project: "hackforplay-earlybird"
-    only: "hosting"
+    project: 'hackforplay-earlybird'
+    only: 'hosting'
     token:
-      secure: "WWIAdkpPKJyokculnpX9pQX8vZlZsjOmqrvg8w56J9fKOeeKt1vWzteZI2+gq1MLvHcd+S3USld9bxPy2lKJiFvgOfdKwohHwF1AELR3ISuuc63dx2T2mciaJTMTImGgG90/yqtmOBwd963SqD6jvf5J4JHZ36yUFg4zJ9Ik0YZIx0R1HkNJKNNVfvW11lCr3YBvajrUP+32npya67L2IRopEf8YLoknIW2TdVUfBJH3kZ+3i3upzY4xNKPUORBDdAGUOQCq9mtTq9zifm+OCRbfUg896vzXkTGAhmJravZ152QkDgBBlK7/3RdzZTYcsh/kBm+AbjC/cYE6FzZqk78Azpq27C1Wr3AWOcVjpZQFcMq0pmZZksmlu/nEfEuDiTQIH458emEdgS63Ba/dmtD9lj5bTA92DQ9F3Ep0VBPqLcABjLsFGzD/8VQ3kMB7TLdBapfkPgo7n2VRkKOQsjVku5En9Hwe5mukVuZByo05ILWhY1hnY2La2QCd+fP4MEMyBxANsBN27e0DFTf5pvagP7OLTkGdjW5Trenlm6FIEiyse33OJ2sDF9hPNKuvFFHzTTtoF8HikUW+AW4EnQRK3h6MCVahSi8lT/r+cdYrMF5/Vwt92p6rnU79VExS0a3JE0xtZCHydDaofwBucyuzBHpwc4UZ5JDcjE9STUI="
+      secure: 'WWIAdkpPKJyokculnpX9pQX8vZlZsjOmqrvg8w56J9fKOeeKt1vWzteZI2+gq1MLvHcd+S3USld9bxPy2lKJiFvgOfdKwohHwF1AELR3ISuuc63dx2T2mciaJTMTImGgG90/yqtmOBwd963SqD6jvf5J4JHZ36yUFg4zJ9Ik0YZIx0R1HkNJKNNVfvW11lCr3YBvajrUP+32npya67L2IRopEf8YLoknIW2TdVUfBJH3kZ+3i3upzY4xNKPUORBDdAGUOQCq9mtTq9zifm+OCRbfUg896vzXkTGAhmJravZ152QkDgBBlK7/3RdzZTYcsh/kBm+AbjC/cYE6FzZqk78Azpq27C1Wr3AWOcVjpZQFcMq0pmZZksmlu/nEfEuDiTQIH458emEdgS63Ba/dmtD9lj5bTA92DQ9F3Ep0VBPqLcABjLsFGzD/8VQ3kMB7TLdBapfkPgo7n2VRkKOQsjVku5En9Hwe5mukVuZByo05ILWhY1hnY2La2QCd+fP4MEMyBxANsBN27e0DFTf5pvagP7OLTkGdjW5Trenlm6FIEiyse33OJ2sDF9hPNKuvFFHzTTtoF8HikUW+AW4EnQRK3h6MCVahSi8lT/r+cdYrMF5/Vwt92p6rnU79VExS0a3JE0xtZCHydDaofwBucyuzBHpwc4UZ5JDcjE9STUI='
     on:
       branch: earlybird
   - provider: firebase
     skip_cleanup: true
-    project: "hackforplay-production"
-    only: "hosting"
+    project: 'hackforplay-production'
+    only: 'hosting'
     token:
-      secure: "WWIAdkpPKJyokculnpX9pQX8vZlZsjOmqrvg8w56J9fKOeeKt1vWzteZI2+gq1MLvHcd+S3USld9bxPy2lKJiFvgOfdKwohHwF1AELR3ISuuc63dx2T2mciaJTMTImGgG90/yqtmOBwd963SqD6jvf5J4JHZ36yUFg4zJ9Ik0YZIx0R1HkNJKNNVfvW11lCr3YBvajrUP+32npya67L2IRopEf8YLoknIW2TdVUfBJH3kZ+3i3upzY4xNKPUORBDdAGUOQCq9mtTq9zifm+OCRbfUg896vzXkTGAhmJravZ152QkDgBBlK7/3RdzZTYcsh/kBm+AbjC/cYE6FzZqk78Azpq27C1Wr3AWOcVjpZQFcMq0pmZZksmlu/nEfEuDiTQIH458emEdgS63Ba/dmtD9lj5bTA92DQ9F3Ep0VBPqLcABjLsFGzD/8VQ3kMB7TLdBapfkPgo7n2VRkKOQsjVku5En9Hwe5mukVuZByo05ILWhY1hnY2La2QCd+fP4MEMyBxANsBN27e0DFTf5pvagP7OLTkGdjW5Trenlm6FIEiyse33OJ2sDF9hPNKuvFFHzTTtoF8HikUW+AW4EnQRK3h6MCVahSi8lT/r+cdYrMF5/Vwt92p6rnU79VExS0a3JE0xtZCHydDaofwBucyuzBHpwc4UZ5JDcjE9STUI="
+      secure: 'WWIAdkpPKJyokculnpX9pQX8vZlZsjOmqrvg8w56J9fKOeeKt1vWzteZI2+gq1MLvHcd+S3USld9bxPy2lKJiFvgOfdKwohHwF1AELR3ISuuc63dx2T2mciaJTMTImGgG90/yqtmOBwd963SqD6jvf5J4JHZ36yUFg4zJ9Ik0YZIx0R1HkNJKNNVfvW11lCr3YBvajrUP+32npya67L2IRopEf8YLoknIW2TdVUfBJH3kZ+3i3upzY4xNKPUORBDdAGUOQCq9mtTq9zifm+OCRbfUg896vzXkTGAhmJravZ152QkDgBBlK7/3RdzZTYcsh/kBm+AbjC/cYE6FzZqk78Azpq27C1Wr3AWOcVjpZQFcMq0pmZZksmlu/nEfEuDiTQIH458emEdgS63Ba/dmtD9lj5bTA92DQ9F3Ep0VBPqLcABjLsFGzD/8VQ3kMB7TLdBapfkPgo7n2VRkKOQsjVku5En9Hwe5mukVuZByo05ILWhY1hnY2La2QCd+fP4MEMyBxANsBN27e0DFTf5pvagP7OLTkGdjW5Trenlm6FIEiyse33OJ2sDF9hPNKuvFFHzTTtoF8HikUW+AW4EnQRK3h6MCVahSi8lT/r+cdYrMF5/Vwt92p6rnU79VExS0a3JE0xtZCHydDaofwBucyuzBHpwc4UZ5JDcjE9STUI='
     on:
       branch: master
