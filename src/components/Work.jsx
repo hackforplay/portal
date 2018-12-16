@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { style, classes } from 'typestyle';
 import Menu from '@material-ui/icons/Menu';
 import Close from '@material-ui/icons/Close';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { withTheme } from '@material-ui/core/styles';
 import Feeles from '../containers/Feeles';
@@ -20,6 +21,7 @@ import EditableTitleTextField from '../containers/EditableTitleTextField';
 import ThumbnailDialog from '../containers/ThumbnailDialog';
 import type { StateProps, DispatchProps } from '../containers/Work';
 import type { OnMessage } from '../components/Feeles';
+import isEarlybird from '../utils/isEarlybird';
 
 export const removeMessage = `削除すると、二度と復元はできません。本当に削除しますか？`;
 
@@ -247,6 +249,7 @@ export default class Work extends React.Component<Props, State> {
     const makeWorkData = make.work.data;
     const hasError = make.error !== null;
     const isOfficial = this.props.match.url.startsWith('/officials');
+    const createdInEarlybird = !isEarlybird && Boolean(work.data.earlybird);
 
     // portal 側でプロジェクトの中身を取得できるまで render しない
     // (onChange によって Store が書き換えられると saved: false になるため)
@@ -271,6 +274,14 @@ export default class Work extends React.Component<Props, State> {
             >
               {this.state.openSidebar ? <Close /> : <Menu />}
             </IconButton>
+            {createdInEarlybird ? (
+              <Tooltip
+                title="最新版にしないと、動かないかも知れません"
+                className={dcn.chip}
+              >
+                <Chip label="最新版で作成" />
+              </Tooltip>
+            ) : null}
             {makeWorkData ? (
               <Chip
                 label={

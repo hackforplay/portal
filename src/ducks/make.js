@@ -15,6 +15,7 @@ import * as workImport from './work';
 import * as authImport from './auth';
 import type { Dispatch, GetStore } from './type';
 import type { WorkItemType, VisibilityType } from './work';
+import isEarlybird from '../utils/isEarlybird';
 
 // 最終的な Root Reducere の中で、ここで管理している State が格納される名前
 export const storeName: string = 'make';
@@ -559,6 +560,7 @@ async function uploadWorkData({ work, uid, metadata, assetVersion }) {
     const appended = {
       ...metadata,
       uid,
+      earlybird: isEarlybird,
       visibility: defaultPrivacy,
       viewsNum: 0,
       favsNum: 0,

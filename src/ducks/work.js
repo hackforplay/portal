@@ -49,6 +49,7 @@ export type WorkData = {
   // additional structure
   +visibility: VisibilityType,
   +uid?: string,
+  +earlybird?: boolean,
   +thumbnailStoragePath?: string,
   +assetStoragePath?: string,
   +viewsNum: number,
@@ -64,6 +65,7 @@ type FirestoreWork = {
   +author: string,
   +visibility: VisibilityType,
   +uid?: string,
+  +earlybird?: boolean,
   +thumbnailStoragePath?: string,
   +assetStoragePath?: string,
   +viewsNum: number,
