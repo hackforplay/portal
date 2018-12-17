@@ -1,11 +1,10 @@
 // @flow
-import firebase from 'firebase';
 import { typeof FirestoreError as FirestoreErrorCode } from 'firebase/firestore';
 
 import * as helpers from './helpers';
 import type { Dispatch, GetStore } from './type';
-import type { WorkItemType } from '../ducks/work';
 import isEarlybird from '../utils/isEarlybird';
+import type { WorkItemType } from '../ducks/work';
 
 type FirestoreError = {
   code: FirestoreErrorCode,
@@ -18,7 +17,6 @@ type FirestoreError = {
 export const storeName: string = 'officialWork';
 
 type OfficialWorkType = {|
-  pathname: string,
   replayable: boolean,
   slaask: boolean,
   work: WorkItemType
@@ -36,7 +34,6 @@ type OfficialWorkDocumentType = {|
 const makeItem = (
   documentData: OfficialWorkDocumentType
 ): OfficialWorkType => ({
-  pathname: documentData.pathname,
   replayable: documentData.replayable,
   slaask: documentData.slaask,
   work: helpers.has({
@@ -70,6 +67,7 @@ export type Action =
     |}
   | {|
       +type: 'portal/officialWork/SET',
+      +pathname: string,
       +payload: OfficialWorkType
     |}
   | {|
@@ -113,7 +111,7 @@ export default (state: State = initialState, action: Action): State => {
         ...state,
         byPathname: {
           ...state.byPathname,
-          [action.payload.pathname]: action.payload
+          [action.pathname]: action.payload
         }
       };
     case EMPTY:
@@ -152,8 +150,9 @@ export const load = (pathname: string): Action => ({
   pathname
 });
 
-export const set = (payload: OfficialWorkType): Action => ({
+export const set = (pathname: string, payload: OfficialWorkType): Action => ({
   type: SET,
+  pathname,
   payload
 });
 
@@ -175,20 +174,12 @@ export const fetchWork = (pathname: string) => async (
   // LOAD
   dispatch(load(pathname));
   try {
-    // officialWorks コレクションは list を許可していない (get only)
-    // pathname を一意のドキュメントキーとして get でデータを取得する
-    // しかし "/" などの記号はドキュメントキーに使用することができない
-    // そこで pathname を URL エンコードした文字列をキーとして扱う
-    const key = encodeURIComponent(pathname);
-    // Firestore から取得
-    let query = firebase
-      .firestore()
-      .collection('officialWorks')
-      .doc(key);
-    const documentSnapshot = (await query.get(): $npm$firebase$firestore$DocumentSnapshot);
-    if (documentSnapshot.exists) {
-      const data: any = documentSnapshot.data();
-      dispatch(set(makeItem(data)));
+    // Cloud Functions から取得
+    const response = await fetch(process.env.REACT_APP_API_ENDPOINT + pathname);
+    if (response.ok) {
+      const json = await response.text();
+      const payload = JSON.parse(json);
+      dispatch(set(pathname, makeItem(payload)));
     } else {
       dispatch(empty(pathname));
     }
@@ -197,7 +188,6 @@ export const fetchWork = (pathname: string) => async (
     dispatch(invalid(pathname, code));
     console.error(error);
   }
-  return;
 };
 
 export function get(
