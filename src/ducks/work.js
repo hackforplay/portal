@@ -58,7 +58,7 @@ type FirestoreWork = {
   +viewsNum: number,
   +clearRate: number,
   +favsNum: number,
-  +createdAt: FirestoreTimestamp,
+  +createdAt?: FirestoreTimestamp,
   +updatedAt?: FirestoreTimestamp
 };
 
@@ -73,12 +73,18 @@ export type GetWorkData = (
 export const getWorkData: GetWorkData = snapshot => {
   const data: FirestoreWork = (snapshot.data(): any);
   const { createdAt, updatedAt, ...workData } = data;
+  const toDate = value =>
+    !value
+      ? undefined
+      : typeof value.toDate === 'function'
+      ? value.toDate()
+      : new Date(value);
   return {
     ...workData,
     id: snapshot.id,
     path: `/works/${snapshot.id}`,
-    createdAt: createdAt.toDate(),
-    updatedAt: updatedAt && updatedAt.toDate()
+    createdAt: toDate(createdAt),
+    updatedAt: toDate(updatedAt)
   };
 };
 
