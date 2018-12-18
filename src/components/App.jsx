@@ -21,7 +21,6 @@ import AnonymousProfile from '../containers/AnonymousProfile';
 import ProfileEdit from '../containers/ProfileEdit';
 import OptionalHeader from '../containers/OptionalHeader';
 import SearchList from '../containers/SearchList';
-import Pickup from '../containers/Pickup';
 import Sp1 from '../containers/ProgrammingColosseum';
 import PCRanking from '../containers/PCRanking';
 import MapEditor from '../containers/MapEditor';
@@ -53,7 +52,6 @@ export default function App() {
             <Route path="/lists/search/:query?" component={SearchList} />
             <Route path="/lists/:more?" exact component={FeatureLists} />
           </Switch>
-          <Route path="/pickup" exact component={Pickup} />
           <Route
             path="/(works|products|officials)/:id?/:action?"
             exact
