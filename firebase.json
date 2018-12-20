@@ -4,6 +4,14 @@
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
+        "source": "/api/officials/**",
+        "function": "officials"
+      },
+      {
+        "source": "/api/trendingWorks",
+        "function": "trendingWorks"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
