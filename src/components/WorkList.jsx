@@ -29,7 +29,6 @@ import { removeMessage } from './Work';
 
 export const cn = {
   card: style({
-    cursor: 'pointer',
     textAlign: 'left'
   }),
   thumbnail: style({
@@ -130,16 +129,6 @@ export default class WorkList extends React.Component<Props, State> {
     item: null
   };
 
-  link(to: string) {
-    const { history } = this.props;
-    return (event: SyntheticMouseEvent<HTMLButtonElement>) => {
-      // 外側の Link を無視する
-      event.stopPropagation();
-      // to へ移動する
-      history.push(to);
-    };
-  }
-
   fromNow(createdAt: string | Date) {
     if (typeof createdAt === 'object') {
       createdAt = createdAt.toISOString();
@@ -196,7 +185,7 @@ export default class WorkList extends React.Component<Props, State> {
           <Grid container justify="center" spacing={8}>
             {works.data ? (
               works.data.map(item => (
-                <Grid item key={item.path}>
+                <Grid item key={item.id}>
                   <Card
                     elevation={0}
                     className={classes(
@@ -204,14 +193,15 @@ export default class WorkList extends React.Component<Props, State> {
                       cn.thumbnail,
                       item.visibility === 'private' && cn.card_private
                     )}
-                    onClick={this.link(item.path)}
                   >
-                    <CardMedia
-                      component="img"
-                      src={item.image || noImage}
-                      title={item.title}
-                      storagePath={item.thumbnailStoragePath}
-                    />
+                    <Link to={item.path + ''}>
+                      <CardMedia
+                        component="img"
+                        src={item.image || noImage}
+                        title={item.title}
+                        storagePath={item.thumbnailStoragePath}
+                      />
+                    </Link>
                     <CardHeader
                       action={
                         authUser && authUser.uid === item.uid ? (
@@ -221,26 +211,31 @@ export default class WorkList extends React.Component<Props, State> {
                         ) : null
                       }
                       title={
-                        <Typography
-                          variant="body2"
-                          className={classes(!item.title && cn.noTitle)}
-                        >
-                          {item.title || `タイトルがついていません`}
-                        </Typography>
+                        <Link to={item.path + ''}>
+                          <Typography
+                            variant="body2"
+                            className={classes(!item.title && cn.noTitle)}
+                          >
+                            {item.title + ''}
+                          </Typography>
+                        </Link>
                       }
                       subheader={
-                        <span
-                          onClick={this.link(
+                        <Link
+                          to={
                             item.uid
                               ? `/users/${item.uid}`
                               : `/anonymous/${item.author || ''}`
-                          )}
-                          className={
-                            item.author ? cn.authorName : cn.noAuthorName
                           }
                         >
-                          {item.author || '名無しの権兵衛'}
-                        </span>
+                          <span
+                            className={
+                              item.author ? cn.authorName : cn.noAuthorName
+                            }
+                          >
+                            {item.author + ''}
+                          </span>
+                        </Link>
                       }
                       classes={{
                         title: cn.title,
