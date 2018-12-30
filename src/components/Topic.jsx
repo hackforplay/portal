@@ -188,7 +188,7 @@ export default withTheme()((props: Props) => {
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <img
-                    src="https://assets.feeles.com/thumbnail/7af083af9079fc370610d0e688c073d3.jpg"
+                    src="https://i.gyazo.com/93539dd4f2f2612059c881b2a937d065.gif"
                     alt="練習用ステージ"
                     className={cn.height100}
                   />

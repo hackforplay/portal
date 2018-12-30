@@ -154,7 +154,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         title: 'オリジナルステージが作れる！RPGキット',
         author: null,
         description: 'ハックフォープレイのステージを自分で作れるキットです⚔',
-        image: 'https://assets.feeles.com/www/kit/screenshot-makerpg.png',
+        image: 'https://i.gyazo.com/3621f6a06944377a461fc8d299a9a70f.png',
         url: '/officials/make-rpg',
         buttons: [
           {
@@ -180,7 +180,7 @@ const contents: Array<{ path: string, items: Array<ContentType> }> = [
         title: 'RPGキット2 (ベータ版)',
         author: null,
         description: 'ベータ版です',
-        image: 'https://assets.feeles.com/www/kit/screenshot-makerpg.png',
+        image: 'https://i.gyazo.com/3621f6a06944377a461fc8d299a9a70f.png',
         url: '/officials/make-rpg-2',
         buttons: [
           {
