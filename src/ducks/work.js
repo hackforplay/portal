@@ -34,6 +34,16 @@ export type WorkData = {
   +path: string, // Page path
   +title: string,
   +description: string,
+  +image?: string,
+  +asset_url?: string | null,
+  +search?: string,
+  +url?: string,
+  +author?: string,
+  +created_at?: string,
+  +views?: number,
+  +favs?: number,
+  +assetVersion?: stirng,
+  // additional structure
   +visibility: VisibilityType,
   +uid?: string,
   +earlybird?: boolean,
@@ -58,7 +68,8 @@ type FirestoreWork = {
   +viewsNum: number,
   +clearRate: number,
   +favsNum: number,
-  +createdAt?: FirestoreTimestamp,
+  +assetVersion?: stirng,
+  +createdAt: FirestoreTimestamp,
   +updatedAt?: FirestoreTimestamp
 };
 

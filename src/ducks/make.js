@@ -38,7 +38,8 @@ export const actions = {
   push: actionCreator.async('PUSH'),
   pull: actionCreator.async('PULL'),
   remove: actionCreator.async('REMOVE'),
-  upload: actionCreator.async('UPLOAD')
+  upload: actionCreator.async('UPLOAD'),
+  assetVersion: actionCreator('ASSET_VERSION')
 };
 
 export type FeelesFile = {
@@ -59,7 +60,8 @@ export type State = {
   needUpdateThumbnail: boolean, // カバー画像の自動更新が必要かどうか
   files?: Array<{}>,
   needUploadFiles: boolean, // files のアップロードが必要かどうか
-  hashOfFiles: string
+  hashOfFiles: string,
+  assetVersion?: string // キットによって異なるアセットのバージョン
 };
 
 const defaultPrivacy = 'limited'; // ステージ作成直後は限定公開
@@ -93,7 +95,9 @@ export default reducerWithInitialState(initialState)
       thumbnails: [],
       needUpdateThumbnail: false,
       // JSON 文字列から MD5 ハッシュを計算
-      hashOfFiles: hashFiles(files)
+      hashOfFiles: hashFiles(files),
+      // assetVersion だけはキット依存なので値を保持
+      assetVersion: state.assetVersion
     };
     return next;
   })
@@ -235,6 +239,13 @@ export default reducerWithInitialState(initialState)
       uploading: false
     };
     return next;
+  })
+  .case(actions.assetVersion, (state, assetVersion) => {
+    const next: State = {
+      ...state,
+      assetVersion
+    };
+    return next;
   });
 
 export type changeWorkType = (payload: { files: FeelesFile[] }) => (
@@ -372,9 +383,13 @@ export type saveWorkType = () => (
 
 export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
   const { uid } = authImport.getState(getStore()).user || { uid: '' };
-  const { files, needUploadFiles, work, metadata: current } = getState(
-    getStore()
-  );
+  const {
+    files,
+    needUploadFiles,
+    work,
+    metadata: current,
+    assetVersion
+  } = getState(getStore());
   const metadata: Metadata = {
     // デフォルト値
     title: '',
@@ -404,7 +419,8 @@ export const saveWork: saveWorkType = () => async (dispatch, getStore) => {
     const uploadedRef = await uploadWorkData({
       work,
       uid,
-      metadata
+      metadata,
+      assetVersion
     });
     const snapshot = (await uploadedRef.get(): $npm$firebase$firestore$DocumentSnapshot);
     const result = {
@@ -524,7 +540,7 @@ export const setWorkVisibility: setWorkVisibilityType = visibility => async (
   }
 };
 
-async function uploadWorkData({ work, uid, metadata }) {
+async function uploadWorkData({ work, uid, metadata, assetVersion }) {
   const workData = work.data;
   if (workData) {
     // 既存のドキュメントを更新
@@ -551,6 +567,10 @@ async function uploadWorkData({ work, uid, metadata }) {
       createdAt: new Date(),
       updatedAt: null
     };
+    if (assetVersion) {
+      // undefined は入れられないので, 値が truty なら追加
+      appended.assetVersion = assetVersion;
+    }
     const docRef = await firebase
       .firestore()
       .collection('works')

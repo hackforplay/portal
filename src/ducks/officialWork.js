@@ -22,6 +22,15 @@ type OfficialWorkType = {|
   work: WorkItemType
 |};
 
+type OfficialWorkDocumentType = {|
+  pathname: string,
+  replayable: boolean,
+  slaask: boolean,
+  workJsonUrl: string,
+  earlybirdWorkJsonUrl: string,
+  assetVersion?: stirng
+|};
+
 const makeItem = (
   documentData: OfficialWorkDocumentType
 ): OfficialWorkType => ({
@@ -41,7 +50,8 @@ const makeItem = (
     favsNum: 0,
     clearRate: 0,
     createdAt: '',
-    updatedAt: null
+    updatedAt: null,
+    assetVersion: documentData.assetVersion
   })
 });
 
