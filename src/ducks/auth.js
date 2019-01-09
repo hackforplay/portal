@@ -124,12 +124,7 @@ function connectExternalService(user: AuthUser) {
       }
     }
   })(
-    () => window.gtag('set', { user_id: user.uid }), // ログインしている user_id を使用してUser-ID を設定します
-    () =>
-      window.sessionstack('identify', {
-        userId: user.uid,
-        displayName: user.displayName
-      })
+    () => window.gtag('set', { user_id: user.uid }) // ログインしている user_id を使用してUser-ID を設定します
   );
 }
 
