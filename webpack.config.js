@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
+  mode: NODE_ENV,
   entry: ['@babel/polyfill', 'whatwg-fetch', './src/index.js'],
   output: {
     path: path.resolve(__dirname, 'build'),
