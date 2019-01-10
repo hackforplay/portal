@@ -10,6 +10,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'static/js/[name].[chunkhash:8].js',
+    publicPath: '/',
     chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js'
   },
   module: {
@@ -126,7 +127,7 @@ function getClientEnvironment() {
         // For example, <img src={process.env.PUBLIC_URL + '/img/logo.png'} />.
         // This should only be used as an escape hatch. Normally you would put
         // images into the `src` and `import` them in code to get their paths.
-        PUBLIC_URL: ''
+        PUBLIC_URL: '/'
       }
     );
   // Stringify all values so we can feed into Webpack DefinePlugin
