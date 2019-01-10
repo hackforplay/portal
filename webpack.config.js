@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const fs = require('fs');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const OfflinePlugin = require('offline-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
@@ -58,6 +59,9 @@ module.exports = {
     minimize: NODE_ENV === 'production'
   },
   plugins: [
+    new CopyWebpackPlugin(['public/'], {
+      ignore: ['index.html']
+    }),
     new HtmlWebpackPlugin({
       inject: true,
       template: path.resolve(__dirname, './public/index.html')
