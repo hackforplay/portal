@@ -72,9 +72,8 @@
     "whatwg-fetch": "3.0.0"
   },
   "scripts": {
-    "start": "node scripts/start.js",
-    "build": "GIT_COMMIT_HASH=$(git rev-parse HEAD) node scripts/build.js",
-    "heroku-postbuild": "node scripts/build.js",
+    "start": "npx webpack-dev-server --open",
+    "build": "npx webpack -p",
     "test": "node scripts/test.js --env=jsdom",
     "flow": "flow",
     "precommit": "lint-staged && flow check",
@@ -101,9 +100,9 @@
     "flow-typed": "^2.5.1",
     "generate-robotstxt": "^5.0.7",
     "redux-devtools-extension": "^2.13.2",
-    "redux-mock-store": "^1.4.0"
     "redux-mock-store": "^1.4.0",
     "superstatic": "^6.0.4",
+    "webpack-cli": "^3.2.1"
   },
   "jest": {
     "collectCoverageFrom": [
