@@ -131,7 +131,13 @@ export default class WorkList extends React.Component<Props, State> {
 
   fromNow(createdAt: string | Date) {
     if (typeof createdAt === 'object') {
-      createdAt = createdAt.toISOString();
+      if (typeof createdAt.toDate === 'function') {
+        createdAt = createdAt.toDate().toISOString();
+      } else if (typeof createdAt.toISOString === 'function') {
+        createdAt = createdAt.toISOString();
+      } else {
+        return '';
+      }
     }
     return moment(createdAt, 'YYYY-MM-DD hh:mm:ss')
       .add(moment().utcOffset(), 'm')
