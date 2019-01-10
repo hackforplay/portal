@@ -10,9 +10,9 @@ module.exports = {
   entry: ['@babel/polyfill', 'whatwg-fetch', './src/index.js'],
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: 'static/js/[name].[chunkhash:8].js',
+    filename: 'static/js/[name].[hash:8].js',
     publicPath: '/',
-    chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js'
+    chunkFilename: 'static/js/[name].[hash:8].chunk.js'
   },
   module: {
     rules: [
