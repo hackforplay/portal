@@ -12,6 +12,10 @@
         "function": "trendingWorks"
       },
       {
+        "source": "/api/elasticsearch",
+        "function": "elasticsearch"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
