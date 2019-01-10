@@ -67,7 +67,10 @@ module.exports = {
       template: path.resolve(__dirname, './public/index.html')
     }),
     new webpack.DefinePlugin(getClientEnvironment()),
-    new OfflinePlugin(),
+    new OfflinePlugin({
+      responseStrategy:
+        NODE_ENV === 'production' ? 'cache-first' : 'network-first'
+    }),
     new webpack.HotModuleReplacementPlugin()
   ],
   devServer: {
