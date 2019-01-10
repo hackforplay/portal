@@ -76,7 +76,7 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, 'build'),
     compress: false,
-    port: 9000,
+    port: process.env.PORT || 3000,
     hot: true,
     before(app) {
       // webpack-dev-server with Firebase Hosting
