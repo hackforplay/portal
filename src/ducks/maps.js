@@ -1,6 +1,5 @@
 // @flow
-import firebase from 'firebase';
-import 'firebase/firestore';
+import firebase from '../settings/firebase';
 import mime from 'mime-types';
 import uuid from 'uuid/v4';
 import {

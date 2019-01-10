@@ -1,5 +1,5 @@
 // @flow
-import firebase from 'firebase';
+import firebase from '../settings/firebase';
 import { typeof FirestoreError as FirestoreErrorCode } from 'firebase/firestore';
 
 import * as helpers from './helpers';

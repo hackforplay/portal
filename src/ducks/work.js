@@ -1,6 +1,5 @@
 // @flow
-import firebase from 'firebase';
-import 'firebase/firestore';
+import firebase from '../settings/firebase';
 
 import * as trending from './trending';
 import * as helpers from './helpers';

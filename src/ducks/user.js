@@ -1,7 +1,6 @@
 // @flow
 
-import firebase from 'firebase';
-import 'firebase/firestore';
+import firebase from '../settings/firebase';
 
 import * as helpers from './helpers';
 import * as auth from './auth';
