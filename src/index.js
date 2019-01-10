@@ -55,5 +55,6 @@ registerServiceWorker();
 
 if (process.env.NODE_ENV === 'production') {
   import('./Rollbar'); // https://github.com/rollbar/rollbar.js
-  OfflinePluginRuntime.install();
 }
+
+OfflinePluginRuntime.install();
