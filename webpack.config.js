@@ -64,8 +64,18 @@ module.exports = {
   ],
   devServer: {
     contentBase: path.join(__dirname, 'build'),
-    compress: true,
-    port: 9000
+    compress: false,
+    port: 9000,
+    before(app) {
+      // webpack-dev-server with Firebase Hosting
+      const superstatic = require('superstatic');
+      app.use(
+        superstatic({
+          config: './firebase.json',
+          cwd: process.cwd()
+        })
+      );
+    }
   },
   devtool:
     NODE_ENV === 'production' ? 'source-map' : 'cheap-module-eval-source-map'
