@@ -1,6 +1,8 @@
 // @flow
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import 'firebase/firestore';
+import 'firebase/auth';
+import 'firebase/storage';
 
 // Initialize Firebase
 const config = {
@@ -12,6 +14,8 @@ const config = {
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || ''
 };
 firebase.initializeApp(config);
+
+export default firebase;
 
 ///  08T03:56:28.438Z]  @firebase/firestore: Firestore (4.13.0):
 ///  The behavior for Date objects stored in Firestore is going to change

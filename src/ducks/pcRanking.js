@@ -1,6 +1,5 @@
 // @flow
-import firebase from 'firebase';
-import 'firebase/firestore';
+import firebase from '../settings/firebase';
 
 import * as helpers from './helpers';
 import type { Statefull } from './helpers';

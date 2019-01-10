@@ -1,5 +1,5 @@
 // @flow
-import firebase from 'firebase';
+import firebase from '../settings/firebase';
 
 import type { Dispatch, GetStore } from './type';
 

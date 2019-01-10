@@ -19,6 +19,7 @@ import registerServiceWorker from './registerServiceWorker';
 import reducer from './ducks';
 import './settings/firebase';
 import MaterialUIJssProvider from './MaterialUIJssProvider';
+import * as OfflinePluginRuntime from 'offline-plugin/runtime';
 
 objectFitImages();
 
@@ -53,6 +54,6 @@ ReactDOM.render(
 registerServiceWorker();
 
 if (process.env.NODE_ENV === 'production') {
-  // https://github.com/rollbar/rollbar.js
-  import('./Rollbar');
+  import('./Rollbar'); // https://github.com/rollbar/rollbar.js
+  OfflinePluginRuntime.install();
 }
