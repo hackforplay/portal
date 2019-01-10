@@ -99,6 +99,7 @@
     "flow-bin": "^0.89.0",
     "flow-typed": "^2.5.1",
     "generate-robotstxt": "^5.0.7",
+    "offline-plugin": "^5.0.6",
     "redux-devtools-extension": "^2.13.2",
     "redux-mock-store": "^1.4.0",
     "superstatic": "^6.0.4",

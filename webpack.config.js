@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const fs = require('fs');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -62,6 +63,7 @@ module.exports = {
       template: path.resolve(__dirname, './public/index.html')
     }),
     new webpack.DefinePlugin(getClientEnvironment()),
+    new OfflinePlugin(),
     new webpack.HotModuleReplacementPlugin()
   ],
   devServer: {
