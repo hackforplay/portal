@@ -61,12 +61,14 @@ module.exports = {
       inject: true,
       template: path.resolve(__dirname, './public/index.html')
     }),
-    new webpack.DefinePlugin(getClientEnvironment())
+    new webpack.DefinePlugin(getClientEnvironment()),
+    new webpack.HotModuleReplacementPlugin()
   ],
   devServer: {
     contentBase: path.join(__dirname, 'build'),
     compress: false,
     port: 9000,
+    hot: true,
     before(app) {
       // webpack-dev-server with Firebase Hosting
       const superstatic = require('superstatic');
