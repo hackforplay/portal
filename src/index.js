@@ -15,7 +15,6 @@ import objectFitImages from 'object-fit-images';
 
 import './index.css';
 import App from './containers/App';
-import registerServiceWorker from './registerServiceWorker';
 import reducer from './ducks';
 import './settings/firebase';
 import MaterialUIJssProvider from './MaterialUIJssProvider';
@@ -51,7 +50,6 @@ ReactDOM.render(
   </Provider>,
   app
 );
-registerServiceWorker();
 
 if (process.env.NODE_ENV === 'production') {
   import('./Rollbar'); // https://github.com/rollbar/rollbar.js
