@@ -68,6 +68,9 @@ module.exports = {
     }),
     new webpack.DefinePlugin(getClientEnvironment()),
     new OfflinePlugin({
+      ServiceWorker: {
+        output: 'service-worker.js'
+      },
       responseStrategy:
         NODE_ENV === 'production' ? 'cache-first' : 'network-first'
     }),
